@@ -1,0 +1,17 @@
+# Dados brutos e processados
+ETL/data/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Ambientes virtuais
+.venv/
+venv/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
