@@ -1,5 +1,6 @@
 # Dados brutos e processados
-ETL/data/
+/data/interim/
+/data/raw/
 
 # Python
 __pycache__/
