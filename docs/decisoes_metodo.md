@@ -29,7 +29,7 @@ Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada b
 | Base | Extract | Transform | Saída |
 |---|---|---|---|
 | SIOPE, dados gerais | ✅ `Extract_SIOPE.py` | pendente | `siope_{ano}_extraido` |
-| SIOPE, por subfunção | ✅ (⚠️ script fora do repositório, ver T1) | pendente | `siope_funcao_{ano}_extraido` |
+| SIOPE, por subfunção | ✅ `Extract_SIOPE_Funcao.py` (ver T1) | pendente | `siope_funcao_{ano}_extraido` |
 | SICONFI estados | ✅ `Extract_SICONFI_Estados.py` | pendente | `siconfi_estados_funcao12` |
 | Censo Escolar, matrículas | ✅ `Extract_Censo_Matriculas.py` | pendente | `censo_matriculas_{ano}` |
 | Censo Escolar, infraestrutura | ✅ | ✅ | `censo_escolar_transformado` |
@@ -223,10 +223,13 @@ Falar sempre em associação e eficiência relativa.
 
 ## 8. Problemas técnicos do pipeline
 
-### T1. Falta no repositório o script que gerou `siope_funcao_*` ⚠️
-- **Problema:** os arquivos `siope_funcao_{2017..2025}_extraido.parquet` existem e são usados pelos testes, mas o script que os produziu não está no repositório. O `Extract_SIOPE.py` só gera os dados gerais. Pelos testes, a fonte é a entidade `Despesas_Funcao_Educacao_Siope` da mesma API do SIOPE, e as colunas `COD_SUBF` e `EH_TOTAL` foram derivadas por esse código ausente.
-- **Por que importa:** é a base do numerador municipal. Sem o script, não dá para reproduzir a extração nem auditar como `COD_SUBF` e `EH_TOTAL` foram derivadas.
-- **Encaminhamento:** recuperar o script (outra máquina? Guilherme?) ou reescrever um `Extract_SIOPE_Funcao.py` e conferir se reproduz os parquets atuais.
+### T1. Script que gerou `siope_funcao_*` ✅ (reescrito em 2026-10-21)
+- **Problema:** os arquivos `siope_funcao_{2017..2025}_extraido.parquet` são a base do numerador municipal, mas o script que os produziu não estava no repositório. Sem ele, não era possível reproduzir a extração nem auditar como as colunas `COD_SUBF` e `EH_TOTAL` foram derivadas.
+- **Regras recuperadas a partir dos dados**, sem nenhuma divergência em ~469 mil linhas:
+  - `COD_SUBF` é a primeira sequência de 3 dígitos do rótulo `DES_SUBF`. Rótulos sem código ficam nulos, como "98 - Contribuição Social do Salário-Educação".
+  - `EH_TOTAL` é verdadeiro quando o rótulo começa com "TOTAL". Na prática, só aparece "TOTAL 365 - Educação Infantil".
+- **Decisão:** reescrever o extrator como `src/Extract/Extract_SIOPE_Funcao.py`. Ele usa a entidade `Despesas_Funcao_Educacao_Siope`, o 6º bimestre e as 27 UFs, e mantém as camadas Municipal e Estadual.
+- **Verificação:** a nova extração reproduz exatamente os parquets atuais nos 9 anos: mesmo número de linhas, mesmo schema, nenhuma linha só de um lado e nenhum valor empenhado, liquidado ou pago diferente. O total municipal da 361 é idêntico ano a ano (94,9 bi em 2017; 223,1 bi em 2025).
 
 ### T2. Brutos fora do repositório ✅ (contornado)
 - **Situação:** os brutos (~35 GB) estão em `ENEM_Microdata_Analysis/data/raw`. Neste repositório, só a pasta do IDEB foi copiada.
