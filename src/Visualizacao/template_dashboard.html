@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gasto e Saeb</title>
+<meta name="description" content="Painel de conferência dos dados do TCC: gasto público por aluno (SIOPE/SICONFI) e desempenho no Saeb, 2017–2025.">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --ring: rgba(11,11,11,0.10);
+  --s1: #2a78d6;          /* série principal (azul) */
+  --s1-soft: #cde2fb;
+  --s2: #eb6834;          /* destaque (laranja) */
+  --other: #c3c2b7;       /* pontos fora do destaque */
+  --mid: #f0efec;
+  --warn-bg: #fff6e0;
+  --warn-ink: #6b4a00;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
+    --s1: #3987e5; --s1-soft: #184f95; --s2: #d95926; --other: #4a4a46; --mid: #383835;
+    --warn-bg: #2e2510; --warn-ink: #f2d189;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
+  --s1: #3987e5; --s1-soft: #184f95; --s2: #d95926; --other: #4a4a46; --mid: #383835;
+  --warn-bg: #2e2510; --warn-ink: #f2d189;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--page); color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.45; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 24px 16px 48px; }
+header h1 { font-size: 24px; line-height: 1.2; margin: 0 0 6px; font-weight: 650; letter-spacing: -0.01em; }
+header p.lead { margin: 0; color: var(--ink-2); max-width: 820px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.chip { font-size: 12px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--ring);
+  border-radius: 999px; padding: 3px 10px; }
+.chip b { color: var(--ink); font-weight: 600; }
+
+.pipeline { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; margin: 20px 0 8px;
+  background: var(--surface); border: 1px solid var(--ring); border-radius: 12px; overflow: hidden; }
+.pipeline > div { padding: 12px 14px; border-right: 1px solid var(--grid); }
+.pipeline > div:last-child { border-right: 0; }
+.pipeline .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.pipeline .v { font-size: 13px; color: var(--ink); margin-top: 2px; }
+
+.filters { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: end;
+  padding: 12px 0; background: var(--page); border-bottom: 1px solid var(--grid); margin-bottom: 16px; }
+.filters label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ink-2); }
+select, input[type="search"] { font: inherit; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--axis); border-radius: 8px; padding: 6px 10px; min-height: 34px; }
+.seg { display: inline-flex; border: 1px solid var(--axis); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.seg button { font: inherit; border: 0; background: transparent; color: var(--ink-2); padding: 7px 14px; cursor: pointer; min-height: 34px; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.check { flex-direction: row !important; align-items: center; gap: 6px !important; min-height: 34px; }
+.hidden { display: none !important; }
+
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.kpi { background: var(--surface); border: 1px solid var(--ring); border-radius: 12px; padding: 14px 16px; }
+.kpi .k { font-size: 12px; color: var(--ink-2); }
+.kpi .v { font-size: 26px; font-weight: 600; margin-top: 4px; letter-spacing: -0.01em; }
+.kpi .s { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--ring); border-radius: 12px; padding: 16px; min-width: 0; }
+.card.wide { grid-column: 1 / -1; }
+.card h2 { font-size: 15px; margin: 0; font-weight: 600; }
+.card .sub { font-size: 12px; color: var(--ink-2); margin: 2px 0 10px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--ink-2); margin-bottom: 6px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.mini { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.mini h3 { font-size: 12px; font-weight: 600; color: var(--ink-2); margin: 0 0 4px; }
+
+.tick text, .lbl { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.axis-title { fill: var(--ink-2); font-size: 11px; }
+.gridline { stroke: var(--grid); stroke-width: 1; shape-rendering: crispEdges; }
+.baseline { stroke: var(--axis); stroke-width: 1; shape-rendering: crispEdges; }
+
+.tip { position: absolute; pointer-events: none; z-index: 10; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--ring); border-radius: 8px; padding: 8px 10px; font-size: 12px; min-width: 160px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12); opacity: 0; transition: opacity 80ms; }
+.tip .t { font-weight: 600; margin-bottom: 4px; }
+.tip .r { display: flex; justify-content: space-between; gap: 12px; color: var(--ink-2); }
+.tip .r b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--grid); font-variant-numeric: tabular-nums; white-space: nowrap; }
+th:first-child, td:first-child, th.l, td.l { text-align: left; }
+th { color: var(--ink-2); font-weight: 600; cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--surface); }
+th[aria-sort="ascending"]::after { content: " ▲"; font-size: 9px; }
+th[aria-sort="descending"]::after { content: " ▼"; font-size: 9px; }
+.scroll { max-height: 420px; overflow: auto; border: 1px solid var(--grid); border-radius: 8px; }
+.tbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+.flag { font-size: 11px; color: var(--warn-ink); background: var(--warn-bg); border-radius: 4px; padding: 1px 6px; }
+.note { font-size: 12px; color: var(--muted); }
+
+.pend { background: var(--warn-bg); color: var(--warn-ink); border-radius: 12px; padding: 12px 16px; margin: 16px 0; font-size: 13px; }
+.pend b { font-weight: 600; }
+footer { margin-top: 24px; color: var(--ink-2); font-size: 12.5px; }
+footer h2 { font-size: 14px; color: var(--ink); margin: 0 0 6px; }
+footer ul { margin: 0; padding-left: 18px; }
+footer li { margin: 3px 0; }
+
+@media (max-width: 900px) {
+  .grid, .mini { grid-template-columns: 1fr; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pipeline { grid-template-columns: 1fr 1fr; }
+  .pipeline > div { border-bottom: 1px solid var(--grid); }
+}
+@media (max-width: 480px) {
+  .kpis { grid-template-columns: 1fr; }
+  .kpi .v { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Gasto público por aluno e desempenho no Saeb</h1>
+    <p class="lead">Painel de conferência dos dados do TCC (FEA/USP). Mostra, de forma descritiva, o que já foi extraído, tratado e cruzado: gasto por aluno em reais de 2025 e notas do Saeb de 2017 a 2025, em municípios e estados. Ainda não há modelo estimado: as relações vistas aqui são de associação, não de causa.</p>
+    <div class="chips" id="chips"></div>
+  </header>
+
+  <section class="pipeline" aria-label="Fontes e etapas">
+    <div><div class="k">Gasto municipal</div><div class="v">SIOPE · subfunção 361 paga</div></div>
+    <div><div class="k">Gasto estadual</div><div class="v">SICONFI · função 12 − Ensino Superior</div></div>
+    <div><div class="k">Alunos</div><div class="v">Censo Escolar · matrículas por rede</div></div>
+    <div><div class="k">Desempenho</div><div class="v">Saeb/IDEB · Inep, por rede</div></div>
+    <div><div class="k">Contexto</div><div class="v">IDHM (UF) · alfabetização · infraestrutura</div></div>
+  </section>
+
+  <div class="pend" id="pend"></div>
+
+  <div class="filters" role="group" aria-label="Filtros">
+    <label>Camada
+      <span class="seg" id="camada">
+        <button type="button" data-v="mun" aria-pressed="true">Municípios</button>
+        <button type="button" data-v="est" aria-pressed="false">Estados</button>
+      </span>
+    </label>
+    <label>Etapa <select id="etapa"></select></label>
+    <label>Edição do Saeb <select id="ano"></select></label>
+    <label>UF em destaque <select id="uf"></select></label>
+    <label id="versaoBox" class="hidden">Gasto estadual
+      <select id="versao">
+        <option value="A">Versão A · Ensino Superior ausente = 0</option>
+        <option value="B">Versão B · ausente = dado faltante</option>
+      </select>
+    </label>
+    <label class="check" id="extBox"><input type="checkbox" id="ext"> Ocultar gastos extremos</label>
+  </div>
+
+  <section class="kpis" id="kpis" aria-live="polite"></section>
+
+  <section class="grid">
+    <article class="card wide">
+      <h2 id="scTitle">Gasto por aluno × nota de Matemática</h2>
+      <p class="sub" id="scSub"></p>
+      <div class="legend" id="scLegend"></div>
+      <div class="chart" id="scatter"></div>
+    </article>
+
+    <article class="card wide">
+      <h2>Evolução 2017–2025</h2>
+      <p class="sub" id="evSub"></p>
+      <div class="mini">
+        <div><h3>Gasto por aluno mediano (R$ de 2025)</h3><div class="chart" id="evGasto"></div></div>
+        <div><h3>Nota média de Matemática</h3><div class="chart" id="evNota"></div></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2>Gasto por aluno por UF</h2>
+      <p class="sub" id="rkSub"></p>
+      <div class="chart" id="ranking"></div>
+    </article>
+
+    <article class="card">
+      <h2>Cobertura dos dados</h2>
+      <p class="sub" id="cobSub"></p>
+      <div class="scroll" style="max-height:none"><table id="cob"></table></div>
+    </article>
+
+    <article class="card wide">
+      <h2>Tabela</h2>
+      <div class="tbar">
+        <p class="sub" id="tbSub" style="margin:0"></p>
+        <input type="search" id="busca" placeholder="Buscar município ou UF" aria-label="Buscar na tabela">
+      </div>
+      <div class="scroll"><table id="tabela"></table></div>
+      <p class="note" id="tbNote"></p>
+    </article>
+  </section>
+
+  <footer>
+    <h2>Notas de método</h2>
+    <ul>
+      <li><b>Gasto por aluno:</b> municípios = despesa paga na subfunção 361 (Ensino Fundamental, SIOPE) ÷ matrículas do Fundamental na rede municipal; estados = função 12 paga menos a subfunção 12.364 (Ensino Superior, SICONFI) ÷ matrículas da educação básica na rede estadual. Valores em reais de 2025 (IPCA médio anual). Aqui aparece o gasto do mesmo ano do Saeb; os painéis também têm o gasto de 1, 2 e 4 anos antes.</li>
+      <li><b>Desempenho:</b> notas do Saeb da rede que o gasto financia (municipal: Anos Iniciais e Finais; estadual: Anos Finais e Ensino Médio), nas planilhas de divulgação do IDEB (Inep).</li>
+      <li><b>Agregações:</b> gasto = mediana entre as unidades; nota = média simples entre as unidades, sem ponderar por matrículas.</li>
+      <li><b>Fontes não são misturadas:</b> o SIOPE e o SICONFI divergem para o mesmo ente, então cada camada usa uma única fonte.</li>
+      <li><b>2021</b> tem menos resultados com nota (pandemia). O DF não tem rede municipal e aparece só na camada estadual.</li>
+      <li>Registro completo das decisões: <code>docs/decisoes_metodo.md</code>. Gerado pelo script <code>src/Visualizacao/Gerar_Dashboard_HTML.py</code>.</li>
+    </ul>
+  </footer>
+</div>
+
+<div class="tip" id="tip" role="status"></div>
+
+<script id="dados" type="application/json">__DADOS__</script>
+<script>
+(() => {
+"use strict";
+const D = JSON.parse(document.getElementById("dados").textContent);
+const ANOS = [2017, 2019, 2021, 2023, 2025];
+const ETAPAS = { mun: [["AI", "Anos Iniciais"], ["AF", "Anos Finais"]], est: [["AF", "Anos Finais"], ["EM", "Ensino Médio"]] };
+const UFS = ["AC","AL","AM","AP","BA","CE","DF","ES","GO","MA","MG","MS","MT","PA","PB","PE","PI","PR","RJ","RN","RO","RR","RS","SC","SE","SP","TO"];
+const nf0 = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 });
+const nf1 = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const brl = v => v == null ? "—" : "R$ " + nf0.format(v);
+const n1 = v => v == null ? "—" : nf1.format(v);
+const n0 = v => v == null ? "—" : nf0.format(v);
+const pct = v => v == null ? "—" : nf1.format(v * 100) + "%";
+const SVGNS = "http://www.w3.org/2000/svg";
+
+// ---------- linhas como objetos ----------
+const M = D.mun.municipios, L = D.mun.linhas;
+const mun = L.m.map((m, i) => ({
+  cod: M.cod[m], nome: M.nome[m], uf: M.uf[m], regiao: M.regiao[m],
+  etapa: L.etapa[i], ano: L.ano[i], mt: L.mt[i], lp: L.lp[i], ideb: L.ideb[i],
+  gasto: L.gasto[i], extremo: L.extremo[i], mat: L.mat[i],
+}));
+const E = D.est;
+const est = E.uf.map((u, i) => ({
+  cod: u, nome: u, uf: u, regiao: E.regiao[i], etapa: E.etapa[i], ano: E.ano[i], mt: E.mt[i], lp: E.lp[i],
+  ideb: E.ideb[i], gastoA: E.gastoA[i], gastoB: E.gastoB[i], supAusente: E.supAusente[i], mat: E.mat[i],
+}));
+
+const S = { camada: "mun", etapa: "AI", ano: 2023, uf: "BR", versao: "A", ocultarExt: false };
+
+const gastoDe = r => S.camada === "mun" ? r.gasto : (S.versao === "A" ? r.gastoA : r.gastoB);
+const base = () => S.camada === "mun" ? mun : est;
+const valida = r => r.mt != null && gastoDe(r) != null && !(S.camada === "mun" && S.ocultarExt && r.extremo);
+const fatia = (ano = S.ano) => base().filter(r => r.etapa === S.etapa && r.ano === ano);
+
+function mediana(a) { if (!a.length) return null; const s = [...a].sort((x, y) => x - y); const k = s.length >> 1;
+  return s.length % 2 ? s[k] : (s[k - 1] + s[k]) / 2; }
+function media(a) { return a.length ? a.reduce((x, y) => x + y, 0) / a.length : null; }
+
+// ---------- utilidades SVG ----------
+function el(tag, attrs = {}, parent) { const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function txt(parent, x, y, s, attrs = {}) { const t = el("text", { x, y, ...attrs }, parent); t.textContent = s; return t; }
+function svgIn(host, w, h) { host.replaceChildren(); return el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img" }, host); }
+function largura(host) { return Math.max(280, Math.round(host.clientWidth || 600)); }
+
+const tip = document.getElementById("tip");
+function mostrarTip(ev, titulo, linhas) {
+  tip.replaceChildren();
+  const t = document.createElement("div"); t.className = "t"; t.textContent = titulo; tip.appendChild(t);
+  for (const [k, v] of linhas) { const r = document.createElement("div"); r.className = "r";
+    const a = document.createElement("span"); a.textContent = k; const b = document.createElement("b"); b.textContent = v;
+    r.append(a, b); tip.appendChild(r); }
+  const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = ev.clientX + pad, y = ev.clientY + pad;
+  if (x + w > window.innerWidth - 8) x = ev.clientX - w - pad;
+  if (y + h > window.innerHeight - 8) y = ev.clientY - h - pad;
+  tip.style.left = (x + window.scrollX) + "px"; tip.style.top = (y + window.scrollY) + "px"; tip.style.opacity = 1;
+}
+function esconderTip() { tip.style.opacity = 0; }
+
+// Marcas que englobam [lo, hi]: começa no múltiplo abaixo de lo e termina no múltiplo acima de hi
+function niceTicks(lo, hi, n = 5) { const span = hi - lo, step0 = span / n, mag = 10 ** Math.floor(Math.log10(step0));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => span / s <= n) || mag * 10;
+  const ini = Math.floor(lo / step) * step, fim = Math.ceil(hi / step) * step;
+  const out = []; for (let v = ini; v <= fim + step * 1e-6; v += step) out.push(+v.toFixed(6)); return out; }
+const fmtK = v => v >= 1000 ? nf0.format(v / 1000) + " mil" : nf0.format(v);
+
+// ---------- domínios estáveis (não mudam com o filtro de ano) ----------
+function dominios() {
+  const rows = base().filter(r => r.etapa === S.etapa && r.mt != null && gastoDe(r) != null);
+  const g = rows.map(gastoDe), y = rows.map(r => r.mt);
+  return { gmin: Math.min(...g), gmax: Math.max(...g), ymin: Math.min(...y), ymax: Math.max(...y) };
+}
+
+// ---------- KPIs ----------
+function kpis() {
+  const f = fatia(), comNota = f.filter(r => r.mt != null), ok = f.filter(valida);
+  const escopo = S.uf === "BR" ? ok : ok.filter(r => r.uf === S.uf);
+  const nomeEscopo = S.uf === "BR" ? "Brasil" : S.uf;
+  const unid = S.camada === "mun" ? "municípios" : "UFs";
+  const cards = [
+    ["Unidades com nota e gasto", n0(escopo.length), `${unid} · ${nomeEscopo} · ${S.ano}`],
+    ["Gasto por aluno mediano", brl(mediana(escopo.map(gastoDe))), "reais de 2025, mesmo ano do Saeb"],
+    ["Nota média de Matemática", n1(media(escopo.map(r => r.mt))), `Saeb ${S.ano} · média simples`],
+    ["Cobertura", pct(comNota.length ? ok.length / comNota.length : null), `das unidades com nota também têm gasto (Brasil)`],
+  ];
+  const host = document.getElementById("kpis"); host.replaceChildren();
+  for (const [k, v, s] of cards) { const d = document.createElement("div"); d.className = "kpi";
+    const a = document.createElement("div"); a.className = "k"; a.textContent = k;
+    const b = document.createElement("div"); b.className = "v"; b.textContent = v;
+    const c = document.createElement("div"); c.className = "s"; c.textContent = s; d.append(a, b, c); host.appendChild(d); }
+}
+
+// ---------- dispersão ----------
+function scatter() {
+  const host = document.getElementById("scatter"), W = largura(host), H = Math.round(Math.min(460, Math.max(300, W * 0.42)));
+  const m = { t: 10, r: 16, b: 44, l: 52 }, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const svg = svgIn(host, W, H), g = el("g", { transform: `translate(${m.l},${m.t})` }, svg);
+  const dom = dominios(), logX = S.camada === "mun";
+  const x0 = logX ? Math.log10(dom.gmin * 0.9) : dom.gmin * 0.92, x1 = logX ? Math.log10(dom.gmax * 1.1) : dom.gmax * 1.04;
+  const X = v => ((logX ? Math.log10(v) : v) - x0) / (x1 - x0) * iw;
+  const yt = niceTicks(dom.ymin - 5, dom.ymax + 5, 5), y0 = yt[0], y1 = yt[yt.length - 1];
+  const Y = v => ih - (v - y0) / (y1 - y0) * ih;
+
+  for (const v of yt) { el("line", { class: "gridline", x1: 0, x2: iw, y1: Y(v), y2: Y(v) }, g);
+    txt(g, -8, Y(v) + 4, nf0.format(v), { class: "lbl", "text-anchor": "end" }); }
+  const xt = logX ? [200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000].filter(v => Math.log10(v) >= x0 && Math.log10(v) <= x1)
+                  : niceTicks(dom.gmin * 0.92, dom.gmax * 1.04, 6);
+  for (const v of xt) { el("line", { class: "gridline", x1: X(v), x2: X(v), y1: 0, y2: ih }, g);
+    txt(g, X(v), ih + 16, fmtK(v), { class: "lbl", "text-anchor": "middle" }); }
+  el("line", { class: "baseline", x1: 0, x2: iw, y1: ih, y2: ih }, g);
+  txt(g, iw / 2, ih + 36, "Gasto por aluno, R$ de 2025" + (logX ? " (escala logarítmica)" : ""), { class: "axis-title", "text-anchor": "middle" });
+  txt(g, -40, ih / 2, "Nota de Matemática (Saeb)", { class: "axis-title", "text-anchor": "middle", transform: `rotate(-90 -40 ${ih / 2})` });
+
+  const pts = fatia().filter(valida);
+  const temDestaque = S.uf !== "BR";
+  const ordem = [...pts].sort((a, b) => (a.uf === S.uf) - (b.uf === S.uf));  // destaque desenhado por cima
+  const r0 = S.camada === "mun" ? 3.2 : 5;
+  const nodes = [];
+  for (const p of ordem) {
+    const dest = !temDestaque || p.uf === S.uf, cx = X(gastoDe(p)), cy = Y(p.mt);
+    const cor = dest ? (temDestaque ? "var(--s2)" : "var(--s1)") : "var(--other)";
+    const attrs = { cx, cy, r: r0, stroke: "var(--surface)", "stroke-width": 1 };
+    if (p.extremo) Object.assign(attrs, { fill: "none", stroke: cor, "stroke-width": 1.5 });
+    else Object.assign(attrs, { fill: cor, "fill-opacity": S.camada === "mun" ? (dest ? 0.75 : 0.45) : 0.9 });
+    el("circle", attrs, g);
+    nodes.push({ p, cx, cy });
+  }
+  if (S.camada === "est") for (const { p, cx, cy } of nodes)
+    txt(g, cx + 7, cy + 4, p.uf, { class: "lbl", fill: p.uf === S.uf ? "var(--ink)" : "var(--muted)", "font-weight": p.uf === S.uf ? 600 : 400 });
+
+  const sel = el("circle", { r: r0 + 4, fill: "none", stroke: "var(--ink)", "stroke-width": 1.5, opacity: 0 }, g);
+  const hit = el("rect", { x: 0, y: 0, width: iw, height: ih, fill: "transparent" }, g);
+  hit.addEventListener("pointermove", ev => {
+    const bb = svg.getBoundingClientRect(), k = W / bb.width;
+    const px = (ev.clientX - bb.left) * k - m.l, py = (ev.clientY - bb.top) * k - m.t;
+    let best = null, bd = 24 * 24;
+    for (const nd of nodes) { const d = (nd.cx - px) ** 2 + (nd.cy - py) ** 2; if (d < bd) { bd = d; best = nd; } }
+    if (!best) { sel.setAttribute("opacity", 0); esconderTip(); return; }
+    sel.setAttribute("cx", best.cx); sel.setAttribute("cy", best.cy); sel.setAttribute("opacity", 1);
+    const p = best.p, linhas = [["Gasto por aluno", brl(gastoDe(p))], ["Nota Matemática", n1(p.mt)], ["Nota Português", n1(p.lp)], ["IDEB", n1(p.ideb)],
+      ["Matrículas", n0(p.mat)]];
+    if (p.extremo) linhas.push(["Atenção", "gasto marcado como extremo"]);
+    if (p.supAusente) linhas.push(["Atenção", "sem linha de Ensino Superior"]);
+    mostrarTip(ev, S.camada === "mun" ? `${p.nome} (${p.uf})` : p.uf, linhas);
+  });
+  hit.addEventListener("pointerleave", () => { sel.setAttribute("opacity", 0); esconderTip(); });
+
+  // legenda e textos
+  const lg = document.getElementById("scLegend"); lg.replaceChildren();
+  const item = (svgDesenho, rotulo) => { const s = document.createElement("span");
+    const ic = document.createElementNS(SVGNS, "svg"); ic.setAttribute("width", 12); ic.setAttribute("height", 12); ic.innerHTML = svgDesenho;
+    const t = document.createElement("span"); t.textContent = rotulo; s.append(ic, t); lg.appendChild(s); };
+  if (temDestaque) { item(`<circle cx="6" cy="6" r="4.5" fill="var(--s2)"/>`, S.uf);
+    item(`<circle cx="6" cy="6" r="4.5" fill="var(--other)"/>`, "Demais"); }
+  else item(`<circle cx="6" cy="6" r="4.5" fill="var(--s1)"/>`, S.camada === "mun" ? "Municípios" : "UFs");
+  if (S.camada === "mun" && !S.ocultarExt) item(`<circle cx="6" cy="6" r="4" fill="none" stroke="var(--ink-2)" stroke-width="1.5"/>`, "Gasto marcado como extremo (fora de 0,5%–99,5% do ano)");
+  const nome = ETAPAS[S.camada].find(e => e[0] === S.etapa)[1];
+  document.getElementById("scSub").textContent =
+    `${S.camada === "mun" ? "Rede municipal" : "Rede estadual"} · ${nome} · Saeb ${S.ano} · ${n0(pts.length)} ${S.camada === "mun" ? "municípios" : "UFs"} com nota e gasto. Passe o mouse para ver cada ponto.`;
+}
+
+// ---------- evolução (dois gráficos, um eixo cada) ----------
+function serieEvolucao() {
+  return ANOS.map(a => { let rows = fatia(a).filter(valida); if (S.uf !== "BR") rows = rows.filter(r => r.uf === S.uf);
+    return { ano: a, gasto: mediana(rows.map(gastoDe)), nota: media(rows.map(r => r.mt)), n: rows.length }; });
+}
+function linha(hostId, serie, campo, fmt) {
+  const host = document.getElementById(hostId), W = largura(host), H = 220;
+  const m = { t: 20, r: 18, b: 26, l: 56 }, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const svg = svgIn(host, W, H), g = el("g", { transform: `translate(${m.l},${m.t})` }, svg);
+  const vals = serie.map(s => s[campo]).filter(v => v != null);
+  if (!vals.length) { txt(g, iw / 2, ih / 2, "Sem dados", { class: "lbl", "text-anchor": "middle" }); return; }
+  const lo = Math.min(...vals), hi = Math.max(...vals), padv = (hi - lo) * 0.15 || hi * 0.05;
+  const yt = niceTicks(lo - padv, hi + padv, 4), y0 = yt[0], y1 = yt[yt.length - 1];
+  const X = i => i / (ANOS.length - 1) * iw, Y = v => ih - (v - y0) / (y1 - y0) * ih;
+  for (const v of yt) { el("line", { class: "gridline", x1: 0, x2: iw, y1: Y(v), y2: Y(v) }, g);
+    txt(g, -8, Y(v) + 4, campo === "gasto" ? fmtK(v) : nf0.format(v), { class: "lbl", "text-anchor": "end" }); }
+  ANOS.forEach((a, i) => txt(g, X(i), ih + 18, String(a), { class: "lbl", "text-anchor": "middle" }));
+  let d = ""; serie.forEach((s, i) => { if (s[campo] == null) return; d += (d ? "L" : "M") + X(i) + " " + Y(s[campo]); });
+  el("path", { d, fill: "none", stroke: "var(--s1)", "stroke-width": 2, "stroke-linejoin": "round" }, g);
+  serie.forEach((s, i) => { if (s[campo] == null) return; const atual = s.ano === S.ano;
+    el("circle", { cx: X(i), cy: Y(s[campo]), r: atual ? 5.5 : 4, fill: atual ? "var(--s1)" : "var(--surface)", stroke: "var(--s1)", "stroke-width": 2 }, g); });
+  // rótulo direto só no ponto da edição selecionada, à esquerda dele para não sair da área do gráfico
+  const iSel = ANOS.indexOf(S.ano);
+  if (iSel >= 0 && serie[iSel][campo] != null)
+    txt(g, X(iSel) + (iSel === 0 ? 10 : -10), Y(serie[iSel][campo]) - 10, fmt(serie[iSel][campo]),
+        { class: "lbl", "text-anchor": iSel === 0 ? "start" : "end", fill: "var(--ink)", "font-weight": 600 });
+  const cross = el("line", { x1: 0, x2: 0, y1: 0, y2: ih, stroke: "var(--axis)", "stroke-width": 1, opacity: 0 }, g);
+  const hit = el("rect", { x: -10, y: 0, width: iw + 20, height: ih, fill: "transparent" }, g);
+  hit.addEventListener("pointermove", ev => { const bb = svg.getBoundingClientRect(), k = W / bb.width;
+    const px = (ev.clientX - bb.left) * k - m.l, i = Math.max(0, Math.min(ANOS.length - 1, Math.round(px / iw * (ANOS.length - 1))));
+    cross.setAttribute("x1", X(i)); cross.setAttribute("x2", X(i)); cross.setAttribute("opacity", 1);
+    const s = serie[i]; mostrarTip(ev, `Saeb ${s.ano}`, [[campo === "gasto" ? "Gasto mediano" : "Nota média", fmt(s[campo])], ["Unidades", n0(s.n)]]); });
+  hit.addEventListener("pointerleave", () => { cross.setAttribute("opacity", 0); esconderTip(); });
+}
+function evolucao() {
+  const serie = serieEvolucao();
+  linha("evGasto", serie, "gasto", brl); linha("evNota", serie, "nota", n1);
+  const nome = ETAPAS[S.camada].find(e => e[0] === S.etapa)[1];
+  document.getElementById("evSub").textContent = `${S.uf === "BR" ? "Brasil" : S.uf} · ${nome} · ponto cheio = edição selecionada`;
+}
+
+// ---------- ranking por UF ----------
+function ranking() {
+  const host = document.getElementById("ranking"), W = largura(host);
+  const rows = fatia().filter(valida), porUF = {};
+  for (const r of rows) (porUF[r.uf] ||= []).push(gastoDe(r));
+  const dados = Object.entries(porUF).map(([uf, v]) => ({ uf, v: mediana(v), n: v.length })).sort((a, b) => b.v - a.v);
+  const bh = 14, gap = 4, m = { t: 4, r: 70, b: 22, l: 30 }, iw = W - m.l - m.r, H = m.t + m.b + dados.length * (bh + gap);
+  const svg = svgIn(host, W, H), g = el("g", { transform: `translate(${m.l},${m.t})` }, svg);
+  if (!dados.length) return;
+  const vmax = Math.max(...dados.map(d => d.v)), xt = niceTicks(0, vmax, 4), X = v => v / xt[xt.length - 1] * iw;
+  for (const v of xt) { el("line", { class: "gridline", x1: X(v), x2: X(v), y1: 0, y2: dados.length * (bh + gap) }, g);
+    txt(g, X(v), dados.length * (bh + gap) + 14, fmtK(v), { class: "lbl", "text-anchor": "middle" }); }
+  const extremos = new Set([dados[0].uf, dados[dados.length - 1].uf, S.uf]);
+  dados.forEach((d, i) => { const y = i * (bh + gap), dest = d.uf === S.uf;
+    txt(g, -6, y + bh - 3, d.uf, { class: "lbl", "text-anchor": "end", fill: dest ? "var(--ink)" : "var(--muted)", "font-weight": dest ? 600 : 400 });
+    const w = Math.max(2, X(d.v));
+    el("path", { d: `M0 ${y} H${w - 4} Q${w} ${y} ${w} ${y + 4} V${y + bh - 4} Q${w} ${y + bh} ${w - 4} ${y + bh} H0 Z`, fill: dest ? "var(--s2)" : "var(--s1)" }, g);
+    if (extremos.has(d.uf)) txt(g, w + 6, y + bh - 3, brl(d.v), { class: "lbl", fill: "var(--ink-2)" });
+    const hit = el("rect", { x: -m.l, y: y - gap / 2, width: W, height: bh + gap, fill: "transparent" }, g);
+    hit.addEventListener("pointermove", ev => mostrarTip(ev, d.uf, [["Gasto por aluno mediano", brl(d.v)], [S.camada === "mun" ? "Municípios" : "Unidades", n0(d.n)]]));
+    hit.addEventListener("pointerleave", esconderTip); });
+  document.getElementById("rkSub").textContent = S.camada === "mun"
+    ? `Mediana entre os municípios de cada UF · Saeb ${S.ano}. A UF em destaque aparece em laranja.`
+    : `Valor de cada UF · Saeb ${S.ano} · versão ${S.versao} do gasto estadual. A UF em destaque aparece em laranja.`;
+}
+
+// ---------- cobertura ----------
+function cobertura() {
+  const t = document.getElementById("cob"); t.replaceChildren();
+  const head = ["Edição", S.camada === "mun" ? "Com rede" : "UFs", "Com nota", "Com gasto", "Nota e gasto", "% dos com nota"];
+  if (S.camada === "mun") head.push("Extremos");
+  const tr = document.createElement("tr"); head.forEach(h => { const th = document.createElement("th"); th.textContent = h; th.style.cursor = "default"; tr.appendChild(th); });
+  const thead = document.createElement("thead"); thead.appendChild(tr); t.appendChild(thead);
+  const tb = document.createElement("tbody");
+  for (const a of ANOS) { let f = fatia(a); if (S.uf !== "BR") f = f.filter(r => r.uf === S.uf);
+    const nota = f.filter(r => r.mt != null).length, gasto = f.filter(r => gastoDe(r) != null).length,
+      ambos = f.filter(r => r.mt != null && gastoDe(r) != null).length;
+    const cel = [String(a), n0(f.length), n0(nota), n0(gasto), n0(ambos), pct(nota ? ambos / nota : null)];
+    if (S.camada === "mun") cel.push(n0(f.filter(r => r.extremo && r.mt != null).length));
+    const row = document.createElement("tr"); if (a === S.ano) row.style.fontWeight = 600;
+    cel.forEach(c => { const td = document.createElement("td"); td.textContent = c; row.appendChild(td); }); tb.appendChild(row); }
+  t.appendChild(tb);
+  document.getElementById("cobSub").textContent = `${S.uf === "BR" ? "Brasil" : S.uf} · ${ETAPAS[S.camada].find(e => e[0] === S.etapa)[1]}. "% dos com nota" = parcela das unidades com nota que também têm gasto por aluno.`
+    + (S.camada === "mun" ? ` "Extremos" = unidades com nota cujo gasto por aluno foi marcado como extremo.` : "");
+}
+
+// ---------- tabela ----------
+let ordem = { col: "gasto", dir: -1 };
+function tabela() {
+  const t = document.getElementById("tabela"), q = document.getElementById("busca").value.trim().toLowerCase();
+  let rows = fatia().filter(r => r.mt != null || gastoDe(r) != null);
+  if (S.uf !== "BR") rows = rows.filter(r => r.uf === S.uf);
+  if (q) rows = rows.filter(r => (r.nome + " " + r.uf).toLowerCase().includes(q));
+  const cols = S.camada === "mun"
+    ? [["nome", "Município", r => r.nome, "l"], ["uf", "UF", r => r.uf, "l"], ["mat", "Matrículas", r => r.mat], ["gasto", "Gasto por aluno", gastoDe],
+       ["mt", "Matemática", r => r.mt], ["lp", "Português", r => r.lp], ["ideb", "IDEB", r => r.ideb], ["flag", "Observação", r => r.extremo ? 1 : 0, "l"]]
+    : [["uf", "UF", r => r.uf, "l"], ["mat", "Matrículas", r => r.mat], ["gasto", "Gasto por aluno", gastoDe],
+       ["mt", "Matemática", r => r.mt], ["lp", "Português", r => r.lp], ["ideb", "IDEB", r => r.ideb], ["flag", "Observação", r => r.supAusente ? 1 : 0, "l"]];
+  const c = cols.find(k => k[0] === ordem.col) || cols[0], get = c[2];
+  rows.sort((a, b) => { const x = get(a), y = get(b); if (x == null) return 1; if (y == null) return -1;
+    return (typeof x === "string" ? x.localeCompare(y, "pt-BR") : x - y) * ordem.dir; });
+  t.replaceChildren();
+  const thead = document.createElement("thead"), tr = document.createElement("tr");
+  for (const [k, rot, , cls] of cols) { const th = document.createElement("th"); th.textContent = rot; if (cls) th.className = cls;
+    th.tabIndex = 0; if (k === ordem.col) th.setAttribute("aria-sort", ordem.dir > 0 ? "ascending" : "descending");
+    const sortBy = () => { ordem = { col: k, dir: ordem.col === k ? -ordem.dir : (cls ? 1 : -1) }; tabela(); };
+    th.addEventListener("click", sortBy); th.addEventListener("keydown", e => { if (e.key === "Enter") sortBy(); }); tr.appendChild(th); }
+  thead.appendChild(tr); t.appendChild(thead);
+  const tb = document.createElement("tbody"), LIM = 300;
+  for (const r of rows.slice(0, LIM)) { const row = document.createElement("tr");
+    for (const [k, , f, cls] of cols) { const td = document.createElement("td"); if (cls) td.className = cls;
+      if (k === "flag") { const v = f(r); if (v) { const s = document.createElement("span"); s.className = "flag";
+          s.textContent = S.camada === "mun" ? "gasto extremo" : "sem Ensino Superior"; td.appendChild(s); } }
+      else { const v = f(r); td.textContent = k === "gasto" ? brl(v) : (k === "mat" ? n0(v) : (typeof v === "number" ? n1(v) : (v ?? "—"))); }
+      row.appendChild(td); }
+    tb.appendChild(row); }
+  t.appendChild(tb);
+  document.getElementById("tbSub").textContent = `${S.camada === "mun" ? "Municípios" : "UFs"} · Saeb ${S.ano} · clique no cabeçalho para ordenar`;
+  document.getElementById("tbNote").textContent = rows.length > LIM ? `Mostrando ${LIM} de ${n0(rows.length)} linhas. Use a busca ou o filtro de UF para ver as demais.` : `${n0(rows.length)} linhas.`;
+}
+
+// ---------- controles ----------
+function preencherSelects() {
+  const et = document.getElementById("etapa"); et.replaceChildren();
+  for (const [v, r] of ETAPAS[S.camada]) { const o = new Option(r, v); et.appendChild(o); }
+  if (!ETAPAS[S.camada].some(e => e[0] === S.etapa)) S.etapa = ETAPAS[S.camada][0][0];
+  et.value = S.etapa;
+  const an = document.getElementById("ano"); if (!an.options.length) ANOS.forEach(a => an.appendChild(new Option(String(a), a)));
+  an.value = S.ano;
+  const uf = document.getElementById("uf"); uf.replaceChildren(); uf.appendChild(new Option("Brasil (nenhuma)", "BR"));
+  UFS.filter(u => S.camada === "est" || u !== "DF").forEach(u => uf.appendChild(new Option(u, u)));
+  if (S.camada === "mun" && S.uf === "DF") S.uf = "BR";
+  uf.value = S.uf;
+  document.getElementById("versaoBox").classList.toggle("hidden", S.camada !== "est");
+  document.getElementById("extBox").classList.toggle("hidden", S.camada !== "mun");
+}
+function render() { kpis(); scatter(); evolucao(); ranking(); cobertura(); tabela(); }
+
+document.querySelectorAll("#camada button").forEach(b => b.addEventListener("click", () => {
+  S.camada = b.dataset.v; document.querySelectorAll("#camada button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  preencherSelects(); render(); }));
+document.getElementById("etapa").addEventListener("change", e => { S.etapa = e.target.value; render(); });
+document.getElementById("ano").addEventListener("change", e => { S.ano = +e.target.value; render(); });
+document.getElementById("uf").addEventListener("change", e => { S.uf = e.target.value; render(); });
+document.getElementById("versao").addEventListener("change", e => { S.versao = e.target.value; render(); });
+document.getElementById("ext").addEventListener("change", e => { S.ocultarExt = e.target.checked; render(); });
+document.getElementById("busca").addEventListener("input", tabela);
+let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(render, 120); });
+
+// cabeçalho
+const chips = document.getElementById("chips");
+const nMun = new Set(mun.filter(r => r.mt != null).map(r => r.cod)).size;
+for (const [k, v] of [["Municípios com nota", n0(nMun)], ["UFs", "27"], ["Edições do Saeb", "2017–2025"],
+    ["Gasto em", "R$ de 2025"], ["Gerado em", D.meta.gerado_em.split("-").reverse().join("/")], ["Versão do código", D.meta.commit]]) {
+  const c = document.createElement("span"); c.className = "chip"; const b = document.createElement("b"); b.textContent = v;
+  c.append(k + ": ", b); chips.appendChild(c); }
+const pend = document.getElementById("pend");
+pend.append(Object.assign(document.createElement("b"), { textContent: "Decisões ainda em validação com a orientadora: " }),
+  "IDHM do ano anterior como controle; tratamento da ausência da linha de Ensino Superior no gasto estadual (versões A e B ao lado); critério para os gastos por aluno extremos (aqui só marcados, nada foi excluído).");
+
+preencherSelects(); render();
+})();
+</script>
+</body>
+</html>

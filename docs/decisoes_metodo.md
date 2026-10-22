@@ -33,6 +33,9 @@ Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada b
 | Censo Escolar, matrículas | ✅ `Extract_Censo_Matriculas.py` | ✅ `Transform_Matriculas.py` | `matriculas_{municipal,estadual}_transformado` |
 | Censo Escolar, infraestrutura | ✅ | ✅ `Transform_Infraestrutura.py` (ver T4) | `censo_escolar_transformado` |
 | **Painéis** | — | ✅ `Montar_Paineis.py` (ver P1) | `data/processed/painel_{municipal,estadual}` |
+| **Dashboard de conferência** | — | ✅ `src/Visualizacao/Gerar_Dashboard_HTML.py` | `relatorios/dashboard_conferencia.html` |
+
+O dashboard de conferência (2026-10-22) é um HTML autocontido, que abre offline, gerado a partir dos painéis. Ele é só descritivo: gasto por aluno do mesmo ano do Saeb, mediana do gasto e média simples das notas entre as unidades, sem nenhum modelo estimado. Ele não muda nenhum resultado.
 | Saeb/IDEB | ✅ `Extract_SAEB.py` | ✅ `Transform_SAEB.py` | `saeb_{municipal,estadual}_transformado` |
 | IDHM por UF | ✅ | ✅ (com t−1, ver C1) | `idhm_transformado` |
 | IBGE, Censo 2022 (alfabetização) | ✅ | ✅ | `ibge_transformado` |
