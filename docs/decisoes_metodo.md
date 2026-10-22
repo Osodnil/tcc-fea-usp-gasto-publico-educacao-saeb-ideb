@@ -2,7 +2,7 @@
 
 Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada base e das decisões tomadas para contorná-los. Serve de base para a seção de Método e para as reuniões com a orientadora.
 
-- **Última atualização:** 2026-10-21
+- **Última atualização:** 2026-10-22
 - **Fontes deste registro:** código e dados do repositório, os testes em `src/Testes`, os diagnósticos em `data/interim/diagnosticos` e as instruções do projeto. Os números marcados com † foram recalculados nesta data a partir dos parquets em `data/interim`; os demais vêm dos testes ou das instruções, e não foram reverificados.
 - **Status:** ✅ fechada · 🟡 provisória (validar com a orientadora) · ⚠️ problema em aberto
 
@@ -28,17 +28,16 @@ Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada b
 
 | Base | Extract | Transform | Saída |
 |---|---|---|---|
-| SIOPE, dados gerais | ✅ `Extract_SIOPE.py` | pendente | `siope_{ano}_extraido` |
-| SIOPE, por subfunção | ✅ `Extract_SIOPE_Funcao.py` (ver T1) | pendente | `siope_funcao_{ano}_extraido` |
-| SICONFI estados | ✅ `Extract_SICONFI_Estados.py` | pendente | `siconfi_estados_funcao12` |
-| Censo Escolar, matrículas | ✅ `Extract_Censo_Matriculas.py` | pendente | `censo_matriculas_{ano}` |
+| SIOPE (geral + subfunção) | ✅ `Extract_SIOPE.py`, `Extract_SIOPE_Funcao.py` (ver T1) | ✅ `Transform_SIOPE.py` | `siope_municipal_transformado` |
+| SICONFI estados | ✅ `Extract_SICONFI_Estados.py` | ✅ `Transform_SICONFI.py` | `siconfi_estadual_transformado` |
+| Censo Escolar, matrículas | ✅ `Extract_Censo_Matriculas.py` | ✅ `Transform_Matriculas.py` | `matriculas_{municipal,estadual}_transformado` |
 | Censo Escolar, infraestrutura | ✅ | ✅ | `censo_escolar_transformado` |
 | Saeb/IDEB | ✅ `Extract_SAEB.py` | ✅ `Transform_SAEB.py` | `saeb_{municipal,estadual}_transformado` |
 | IDHM por UF | ✅ | ✅ (com t−1, ver C1) | `idhm_transformado` |
 | IBGE, Censo 2022 (alfabetização) | ✅ | ✅ | `ibge_transformado` |
 | IPCA | ✅ `Extract_IPCA.py` | não precisa | `ipca_deflator_anual` |
 
-A validação de 2026-10-21 concluiu que os Extracts estão completos para a pergunta. O próximo passo é o Transform das bases de gasto e das matrículas, seguido do merge.
+A validação de 2026-10-21 concluiu que os Extracts estão completos para a pergunta. Em 2026-10-22, todas as bases foram tratadas. O próximo passo é o merge: o painel municipal e o painel estadual, com o gasto por aluno.
 
 ---
 
@@ -85,11 +84,25 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 ### G4. Gasto estadual = função 12 − subfunção 12.364 ✅ · ⚠️ ausência da 12.364
 - **Problema:** a função 12 dos estados inclui o Ensino Superior (universidades estaduais), que não se relaciona com o Saeb.
 - **Decisão:** usar a função 12 paga menos a 12.364 paga.
-- **Problema em aberto:** em alguns pares UF/ano, a linha 12.364 não aparece†. RN e MS não a têm em 11 dos 12 anos, RS em 6, e AC e SE em 1. Há duas leituras possíveis:
+- **Problema em aberto:** em alguns pares UF/ano, a linha 12.364 não aparece†. Entre 2014 e 2025:
+  - **RO:** a linha não aparece em nenhum ano (12 de 12).
+  - **AC e SE:** a linha só existe em 2025 (falta em 11 de 12).
+  - **RS:** falta de 2018 a 2023 (6 anos).
+  - **MS** (2015) e **RN** (2016): falta só em um ano anterior a 2017, sem efeito na janela de análise.
+- **Correção do registro (2026-10-22):** a versão anterior deste item dizia que RN e MS não tinham a linha em 11 de 12 anos, e AC e SE em 1. A leitura estava invertida: aquele diagnóstico contava os anos em que a linha existe. Além disso, RO tinha ficado de fora porque não tem a linha em ano nenhum.
+- **Ordem de grandeza:** onde a linha existe, o Ensino Superior pesa de 0% a 23% da função 12 (mediana de 2,2%; em 2023, PR 19%, SC 15%, BA, SP e CE perto de 10%)†.
+- **Duas leituras possíveis:**
   - **(a) Ausência = sem gasto com Ensino Superior nessa subfunção,** e a dedução é zero.
   - **(b) Ausência = dado faltante,** e o par UF/ano sai da amostra ou é imputado.
-- **Riscos:** a regra geral do projeto ("ausência não é zero") aponta para (b), mas no DCA é comum que uma conta sem movimento simplesmente não seja publicada, o que favorece (a). E se o estado registra o Ensino Superior em outra subfunção, nenhuma das duas leituras corrige o problema.
-- **Encaminhamento:** levar à orientadora. Antes disso, conferir no DCA original de RN e MS se existe gasto com Ensino Superior em outra subfunção.
+- **Riscos:** a regra geral do projeto ("ausência não é zero") aponta para (b), mas no DCA é comum que uma conta sem movimento simplesmente não seja publicada, o que favorece (a). Para AC, RO e SE, a hipótese de que o estado não mantém universidade estadual nesses anos favoreceria (a), mas ainda não foi verificada. No RS, a linha existe antes e depois da lacuna de 2018–2023, o que sugere dado faltante ou classificação em outra conta.
+- **Implementação provisória:** `Transform_SICONFI.py` gera as duas versões, `GASTO_BASICA_A_*` e `GASTO_BASICA_B_*`, além da marca `SUP364_AUSENTE`. A escolha fica para depois da reunião, sem refazer nada.
+- **Encaminhamento:** levar à orientadora. Antes disso, conferir no DCA de RS (2018–2023) se o Ensino Superior foi lançado em outra subfunção.
+
+### G4b. Total da função 12 maior que a soma das subfunções listadas ⚠️ (achado de 2026-10-22)
+- **Evidência:** no SICONFI, a soma das subfunções publicadas (12.122, 12.361, …, 12.999) fica abaixo do total "12 - Educação" em vários pares UF/ano. A razão vai de 0,61 a 1,00, com mediana de 0,994; no AC, por exemplo, fica entre 0,67 e 0,75†.
+- **Leitura provável:** a função 12 inclui despesas em subfunções de outras funções, como previdência de inativos, que o Anexo I-E não detalha dentro da função 12. Isso não foi verificado.
+- **Efeito:** o gasto estadual usado (total da função 12 menos 12.364) pode incluir gastos que não chegam à sala de aula, com peso diferente entre os estados.
+- **Encaminhamento:** registrar como limitação. Se houver tempo, testar a variante "soma das subfunções da educação básica" (361 + 362 + 365 + 366 + 367 + 368 + 122) como sensibilidade.
 
 ### G5. Subfunção 361 do SIOPE: identificar pelo código, não pelo texto ✅
 - **Problema:** o rótulo muda ao longo do tempo†. Até 2023 ele é "361 - Ensino Fundamental"; em 2024 e 2025, só "361". Também há linhas "TOTAL …" (de 2017 a 2023), que somariam o mesmo gasto duas vezes, e um rótulo atípico ("SubFunção 361 - Fonte 01 - Aplic. 110": uma linha, SP 2017, R$ 146 mil).
@@ -112,9 +125,15 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Decisão:** deflacionar pelo IPCA médio anual (SIDRA, tabela 1737), com base 2025 = 1.
 - **Verificação:** o deflator tem os 12 meses de todos os anos de 2013 a 2025†.
 
-### G9. Código de município com 7 dígitos ✅
+### G9. Código de município com 7 dígitos ✅ (revisada em 2026-10-22)
 - **Problema:** o SIOPE usa 6 dígitos, e as demais bases usam os 7 do IBGE.
-- **Decisão:** converter pelo dígito verificador (pesos 1,2,1,2,1,2; somar os algarismos de cada produto; verificador = (10 − soma mod 10) mod 10). A função `ibge7()` já está implementada em `Teste8_Reconciliacao.py` e deve ir para o Transform do SIOPE.
+- **Decisão original:** converter pelo dígito verificador (pesos 1,2,1,2,1,2; somar os algarismos de cada produto; verificador = (10 − soma mod 10) mod 10).
+- **Problema encontrado no Transform:** 9 municípios têm código oficial do IBGE que não segue essa regra†: Bom Princípio do Piauí, Brejo do Piauí e Canavieira (PI), Quixaba (PE), Cônego Marinho e Ponto Chique (MG), Coronel Barros (RS), Buriti de Goiás e Buritinópolis (GO). Exemplo: para Brejo do Piauí, a fórmula daria 2201986, mas o código oficial é 2201988. Pela fórmula, esses 9 municípios se perderiam no cruzamento com o Saeb e o Censo, sem nenhum aviso.
+- **Decisão revisada:** converter por consulta à tabela de códigos oficiais (Censo 2022 mais Censo Escolar 2017–2025), pelos 6 primeiros dígitos, que são únicos. A fórmula fica só como último recurso, com a marca `CODIGO_POR_FORMULA`. Hoje nenhum código precisa dela, e todos os códigos convertidos existem no IBGE com a mesma UF† (`Transform_SIOPE.py`).
+
+### G11. Gasto 361 igual a zero ⚠️
+- **Evidência:** Rio Grande da Serra (SP) declara gasto 361 igual a zero em 2018 e 2020, embora o gasto total em educação seja de ~R$ 15 milhões nesses anos†. Provavelmente o gasto foi classificado em outra subfunção.
+- **Encaminhamento:** no painel, tratar o gasto por aluno desses dois pares município/ano como faltante, e não como zero. Registrar o caso.
 
 ### G10. O Distrito Federal não existe como município no SIOPE ✅
 - **Evidência:** há zero linhas municipais para o DF no SIOPE (2017 e 2025)†, conforme a sondagem em `Sondagem_SIOPE.py`.
@@ -133,6 +152,14 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 ### M2. Mudança de layout do Censo Escolar em 2025 ✅
 - **Problema:** até 2024, as matrículas vêm num arquivo único (`microdados_ed_basica`). Em 2025 elas passaram a vir separadas, em `tabela_escola` e `tabela_matricula`.
 - **Decisão:** o extrator trata os dois layouts e, em 2025, junta as tabelas por `CO_ENTIDADE` (`Teste5_SIOPE.py` / `Extract_Censo_Matriculas.py`).
+
+### M4. Escola sem UF no Censo Escolar 2025 ✅ (2026-10-22)
+- **Problema:** uma escola de Uruguaiana (RS, 4319901), com 28 matrículas, veio sem `SG_UF` em 2025. Ela criava uma segunda linha para o município e também ficava de fora da soma estadual.
+- **Decisão:** a UF passa a sair dos dois primeiros dígitos do código do município, e as matrículas são somadas de novo por município × rede × ano (`Transform_Matriculas.py`).
+
+### M5. Rede municipal sem matrícula no Fundamental ✅ (2026-10-22)
+- **Evidência:** há 88 pares município/ano com rede municipal, mas zero matrícula no Fundamental† (por exemplo, municípios que só oferecem Educação Infantil).
+- **Decisão:** nesses casos, o gasto por aluno fica indefinido (faltante), sem divisão por zero.
 
 ### M3. Queda das matrículas estaduais do Ensino Médio em 2025 🟡
 - **Problema:** `QT_MAT_MED` estadual cai 6,6% em 2025 (instruções do projeto; investigado em `Teste7_SINCOFI.py`). No total, a educação básica estadual cai de 14,05 para 13,33 milhões entre 2024 e 2025 (−5,1%)†.
@@ -217,7 +244,7 @@ Falar sempre em associação e eficiência relativa.
 1. Sem 2021 (S5).
 2. Sem 2025 na camada estadual (M3).
 3. IDHM do mesmo ano, com 2024 repetido em 2025 (C1).
-4. Tratamento alternativo da 12.364 (G4).
+4. Tratamento alternativo da 12.364 (G4) e gasto estadual pela soma das subfunções da educação básica (G4b).
 
 ---
 
@@ -246,7 +273,7 @@ Falar sempre em associação e eficiência relativa.
 ## 9. Para levar à orientadora
 
 1. **C1:** IDHM com defasagem t−1.
-2. **G4:** tratamento da ausência da 12.364 (RN e MS em 11 de 12 anos).
+2. **G4:** tratamento da ausência da 12.364 (RO em todos os anos, AC e SE até 2024, RS em 2018–2023). **G4b:** o total da função 12 inclui gastos fora das subfunções listadas.
 3. **S4:** manter Anos Finais na camada municipal, com a amostra selecionada?
 4. **E3:** recorte geográfico (Brasil ou SP).
 5. **M3 e S5:** confirmar os testes de sensibilidade (sem 2021, sem 2025 estadual).

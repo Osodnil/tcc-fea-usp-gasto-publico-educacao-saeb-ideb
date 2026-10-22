@@ -1,11 +1,11 @@
 # Resumo para a reunião com a orientadora
 
-*Versão curta de `decisoes_metodo.md` (os códigos entre colchetes remetem ao registro completo). Atualizado em 2026-10-21.*
+*Versão curta de `decisoes_metodo.md` (os códigos entre colchetes remetem ao registro completo). Atualizado em 2026-10-22.*
 
 ## 1. Onde estamos
 
 - **Extração concluída.** Todas as bases necessárias para a pergunta já estão extraídas e validadas: gasto (SIOPE e SICONFI), matrículas (Censo Escolar), desempenho (Saeb/IDEB), controles (IDHM, alfabetização e infraestrutura) e o deflator (IPCA).
-- **Tratamento em andamento.** Saeb e IDHM já estão tratados. Faltam as bases de gasto e de matrículas e depois o cruzamento de todas elas. Em seguida vem a análise.
+- **Tratamento concluído.** Todas as bases estão tratadas, com o gasto em reais de 2025. Falta o cruzamento das bases (gasto por aluno × desempenho × controles). Em seguida vem a análise.
 - **O desenho continua o mesmo:** duas camadas analisadas separadamente, no período de 2017 a 2025 (cinco edições do Saeb).
 
 | | Municípios | Estados |
@@ -24,6 +24,8 @@
    → O ano fica na análise, com um teste de sensibilidade sem ele.
 5. **O IDHM de 2025 ainda não foi publicado [C1].** A série do PNUD termina em 2024.
    → Uso do IDHM do ano anterior em todas as edições (ver item 3.1).
+6. **Códigos de município fora do padrão [G9].** Nove municípios têm código oficial do IBGE que não segue a regra de cálculo usada para converter o código do SIOPE, e teriam sumido do cruzamento sem aviso.
+   → A conversão agora consulta a tabela oficial de códigos, e todos os municípios casam.
 
 ## 3. Decisões que precisam do seu aval
 
@@ -33,10 +35,11 @@
 - **Pergunta:** a defasagem de um ano é aceitável como controle de contexto?
 
 ### 3.2 Gasto estadual sem o Ensino Superior: o que fazer quando a linha não existe [G4]
-- **Situação:** o SICONFI não traz a linha do Ensino Superior em alguns estados (RN e MS em quase todos os anos, RS em metade deles).
+- **Situação:** o SICONFI não traz a linha do Ensino Superior em quatro estados: RO em todos os anos, AC e SE até 2024 e RS de 2018 a 2023. Onde a linha existe, o Ensino Superior costuma pesar pouco (mediana de 2% do gasto em educação), mas chega a 15%–19% em SC e PR.
 - **Opção (a):** tratar como "sem gasto com Ensino Superior" e não descontar nada. Mantém as 27 UFs.
 - **Opção (b):** tratar como dado faltante. Perde observações em uma amostra que já é pequena.
-- **Recomendação:** (a), depois de conferir no relatório original desses estados se o Ensino Superior está lançado em outra conta.
+- **Recomendação:** (a) para AC, RO e SE, onde a ausência parece real (hipótese ainda não verificada). Para o RS, conferir antes no relatório original, porque a linha existe antes e depois da lacuna. As duas versões já estão calculadas, então a escolha não exige refazer nada.
+- **Ponto relacionado [G4b]:** o total do gasto estadual em educação inclui despesas que não aparecem nas subfunções detalhadas (provavelmente inativos), com peso diferente entre os estados. A proposta é registrar como limitação e testar como sensibilidade o gasto calculado só pelas subfunções da educação básica.
 - **Pergunta:** de acordo?
 
 ### 3.3 Anos Finais na camada municipal [S4]
