@@ -96,6 +96,12 @@ def transformar_idhm() -> pl.DataFrame:
     # A linha "Brasil" fica com SG_UF nulo de propósito — não é uma UF,
     # é o benchmark nacional; mantemos a linha para comparações futuras.
 
+    # --- Defasagem t-1: o IDHM do ano t controla o Saeb do ano t+1 ---
+    # A série do PNUD termina em 2024, então o Saeb 2025 só tem controle
+    # com defasagem; aplicamos a mesma regra a todas as edições. O merge
+    # usa ANO_REF_SAEB (Int32, como o ANO do saeb_*_transformado).
+    resultado = resultado.with_columns((pl.col("ANO") + 1).cast(pl.Int32).alias("ANO_REF_SAEB"))
+
     return resultado
 
 
@@ -113,3 +119,14 @@ if __name__ == "__main__":
     print(f"\n[INFO] Linhas sem SG_UF (esperado: só 'Brasil') -> {sem_sigla['territorialidades'].unique().to_list()}")
 
     print(df.sort(["territorialidades", "ANO"]).head(15))
+
+    # Cada edição do Saeb precisa do IDHM do ano anterior para as 27 UFs
+    edicoes_saeb = [2017, 2019, 2021, 2023, 2025]
+    cobertura = (
+        df.filter(pl.col("SG_UF").is_not_null() & pl.col("ANO_REF_SAEB").is_in(edicoes_saeb))
+        .group_by("ANO_REF_SAEB")
+        .agg(pl.col("SG_UF").filter(pl.col("IDHM").is_not_null()).n_unique().alias("ufs_com_idhm"))
+    )
+    faltando = sorted(set(edicoes_saeb) - set(cobertura.filter(pl.col("ufs_com_idhm") == 27)["ANO_REF_SAEB"].to_list()))
+    print(f"\n[INFO] UFs com IDHM t-1 por edição do Saeb:\n{cobertura.sort('ANO_REF_SAEB')}")
+    print(f"[INFO] Edições sem as 27 UFs: {faltando or 'nenhuma'}")
