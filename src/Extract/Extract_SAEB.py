@@ -33,6 +33,8 @@ MAPA_UF = {
     "São Paulo": "SP", "Paraná": "PR", "Santa Catarina": "SC",
     "Rio Grande do Sul": "RS", "Mato Grosso do Sul": "MS", "Mato Grosso": "MT",
     "Goiás": "GO", "Distrito Federal": "DF",
+    # a planilha de regiões/UFs abrevia estes três nomes
+    "M. G. do Sul": "MS", "R. G. do Norte": "RN", "R. G. do Sul": "RS",
 }
 
 
