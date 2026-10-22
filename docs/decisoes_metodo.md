@@ -31,13 +31,14 @@ Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada b
 | SIOPE (geral + subfunção) | ✅ `Extract_SIOPE.py`, `Extract_SIOPE_Funcao.py` (ver T1) | ✅ `Transform_SIOPE.py` | `siope_municipal_transformado` |
 | SICONFI estados | ✅ `Extract_SICONFI_Estados.py` | ✅ `Transform_SICONFI.py` | `siconfi_estadual_transformado` |
 | Censo Escolar, matrículas | ✅ `Extract_Censo_Matriculas.py` | ✅ `Transform_Matriculas.py` | `matriculas_{municipal,estadual}_transformado` |
-| Censo Escolar, infraestrutura | ✅ | ✅ | `censo_escolar_transformado` |
+| Censo Escolar, infraestrutura | ✅ | ✅ `Transform_Infraestrutura.py` (ver T4) | `censo_escolar_transformado` |
+| **Painéis** | — | ✅ `Montar_Paineis.py` (ver P1) | `data/processed/painel_{municipal,estadual}` |
 | Saeb/IDEB | ✅ `Extract_SAEB.py` | ✅ `Transform_SAEB.py` | `saeb_{municipal,estadual}_transformado` |
 | IDHM por UF | ✅ | ✅ (com t−1, ver C1) | `idhm_transformado` |
 | IBGE, Censo 2022 (alfabetização) | ✅ | ✅ | `ibge_transformado` |
 | IPCA | ✅ `Extract_IPCA.py` | não precisa | `ipca_deflator_anual` |
 
-A validação de 2026-10-21 concluiu que os Extracts estão completos para a pergunta. Em 2026-10-22, todas as bases foram tratadas. O próximo passo é o merge: o painel municipal e o painel estadual, com o gasto por aluno.
+A validação de 2026-10-21 concluiu que os Extracts estão completos para a pergunta. Em 2026-10-22, todas as bases foram tratadas e cruzadas nos painéis municipal e estadual. O próximo passo é a análise exploratória e, depois, as estimações.
 
 ---
 
@@ -221,7 +222,7 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 
 ### C2. Alfabetização: Censo 2022, estática ✅
 - **Decisão:** usar a taxa de alfabetização de 15 anos ou mais do Censo Demográfico 2022, por município, como controle fixo no tempo. Com efeitos fixos de município, ela só entra em análises sem efeito fixo, como a comparação entre municípios.
-- **Problema:** o município `5101837` aparece no Censo Escolar e no Saeb a partir de 2025 e não existe no Censo 2022†. Provavelmente é um município instalado depois de 2022 (não confirmado), e ficará sem esse controle.
+- **Problema:** o município `5101837`, Boa Esperança do Norte-MT (nome que vem do Saeb), aparece no Censo Escolar e no Saeb a partir de 2025 e não existe no Censo 2022†. Provavelmente foi instalado depois de 2022 (não confirmado). Ele fica sem esse controle e também não aparece no SIOPE até 2025. É uma única linha do painel.
 
 ### C3. Infraestrutura: Censo Escolar ✅
 - **Decisão:** usar as proporções de escolas com biblioteca, laboratórios, internet, água potável etc., por município × rede × ano, de 2015 a 2025 (`censo_escolar_transformado`).
@@ -245,6 +246,40 @@ Falar sempre em associação e eficiência relativa.
 2. Sem 2025 na camada estadual (M3).
 3. IDHM do mesmo ano, com 2024 repetido em 2025 (C1).
 4. Tratamento alternativo da 12.364 (G4) e gasto estadual pela soma das subfunções da educação básica (G4b).
+5. Com e sem os valores extremos de gasto por aluno (A5).
+
+### A5. Valores extremos de gasto por aluno: marcar, não excluir 🟡 (2026-10-22)
+- **Evidência:** a distribuição do gasto municipal por aluno (L0, linhas com nota de AI) tem mediana de R$ 11,2 mil e intervalo de 1% a 99% entre R$ 5,3 mil e R$ 25,6 mil†. Nas pontas, porém, aparecem valores implausíveis:
+  - **Muito baixos:** Cáceres-MT 2021 (R$ 210), Carlópolis-PR 2023 (R$ 305), São Luís-MA 2017 (R$ 1,8 mil). São Luís 2017 já tinha aparecido como caso extremo na reconciliação com o SICONFI (G1).
+  - **Muito altos:** redes com poucas matrículas, como Queluzito-MG 2023 (73 alunos, R$ 64,5 mil).
+  - 131 dos 50 mil pares município/ano têm o gasto 361 multiplicado por mais de 3 ou dividido por mais de 3 de um ano para o outro†.
+- **Decisão provisória:** o painel mantém todos os valores e marca com `GASTO_EXTREMO_L{k}` os que ficam fora do intervalo de 0,5% a 99,5% do ano (225 linhas de AI, 174 delas com nota). Isso é cerca de 0,7% da amostra com nota (lista em `diagnosticos/gasto_aluno_extremos_municipal.csv`).
+- **A decidir na análise:** excluir os marcados, winsorizar ou usar o logaritmo do gasto. A sugestão é usar o logaritmo do gasto por aluno na especificação principal e rodar a análise com e sem os marcados como sensibilidade.
+
+---
+
+## 7b. Painéis (cruzamento das bases)
+
+### P1. Estrutura dos painéis ✅ (2026-10-22)
+- **Script:** `src/Transform/Montar_Paineis.py`. As saídas ficam em `data/processed/`.
+- **Painel municipal (`painel_municipal.parquet`):** uma linha por município × etapa (AI, AF) × edição do Saeb. São 46.815 linhas e 40 colunas, com chave única†.
+  - **Base:** a lista de municípios com rede municipal no Saeb.
+  - **Colunas:** notas e IDEB, matrículas, gasto 361, gasto por aluno nas defasagens 0, 1, 2 e 4 anos, a marca de valor extremo, alfabetização e população (Censo 2022), região, IDHM da UF defasado (C1) e a infraestrutura da rede municipal no mesmo ano.
+- **Painel estadual (`painel_estadual.parquet`):** uma linha por UF × etapa (AF, EM) × edição. São 270 linhas e 37 colunas, com chave única†.
+  - **Colunas:** gasto por aluno nas versões A e B (G4) e nas mesmas defasagens, alfabetização da UF (soma dos municípios), IDHM defasado e infraestrutura da rede estadual (média municipal ponderada pelo número de escolas).
+- **Regras do gasto por aluno:**
+  - O gasto do ano t−k é dividido pelas matrículas do próprio ano t−k.
+  - Gasto 361 igual a zero (G11) ou matrícula igual a zero (M5) viram nulo.
+  - Os controles só ficam nulos para Boa Esperança do Norte-MT (5101837), que está fora do Censo 2022, ver C2.
+
+### P2. Cobertura das defasagens ✅
+- **Municípios:** o gasto começa em 2017. Por isso, L1 e L2 só existem a partir do Saeb 2019 e L4 a partir de 2021. Com nota e gasto L0, o painel tem de 4.750 a 5.306 municípios em AI e de 2.629 a 3.310 em AF, conforme o ano†.
+- **Estados:** o gasto do SICONFI começa em 2014, mas as matrículas extraídas começam em 2017. Na prática, as defasagens estaduais têm a mesma limitação das municipais.
+
+### P3. Matrículas de 2015–2016 para estender as defasagens estaduais 🟡
+- **Situação:** com as matrículas de 2015 e 2016, o Saeb 2017 ganharia L1 e L2 na camada estadual, e o de 2019 ganharia L4. Os microdados do Censo de 2015 e 2016 já estão na pasta de brutos do repositório antigo. Não existe Censo de 2014 na pasta, então o L4 de 2017 não tem como ser calculado.
+- **Custo:** rodar o `Extract_Censo_Matriculas.py` para 2015 e 2016, depois de copiar os brutos.
+- **Decisão:** pendente. Vale a pena só se a análise estadual usar defasagens.
 
 ---
 
@@ -261,7 +296,13 @@ Falar sempre em associação e eficiência relativa.
 ### T2. Brutos fora do repositório ✅ (contornado)
 - **Situação:** os brutos (~35 GB) estão em `ENEM_Microdata_Analysis/data/raw`. Neste repositório, só a pasta do IDEB foi copiada.
 - **Consequência:** os Transforms leem `data/interim` e funcionam. Para rodar de novo os outros Extracts, é preciso copiar a pasta bruta correspondente.
-- **Decisão sobre o Git:** `data/raw` e `data/interim` ficam fora do Git (`.gitignore` na raiz, commit `e3153de`).
+- **Decisão sobre o Git:** `data/raw` e `data/interim` ficam fora do Git (`.gitignore` na raiz, commit `e3153de`). Os painéis em `data/processed` são versionados (decisão de 2026-10-22). São pequenos (~2,4 MB), e assim podem ser abertos no Power BI sem rodar o pipeline.
+
+### T4. Script que gerou `censo_escolar_transformado` ✅ (recriado em 2026-10-22)
+- **Problema:** nenhum script do repositório gerava a base de infraestrutura. O `Transform_Censo_Escolar.py` só faz diagnóstico do dicionário de variáveis. Além disso, a base tinha uma linha duplicada: Uruguaiana-RS 2025, por causa da escola sem UF (M4).
+- **Regra recuperada:** número de escolas e média dos indicadores `IN_*` por município × rede × ano. Os nulos ficam fora da média; cerca de 150 mil registros escola/ano têm todos os indicadores nulos.
+- **Verificação:** a regra reproduz o arquivo antigo em todas as 168.759 linhas, exceto as 2 duplicadas.
+- **Decisão:** novo script `src/Transform/Transform_Infraestrutura.py`, com a UF derivada do código do município. A saída tem 168.758 linhas, com chave única.
 
 ### T3. Scripts obsoletos ✅
 - `Extract_IDEB.py` foi substituído pelo `Extract_SAEB.py`. Ele procura `data/raw` dentro de `src/Extract`, então não roda.
@@ -276,5 +317,6 @@ Falar sempre em associação e eficiência relativa.
 2. **G4:** tratamento da ausência da 12.364 (RO em todos os anos, AC e SE até 2024, RS em 2018–2023). **G4b:** o total da função 12 inclui gastos fora das subfunções listadas.
 3. **S4:** manter Anos Finais na camada municipal, com a amostra selecionada?
 4. **E3:** recorte geográfico (Brasil ou SP).
-5. **M3 e S5:** confirmar os testes de sensibilidade (sem 2021, sem 2025 estadual).
-6. **Integridade acadêmica:** o Manual exige informar e discutir previamente o uso de IA. Este registro e parte do código foram produzidos com apoio de IA, o que deve ser comunicado e documentado no Método.
+5. **M3, S5 e A5:** confirmar os testes de sensibilidade (sem 2021, sem 2025 estadual, com e sem os gastos extremos) e o tratamento dos valores extremos.
+6. **P3:** vale estender as matrículas para 2015–2016 para ter defasagens na camada estadual?
+7. **Integridade acadêmica:** o Manual exige informar e discutir previamente o uso de IA. Este registro e parte do código foram produzidos com apoio de IA, o que deve ser comunicado e documentado no Método.

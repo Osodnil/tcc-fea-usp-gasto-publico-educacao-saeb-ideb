@@ -5,7 +5,7 @@
 ## 1. Onde estamos
 
 - **Extração concluída.** Todas as bases necessárias para a pergunta já estão extraídas e validadas: gasto (SIOPE e SICONFI), matrículas (Censo Escolar), desempenho (Saeb/IDEB), controles (IDHM, alfabetização e infraestrutura) e o deflator (IPCA).
-- **Tratamento concluído.** Todas as bases estão tratadas, com o gasto em reais de 2025. Falta o cruzamento das bases (gasto por aluno × desempenho × controles). Em seguida vem a análise.
+- **Tratamento e cruzamento concluídos.** Os dois painéis estão montados, com gasto por aluno em reais de 2025 (no mesmo ano e com defasagens de 1, 2 e 4 anos), notas do Saeb e controles. O painel municipal tem ~5.300 municípios com nota em Anos Iniciais por edição; o estadual, as 27 UFs. Em seguida vem a análise.
 - **O desenho continua o mesmo:** duas camadas analisadas separadamente, no período de 2017 a 2025 (cinco edições do Saeb).
 
 | | Municípios | Estados |
@@ -53,9 +53,20 @@
 - **Situação:** a sugestão de focar em SP ficou sem decisão registrada. O tratamento dos dados já cobre o Brasil inteiro, então o recorte pode ser aplicado só na análise.
 - **Pergunta:** a análise principal fica no Brasil (com SP em destaque) ou só em SP?
 
-### 3.5 Testes de sensibilidade previstos [A4]
-- **Lista:** sem 2021; sem 2025 na camada estadual (as matrículas estaduais caem ~5% nesse ano, e ainda não se sabe se é real ou efeito da mudança no Censo); IDHM do mesmo ano; tratamento alternativo do Ensino Superior.
-- **Pergunta:** a lista está suficiente?
+### 3.5 Gastos por aluno implausíveis [A5]
+- **Situação:** cerca de 0,7% dos municípios com nota têm gasto por aluno muito fora do padrão. Há casos de R$ 210 por aluno (Cáceres-MT, 2021) e de mais de R$ 60 mil em redes com menos de 100 alunos. A mediana é de R$ 11 mil. São erros de registro ou redes muito pequenas.
+- **Proposta:** manter todos os casos no painel, só marcados. Usar o logaritmo do gasto por aluno, que reduz o peso das pontas, e rodar a análise com e sem os casos marcados.
+- **Pergunta:** de acordo, ou prefere excluir os casos marcados desde o início?
+
+### 3.6 Testes de sensibilidade previstos [A4]
+- **Lista:**
+  - sem 2021;
+  - sem 2025 na camada estadual (as matrículas estaduais caem ~5% nesse ano, e ainda não se sabe se é real ou efeito da mudança no Censo);
+  - IDHM do mesmo ano;
+  - tratamento alternativo do Ensino Superior;
+  - com e sem os gastos extremos.
+- **Defasagens na camada estadual [P3]:** hoje elas têm a mesma limitação das municipais, porque as matrículas começam em 2017. Dá para estendê-las extraindo as matrículas de 2015–2016 (cerca de meio dia de trabalho).
+- **Pergunta:** a lista está suficiente? Vale a extensão para os estados?
 
 ## 4. Limitações que vão para o Método
 
