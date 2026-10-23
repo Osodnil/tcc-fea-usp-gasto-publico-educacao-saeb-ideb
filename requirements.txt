@@ -1,0 +1,5 @@
+# Versões usadas no desenvolvimento (Python 3.12, Anaconda, Windows)
+polars==1.44.2
+requests==2.32.3
+fastexcel==0.21.0      # leitura de .xlsx pelo pl.read_excel
+xlsxwriter==3.2.9      # só em src/Testes/Visualização_SIOPE.py

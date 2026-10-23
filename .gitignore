@@ -16,3 +16,6 @@ venv/
 # Arquivos de sistema
 .DS_Store
 Thumbs.db
+
+# Configuração local do Claude Code
+.claude/

@@ -311,6 +311,20 @@ Falar sempre em associação e eficiência relativa.
 - `Extract_IDEB.py` foi substituído pelo `Extract_SAEB.py`. Ele procura `data/raw` dentro de `src/Extract`, então não roda.
 - `Transform_IDEB.py` e `ideb_transformado` se referem só ao Ensino Médio da fase ENEM.
 - Nenhum dos três deve entrar no merge.
+- **2026-10-22:** esses scripts e os da fase ENEM (`Extract_ENEM.py`, `Diagnostico_ENEM.py`) foram movidos para `src/Legado/`. O `Transform_Censo_Escolar.py`, que só fazia diagnóstico, virou `src/Testes/Diagnostico_Censo_Escolar.py`.
+
+### T5. Reprodutibilidade ✅ (2026-10-22)
+- **`run_pipeline.py` na raiz:** executa os scripts na ordem certa e para no primeiro erro.
+  - Sem argumentos, faz o tratamento, os painéis e o dashboard.
+  - Com `--com-extracao`, inclui a extração, depois de conferir se os brutos estão em `data/raw`.
+  - Força saída em UTF-8, para os acentos não quebrarem o console do Windows.
+- **Teste:** a execução completa do tratamento recriou os dois painéis idênticos aos versionados (comparação quadro a quadro).
+- **`requirements.txt`:** versões usadas no desenvolvimento.
+- **Limpeza do repositório:**
+  - o `.gitattributes` saiu da pasta `git/` para a raiz, onde o Git o aplica;
+  - o `__pycache__` saiu do índice;
+  - `.claude/` (configuração local) entrou no `.gitignore`.
+- **Pendente:** os brutos continuam só na máquina do Henrique (T2). O README documenta a organização esperada em `data/raw/`.
 
 ---
 

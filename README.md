@@ -40,6 +40,9 @@ src/
   Transform/    tratamento de cada base e montagem dos painéis
   Visualizacao/ gerador do dashboard HTML
   Testes/       scripts de reconhecimento e diagnóstico (não fazem parte do pipeline)
+  Legado/       scripts da fase ENEM e do IDEB antigo, substituídos (não rodar)
+run_pipeline.py executa o pipeline na ordem certa
+requirements.txt
 ```
 
 Os scripts localizam a raiz do projeto subindo até a pasta `.git`, então podem ser executados de qualquer diretório.
@@ -56,7 +59,20 @@ Os scripts localizam a raiz do projeto subindo até a pasta `.git`, então podem
 | Censo Demográfico 2022 | IBGE, planilhas `Municípios.xlsx` e `Alfabetização.xlsx` | Manual, em `data/raw/Censo/Dados/` |
 | IDHM por UF | Atlas Brasil / Radar IDHM (PNUD, FJP, IBGE), série 2015–2024 — [consulta](https://atlasbrasil.org.br/consulta) | Manual, em `data/raw/IDHM/` |
 
-As fontes manuais somam cerca de 35 GB, quase tudo dos microdados do Censo Escolar.
+As fontes manuais somam cerca de 35 GB, quase tudo dos microdados do Censo Escolar. Os extratores esperam esta organização em `data/raw/`:
+
+```
+data/raw/
+  Censo/Dados/Municípios.xlsx
+  Censo/Dados/Alfabetização.xlsx
+  IDHM/<planilha do Atlas Brasil>.xlsx
+  Microdados Censo Escolar/<ano>/.../dados/*.csv          (2015 a 2025, como vêm do Inep)
+  IDEB - Índice de Desenvolvimento da Educação Básica/
+    Municípios/divulgacao_{anos_iniciais,anos_finais,ensino_medio}_municipios_2025/*.xlsx
+    Regiões/divulgacao_regioes_ufs_ideb_2025/*.xlsx
+```
+
+> Hoje os brutos completos estão só na máquina do Henrique, no repositório anterior (`ENEM_Microdata_Analysis/data/raw`). Neste repositório há apenas a pasta do IDEB. Para rodar de novo a extração, copie as pastas acima para `data/raw/`.
 
 ## Ambiente
 
@@ -64,12 +80,26 @@ As fontes manuais somam cerca de 35 GB, quase tudo dos microdados do Censo Escol
 - Pacotes usados: `polars` (≥ 1.44), `requests`, `fastexcel` (leitura de `.xlsx` pelo Polars) e `xlsxwriter` (só em um script de teste).
 
 ```bash
-python -m pip install polars requests fastexcel xlsxwriter
+python -m pip install -r requirements.txt
 ```
 
 ## Como reproduzir
 
-Execute a partir da raiz do repositório, nesta ordem. Os extratores que usam API levam alguns minutos cada.
+O `run_pipeline.py` roda os scripts na ordem certa, para no primeiro erro e diz de onde retomar:
+
+```bash
+python run_pipeline.py
+```
+
+Sem argumentos, ele faz o tratamento, os painéis e o dashboard a partir de `data/interim` (alguns segundos). As outras opções:
+
+| Opção | O que faz |
+|---|---|
+| `--com-extracao` | Inclui a extração. Precisa dos brutos em `data/raw` e de internet; leva vários minutos. O script confere os brutos antes de começar. |
+| `--a-partir-de Montar_Paineis` | Retoma a partir de um script. |
+| `--listar` | Só mostra a ordem. |
+
+Para rodar um script isolado, chame-o diretamente, por exemplo `python src/Transform/Transform_SIOPE.py`. A ordem completa é esta:
 
 **1. Extração** (`src/Extract/` → `data/interim/`)
 
@@ -105,6 +135,8 @@ Execute a partir da raiz do repositório, nesta ordem. Os extratores que usam AP
 | `Visualizacao/Gerar_Dashboard_HTML.py` | `relatorios/dashboard_conferencia.html` |
 
 Cada script imprime um resumo com contagens e validações, como chave única, cobertura por ano e valores fora do esperado. Saídas maiores vão para `data/interim/diagnosticos/`.
+
+**Quem só vai usar os resultados**, por exemplo no Power BI, não precisa rodar nada: os painéis em `data/processed/` e o dashboard em `relatorios/` estão versionados.
 
 ## Saídas principais
 
