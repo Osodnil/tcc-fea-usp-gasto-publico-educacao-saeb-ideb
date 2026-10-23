@@ -58,13 +58,25 @@
 - **Proposta:** manter todos os casos no painel, só marcados. Usar o logaritmo do gasto por aluno, que reduz o peso das pontas, e rodar a análise com e sem os casos marcados.
 - **Pergunta:** de acordo, ou prefere excluir os casos marcados desde o início?
 
-### 3.6 Testes de sensibilidade previstos [A4]
+### 3.6 Municípios sem nota no Saeb [S8]
+- **Situação:** o Inep só divulga a nota das redes que atingem participação mínima. Ficam sem nota de 2% a 13% das redes municipais em Anos Iniciais e de 15% a 33% em Anos Finais (o pior ano é 2021). Essas redes não são aleatórias: em Anos Iniciais 2023, têm em média um quarto das matrículas (182 contra 721) e gastam mais por aluno (R$ 16,6 mil contra R$ 13,5 mil).
+- **Consequência:** os resultados valem para as redes com nota divulgada, e os municípios pequenos ficam sub-representados.
+- **Proposta:** não imputar notas; descrever a seleção no Método (cobertura e comparação entre incluídos e excluídos); controlar o porte da rede nos modelos; testar com um painel balanceado (só municípios com nota nas cinco edições).
+- **Pergunta:** de acordo?
+
+### 3.7 Medida principal de desempenho [S2, S9]
+- **Situação:** temos Matemática e Português (em pontos), a nota padronizada N (0 a 10, que combina as duas) e o IDEB (N × aprovação). Entre municípios, Matemática e Português se correlacionam em 0,96, então a escolha muda pouco a ordenação.
+- **Proposta:** usar a nota padronizada N como medida principal e Matemática e Português separadas como complementares. O IDEB fica como medida secundária, porque mistura aprendizado e fluxo escolar.
+- **Pergunta:** de acordo?
+
+### 3.8 Testes de sensibilidade previstos [A4]
 - **Lista:**
   - sem 2021;
   - sem 2025 na camada estadual (as matrículas estaduais caem ~5% nesse ano, e ainda não se sabe se é real ou efeito da mudança no Censo);
   - IDHM do mesmo ano;
   - tratamento alternativo do Ensino Superior;
-  - com e sem os gastos extremos.
+  - com e sem os gastos extremos;
+  - painel balanceado (só municípios com nota em todas as edições).
 - **Defasagens na camada estadual [P3]:** hoje elas têm a mesma limitação das municipais, porque as matrículas começam em 2017. Dá para estendê-las extraindo as matrículas de 2015–2016 (cerca de meio dia de trabalho).
 - **Pergunta:** a lista está suficiente? Vale a extensão para os estados?
 
@@ -72,7 +84,7 @@
 
 - O nível do gasto depende da fonte escolhida, sobretudo nas capitais.
 - A camada estadual tem só 27 unidades.
-- A amostra de Anos Finais municipais é selecionada.
+- A amostra é selecionada pela divulgação do Saeb: redes pequenas ficam sem nota, sobretudo em Anos Finais e em 2021.
 - O controle socioeconômico (IDHM) só existe por UF e com defasagem.
 - Os resultados são de associação, não de causalidade.
 

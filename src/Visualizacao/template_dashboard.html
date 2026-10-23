@@ -156,6 +156,14 @@ footer li { margin: 3px 0; }
     </label>
     <label>Etapa <select id="etapa"></select></label>
     <label>Edição do Saeb <select id="ano"></select></label>
+    <label>Medida de desempenho
+      <select id="nota">
+        <option value="mt">Matemática (pontos)</option>
+        <option value="lp">Português (pontos)</option>
+        <option value="n">Nota padronizada N (0–10)</option>
+        <option value="ideb">IDEB</option>
+      </select>
+    </label>
     <label>UF em destaque <select id="uf"></select></label>
     <label id="versaoBox" class="hidden">Gasto estadual
       <select id="versao">
@@ -170,7 +178,7 @@ footer li { margin: 3px 0; }
 
   <section class="grid">
     <article class="card wide">
-      <h2 id="scTitle">Gasto por aluno × nota de Matemática</h2>
+      <h2 id="scTitle">Gasto por aluno × desempenho</h2>
       <p class="sub" id="scSub"></p>
       <div class="legend" id="scLegend"></div>
       <div class="chart" id="scatter"></div>
@@ -181,7 +189,7 @@ footer li { margin: 3px 0; }
       <p class="sub" id="evSub"></p>
       <div class="mini">
         <div><h3>Gasto por aluno mediano (R$ de 2025)</h3><div class="chart" id="evGasto"></div></div>
-        <div><h3>Nota média de Matemática</h3><div class="chart" id="evNota"></div></div>
+        <div><h3 id="evNotaTitulo">Desempenho médio</h3><div class="chart" id="evNota"></div></div>
       </div>
     </article>
 
@@ -212,7 +220,8 @@ footer li { margin: 3px 0; }
     <h2>Notas de método</h2>
     <ul>
       <li><b>Gasto por aluno:</b> municípios = despesa paga na subfunção 361 (Ensino Fundamental, SIOPE) ÷ matrículas do Fundamental na rede municipal; estados = função 12 paga menos a subfunção 12.364 (Ensino Superior, SICONFI) ÷ matrículas da educação básica na rede estadual. Valores em reais de 2025 (IPCA médio anual). Aqui aparece o gasto do mesmo ano do Saeb; os painéis também têm o gasto de 1, 2 e 4 anos antes.</li>
-      <li><b>Desempenho:</b> notas do Saeb da rede que o gasto financia (municipal: Anos Iniciais e Finais; estadual: Anos Finais e Ensino Médio), nas planilhas de divulgação do IDEB (Inep).</li>
+      <li><b>Desempenho:</b> notas do Saeb da rede que o gasto financia (municipal: Anos Iniciais e Finais; estadual: Anos Finais e Ensino Médio), nas planilhas de divulgação do IDEB (Inep). Matemática e Português estão em pontos da escala Saeb. A nota padronizada N (0 a 10) combina as duas provas. O IDEB multiplica N pelo indicador de rendimento (aprovação).</li>
+      <li><b>Notas ausentes:</b> o Inep só divulga o resultado de redes que atingem critérios mínimos de participação. Em Anos Iniciais, ficam sem nota de 2% a 13% das redes municipais, conforme o ano; em Anos Finais, de 15% a 33%. As redes sem nota são menores e gastam mais por aluno, então os resultados valem para as redes com nota divulgada. Notas não foram imputadas.</li>
       <li><b>Agregações:</b> gasto = mediana entre as unidades; nota = média simples entre as unidades, sem ponderar por matrículas.</li>
       <li><b>Fontes não são misturadas:</b> o SIOPE e o SICONFI divergem para o mesmo ente, então cada camada usa uma única fonte.</li>
       <li><b>2021</b> tem menos resultados com nota (pandemia). O DF não tem rede municipal e aparece só na camada estadual.</li>
@@ -236,6 +245,15 @@ const nf1 = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 1, maximumFr
 const brl = v => v == null ? "—" : "R$ " + nf0.format(v);
 const n1 = v => v == null ? "—" : nf1.format(v);
 const n0 = v => v == null ? "—" : nf0.format(v);
+const nf2 = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const n2 = v => v == null ? "—" : nf2.format(v);
+// Medidas de desempenho do seletor: rótulo, formato do valor e das marcas do eixo
+const NOTAS = {
+  mt:   { rot: "Matemática", eixo: "Nota de Matemática (Saeb, pontos)", fmt: n1, tick: v => nf0.format(v) },
+  lp:   { rot: "Português", eixo: "Nota de Português (Saeb, pontos)", fmt: n1, tick: v => nf0.format(v) },
+  n:    { rot: "nota padronizada N", eixo: "Nota padronizada N (0 a 10)", fmt: n2, tick: v => nf1.format(v) },
+  ideb: { rot: "IDEB", eixo: "IDEB", fmt: n1, tick: v => nf1.format(v) },
+};
 const pct = v => v == null ? "—" : nf1.format(v * 100) + "%";
 const SVGNS = "http://www.w3.org/2000/svg";
 
@@ -243,20 +261,21 @@ const SVGNS = "http://www.w3.org/2000/svg";
 const M = D.mun.municipios, L = D.mun.linhas;
 const mun = L.m.map((m, i) => ({
   cod: M.cod[m], nome: M.nome[m], uf: M.uf[m], regiao: M.regiao[m],
-  etapa: L.etapa[i], ano: L.ano[i], mt: L.mt[i], lp: L.lp[i], ideb: L.ideb[i],
+  etapa: L.etapa[i], ano: L.ano[i], mt: L.mt[i], lp: L.lp[i], n: L.n[i], ideb: L.ideb[i],
   gasto: L.gasto[i], extremo: L.extremo[i], mat: L.mat[i],
 }));
 const E = D.est;
 const est = E.uf.map((u, i) => ({
-  cod: u, nome: u, uf: u, regiao: E.regiao[i], etapa: E.etapa[i], ano: E.ano[i], mt: E.mt[i], lp: E.lp[i],
+  cod: u, nome: u, uf: u, regiao: E.regiao[i], etapa: E.etapa[i], ano: E.ano[i], mt: E.mt[i], lp: E.lp[i], n: E.n[i],
   ideb: E.ideb[i], gastoA: E.gastoA[i], gastoB: E.gastoB[i], supAusente: E.supAusente[i], mat: E.mat[i],
 }));
 
-const S = { camada: "mun", etapa: "AI", ano: 2023, uf: "BR", versao: "A", ocultarExt: false };
+const S = { camada: "mun", etapa: "AI", ano: 2023, uf: "BR", versao: "A", ocultarExt: false, nota: "mt" };
 
 const gastoDe = r => S.camada === "mun" ? r.gasto : (S.versao === "A" ? r.gastoA : r.gastoB);
+const notaDe = r => r[S.nota];
 const base = () => S.camada === "mun" ? mun : est;
-const valida = r => r.mt != null && gastoDe(r) != null && !(S.camada === "mun" && S.ocultarExt && r.extremo);
+const valida = r => notaDe(r) != null && gastoDe(r) != null && !(S.camada === "mun" && S.ocultarExt && r.extremo);
 const fatia = (ano = S.ano) => base().filter(r => r.etapa === S.etapa && r.ano === ano);
 
 function mediana(a) { if (!a.length) return null; const s = [...a].sort((x, y) => x - y); const k = s.length >> 1;
@@ -294,21 +313,21 @@ const fmtK = v => v >= 1000 ? nf0.format(v / 1000) + " mil" : nf0.format(v);
 
 // ---------- domínios estáveis (não mudam com o filtro de ano) ----------
 function dominios() {
-  const rows = base().filter(r => r.etapa === S.etapa && r.mt != null && gastoDe(r) != null);
-  const g = rows.map(gastoDe), y = rows.map(r => r.mt);
+  const rows = base().filter(r => r.etapa === S.etapa && notaDe(r) != null && gastoDe(r) != null);
+  const g = rows.map(gastoDe), y = rows.map(notaDe);
   return { gmin: Math.min(...g), gmax: Math.max(...g), ymin: Math.min(...y), ymax: Math.max(...y) };
 }
 
 // ---------- KPIs ----------
 function kpis() {
-  const f = fatia(), comNota = f.filter(r => r.mt != null), ok = f.filter(valida);
+  const f = fatia(), comNota = f.filter(r => notaDe(r) != null), ok = f.filter(valida);
   const escopo = S.uf === "BR" ? ok : ok.filter(r => r.uf === S.uf);
   const nomeEscopo = S.uf === "BR" ? "Brasil" : S.uf;
   const unid = S.camada === "mun" ? "municípios" : "UFs";
   const cards = [
     ["Unidades com nota e gasto", n0(escopo.length), `${unid} · ${nomeEscopo} · ${S.ano}`],
     ["Gasto por aluno mediano", brl(mediana(escopo.map(gastoDe))), "reais de 2025, mesmo ano do Saeb"],
-    ["Nota média de Matemática", n1(media(escopo.map(r => r.mt))), `Saeb ${S.ano} · média simples`],
+    [S.nota === "ideb" ? "IDEB médio" : `Média de ${NOTAS[S.nota].rot}`, NOTAS[S.nota].fmt(media(escopo.map(notaDe))), `Saeb ${S.ano} · média simples`],
     ["Cobertura", pct(comNota.length ? ok.length / comNota.length : null), `das unidades com nota também têm gasto (Brasil)`],
   ];
   const host = document.getElementById("kpis"); host.replaceChildren();
@@ -326,18 +345,22 @@ function scatter() {
   const dom = dominios(), logX = S.camada === "mun";
   const x0 = logX ? Math.log10(dom.gmin * 0.9) : dom.gmin * 0.92, x1 = logX ? Math.log10(dom.gmax * 1.1) : dom.gmax * 1.04;
   const X = v => ((logX ? Math.log10(v) : v) - x0) / (x1 - x0) * iw;
-  const yt = niceTicks(dom.ymin - 5, dom.ymax + 5, 5), y0 = yt[0], y1 = yt[yt.length - 1];
+  const folga = (dom.ymax - dom.ymin) * 0.03;
+  // N e IDEB vão de 0 a 10: o eixo não passa do teto da escala
+  const teto = S.nota === "n" || S.nota === "ideb" ? 10 : Infinity;
+  const yt = niceTicks(Math.max(0, dom.ymin - folga), Math.min(teto, dom.ymax + folga), 5).filter(v => v <= teto);
+  const y0 = yt[0], y1 = yt[yt.length - 1];
   const Y = v => ih - (v - y0) / (y1 - y0) * ih;
 
   for (const v of yt) { el("line", { class: "gridline", x1: 0, x2: iw, y1: Y(v), y2: Y(v) }, g);
-    txt(g, -8, Y(v) + 4, nf0.format(v), { class: "lbl", "text-anchor": "end" }); }
+    txt(g, -8, Y(v) + 4, NOTAS[S.nota].tick(v), { class: "lbl", "text-anchor": "end" }); }
   const xt = logX ? [200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000].filter(v => Math.log10(v) >= x0 && Math.log10(v) <= x1)
                   : niceTicks(dom.gmin * 0.92, dom.gmax * 1.04, 6);
   for (const v of xt) { el("line", { class: "gridline", x1: X(v), x2: X(v), y1: 0, y2: ih }, g);
     txt(g, X(v), ih + 16, fmtK(v), { class: "lbl", "text-anchor": "middle" }); }
   el("line", { class: "baseline", x1: 0, x2: iw, y1: ih, y2: ih }, g);
   txt(g, iw / 2, ih + 36, "Gasto por aluno, R$ de 2025" + (logX ? " (escala logarítmica)" : ""), { class: "axis-title", "text-anchor": "middle" });
-  txt(g, -40, ih / 2, "Nota de Matemática (Saeb)", { class: "axis-title", "text-anchor": "middle", transform: `rotate(-90 -40 ${ih / 2})` });
+  txt(g, -40, ih / 2, NOTAS[S.nota].eixo, { class: "axis-title", "text-anchor": "middle", transform: `rotate(-90 -40 ${ih / 2})` });
 
   const pts = fatia().filter(valida);
   const temDestaque = S.uf !== "BR";
@@ -345,7 +368,7 @@ function scatter() {
   const r0 = S.camada === "mun" ? 3.2 : 5;
   const nodes = [];
   for (const p of ordem) {
-    const dest = !temDestaque || p.uf === S.uf, cx = X(gastoDe(p)), cy = Y(p.mt);
+    const dest = !temDestaque || p.uf === S.uf, cx = X(gastoDe(p)), cy = Y(notaDe(p));
     const cor = dest ? (temDestaque ? "var(--s2)" : "var(--s1)") : "var(--other)";
     const attrs = { cx, cy, r: r0, stroke: "var(--surface)", "stroke-width": 1 };
     if (p.extremo) Object.assign(attrs, { fill: "none", stroke: cor, "stroke-width": 1.5 });
@@ -365,8 +388,8 @@ function scatter() {
     for (const nd of nodes) { const d = (nd.cx - px) ** 2 + (nd.cy - py) ** 2; if (d < bd) { bd = d; best = nd; } }
     if (!best) { sel.setAttribute("opacity", 0); esconderTip(); return; }
     sel.setAttribute("cx", best.cx); sel.setAttribute("cy", best.cy); sel.setAttribute("opacity", 1);
-    const p = best.p, linhas = [["Gasto por aluno", brl(gastoDe(p))], ["Nota Matemática", n1(p.mt)], ["Nota Português", n1(p.lp)], ["IDEB", n1(p.ideb)],
-      ["Matrículas", n0(p.mat)]];
+    const p = best.p, linhas = [["Gasto por aluno", brl(gastoDe(p))], ["Matemática", n1(p.mt)], ["Português", n1(p.lp)],
+      ["Nota padronizada N", n2(p.n)], ["IDEB", n1(p.ideb)], ["Matrículas", n0(p.mat)]];
     if (p.extremo) linhas.push(["Atenção", "gasto marcado como extremo"]);
     if (p.supAusente) linhas.push(["Atenção", "sem linha de Ensino Superior"]);
     mostrarTip(ev, S.camada === "mun" ? `${p.nome} (${p.uf})` : p.uf, linhas);
@@ -383,6 +406,7 @@ function scatter() {
   else item(`<circle cx="6" cy="6" r="4.5" fill="var(--s1)"/>`, S.camada === "mun" ? "Municípios" : "UFs");
   if (S.camada === "mun" && !S.ocultarExt) item(`<circle cx="6" cy="6" r="4" fill="none" stroke="var(--ink-2)" stroke-width="1.5"/>`, "Gasto marcado como extremo (fora de 0,5%–99,5% do ano)");
   const nome = ETAPAS[S.camada].find(e => e[0] === S.etapa)[1];
+  document.getElementById("scTitle").textContent = `Gasto por aluno × ${S.nota === "ideb" ? "IDEB" : NOTAS[S.nota].rot}`;
   document.getElementById("scSub").textContent =
     `${S.camada === "mun" ? "Rede municipal" : "Rede estadual"} · ${nome} · Saeb ${S.ano} · ${n0(pts.length)} ${S.camada === "mun" ? "municípios" : "UFs"} com nota e gasto. Passe o mouse para ver cada ponto.`;
 }
@@ -390,7 +414,7 @@ function scatter() {
 // ---------- evolução (dois gráficos, um eixo cada) ----------
 function serieEvolucao() {
   return ANOS.map(a => { let rows = fatia(a).filter(valida); if (S.uf !== "BR") rows = rows.filter(r => r.uf === S.uf);
-    return { ano: a, gasto: mediana(rows.map(gastoDe)), nota: media(rows.map(r => r.mt)), n: rows.length }; });
+    return { ano: a, gasto: mediana(rows.map(gastoDe)), nota: media(rows.map(notaDe)), n: rows.length }; });
 }
 function linha(hostId, serie, campo, fmt) {
   const host = document.getElementById(hostId), W = largura(host), H = 220;
@@ -402,7 +426,7 @@ function linha(hostId, serie, campo, fmt) {
   const yt = niceTicks(lo - padv, hi + padv, 4), y0 = yt[0], y1 = yt[yt.length - 1];
   const X = i => i / (ANOS.length - 1) * iw, Y = v => ih - (v - y0) / (y1 - y0) * ih;
   for (const v of yt) { el("line", { class: "gridline", x1: 0, x2: iw, y1: Y(v), y2: Y(v) }, g);
-    txt(g, -8, Y(v) + 4, campo === "gasto" ? fmtK(v) : nf0.format(v), { class: "lbl", "text-anchor": "end" }); }
+    txt(g, -8, Y(v) + 4, campo === "gasto" ? fmtK(v) : NOTAS[S.nota].tick(v), { class: "lbl", "text-anchor": "end" }); }
   ANOS.forEach((a, i) => txt(g, X(i), ih + 18, String(a), { class: "lbl", "text-anchor": "middle" }));
   let d = ""; serie.forEach((s, i) => { if (s[campo] == null) return; d += (d ? "L" : "M") + X(i) + " " + Y(s[campo]); });
   el("path", { d, fill: "none", stroke: "var(--s1)", "stroke-width": 2, "stroke-linejoin": "round" }, g);
@@ -423,7 +447,8 @@ function linha(hostId, serie, campo, fmt) {
 }
 function evolucao() {
   const serie = serieEvolucao();
-  linha("evGasto", serie, "gasto", brl); linha("evNota", serie, "nota", n1);
+  linha("evGasto", serie, "gasto", brl); linha("evNota", serie, "nota", NOTAS[S.nota].fmt);
+  document.getElementById("evNotaTitulo").textContent = S.nota === "ideb" ? "IDEB médio" : `Média de ${NOTAS[S.nota].rot}`;
   const nome = ETAPAS[S.camada].find(e => e[0] === S.etapa)[1];
   document.getElementById("evSub").textContent = `${S.uf === "BR" ? "Brasil" : S.uf} · ${nome} · ponto cheio = edição selecionada`;
 }
@@ -463,10 +488,10 @@ function cobertura() {
   const thead = document.createElement("thead"); thead.appendChild(tr); t.appendChild(thead);
   const tb = document.createElement("tbody");
   for (const a of ANOS) { let f = fatia(a); if (S.uf !== "BR") f = f.filter(r => r.uf === S.uf);
-    const nota = f.filter(r => r.mt != null).length, gasto = f.filter(r => gastoDe(r) != null).length,
-      ambos = f.filter(r => r.mt != null && gastoDe(r) != null).length;
+    const nota = f.filter(r => notaDe(r) != null).length, gasto = f.filter(r => gastoDe(r) != null).length,
+      ambos = f.filter(r => notaDe(r) != null && gastoDe(r) != null).length;
     const cel = [String(a), n0(f.length), n0(nota), n0(gasto), n0(ambos), pct(nota ? ambos / nota : null)];
-    if (S.camada === "mun") cel.push(n0(f.filter(r => r.extremo && r.mt != null).length));
+    if (S.camada === "mun") cel.push(n0(f.filter(r => r.extremo && notaDe(r) != null).length));
     const row = document.createElement("tr"); if (a === S.ano) row.style.fontWeight = 600;
     cel.forEach(c => { const td = document.createElement("td"); td.textContent = c; row.appendChild(td); }); tb.appendChild(row); }
   t.appendChild(tb);
@@ -478,14 +503,14 @@ function cobertura() {
 let ordem = { col: "gasto", dir: -1 };
 function tabela() {
   const t = document.getElementById("tabela"), q = document.getElementById("busca").value.trim().toLowerCase();
-  let rows = fatia().filter(r => r.mt != null || gastoDe(r) != null);
+  let rows = fatia().filter(r => notaDe(r) != null || gastoDe(r) != null);
   if (S.uf !== "BR") rows = rows.filter(r => r.uf === S.uf);
   if (q) rows = rows.filter(r => (r.nome + " " + r.uf).toLowerCase().includes(q));
   const cols = S.camada === "mun"
     ? [["nome", "Município", r => r.nome, "l"], ["uf", "UF", r => r.uf, "l"], ["mat", "Matrículas", r => r.mat], ["gasto", "Gasto por aluno", gastoDe],
-       ["mt", "Matemática", r => r.mt], ["lp", "Português", r => r.lp], ["ideb", "IDEB", r => r.ideb], ["flag", "Observação", r => r.extremo ? 1 : 0, "l"]]
+       ["mt", "Matemática", r => r.mt], ["lp", "Português", r => r.lp], ["n", "Nota N", r => r.n], ["ideb", "IDEB", r => r.ideb], ["flag", "Observação", r => r.extremo ? 1 : 0, "l"]]
     : [["uf", "UF", r => r.uf, "l"], ["mat", "Matrículas", r => r.mat], ["gasto", "Gasto por aluno", gastoDe],
-       ["mt", "Matemática", r => r.mt], ["lp", "Português", r => r.lp], ["ideb", "IDEB", r => r.ideb], ["flag", "Observação", r => r.supAusente ? 1 : 0, "l"]];
+       ["mt", "Matemática", r => r.mt], ["lp", "Português", r => r.lp], ["n", "Nota N", r => r.n], ["ideb", "IDEB", r => r.ideb], ["flag", "Observação", r => r.supAusente ? 1 : 0, "l"]];
   const c = cols.find(k => k[0] === ordem.col) || cols[0], get = c[2];
   rows.sort((a, b) => { const x = get(a), y = get(b); if (x == null) return 1; if (y == null) return -1;
     return (typeof x === "string" ? x.localeCompare(y, "pt-BR") : x - y) * ordem.dir; });
@@ -501,7 +526,7 @@ function tabela() {
     for (const [k, , f, cls] of cols) { const td = document.createElement("td"); if (cls) td.className = cls;
       if (k === "flag") { const v = f(r); if (v) { const s = document.createElement("span"); s.className = "flag";
           s.textContent = S.camada === "mun" ? "gasto extremo" : "sem Ensino Superior"; td.appendChild(s); } }
-      else { const v = f(r); td.textContent = k === "gasto" ? brl(v) : (k === "mat" ? n0(v) : (typeof v === "number" ? n1(v) : (v ?? "—"))); }
+      else { const v = f(r); td.textContent = k === "gasto" ? brl(v) : (k === "mat" ? n0(v) : (k === "n" ? n2(v) : (typeof v === "number" ? n1(v) : (v ?? "—")))); }
       row.appendChild(td); }
     tb.appendChild(row); }
   t.appendChild(tb);
@@ -534,6 +559,7 @@ document.getElementById("ano").addEventListener("change", e => { S.ano = +e.targ
 document.getElementById("uf").addEventListener("change", e => { S.uf = e.target.value; render(); });
 document.getElementById("versao").addEventListener("change", e => { S.versao = e.target.value; render(); });
 document.getElementById("ext").addEventListener("change", e => { S.ocultarExt = e.target.checked; render(); });
+document.getElementById("nota").addEventListener("change", e => { S.nota = e.target.value; render(); });
 document.getElementById("busca").addEventListener("input", tabela);
 let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(render, 120); });
 

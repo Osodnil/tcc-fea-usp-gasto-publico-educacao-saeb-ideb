@@ -204,6 +204,34 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Problema:** a planilha escreve "M. G. do Sul", "R. G. do Norte" e "R. G. do Sul", e o extrator descartava MS, RN e RS, deixando a camada estadual com 24 UFs.
 - **Decisão:** mapear as abreviações em `Extract_SAEB.py` (commit `e3153de`). Agora são 27 UFs.
 
+### S8. Seleção da amostra pela divulgação do Saeb 🟡 (2026-10-22)
+- **Problema:** o Inep só divulga a nota das redes que atingem critérios mínimos de participação (os números exatos dos critérios não foram verificados). Entre os municípios com rede municipal, ficam sem nota†:
+  - **Anos Iniciais:** de 2,4% (2025) a 12,8% (2021).
+  - **Anos Finais:** de 15,3% (2017) a 32,8% (2021). Em 2023, 157 dos 717 municípios sem nota de AF não tinham matrícula municipal nessa etapa naquele ano.
+  - **Gasto ausente:** é irrelevante, no máximo 18 municípios por edição.
+- **A ausência não é aleatória.** Em Anos Iniciais 2023, comparando as redes sem nota com as que têm nota†:
+
+  | | Com nota | Sem nota |
+  |---|---|---|
+  | Matrículas AI (mediana) | 721 | 182 |
+  | População (mediana) | 11,9 mil | 4,5 mil |
+  | Gasto por aluno (mediana) | R$ 13,5 mil | R$ 16,6 mil |
+
+  Em Anos Finais o padrão é o mesmo: 98 contra 690 matrículas de AF, e R$ 14,9 mil contra R$ 12,5 mil de gasto por aluno.
+- **Efeito:** os resultados valem para as redes com nota divulgada. Ficam sub-representados os municípios pequenos, que têm gasto por aluno mais alto, provavelmente por falta de escala. Isso pode distorcer a relação gasto × nota justamente nos gastos mais altos. É mais um motivo para Anos Iniciais ser o desfecho principal (S4).
+- **Decisão provisória:**
+  1. Não imputar notas (A3).
+  2. Descrever a cobertura e a comparação entre incluídos e excluídos no Método.
+  3. Controlar o porte da rede (matrículas) ou a população nos modelos.
+  4. Testar a sensibilidade com um painel balanceado (municípios com nota nas cinco edições).
+- **No dashboard:** as notas de rodapé explicam a ausência e a tabela de cobertura mostra a parcela por edição.
+
+### S9. Medida de desempenho no dashboard ✅ (2026-10-22)
+- **Problema:** a primeira versão do dashboard mostrava só Matemática, uma simplificação que não havia sido registrada.
+- **Decisão:** o dashboard passou a ter um seletor com Matemática, Português, nota padronizada N (0 a 10, que combina as duas provas) e IDEB, e a tabela mostra as quatro medidas.
+- **Evidência:** em AI 2023, a correlação entre municípios é de 0,96 entre Matemática e Português e de 0,99 entre Matemática e N†.
+- **Pendente:** a medida principal da análise continua sendo a definida em S2 (notas do Saeb). Qual delas é a principal fica para a análise, e a nota padronizada N é a candidata natural a medida-resumo.
+
 ---
 
 ## 6. Controles
@@ -250,6 +278,7 @@ Falar sempre em associação e eficiência relativa.
 3. IDHM do mesmo ano, com 2024 repetido em 2025 (C1).
 4. Tratamento alternativo da 12.364 (G4) e gasto estadual pela soma das subfunções da educação básica (G4b).
 5. Com e sem os valores extremos de gasto por aluno (A5).
+6. Painel balanceado: só municípios com nota nas cinco edições (S8).
 
 ### A5. Valores extremos de gasto por aluno: marcar, não excluir 🟡 (2026-10-22)
 - **Evidência:** a distribuição do gasto municipal por aluno (L0, linhas com nota de AI) tem mediana de R$ 11,2 mil e intervalo de 1% a 99% entre R$ 5,3 mil e R$ 25,6 mil†. Nas pontas, porém, aparecem valores implausíveis:
@@ -336,4 +365,6 @@ Falar sempre em associação e eficiência relativa.
 4. **E3:** recorte geográfico (Brasil ou SP).
 5. **M3, S5 e A5:** confirmar os testes de sensibilidade (sem 2021, sem 2025 estadual, com e sem os gastos extremos) e o tratamento dos valores extremos.
 6. **P3:** vale estender as matrículas para 2015–2016 para ter defasagens na camada estadual?
-7. **Integridade acadêmica:** o Manual exige informar e discutir previamente o uso de IA. Este registro e parte do código foram produzidos com apoio de IA, o que deve ser comunicado e documentado no Método.
+7. **S8:** a amostra é selecionada pela divulgação do Saeb (redes pequenas ficam sem nota). A proposta é descrever a seleção, controlar o porte e testar com um painel balanceado, sem imputar notas. A orientadora está de acordo?
+8. **S9:** qual medida de desempenho será a principal (Matemática, Português ou nota padronizada N)?
+9. **Integridade acadêmica:** o Manual exige informar e discutir previamente o uso de IA. Este registro e parte do código foram produzidos com apoio de IA, o que deve ser comunicado e documentado no Método.
