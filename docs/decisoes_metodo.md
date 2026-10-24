@@ -354,6 +354,13 @@ Falar sempre em associação e eficiência relativa.
   - o `__pycache__` saiu do índice;
   - `.claude/` (configuração local) entrou no `.gitignore`.
 - **Pendente:** os brutos continuam só na máquina do Henrique (T2). O README documenta a organização esperada em `data/raw/`.
+- **Pacote de exportação (2026-10-23):** o repositório no GitHub é privado, e os painéis em Parquet e os documentos em Markdown não abrem bem para quem não programa. Por isso, `src/Exportacao/Gerar_Pacote_Exportacao.py` gera um ZIP com:
+  - o dashboard;
+  - os documentos em HTML;
+  - os painéis em Excel, com a aba "Dicionário", e em CSV;
+  - o código.
+
+  O Excel foi conferido contra os Parquet (mesmas linhas, colunas e somas).
 
 ---
 

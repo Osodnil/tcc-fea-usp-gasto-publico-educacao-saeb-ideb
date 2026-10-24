@@ -39,6 +39,7 @@ src/
   Extract/      extração de cada fonte → data/interim
   Transform/    tratamento de cada base e montagem dos painéis
   Visualizacao/ gerador do dashboard HTML
+  Exportacao/   gerador do pacote ZIP para envio (dashboard, documentos em HTML, dados em Excel e código)
   Testes/       scripts de reconhecimento e diagnóstico (não fazem parte do pipeline)
   Legado/       scripts da fase ENEM e do IDEB antigo, substituídos (não rodar)
 run_pipeline.py executa o pipeline na ordem certa
@@ -137,6 +138,14 @@ Para rodar um script isolado, chame-o diretamente, por exemplo `python src/Trans
 Cada script imprime um resumo com contagens e validações, como chave única, cobertura por ano e valores fora do esperado. Saídas maiores vão para `data/interim/diagnosticos/`.
 
 **Quem só vai usar os resultados**, por exemplo no Power BI, não precisa rodar nada: os painéis em `data/processed/` e o dashboard em `relatorios/` estão versionados.
+
+**Para enviar o projeto a quem não programa** (por exemplo, a orientadora), gere o pacote:
+
+```bash
+python src/Exportacao/Gerar_Pacote_Exportacao.py
+```
+
+Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os documentos convertidos para HTML (imprimíveis em PDF), os painéis em Excel com dicionário de colunas e em CSV, e uma cópia do código. A pasta `exportacao/` fica fora do Git.
 
 ## Saídas principais
 

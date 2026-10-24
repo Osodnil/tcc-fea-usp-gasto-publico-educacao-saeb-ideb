@@ -19,3 +19,6 @@ Thumbs.db
 
 # Configuração local do Claude Code
 .claude/
+
+# Pacotes de exportação gerados (src/Exportacao/Gerar_Pacote_Exportacao.py)
+/exportacao/
