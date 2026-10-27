@@ -37,11 +37,10 @@ def com_defasagens(painel: pl.DataFrame, gasto: pl.DataFrame, chave: list[str], 
     return painel
 
 
-def idhm_defasado() -> pl.DataFrame:
-    # IDHM do ano anterior à edição do Saeb (decisão C1, provisória)
+def idhm_uf() -> pl.DataFrame:
+    # IDHM da UF no mesmo ano da edição do Saeb (decisão C1); o Saeb 2025 fica sem IDHM
     return ler("idhm_transformado").filter(pl.col("SG_UF").is_not_null()).select(
-        "SG_UF", pl.col("ANO_REF_SAEB").alias("ANO"), pl.col("ANO").cast(pl.Int32).alias("ANO_IDHM"),
-        "IDHM", "IDHM_EDUCACAO", "IDHM_RENDA", "IDHM_LONGEVIDADE",
+        "SG_UF", pl.col("ANO").cast(pl.Int32), "IDHM", "IDHM_EDUCACAO", "IDHM_RENDA", "IDHM_LONGEVIDADE",
     )
 
 
@@ -82,7 +81,7 @@ def painel_municipal() -> pl.DataFrame:
     painel = com_defasagens(painel, gasto, ["CO_MUNICIPIO"], ["GASTO_ALUNO_R2025", "GASTO_EXTREMO"])
     return (
         painel.join(ibge, on="CO_MUNICIPIO", how="left")
-        .join(idhm_defasado(), on=["SG_UF", "ANO"], how="left")
+        .join(idhm_uf(), on=["SG_UF", "ANO"], how="left")
         .join(infra, on=["CO_MUNICIPIO", "ANO"], how="left")
         .sort("CO_MUNICIPIO", "ETAPA", "ANO")
     )
@@ -123,7 +122,7 @@ def painel_estadual() -> pl.DataFrame:
     painel = com_defasagens(painel, gasto, ["SG_UF"], ["GASTO_ALUNO_A_R2025", "GASTO_ALUNO_B_R2025"])
     return (
         painel.join(alfab, on="SG_UF", how="left")
-        .join(idhm_defasado(), on=["SG_UF", "ANO"], how="left")
+        .join(idhm_uf(), on=["SG_UF", "ANO"], how="left")
         .join(infra, on=["SG_UF", "ANO"], how="left")
         .sort("SG_UF", "ETAPA", "ANO")
     )
@@ -145,6 +144,9 @@ def validar(df: pl.DataFrame, nome: str, chave: list[str], unidade: str, col_gas
     controles = ["IDHM", "TAXA_ALFABETIZACAO_15MAIS", "PROP_IN_INTERNET"]
     print("  Nulos nos controles (linhas com nota):",
           {c: df.filter(pl.col("TEM_NOTA"))[c].null_count() for c in controles})
+    # IDHM do mesmo ano: só a edição de 2025 deve ficar sem (série do PNUD termina em 2024)
+    print("  Edições com IDHM nulo (esperado: só 2025):",
+          sorted(df.filter(pl.col("TEM_NOTA") & pl.col("IDHM").is_null())["ANO"].unique().to_list()))
 
     g = df.filter(pl.col("TEM_NOTA")).select(pl.col(f"{col_gasto}_L0").drop_nulls())
     q = [round(g.to_series().quantile(p)) for p in (0.0, 0.01, 0.25, 0.5, 0.75, 0.99, 1.0)]

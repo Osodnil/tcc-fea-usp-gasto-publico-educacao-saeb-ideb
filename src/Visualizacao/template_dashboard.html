@@ -572,7 +572,7 @@ for (const [k, v] of [["Municípios com nota", n0(nMun)], ["UFs", "27"], ["Ediç
   c.append(k + ": ", b); chips.appendChild(c); }
 const pend = document.getElementById("pend");
 pend.append(Object.assign(document.createElement("b"), { textContent: "Decisões ainda em validação com a orientadora: " }),
-  "IDHM do ano anterior como controle; tratamento da ausência da linha de Ensino Superior no gasto estadual (versões A e B ao lado); critério para os gastos por aluno extremos (aqui só marcados, nada foi excluído).");
+  "tratamento da ausência da linha de Ensino Superior no gasto estadual (versões A e B ao lado); desenho da análise de clusters; uso do IDHM como controle (risco de circularidade com a educação). Os gastos por aluno extremos ficam na análise (decisão da orientadora); aqui eles só aparecem marcados.");
 
 preencherSelects(); render();
 })();

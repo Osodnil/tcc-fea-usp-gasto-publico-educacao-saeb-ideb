@@ -54,10 +54,12 @@ def carregar(padrao: str) -> pl.DataFrame:
 
 def transformar_siope() -> pl.DataFrame:
     # Numerador: subfunção 361 paga, camada municipal, sem linhas TOTAL (decisões G5 e G6).
-    # Filtra pelo código, não pelo texto: o rótulo vira só "361" em 2024-2025.
+    # Só rótulos que COMEÇAM com 361: "361 - Ensino Fundamental" (até 2023) e "361" (2024-2025).
+    # Rótulos atípicos como "SubFunção 361 - Fonte 01 ..." ficam de fora.
     gasto_361 = (
         carregar("siope_funcao_{ano}_extraido.parquet")
-        .filter((pl.col("TIPO") == "Municipal") & (pl.col("COD_SUBF") == "361") & ~pl.col("EH_TOTAL"))
+        .filter((pl.col("TIPO") == "Municipal") & pl.col("DES_SUBF").str.contains(r"^\s*361\s*(-|$)")
+                & ~pl.col("EH_TOTAL"))
         .group_by("NUM_ANO", "COD_MUNI")
         .agg(pl.col("VAL_DESP_PAGA").sum().alias("GASTO_361_NOMINAL"))
     )

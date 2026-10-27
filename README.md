@@ -34,6 +34,7 @@ data/
     diagnosticos/   saídas de testes e conferências
   processed/    painéis finais (versionados)
 docs/           registro de decisões e resumo para a orientadora
+  historico/    dossiê das conversas anteriores ao repositório (desatualizado; só registro)
 relatorios/     dashboard HTML de conferência (versionado)
 src/
   Extract/      extração de cada fonte → data/interim
@@ -121,7 +122,7 @@ Para rodar um script isolado, chame-o diretamente, por exemplo `python src/Trans
 | Script | Saída |
 |---|---|
 | `Transform_IBGE.py` | `ibge_transformado` |
-| `Transform_IDHM.py` | `idhm_transformado` (com `ANO_REF_SAEB` = ano + 1) |
+| `Transform_IDHM.py` | `idhm_transformado` (série 2015–2024) |
 | `Transform_SAEB.py` | `saeb_{municipal,estadual}_transformado` |
 | `Transform_Matriculas.py` | `matriculas_{municipal,estadual}_transformado` |
 | `Transform_Infraestrutura.py` | `censo_escolar_transformado` |
@@ -149,7 +150,7 @@ Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os doc
 
 ## Saídas principais
 
-- **`painel_municipal.parquet`:** uma linha por município × etapa (AI/AF) × edição do Saeb. Traz notas, IDEB, matrículas, gasto por aluno em R$ de 2025 no mesmo ano e com 1, 2 e 4 anos de defasagem (`_L0`, `_L1`, `_L2`, `_L4`), marca de gasto extremo e controles (alfabetização, população, região, IDHM da UF no ano anterior e infraestrutura).
+- **`painel_municipal.parquet`:** uma linha por município × etapa (AI/AF) × edição do Saeb. Traz notas, IDEB, matrículas, gasto por aluno em R$ de 2025 no mesmo ano e com 1, 2 e 4 anos de defasagem (`_L0`, `_L1`, `_L2`, `_L4`), marca de gasto extremo e controles (alfabetização, população, região, IDHM da UF do mesmo ano, vazio em 2025, e infraestrutura).
 - **`painel_estadual.parquet`:** uma linha por UF × etapa (AF/EM) × edição. Traz o gasto por aluno nas versões A e B (tratamento da ausência da subfunção 12.364), com as mesmas defasagens, e os controles por UF.
 - **`dashboard_conferencia.html`:** página única que abre offline em qualquer navegador. Mostra a dispersão gasto × nota, a evolução 2017–2025, o ranking por UF, a cobertura e uma tabela detalhada. É apenas descritiva.
 
@@ -157,8 +158,11 @@ Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os doc
 
 - ✅ Extração, tratamento e painéis concluídos e validados.
 - ✅ Dashboard HTML de conferência.
-- 🟡 Decisões aguardando a orientadora (seção 9 de `docs/decisoes_metodo.md`): IDHM com defasagem, ausência da 12.364 no SICONFI, Anos Finais na camada municipal, recorte geográfico, tratamento de gastos extremos e extensão das matrículas para 2015–2016.
-- ⏳ Análise exploratória, estimações, indicadores de eficiência e dashboard final em Power BI.
+- ✅ Decisões da reunião de 23/10/2026 aplicadas: IDHM do mesmo ano (2025 sem IDHM, como limitação) e outliers mantidos.
+- 🟡 Pendentes com a orientadora (seção 9 de `docs/decisoes_metodo.md`): desenho dos clusters, IDHM Renda × IDHM total, medida principal de desempenho, seleção da amostra, ausência da 12.364, escopo e testes de sensibilidade.
+- ⏳ Análise exploratória, análise de clusters, estimações, dashboard final em Power BI e acesso simples ao projeto (QR Code).
+
+As limitações do trabalho estão consolidadas na seção 10 de `docs/decisoes_metodo.md`.
 
 ## Uso de IA
 

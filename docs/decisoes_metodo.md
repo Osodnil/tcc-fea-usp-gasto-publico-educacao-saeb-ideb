@@ -2,9 +2,9 @@
 
 Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada base e das decisões tomadas para contorná-los. Serve de base para a seção de Método e para as reuniões com a orientadora.
 
-- **Última atualização:** 2026-10-22
-- **Fontes deste registro:** código e dados do repositório, os testes em `src/Testes`, os diagnósticos em `data/interim/diagnosticos` e as instruções do projeto. Os números marcados com † foram recalculados nesta data a partir dos parquets em `data/interim`; os demais vêm dos testes ou das instruções, e não foram reverificados.
-- **Status:** ✅ fechada · 🟡 provisória (validar com a orientadora) · ⚠️ problema em aberto
+- **Última atualização:** 2026-10-26 (decisões da reunião de 2026-10-23 e incorporação do dossiê da conta anterior)
+- **Fontes deste registro:** código e dados do repositório, os testes em `src/Testes`, os diagnósticos em `data/interim/diagnosticos`, as instruções do projeto e o dossiê das conversas anteriores (`docs/historico/`). Os números marcados com † foram recalculados a partir dos parquets em `data/interim`; os marcados "(dossiê)" vêm das conversas anteriores; os demais vêm dos testes ou das instruções. Esses dois últimos grupos não foram reverificados.
+- **Status:** ✅ fechada · 🟡 provisória (validar com a orientadora) · ⚠️ problema em aberto. As pendências estão na seção 9 e as limitações consolidadas na seção 10.
 
 ---
 
@@ -37,7 +37,7 @@ Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada b
 
 O dashboard de conferência (2026-10-22) é um HTML autocontido, que abre offline, gerado a partir dos painéis. Ele é só descritivo: gasto por aluno do mesmo ano do Saeb, mediana do gasto e média simples das notas entre as unidades, sem nenhum modelo estimado. Ele não muda nenhum resultado.
 | Saeb/IDEB | ✅ `Extract_SAEB.py` | ✅ `Transform_SAEB.py` | `saeb_{municipal,estadual}_transformado` |
-| IDHM por UF | ✅ | ✅ (com t−1, ver C1) | `idhm_transformado` |
+| IDHM por UF | ✅ | ✅ (mesmo ano do Saeb; 2025 sem IDHM, ver C1) | `idhm_transformado` |
 | IBGE, Censo 2022 (alfabetização) | ✅ | ✅ | `ibge_transformado` |
 | IPCA | ✅ `Extract_IPCA.py` | não precisa | `ipca_deflator_anual` |
 
@@ -60,6 +60,7 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Problema:** o SIOPE só tem dados a partir de 2017; a sondagem da API confirmou 2017 como o primeiro ano.
 - **Decisão:** a janela vai de 2017 a 2025 e contém cinco edições do Saeb.
 - **Consequência:** as defasagens possíveis ficam limitadas. Com gasto desde 2017, a defasagem de 2 anos só vale para o Saeb de 2019 em diante, e a de 4 anos só a partir de 2021. Na camada estadual, o SICONFI começa em 2014, o que permite defasagens maiores.
+- **Literatura (dossiê):** os estudos brasileiros de gasto municipal × IDEB (SciELO, ANPEC, ENAP) costumam encontrar efeito defasado, de cerca de quatro anos, e relação heterogênea entre estados. Isso torna a defasagem L4 relevante, apesar de ela só existir para 2021, 2023 e 2025. Cada artigo precisa ser verificado antes de ser citado.
 
 ### E3. Recorte geográfico ⚠️ (depende da orientadora)
 - A orientadora sugeriu SP, mas o resultado da reunião não foi registrado. O pipeline atual cobre o Brasil inteiro, então um recorte pode ser aplicado depois, na análise, sem refazer o ETL.
@@ -100,6 +101,7 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
   - **(b) Ausência = dado faltante,** e o par UF/ano sai da amostra ou é imputado.
 - **Riscos:** a regra geral do projeto ("ausência não é zero") aponta para (b), mas no DCA é comum que uma conta sem movimento simplesmente não seja publicada, o que favorece (a). Para AC, RO e SE, a hipótese de que o estado não mantém universidade estadual nesses anos favoreceria (a), mas ainda não foi verificada. No RS, a linha existe antes e depois da lacuna de 2018–2023, o que sugere dado faltante ou classificação em outra conta.
 - **Implementação provisória:** `Transform_SICONFI.py` gera as duas versões, `GASTO_BASICA_A_*` e `GASTO_BASICA_B_*`, além da marca `SUP364_AUSENTE`. A escolha fica para depois da reunião, sem refazer nada.
+- **Dossiê da conta anterior:** a especificação original do Transform estadual já previa tratar a ausência como zero (versão A). O dossiê também registra que o RS tem universidade estadual, e por isso o zero no RS seria provavelmente uma classificação diferente, de efeito pequeno diante do total. Isso não foi verificado.
 - **Encaminhamento:** levar à orientadora. Antes disso, conferir no DCA de RS (2018–2023) se o Ensino Superior foi lançado em outra subfunção.
 
 ### G4b. Total da função 12 maior que a soma das subfunções listadas ⚠️ (achado de 2026-10-22)
@@ -108,12 +110,11 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Efeito:** o gasto estadual usado (total da função 12 menos 12.364) pode incluir gastos que não chegam à sala de aula, com peso diferente entre os estados.
 - **Encaminhamento:** registrar como limitação. Se houver tempo, testar a variante "soma das subfunções da educação básica" (361 + 362 + 365 + 366 + 367 + 368 + 122) como sensibilidade.
 
-### G5. Subfunção 361 do SIOPE: identificar pelo código, não pelo texto ✅
-- **Problema:** o rótulo muda ao longo do tempo†. Até 2023 ele é "361 - Ensino Fundamental"; em 2024 e 2025, só "361". Também há linhas "TOTAL …" (de 2017 a 2023), que somariam o mesmo gasto duas vezes, e um rótulo atípico ("SubFunção 361 - Fonte 01 - Aplic. 110": uma linha, SP 2017, R$ 146 mil).
-- **Decisão:**
-  - filtrar `COD_SUBF == "361"` e `EH_TOTAL == False` e `TIPO == "Municipal"`;
-  - não filtrar pelo texto "361 - …", porque isso apagaria 2024 e 2025;
-  - a linha atípica de 2017 fica, porque o valor é irrelevante.
+### G5. Subfunção 361 do SIOPE: rótulos que começam com "361" ✅ (revisada em 2026-10-26)
+- **Problema:** o rótulo muda ao longo do tempo†. Até 2023 ele é "361 - Ensino Fundamental"; em 2024 e 2025, só "361". Também há linhas "TOTAL …" (de 2017 a 2023), que somariam o mesmo gasto duas vezes, e rótulos fora do padrão. São 117 rótulos distintos de subfunção, segundo o dossiê; um exemplo é "SubFunção 361 - Fonte 01 - Aplic. 110", com uma linha em Louveira-SP 2017 e R$ 146 mil.
+- **Decisão (2026-10-26):** filtrar `TIPO == "Municipal"`, `EH_TOTAL == False` e rótulo `DES_SUBF` que **começa** com 361 (expressão `^\s*361\s*(-|$)`). A expressão cobre os dois formatos ("361 - …" e "361") e deixa de fora os rótulos atípicos.
+- **Histórico:** de 2026-10-22 a 2026-10-26 o filtro foi `COD_SUBF == "361"` (primeiro número de 3 dígitos do rótulo), que incluía a linha atípica de Louveira. A regra foi alinhada com a do dossiê da conta anterior, que é mais rigorosa.
+- **Efeito da troca†:** muda só o gasto de Louveira em 2017 (R$ 146 mil a menos, nominais). No painel, isso afeta 3 linhas: AI 2017 no L0, e as edições de 2019 e 2021 nas defasagens que usam 2017. Nada mais muda.
 - **Teste de consistência:** a participação da 361 no gasto total em educação fica estável entre 0,59 e 0,63 de 2017 a 2025†. Ou seja, não há quebra de classificação, e o crescimento nominal do gasto municipal em 361 (95 → 223 bi de 2017 a 2025†) acompanha o gasto total, puxado pela expansão do FUNDEB a partir de 2021.
 
 ### G6. O SIOPE por subfunção traz também linhas estaduais ✅
@@ -124,6 +125,13 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Decisão:** usar a despesa paga (não a empenhada nem a liquidada) do 6º bimestre do SIOPE (`Num_Peri = 6`), que é o acumulado do ano, e a coluna "Despesas Pagas" do SICONFI.
 - **Por quê:** a despesa paga mede o recurso que efetivamente saiu.
 - **Limitação:** restos a pagar inscritos no ano ficam de fora.
+
+### G12. O gasto por aluno é anual; o Saeb é bienal ✅ · 🟡 sensibilidade (pergunta da orientadora, 2026-10-23)
+- **Pergunta:** o gasto por aluno é anual ou bianual?
+- **Resposta:** é **anual**. O SIOPE e o SICONFI informam o gasto acumulado de cada ano (2017 a 2025), e o gasto de cada ano é dividido pelas matrículas do mesmo ano†. O que é bienal é o Saeb.
+- **Como os dois se encontram:** cada edição do Saeb usa o gasto do mesmo ano (`_L0`). Os anos sem Saeb, como 2018, entram pelas defasagens (`_L1` para a edição de 2019).
+- **Evidência:** o gasto por aluno de um ano e o do ano anterior têm correlação de 0,80 entre os municípios (AI, com nota)†. A escolha importa pouco, mas importa.
+- **Proposta:** manter o gasto anual como medida principal e testar como sensibilidade a **média do biênio** (ano do Saeb e ano anterior), que capta o investimento acumulado entre duas provas (A4).
 
 ### G8. Valores em reais de 2025 ✅
 - **Decisão:** deflacionar pelo IPCA médio anual (SIDRA, tabela 1737), com base 2025 = 1.
@@ -156,6 +164,7 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 ### M2. Mudança de layout do Censo Escolar em 2025 ✅
 - **Problema:** até 2024, as matrículas vêm num arquivo único (`microdados_ed_basica`). Em 2025 elas passaram a vir separadas, em `tabela_escola` e `tabela_matricula`.
 - **Decisão:** o extrator trata os dois layouts e, em 2025, junta as tabelas por `CO_ENTIDADE` (`Teste5_SIOPE.py` / `Extract_Censo_Matriculas.py`).
+- **Escolas sem matrícula (dossiê):** em 2025, 35.426 das 214.192 escolas (16,5%) não têm linha na Tabela de Matrícula. A proporção é a mesma das escolas sem matrícula em 2024 (12% nas estaduais, 17% nas municipais, 19% nas privadas), então tratá-las como zero matrícula é coerente. Segundo o dossiê, o `QT_MAT_MED` de 2025 mantém a mesma definição dos anos anteriores (soma de propedêutico, magistério e técnico), então a queda do M3 não é mudança de definição.
 
 ### M4. Escola sem UF no Censo Escolar 2025 ✅ (2026-10-22)
 - **Problema:** uma escola de Uruguaiana (RS, 4319901), com 28 matrículas, veio sem `SG_UF` em 2025. Ela criava uma segunda linha para o município e também ficava de fora da soma estadual.
@@ -205,7 +214,7 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Decisão:** mapear as abreviações em `Extract_SAEB.py` (commit `e3153de`). Agora são 27 UFs.
 
 ### S8. Seleção da amostra pela divulgação do Saeb 🟡 (2026-10-22)
-- **Problema:** o Inep só divulga a nota das redes que atingem critérios mínimos de participação (os números exatos dos critérios não foram verificados). Entre os municípios com rede municipal, ficam sem nota†:
+- **Problema:** o Inep só divulga a nota das redes que atingem critérios mínimos de participação. Segundo o dossiê da conta anterior, a escola precisa de pelo menos 10 estudantes e 80% de participação, e o município, de 10 estudantes e 50%. O critério municipal teria mudado entre 2021 e 2022. Esses números não foram conferidos aqui na nota técnica do Inep, e é preciso conferi-los antes de citá-los no TCC. Entre os municípios com rede municipal, ficam sem nota†:
   - **Anos Iniciais:** de 2,4% (2025) a 12,8% (2021).
   - **Anos Finais:** de 15,3% (2017) a 32,8% (2021). Em 2023, 157 dos 717 municípios sem nota de AF não tinham matrícula municipal nessa etapa naquele ano.
   - **Gasto ausente:** é irrelevante, no máximo 18 municípios por edição.
@@ -236,20 +245,21 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 
 ## 6. Controles
 
-### C1. IDHM por UF com defasagem de um ano (t−1) 🟡 — pendente de validação com a orientadora
+### C1. IDHM por UF do mesmo ano da edição do Saeb ✅ (orientadora, 2026-10-23)
 *(antes registrada como D1)*
 
-- **Data:** 2026-10-21
-- **Decisão:** o controle socioeconômico de cada edição do Saeb é o IDHM da UF do ano anterior (Saeb 2017 ← IDHM 2016, …, Saeb 2025 ← IDHM 2024).
-- **Por quê:** a série anual do IDHM por UF (Radar IDHM, PNUD/FJP/IBGE, base PNAD Contínua, divulgada em 26/05/2026) termina em 2024, e não há IDHM 2025. Usar t−1 em todas as edições evita imputar valores e trata as cinco edições da mesma forma.
-- **Alternativas consideradas:**
-  - Repetir o IDHM 2024 em 2025, marcado como imputado: mexe só em 2025, mas trata uma edição de forma diferente das outras. **Sugerida como teste de sensibilidade.**
-  - Projetar 2025 pela tendência: descartada, porque o valor seria inventado.
-  - Excluir 2025 das estimações com IDHM: descartada, porque perde a edição de maior cobertura.
-- **Implementação:** `src/Transform/Transform_IDHM.py`, coluna `ANO_REF_SAEB = ANO + 1` (Int32). O merge casa `saeb_*_transformado.ANO` com `idhm_transformado.ANO_REF_SAEB`. As cinco edições têm as 27 UFs†.
-- **Como reverter:** no merge, casar com `ANO` em vez de `ANO_REF_SAEB` e decidir o tratamento de 2025. Nada mais precisa mudar.
-- **Para o Método:** "O controle socioeconômico é o IDHM da UF no ano anterior à aplicação do Saeb (t−1), pois a série do PNUD termina em 2024."
+- **Decisão final:** cada edição do Saeb usa o IDHM da UF do mesmo ano (Saeb 2017 ← IDHM 2017, …, Saeb 2023 ← IDHM 2023). **A edição de 2025 fica sem IDHM**, porque a série anual do PNUD (Radar IDHM, PNUD/FJP/IBGE, base PNAD Contínua, divulgada em 26/05/2026) termina em 2024. Isso é uma limitação, documentada em L4.
+- **Consequência prática:** os modelos que usam o IDHM cobrem 2017–2023. A edição de 2025 entra nas análises descritivas e nos modelos sem IDHM. No painel, o IDHM é nulo em todas as linhas de 2025 e só nelas† (8.612 linhas com nota no municipal, 54 no estadual).
+- **Histórico:** em 2026-10-21 tínhamos adotado provisoriamente o IDHM do ano anterior (t−1) em todas as edições, para não deixar 2025 sem controle. A orientadora preferiu comparar com o IDHM do ano respectivo e tratar 2025 como limitação.
+- **Implementação (2026-10-26):** `Transform_IDHM.py` deixou de criar `ANO_REF_SAEB`, e `Montar_Paineis.py` casa o IDHM pelo próprio `ANO`. A coluna `ANO_IDHM` saiu dos painéis, porque agora é igual a `ANO`. As demais colunas ficaram idênticas às da versão anterior (conferido).
+- **Para o Método:** "O controle socioeconômico é o IDHM da UF no mesmo ano da aplicação do Saeb. Como a série do PNUD termina em 2024, a edição de 2025 não tem esse controle."
 - **Observação:** o rodapé da planilha diz "Atlas … 2022", embora a série vá até 2024. Registrar a data em que o arquivo foi baixado na citação da fonte.
+
+### C1b. O IDHM impacta ou é impactado pela educação? 🟡 (pedido da orientadora, 2026-10-23)
+- **Problema:** o IDHM tem uma dimensão de Educação, que mede a escolaridade da população adulta e o fluxo escolar de crianças e jovens. Controlar pelo IDHM total pode significar controlar, em parte, pelo próprio resultado educacional (circularidade, ou "mau controle").
+- **Evidência inicial (estados, Anos Finais, IDHM do mesmo ano, 2017–2023)†:** correlação com a nota padronizada N de 0,49 para o IDHM total, 0,48 para o IDHM Educação e 0,45 para o IDHM Renda. Educação e Renda têm 0,77 entre si.
+- **Proposta:** usar o **IDHM Renda** (e eventualmente Longevidade) como controle principal, no lugar do IDHM total, e mostrar no Método a comparação com o total. Investigar a direção da relação na análise exploratória.
+- **Pendente:** validar a proposta com a orientadora.
 
 ### C2. Alfabetização: Censo 2022, estática ✅
 - **Decisão:** usar a taxa de alfabetização de 15 anos ou mais do Censo Demográfico 2022, por município, como controle fixo no tempo. Com efeitos fixos de município, ela só entra em análises sem efeito fixo, como a comparação entre municípios.
@@ -275,18 +285,33 @@ Falar sempre em associação e eficiência relativa.
 ### A4. Testes de sensibilidade previstos 🟡
 1. Sem 2021 (S5).
 2. Sem 2025 na camada estadual (M3).
-3. IDHM do mesmo ano, com 2024 repetido em 2025 (C1).
+3. IDHM Renda no lugar do IDHM total, e vice-versa (C1b).
 4. Tratamento alternativo da 12.364 (G4) e gasto estadual pela soma das subfunções da educação básica (G4b).
-5. Com e sem os valores extremos de gasto por aluno (A5).
-6. Painel balanceado: só municípios com nota nas cinco edições (S8).
+5. Painel balanceado: só municípios com nota nas cinco edições (S8).
+6. Gasto médio do biênio (ano do Saeb e ano anterior) no lugar do gasto anual (G12).
 
-### A5. Valores extremos de gasto por aluno: marcar, não excluir 🟡 (2026-10-22)
+*(Revisão de 2026-10-23: saiu o teste "com e sem os gastos extremos", porque a orientadora decidiu não removê-los (A5). Saiu também o teste "IDHM do mesmo ano", porque ele passou a ser a especificação principal (C1).)*
+
+### A6. Análise de clusters 🟡 (pedido da orientadora, 2026-10-23)
+- **Decisão da orientadora:** incluir uma análise de clusters.
+- **Proposta de desenho (a validar):** agrupar os municípios **só pelo contexto** (porte da rede, população, alfabetização, IDHM Renda, infraestrutura) e depois comparar gasto por aluno e nota dentro de cada grupo. Assim se identifica quem entrega mais ou menos do que os pares comparáveis, que é o centro da pergunta do TCC e é fácil de explicar a um gestor.
+- **Alternativa:** agrupar por tudo junto (gasto, nota e contexto), para descrever perfis como "alto gasto e baixo desempenho". É mais descritiva e responde menos à pergunta de eficiência.
+- **A definir:** unidade (municípios em Anos Iniciais, como principal), período (uma edição ou a média das edições), método (k-médias com variáveis padronizadas; número de grupos por silhueta e cotovelo) e se haverá uma versão estadual (27 UFs é pouco para clusters).
+
+### A7. Forma simples de acessar o projeto 🟡 (pedido da orientadora, 2026-10-23)
+- **Decisão da orientadora:** ao final, oferecer um acesso simples ao projeto, como um QR Code.
+- **Requisito:** o QR Code precisa apontar para um endereço que a pessoa consiga abrir sem login. Hoje o repositório no GitHub é privado.
+- **Opções:** publicar o dashboard como página na web (link do claude.ai, GitHub Pages com o repositório público, ou Power BI publicado) e gerar o QR Code por script a partir desse link.
+- **Quando:** na etapa final, depois do dashboard definitivo.
+
+### A5. Valores extremos de gasto por aluno: manter na análise ✅ (orientadora, 2026-10-23)
+- **Decisão final:** a orientadora decidiu que **não é preciso remover os outliers**. Todos os valores entram na análise. A marca `GASTO_EXTREMO_L{k}` continua no painel só como informação, por exemplo para comentar casos no texto.
 - **Evidência:** a distribuição do gasto municipal por aluno (L0, linhas com nota de AI) tem mediana de R$ 11,2 mil e intervalo de 1% a 99% entre R$ 5,3 mil e R$ 25,6 mil†. Nas pontas, porém, aparecem valores implausíveis:
   - **Muito baixos:** Cáceres-MT 2021 (R$ 210), Carlópolis-PR 2023 (R$ 305), São Luís-MA 2017 (R$ 1,8 mil). São Luís 2017 já tinha aparecido como caso extremo na reconciliação com o SICONFI (G1).
   - **Muito altos:** redes com poucas matrículas, como Queluzito-MG 2023 (73 alunos, R$ 64,5 mil).
   - 131 dos 50 mil pares município/ano têm o gasto 361 multiplicado por mais de 3 ou dividido por mais de 3 de um ano para o outro†.
-- **Decisão provisória:** o painel mantém todos os valores e marca com `GASTO_EXTREMO_L{k}` os que ficam fora do intervalo de 0,5% a 99,5% do ano (225 linhas de AI, 174 delas com nota). Isso é cerca de 0,7% da amostra com nota (lista em `diagnosticos/gasto_aluno_extremos_municipal.csv`).
-- **A decidir na análise:** excluir os marcados, winsorizar ou usar o logaritmo do gasto. A sugestão é usar o logaritmo do gasto por aluno na especificação principal e rodar a análise com e sem os marcados como sensibilidade.
+- **Marcação:** o painel marca com `GASTO_EXTREMO_L{k}` os valores fora do intervalo de 0,5% a 99,5% do ano (225 linhas de AI, 174 delas com nota), cerca de 0,7% da amostra com nota (lista em `diagnosticos/gasto_aluno_extremos_municipal.csv`).
+- **Ainda a definir na análise:** usar o logaritmo do gasto por aluno, que reduz o peso das pontas sem remover ninguém, é compatível com a decisão e continua sendo a sugestão para a especificação principal.
 
 ---
 
@@ -294,15 +319,16 @@ Falar sempre em associação e eficiência relativa.
 
 ### P1. Estrutura dos painéis ✅ (2026-10-22)
 - **Script:** `src/Transform/Montar_Paineis.py`. As saídas ficam em `data/processed/`.
-- **Painel municipal (`painel_municipal.parquet`):** uma linha por município × etapa (AI, AF) × edição do Saeb. São 46.815 linhas e 40 colunas, com chave única†.
+- **Painel municipal (`painel_municipal.parquet`):** uma linha por município × etapa (AI, AF) × edição do Saeb. São 46.815 linhas e 39 colunas, com chave única†.
   - **Base:** a lista de municípios com rede municipal no Saeb.
-  - **Colunas:** notas e IDEB, matrículas, gasto 361, gasto por aluno nas defasagens 0, 1, 2 e 4 anos, a marca de valor extremo, alfabetização e população (Censo 2022), região, IDHM da UF defasado (C1) e a infraestrutura da rede municipal no mesmo ano.
-- **Painel estadual (`painel_estadual.parquet`):** uma linha por UF × etapa (AF, EM) × edição. São 270 linhas e 37 colunas, com chave única†.
-  - **Colunas:** gasto por aluno nas versões A e B (G4) e nas mesmas defasagens, alfabetização da UF (soma dos municípios), IDHM defasado e infraestrutura da rede estadual (média municipal ponderada pelo número de escolas).
+  - **Colunas:** notas e IDEB, matrículas, gasto 361, gasto por aluno nas defasagens 0, 1, 2 e 4 anos, a marca de valor extremo, alfabetização e população (Censo 2022), região, IDHM da UF do mesmo ano (C1; nulo em 2025) e a infraestrutura da rede municipal no mesmo ano.
+- **Painel estadual (`painel_estadual.parquet`):** uma linha por UF × etapa (AF, EM) × edição. São 270 linhas e 36 colunas, com chave única†.
+  - **Colunas:** gasto por aluno nas versões A e B (G4) e nas mesmas defasagens, alfabetização da UF (soma dos municípios), IDHM do mesmo ano (nulo em 2025) e infraestrutura da rede estadual (média municipal ponderada pelo número de escolas).
+- **Atualização de 2026-10-26:** com a troca do IDHM para o mesmo ano (C1), a coluna `ANO_IDHM` saiu dos dois painéis (antes eram 40 e 37 colunas).
 - **Regras do gasto por aluno:**
   - O gasto do ano t−k é dividido pelas matrículas do próprio ano t−k.
   - Gasto 361 igual a zero (G11) ou matrícula igual a zero (M5) viram nulo.
-  - Os controles só ficam nulos para Boa Esperança do Norte-MT (5101837), que está fora do Censo 2022, ver C2.
+  - Fora o IDHM de 2025 (C1), os controles só ficam nulos para Boa Esperança do Norte-MT (5101837), que está fora do Censo 2022, ver C2.
 
 ### P2. Cobertura das defasagens ✅
 - **Municípios:** o gasto começa em 2017. Por isso, L1 e L2 só existem a partir do Saeb 2019 e L4 a partir de 2021. Com nota e gasto L0, o painel tem de 4.750 a 5.306 municípios em AI e de 2.629 a 3.310 em AF, conforme o ano†.
@@ -364,14 +390,71 @@ Falar sempre em associação e eficiência relativa.
 
 ---
 
-## 9. Para levar à orientadora
+## 9. Reuniões com a orientadora
 
-1. **C1:** IDHM com defasagem t−1.
-2. **G4:** tratamento da ausência da 12.364 (RO em todos os anos, AC e SE até 2024, RS em 2018–2023). **G4b:** o total da função 12 inclui gastos fora das subfunções listadas.
-3. **S4:** manter Anos Finais na camada municipal, com a amostra selecionada?
-4. **E3:** recorte geográfico (Brasil ou SP).
-5. **M3, S5 e A5:** confirmar os testes de sensibilidade (sem 2021, sem 2025 estadual, com e sem os gastos extremos) e o tratamento dos valores extremos.
-6. **P3:** vale estender as matrículas para 2015–2016 para ter defasagens na camada estadual?
-7. **S8:** a amostra é selecionada pela divulgação do Saeb (redes pequenas ficam sem nota). A proposta é descrever a seleção, controlar o porte e testar com um painel balanceado, sem imputar notas. A orientadora está de acordo?
-8. **S9:** qual medida de desempenho será a principal (Matemática, Português ou nota padronizada N)?
-9. **Integridade acadêmica:** o Manual exige informar e discutir previamente o uso de IA. Este registro e parte do código foram produzidos com apoio de IA, o que deve ser comunicado e documentado no Método.
+### Reunião de 2026-10-23
+Anotações do Henrique, registradas como vieram:
+
+| Ponto | Decisão ou pedido | Onde está registrado |
+|---|---|---|
+| Análise de clusters | Incluir uma análise de clusters | A6 (desenho a validar) |
+| Outliers | Não é preciso remover | A5 ✅ |
+| Gasto anual ou bianual | Entender a periodicidade | G12 (é anual; média do biênio como sensibilidade) |
+| IDHM | Usar o IDHM do ano respectivo, sem t−1; 2025 é uma limitação, desde que documentada | C1 ✅, L4 |
+| IDHM e educação | Entender se o IDHM impacta ou é impactado pela educação | C1b (proposta: IDHM Renda) |
+| Acesso ao projeto | Ao final, uma forma simples de acesso, como QR Code | A7 |
+| Registro | Manter anotada toda e qualquer decisão e limitação | Este documento e a seção 10 |
+
+### Pendências para a próxima reunião
+Itens que a reunião de 2026-10-23 não cobriu, ou que geraram proposta nova:
+
+1. **A6:** desenho da análise de clusters (agrupar por contexto e comparar gasto e nota dentro dos grupos?).
+2. **C1b:** usar o IDHM Renda no lugar do IDHM total?
+3. **S9:** qual será a medida principal de desempenho (proposta: nota padronizada N)?
+4. **S8:** a seleção da amostra pela divulgação do Saeb. A proposta é descrever a seleção, controlar o porte e testar com painel balanceado, sem imputar notas.
+5. **G4:** tratamento da ausência da 12.364 (RO em todos os anos, AC e SE até 2024, RS em 2018–2023). **G4b:** o total da função 12 inclui gastos fora das subfunções listadas.
+6. **S4:** manter Anos Finais na camada municipal, com a amostra selecionada?
+7. **E3:** recorte geográfico (Brasil ou SP).
+8. **A4 e P3:** lista de testes de sensibilidade; vale estender as matrículas para 2015–2016?
+9. **Integridade acadêmica:** o Manual exige informar e discutir previamente o uso de IA. Parte do código e deste registro foi produzida com apoio de IA, o que deve ser comunicado e documentado no Método (roteiro no item D5 abaixo).
+10. **D1:** formato do TCC: método científico ou consultoria?
+11. **D2:** perguntas analíticas e indicadores formais, que respondem aos pontos do e-mail de 02/10.
+12. **D3:** usuário-alvo: secretaria estadual, municipal ou as duas?
+
+### Dossiê da conta anterior (incorporado em 2026-10-26)
+O dossiê das conversas anteriores (arquivos 01 a 05, guardados em `docs/historico/`) foi comparado com o estado atual. Os achados de dados entraram nos itens G4, G5, M2, S8 e E2 e nas limitações L13 e L14. Abaixo ficam as pendências que só apareciam no dossiê.
+
+- **D1. Formato do TCC 🟡:** o Manual aceita três formatos (método científico, consultoria e empreendedor). O projeto vem sendo chamado de consultoria, mas a pergunta central ("o gasto se associa ao desempenho? com que defasagem?") é de descoberta, típica de estudo quantitativo, com o dashboard como produto aplicado. A escolha muda a estrutura e os critérios de avaliação. Confirmar com a orientadora e conferir no PDF do Manual as exigências de cada formato.
+- **D2. Os pontos do e-mail de 02/10 ainda sem resposta depois do pivô 🟡:** a orientadora pediu um documento de 3 a 5 páginas com nove pontos. O documento entregue (`Delimitacao_TCC_Reuniao.docx`) era anterior ao pivô. Falta responder, nos termos do projeto atual:
+  - **pergunta de pesquisa;**
+  - **perguntas analíticas:** de 5 a 8. Há 6 em rascunho no arquivo 01: associação gasto × nota com defasagem; efeito dentro do município; quem está acima ou abaixo do esperado; camada estadual; heterogeneidade por porte e região; robustez à fonte e a 2021;
+  - **indicadores formais:** nome, fórmula, unidade, variáveis e interpretação de cada um (por exemplo, gasto por aluno real, nota padronizada N, resíduo de eficiência);
+  - **unidade de análise e chaves de integração:** já definidas (município na camada municipal, UF na estadual; chave de 7 dígitos, UF, rede e ano). Falta só escrevê-las no formato pedido.
+- **D3. Usuário-alvo 🟡:** a orientadora pediu definir se é a secretaria estadual ou as municipais. A proposta do dossiê era a secretaria estadual, com leitura por município dentro do estado. Com as duas camadas, o produto serve aos dois perfis. Confirmar.
+- **D4. Referências 🟡:** vários itens da bibliografia do documento original (por exemplo, Benjamin e Kim 2018, Dehghan et al. 2020 e Franco et al. 2015) nunca foram verificados. Confirmar a existência de cada um antes de citar. O formato APA é obrigatório a partir de 2026. A série de Leonardo Sales no Medium sobre o ENEM entra como literatura cinzenta.
+- **D5. Roteiro para o registro do uso de IA:**
+  - quais ferramentas foram usadas e para quê: apoio na escrita do código de extração e tratamento, revisão de achados e estruturação de documentos;
+  - o que a IA não fez: não definiu sozinha a pergunta de pesquisa nem as decisões de escopo, e os resultados foram conferidos pelos autores com as saídas reais dos scripts;
+  - onde o uso aparece no TCC (Método ou nota metodológica), conforme a orientadora aprovar;
+  - qualquer redação de trechos do TCC com apoio de IA precisa ser alinhada antes com a orientadora.
+
+---
+
+## 10. Limitações (para a seção de Método)
+
+Lista consolidada, conforme o pedido da orientadora de manter anotada toda limitação. Cada item remete à decisão que o originou.
+
+- **L1. Fonte do gasto [G1–G3]:** o nível do gasto depende da fonte. O SIOPE e o SICONFI divergem para o mesmo ente, sobretudo nas capitais. Cada camada usa uma única fonte.
+- **L2. Composição do gasto estadual [G4, G4b]:** a linha do Ensino Superior falta para alguns estados e anos, e o total da função 12 inclui despesas fora das subfunções detalhadas (provavelmente inativos).
+- **L3. Seleção da amostra [S4, S8]:** só entram as redes com nota divulgada pelo Inep. As redes pequenas, que gastam mais por aluno, ficam sub-representadas, sobretudo em Anos Finais e em 2021.
+- **L4. IDHM [C1, C1b]:** o IDHM só existe por UF, não por município, e a série termina em 2024. Por isso, a edição de 2025 não tem esse controle. Além disso, o IDHM inclui uma dimensão de educação, com risco de circularidade.
+- **L5. Pandemia [S5]:** a edição de 2021 tem menos resultados com nota e condições atípicas de aplicação.
+- **L6. Matrículas de 2025 [M3]:** as matrículas estaduais caem cerca de 5% em 2025, e não se sabe se é efeito real ou da mudança de layout do Censo Escolar.
+- **L7. Valores extremos [A5, G11]:** cerca de 0,7% dos municípios com nota têm gasto por aluno implausível (provável erro de registro ou rede muito pequena). Eles ficam na análise, conforme a decisão da orientadora.
+- **L8. Camada estadual [A2]:** são só 27 unidades, o que limita a precisão das estimativas e o uso de clusters.
+- **L9. Defasagens [E2, P2]:** com o gasto desde 2017, a defasagem de 2 anos só existe a partir do Saeb 2019, e a de 4 anos a partir de 2021.
+- **L10. Alfabetização estática [C2]:** vem do Censo 2022 e não varia no tempo. Um município instalado depois de 2022 fica sem esse controle.
+- **L11. Restos a pagar [G7]:** a despesa paga não inclui os restos a pagar inscritos no ano.
+- **L12. Associação, não causalidade [A1]:** os resultados descrevem associação e eficiência relativa, não efeito causal do gasto. A relação pode até se inverter, por exemplo se o FUNDEB e a complementação da União direcionam mais recursos às redes com pior desempenho.
+- **L13. Mesmo numerador para duas etapas [G5]:** a subfunção 361 cobre todo o Ensino Fundamental e não separa Anos Iniciais de Anos Finais. O mesmo gasto por aluno serve aos dois desfechos da camada municipal.
+- **L14. Gasto municipal só no Fundamental [G5]:** a Educação Infantil (subfunção 365) pesa quase tanto quanto o Fundamental no gasto municipal (SP 2023: R$ 30,1 bi contra R$ 32,2 bi, segundo o dossiê) e fica fora do numerador, porque o Saeb não a avalia. O gasto em educação do município é, portanto, bem maior do que o gasto usado.
