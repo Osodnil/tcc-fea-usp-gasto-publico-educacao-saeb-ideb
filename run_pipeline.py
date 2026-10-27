@@ -37,6 +37,9 @@ TRATAMENTO = [
     "Transform/Montar_Paineis.py",
     "Visualizacao/Gerar_Dashboard_HTML.py",
 ]
+# A malha simplificada (data/processed/malha_municipios.json) é versionada; só é refeita com
+# --com-extracao, porque lê o shapefile bruto do IBGE. Roda depois da dimensão de municípios.
+MALHA = "Visualizacao/Gerar_Malha.py"
 
 # Brutos baixados manualmente que a extração espera encontrar em data/raw
 BRUTOS = [
@@ -45,6 +48,7 @@ BRUTOS = [
     "IDHM",
     "Microdados Censo Escolar",
     "IDEB - Índice de Desenvolvimento da Educação Básica",
+    "Malha Municipal/BR_Municipios_2025.shp",
 ]
 
 
@@ -56,6 +60,8 @@ def main() -> int:
     args = p.parse_args()
 
     etapas = (EXTRACAO if args.com_extracao else []) + TRATAMENTO
+    if args.com_extracao:
+        etapas.insert(etapas.index("Visualizacao/Gerar_Dashboard_HTML.py"), MALHA)
     if args.a_partir_de:
         idx = next((i for i, s in enumerate(etapas) if args.a_partir_de.lower() in s.lower()), None)
         if idx is None:

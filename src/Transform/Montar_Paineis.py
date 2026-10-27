@@ -44,11 +44,11 @@ def idhm_uf() -> pl.DataFrame:
     )
 
 
-def painel_municipal() -> pl.DataFrame:
-    # Gasto por aluno: 361 pago (R$ 2025) / matrículas do Fundamental da rede municipal.
+def gasto_municipal_anual() -> pl.DataFrame:
+    # Gasto por aluno: 361 pago (R$ 2025) / matrículas do Fundamental da rede municipal, todos os anos.
     # Gasto 361 = 0 com gasto em educação positivo é erro de classificação (G11) e matrícula 0
     # deixa a razão indefinida (M5): os dois viram nulo, nunca zero ou infinito.
-    gasto = (
+    return (
         ler("matriculas_municipal_transformado")
         .join(ler("siope_municipal_transformado").select("CO_MUNICIPIO", "ANO", "GASTO_361_R2025"),
               on=["CO_MUNICIPIO", "ANO"], how="full", coalesce=True)
@@ -57,14 +57,81 @@ def painel_municipal() -> pl.DataFrame:
             .then(pl.col("GASTO_361_R2025") / pl.col("QT_MAT_FUND"))
             .alias("GASTO_ALUNO_R2025")
         )
-        # Marca (não exclui) valores fora de 0,5%-99,5% do ano: a regra de corte é decisão de análise (A5)
+        # Marca (não exclui) valores fora de 0,5%-99,5% do ano; ficam na análise (A5)
         .with_columns(
             (~pl.col("GASTO_ALUNO_R2025").is_between(
                 pl.col("GASTO_ALUNO_R2025").quantile(0.005).over("ANO"),
                 pl.col("GASTO_ALUNO_R2025").quantile(0.995).over("ANO"),
             )).alias("GASTO_EXTREMO")
         )
+        .sort("CO_MUNICIPIO", "ANO")
     )
+
+
+def gasto_estadual_anual() -> pl.DataFrame:
+    # Gasto por aluno: função 12 - 12.364 paga (R$ 2025) / matrículas da educação básica da rede estadual.
+    # Versões A e B enquanto a decisão G4 está pendente.
+    return (
+        ler("matriculas_estadual_transformado")
+        .join(ler("siconfi_estadual_transformado"), on=["SG_UF", "ANO"], how="left")
+        .with_columns(
+            [pl.when(pl.col("QT_MAT_BAS") > 0).then(pl.col(f"GASTO_BASICA_{v}_R2025") / pl.col("QT_MAT_BAS"))
+             .alias(f"GASTO_ALUNO_{v}_R2025") for v in ("A", "B")]
+        )
+        .sort("SG_UF", "ANO")
+    )
+
+
+# Classes de tamanho da população usadas pelo IBGE
+PORTES = [(5_000, "Até 5 mil"), (10_000, "5 a 10 mil"), (20_000, "10 a 20 mil"), (50_000, "20 a 50 mil"),
+          (100_000, "50 a 100 mil"), (500_000, "100 a 500 mil"), (float("inf"), "Mais de 500 mil")]
+
+
+def dim_municipio() -> pl.DataFrame:
+    """Uma linha por município com nome, UF, região, porte (Censo 2022) e faixa de alfabetização."""
+    nomes = (ler("saeb_municipal_transformado").select("CO_MUNICIPIO", "NO_MUNICIPIO")
+             .unique("CO_MUNICIPIO", keep="last"))
+    ibge = ler("ibge_transformado").select("CO_MUNICIPIO", "NM_MUN", "SG_UF", "NM_REGIAO",
+                                           "POPULACAO_TOTAL_CENSO", "TAXA_ALFABETIZACAO_15MAIS")
+    porte = pl.lit("Sem informação")
+    ordem = pl.lit(len(PORTES))
+    for i, (teto, rotulo) in reversed(list(enumerate(PORTES))):
+        porte = pl.when(pl.col("POPULACAO_TOTAL_CENSO") <= teto).then(pl.lit(rotulo)).otherwise(porte)
+        ordem = pl.when(pl.col("POPULACAO_TOTAL_CENSO") <= teto).then(pl.lit(i)).otherwise(ordem)
+    # Terços nacionais da taxa de alfabetização, para formar grupos de pares por contexto
+    t1, t2 = ibge["TAXA_ALFABETIZACAO_15MAIS"].quantile(1 / 3), ibge["TAXA_ALFABETIZACAO_15MAIS"].quantile(2 / 3)
+    return (
+        ibge.join(nomes, on="CO_MUNICIPIO", how="full", coalesce=True)
+        .with_columns(
+            pl.coalesce("NO_MUNICIPIO", "NM_MUN").alias("NO_MUNICIPIO"),
+            pl.coalesce("SG_UF", pl.col("CO_MUNICIPIO").str.slice(0, 2).replace_strict(UF_COD)).alias("SG_UF"),
+            porte.alias("PORTE"), ordem.cast(pl.Int8).alias("PORTE_ORDEM"),
+            pl.when(pl.col("TAXA_ALFABETIZACAO_15MAIS") <= t1).then(pl.lit("Baixa"))
+            .when(pl.col("TAXA_ALFABETIZACAO_15MAIS") <= t2).then(pl.lit("Média"))
+            .when(pl.col("TAXA_ALFABETIZACAO_15MAIS").is_not_null()).then(pl.lit("Alta"))
+            .otherwise(pl.lit("Sem informação")).alias("FAIXA_ALFABETIZACAO"),
+        )
+        .drop("NM_MUN")
+        .sort("CO_MUNICIPIO")
+    )
+
+
+UF_COD = {
+    "11": "RO", "12": "AC", "13": "AM", "14": "RR", "15": "PA", "16": "AP", "17": "TO",
+    "21": "MA", "22": "PI", "23": "CE", "24": "RN", "25": "PB", "26": "PE", "27": "AL",
+    "28": "SE", "29": "BA", "31": "MG", "32": "ES", "33": "RJ", "35": "SP", "41": "PR",
+    "42": "SC", "43": "RS", "50": "MS", "51": "MT", "52": "GO", "53": "DF",
+}
+
+
+def dim_uf() -> pl.DataFrame:
+    return ler("ibge_transformado").group_by("SG_UF").agg(
+        pl.col("NM_UF").first(), pl.col("NM_REGIAO").first(), pl.col("POPULACAO_TOTAL_CENSO").sum()
+    ).sort("SG_UF")
+
+
+def painel_municipal() -> pl.DataFrame:
+    gasto = gasto_municipal_anual()
 
     ibge = ler("ibge_transformado").select(
         "CO_MUNICIPIO", "NM_REGIAO", "POPULACAO_TOTAL_CENSO", "TAXA_ALFABETIZACAO_15MAIS"
@@ -88,21 +155,13 @@ def painel_municipal() -> pl.DataFrame:
 
 
 def painel_estadual() -> pl.DataFrame:
-    # Gasto por aluno: função 12 - 12.364 paga (R$ 2025) / matrículas da educação básica da rede estadual.
-    # Versões A e B enquanto a decisão G4 está pendente.
-    gasto = (
-        ler("matriculas_estadual_transformado")
-        .join(ler("siconfi_estadual_transformado"), on=["SG_UF", "ANO"], how="left")
-        .with_columns(
-            [pl.when(pl.col("QT_MAT_BAS") > 0).then(pl.col(f"GASTO_BASICA_{v}_R2025") / pl.col("QT_MAT_BAS"))
-             .alias(f"GASTO_ALUNO_{v}_R2025") for v in ("A", "B")]
-        )
-    )
+    gasto = gasto_estadual_anual()
 
-    # Alfabetização da UF a partir dos municípios (Censo 2022, estática)
+    # Alfabetização da UF a partir dos municípios (Censo 2022, estática), como proporção de 0 a 1,
+    # na mesma escala da taxa municipal do IBGE
     alfab = ler("ibge_transformado").group_by("SG_UF").agg(
         (pl.col("POP_ALFABETIZADA_15MAIS").sum()
-         / (pl.col("POP_ALFABETIZADA_15MAIS").sum() + pl.col("POP_NAO_ALFABETIZADA_15MAIS").sum()) * 100)
+         / (pl.col("POP_ALFABETIZADA_15MAIS").sum() + pl.col("POP_NAO_ALFABETIZADA_15MAIS").sum()))
         .alias("TAXA_ALFABETIZACAO_15MAIS"),
         pl.col("POPULACAO_TOTAL_CENSO").sum(),
         pl.col("NM_REGIAO").first(),
@@ -174,4 +233,23 @@ if __name__ == "__main__":
     validar(est, "estadual", ["SG_UF", "ETAPA", "ANO"], "SG_UF", "GASTO_ALUNO_A_R2025")
     print(f"  Linhas com 12.364 ausente no ano (versão B nula): {est['SUP364_AUSENTE'].sum()}")
 
-    print(f"\n[OK] painel_municipal.parquet e painel_estadual.parquet em {PROCESSED_DIR}")
+    # Tabelas de apoio para o dashboard e o Power BI (mesma base dos painéis)
+    apoio = {
+        "dim_municipio": dim_municipio(),
+        "dim_uf": dim_uf(),
+        "gasto_municipal_anual": gasto_municipal_anual().select(
+            "CO_MUNICIPIO", "ANO", "QT_MAT_FUND", "GASTO_361_R2025", "GASTO_ALUNO_R2025", "GASTO_EXTREMO"),
+        "gasto_estadual_anual": gasto_estadual_anual().select(
+            "SG_UF", "ANO", "QT_MAT_BAS", "SUP364_AUSENTE", "GASTO_ALUNO_A_R2025", "GASTO_ALUNO_B_R2025"),
+    }
+    print()
+    for nome, df in apoio.items():
+        df.write_parquet(PROCESSED_DIR / f"{nome}.parquet")
+        print(f"[OK] {nome}.parquet: {df.height} linhas")
+    dm = apoio["dim_municipio"]
+    print("  Municípios do painel sem linha na dimensão:",
+          mun.join(dm, on="CO_MUNICIPIO", how="anti")["CO_MUNICIPIO"].n_unique())
+    print("  Municípios por porte:", dm.group_by("PORTE_ORDEM", "PORTE").len().sort("PORTE_ORDEM").select("PORTE", "len").rows())
+    print("  Municípios por faixa de alfabetização:", dm.group_by("FAIXA_ALFABETIZACAO").len().sort("FAIXA_ALFABETIZACAO").rows())
+
+    print(f"\n[OK] painéis e tabelas de apoio em {PROCESSED_DIR}")

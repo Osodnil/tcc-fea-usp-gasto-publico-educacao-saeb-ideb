@@ -59,6 +59,7 @@ Os scripts localizam a raiz do projeto subindo até a pasta `.git`, então podem
 | Saeb/IDEB | Inep, planilhas de divulgação do IDEB 2025 (municípios: AI, AF e EM; regiões e UFs) — [página de resultados](https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados) | Manual, em `data/raw/IDEB - Índice de Desenvolvimento da Educação Básica/` |
 | Censo Escolar | Inep, microdados 2015–2025 — [dados abertos](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-escolar) | Manual, em `data/raw/Microdados Censo Escolar/<ano>/` |
 | Censo Demográfico 2022 | IBGE, planilhas `Municípios.xlsx` e `Alfabetização.xlsx` | Manual, em `data/raw/Censo/Dados/` |
+| Malha Municipal 2025 | IBGE, shapefile `BR_Municipios_2025` — [malhas territoriais](https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais.html) | Manual, em `data/raw/Malha Municipal/` |
 | IDHM por UF | Atlas Brasil / Radar IDHM (PNUD, FJP, IBGE), série 2015–2024 — [consulta](https://atlasbrasil.org.br/consulta) | Manual, em `data/raw/IDHM/` |
 
 As fontes manuais somam cerca de 35 GB, quase tudo dos microdados do Censo Escolar. Os extratores esperam esta organização em `data/raw/`:
@@ -152,7 +153,17 @@ Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os doc
 
 - **`painel_municipal.parquet`:** uma linha por município × etapa (AI/AF) × edição do Saeb. Traz notas, IDEB, matrículas, gasto por aluno em R$ de 2025 no mesmo ano e com 1, 2 e 4 anos de defasagem (`_L0`, `_L1`, `_L2`, `_L4`), marca de gasto extremo e controles (alfabetização, população, região, IDHM da UF do mesmo ano, vazio em 2025, e infraestrutura).
 - **`painel_estadual.parquet`:** uma linha por UF × etapa (AF/EM) × edição. Traz o gasto por aluno nas versões A e B (tratamento da ausência da subfunção 12.364), com as mesmas defasagens, e os controles por UF.
-- **`dashboard_conferencia.html`:** página única que abre offline em qualquer navegador. Mostra a dispersão gasto × nota, a evolução 2017–2025, o ranking por UF, a cobertura e uma tabela detalhada. É apenas descritiva.
+- **Tabelas de apoio** (`dim_municipio`, `dim_uf`, `gasto_municipal_anual`, `gasto_estadual_anual`): dimensões com porte e faixa de alfabetização, e gasto por aluno de todos os anos de 2017 a 2025. São a base comum do dashboard e do Power BI.
+- **`malha_municipios.json`:** contornos dos municípios (Malha Municipal do IBGE 2025) simplificados para o navegador, com cerca de 0,7 MB. É gerado por `src/Visualizacao/Gerar_Malha.py` a partir do shapefile bruto (`data/raw/Malha Municipal/`) e só é refeito com `run_pipeline.py --com-extracao`.
+- **`dashboard_conferencia.html`:** ferramenta de análise numa página única, que abre offline em qualquer navegador. Tem seis abas:
+  - **Visão geral:** dispersão gasto × nota, evolução, ranking por UF, cobertura e tabela.
+  - **Defasagens:** gasto de 0, 1, 2 e 4 anos antes × nota, com a correlação de Spearman.
+  - **Porte, região e contexto:** mapa de calor da nota por grupo e faixa de gasto.
+  - **Mapa:** municípios (ou UFs) coloridos por gasto, desempenho ou posição em relação aos pares, com zoom por UF.
+  - **Ficha:** de cada município ou UF, comparada com pares e com o Brasil.
+  - **Pares (exploratória):** gasto e nota em relação ao grupo de contexto.
+
+  Os filtros valem para todas as abas (camada, etapa, edição, medida de desempenho e UF). É apenas descritiva.
 
 ## Situação atual
 
@@ -160,7 +171,8 @@ Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os doc
 - ✅ Dashboard HTML de conferência.
 - ✅ Decisões da reunião de 23/10/2026 aplicadas: IDHM do mesmo ano (2025 sem IDHM, como limitação) e outliers mantidos.
 - 🟡 Pendentes com a orientadora (seção 9 de `docs/decisoes_metodo.md`): desenho dos clusters, IDHM Renda × IDHM total, medida principal de desempenho, seleção da amostra, ausência da 12.364, escopo e testes de sensibilidade.
-- ⏳ Análise exploratória, análise de clusters, estimações, dashboard final em Power BI e acesso simples ao projeto (QR Code).
+- ✅ Dashboard HTML ampliado como ferramenta de análise (6 abas, incluindo mapa).
+- ⏳ Análise de clusters, estimações, dashboard final em Power BI e acesso simples ao projeto (QR Code).
 
 As limitações do trabalho estão consolidadas na seção 10 de `docs/decisoes_metodo.md`.
 

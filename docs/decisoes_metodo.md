@@ -33,13 +33,14 @@ Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada b
 | Censo Escolar, matrículas | ✅ `Extract_Censo_Matriculas.py` | ✅ `Transform_Matriculas.py` | `matriculas_{municipal,estadual}_transformado` |
 | Censo Escolar, infraestrutura | ✅ | ✅ `Transform_Infraestrutura.py` (ver T4) | `censo_escolar_transformado` |
 | **Painéis** | — | ✅ `Montar_Paineis.py` (ver P1) | `data/processed/painel_{municipal,estadual}` |
-| **Dashboard de conferência** | — | ✅ `src/Visualizacao/Gerar_Dashboard_HTML.py` | `relatorios/dashboard_conferencia.html` |
-
-O dashboard de conferência (2026-10-22) é um HTML autocontido, que abre offline, gerado a partir dos painéis. Ele é só descritivo: gasto por aluno do mesmo ano do Saeb, mediana do gasto e média simples das notas entre as unidades, sem nenhum modelo estimado. Ele não muda nenhum resultado.
+| **Tabelas de apoio** | — | ✅ `Montar_Paineis.py` (ver P4) | `data/processed/dim_{municipio,uf}`, `gasto_{municipal,estadual}_anual` |
+| **Dashboard (ferramenta de análise)** | — | ✅ `src/Visualizacao/Gerar_Dashboard_HTML.py` (ver P5) | `relatorios/dashboard_conferencia.html` |
 | Saeb/IDEB | ✅ `Extract_SAEB.py` | ✅ `Transform_SAEB.py` | `saeb_{municipal,estadual}_transformado` |
 | IDHM por UF | ✅ | ✅ (mesmo ano do Saeb; 2025 sem IDHM, ver C1) | `idhm_transformado` |
 | IBGE, Censo 2022 (alfabetização) | ✅ | ✅ | `ibge_transformado` |
 | IPCA | ✅ `Extract_IPCA.py` | não precisa | `ipca_deflator_anual` |
+
+O dashboard é um HTML autocontido, que abre offline, gerado a partir dos painéis e das tabelas de apoio. É só descritivo (medianas, médias simples, correlação de Spearman), sem modelo estimado, e não muda nenhum resultado.
 
 A validação de 2026-10-21 concluiu que os Extracts estão completos para a pergunta. Em 2026-10-22, todas as bases foram tratadas e cruzadas nos painéis municipal e estadual. O próximo passo é a análise exploratória e, depois, as estimações.
 
@@ -338,6 +339,51 @@ Falar sempre em associação e eficiência relativa.
 - **Situação:** com as matrículas de 2015 e 2016, o Saeb 2017 ganharia L1 e L2 na camada estadual, e o de 2019 ganharia L4. Os microdados do Censo de 2015 e 2016 já estão na pasta de brutos do repositório antigo. Não existe Censo de 2014 na pasta, então o L4 de 2017 não tem como ser calculado.
 - **Custo:** rodar o `Extract_Censo_Matriculas.py` para 2015 e 2016, depois de copiar os brutos.
 - **Decisão:** pendente. Vale a pena só se a análise estadual usar defasagens.
+
+### P4. Tabelas de apoio para análise e Power BI ✅ (2026-10-27)
+- **Decisão:** o `Montar_Paineis.py` passou a gravar também quatro tabelas de apoio em `data/processed/`. São a base comum do dashboard HTML e do futuro Power BI.
+  - `dim_municipio`: 5.571 municípios, com nome, UF, região, população, porte e faixa de alfabetização.
+  - `dim_uf`: 27 UFs.
+  - `gasto_municipal_anual`: gasto por aluno de todos os anos de 2017 a 2025, não só os de Saeb.
+  - `gasto_estadual_anual`: o mesmo para as UFs, nas versões A e B.
+- **Porte:** classes de população do IBGE, pelo Censo 2022 (até 5 mil; 5 a 10 mil; 10 a 20 mil; 20 a 50 mil; 50 a 100 mil; 100 a 500 mil; mais de 500 mil). São 1.324, 1.170, 1.367, 1.052, 338, 278 e 41 municípios, nessa ordem, mais 1 sem informação (Boa Esperança do Norte)†.
+- **Faixa de alfabetização:** terços nacionais da taxa de alfabetização de 15 anos ou mais (Censo 2022), com 1.856 a 1.857 municípios cada†. Serve para formar grupos de pares por contexto.
+- **Verificação:** a refatoração (o cálculo do gasto anual virou função própria) manteve os painéis idênticos, linha a linha.
+- **Correção de escala (2026-10-27):** a taxa de alfabetização do painel estadual estava multiplicada por 100 (91,2), enquanto a municipal vinha como proporção do IBGE (0,87). As duas agora estão como **proporção de 0 a 1**. O dashboard mostra em porcentagem.
+
+### P6. Malha municipal simplificada para o mapa ✅ (2026-10-27)
+- **Fonte:** Malha Municipal do IBGE, versão 2025 (`BR_Municipios_2025.shp`, SIRGAS 2000, 5.573 polígonos, cerca de 20 milhões de pontos, 320 MB). Foi copiada do repositório antigo para `data/raw/Malha Municipal/`, que fica fora do Git.
+- **Simplificação (`src/Visualizacao/Gerar_Malha.py`):**
+  - projeção equiretangular, com a longitude multiplicada por cos 15°, a latitude média do Brasil;
+  - encaixe dos vértices numa grade de 0,005° (cerca de 550 m). As fronteiras compartilhadas encaixam no mesmo ponto, o que evita buracos entre vizinhos;
+  - Douglas-Peucker em cada anel, com tolerância de cerca de 1,6 km.
+- **Resultado:** 117 mil pontos e 0,74 MB, com todos os 5.571 municípios da dimensão. Os contornos são aproximados, servem para visualização e não para cálculo de área.
+- **Descartados:** os polígonos 4300001 e 4300002, que são as áreas operacionais da Lagoa Mirim e da Lagoa dos Patos (RS), e não municípios.
+- **Dependência nova:** `pyshp` (leitura do shapefile), instalada no Anaconda em 2026-10-27 com autorização do Henrique.
+
+### P5. Dashboard como ferramenta de análise ✅ (2026-10-27)
+- **Decisão (Henrique, 2026-10-27):** usar o dashboard HTML como ferramenta de exploração para a análise, ampliado em abas. O Power BI fica para a apresentação final, alimentado pelas mesmas tabelas.
+- **Abas:**
+  - **Visão geral:** indicadores, dispersão gasto × nota, evolução, ranking por UF, cobertura e tabela.
+  - **Defasagens:** gasto do mesmo ano e de 1, 2 e 4 anos antes × nota, com a correlação de Spearman (ρ) por edição e defasagem.
+  - **Porte, região e contexto:** mapa de calor da nota média por grupo e quintil de gasto, e resumo por grupo.
+  - **Ficha:** série anual de gasto e notas de um município ou UF, comparada com os pares e com o Brasil.
+  - **Pares (exploratória):** gasto e nota de cada município em relação à mediana do seu grupo de contexto.
+  - **Mapa (2026-10-27):** municípios coloridos por gasto, desempenho, nota em relação aos pares ou gasto em relação aos pares. Na camada estadual, cada município recebe o valor da sua UF. Há zoom pela UF em destaque, e o clique abre a ficha.
+- **Escolhas do mapa (descritivas):**
+  - gasto e desempenho em 7 faixas com o mesmo número de unidades, por quantis nacionais (na camada estadual, quantis das 27 UFs), para comparar regiões com a mesma régua;
+  - as variáveis relativas aos pares usam escala divergente simétrica em torno do neutro (0 para nota, 1 para gasto, este em escala logarítmica), com cinza perto da mediana do grupo;
+  - "sem dado" aparece hachurado;
+  - o gasto do mapa é o do ano da edição selecionada, para todos os municípios com rede, mesmo sem nota.
+- **Escolhas descritivas, que não alteram nenhum resultado:**
+  - correlação de **Spearman**, que não é puxada por valores extremos;
+  - quintis de gasto calculados dentro da edição e do recorte selecionados;
+  - células do mapa de calor com menos de 10 municípios ficam em branco.
+- **Pares, uma prévia do A6:** porte × faixa de alfabetização, o que dá 21 grupos. Gasto relativo = gasto ÷ mediana do grupo; nota relativa = nota − mediana do grupo. **Ainda não é o indicador de eficiência final**, que depende do desenho validado com a orientadora e do modelo.
+- **Primeiros sinais vistos na ferramenta (descritivos, a confirmar na análise):**
+  - nos Anos Finais de 2023, o ρ entre gasto e nota de Matemática sobe com a defasagem (0,17 no mesmo ano, 0,24 com 2 anos e 0,27 com 4 anos);
+  - em Anos Iniciais 2023, dentro de cada porte, a nota média sobe do quintil de menor gasto para o de maior gasto;
+  - quase todos os municípios do Ceará ficam acima da mediana de nota dos seus pares.
 
 ---
 
