@@ -2,7 +2,7 @@
 
 Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada base e das decisões tomadas para contorná-los. Serve de base para a seção de Método e para as reuniões com a orientadora.
 
-- **Última atualização:** 2026-10-26 (decisões da reunião de 2026-10-23 e incorporação do dossiê da conta anterior)
+- **Última atualização:** 2026-10-30 (decisões de 2026-10-30: clusters, nota N, IDHM sem escolaridade, versão A, Brasil inteiro, usuário-alvo)
 - **Fontes deste registro:** código e dados do repositório, os testes em `src/Testes`, os diagnósticos em `data/interim/diagnosticos`, as instruções do projeto e o dossiê das conversas anteriores (`docs/historico/`). Os números marcados com † foram recalculados a partir dos parquets em `data/interim`; os marcados "(dossiê)" vêm das conversas anteriores; os demais vêm dos testes ou das instruções. Esses dois últimos grupos não foram reverificados.
 - **Status:** ✅ fechada · 🟡 provisória (validar com a orientadora) · ⚠️ problema em aberto. As pendências estão na seção 9 e as limitações consolidadas na seção 10.
 
@@ -63,8 +63,13 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Consequência:** as defasagens possíveis ficam limitadas. Com gasto desde 2017, a defasagem de 2 anos só vale para o Saeb de 2019 em diante, e a de 4 anos só a partir de 2021. Na camada estadual, o SICONFI começa em 2014, o que permite defasagens maiores.
 - **Literatura (dossiê):** os estudos brasileiros de gasto municipal × IDEB (SciELO, ANPEC, ENAP) costumam encontrar efeito defasado, de cerca de quatro anos, e relação heterogênea entre estados. Isso torna a defasagem L4 relevante, apesar de ela só existir para 2021, 2023 e 2025. Cada artigo precisa ser verificado antes de ser citado.
 
-### E3. Recorte geográfico ⚠️ (depende da orientadora)
-- A orientadora sugeriu SP, mas o resultado da reunião não foi registrado. O pipeline atual cobre o Brasil inteiro, então um recorte pode ser aplicado depois, na análise, sem refazer o ETL.
+### E3. Recorte geográfico: Brasil inteiro ✅ (Henrique, 2026-10-30)
+- **Decisão:** sem foco em SP. O produto é uma ferramenta nacional, com a mesma perspectiva para todos os estados. O pipeline já cobre o Brasil inteiro, e nada precisa ser refeito.
+- **Histórico:** a orientadora tinha sugerido SP em 02/10, na fase do ENEM; a sugestão não se manteve depois do pivô.
+
+### E4. Usuário-alvo ✅ (Henrique, 2026-10-30)
+- **Decisão:** um agente de secretaria de educação, ou perfil semelhante (analista da educação pública em geral), de qualquer estado ou município. Isso fecha o item D3.
+- **Consequência para o dashboard:** linguagem para quem não é estatístico, visão nacional com leitura por UF e por município, e as duas camadas (municipal e estadual) lado a lado.
 
 ---
 
@@ -87,7 +92,7 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Problema:** as fontes discordam inclusive para o mesmo ente. Exemplo: Ensino Médio pago de SP em 2023, com 9,67 bi no SIOPE contra 7,18 bi no SICONFI.
 - **Decisão:** cada camada usa uma única fonte. Nenhuma lacuna de uma fonte é preenchida com a outra.
 
-### G4. Gasto estadual = função 12 − subfunção 12.364 ✅ · ⚠️ ausência da 12.364
+### G4. Gasto estadual = função 12 − subfunção 12.364 ✅ · versão A (2026-10-30)
 - **Problema:** a função 12 dos estados inclui o Ensino Superior (universidades estaduais), que não se relaciona com o Saeb.
 - **Decisão:** usar a função 12 paga menos a 12.364 paga.
 - **Problema em aberto:** em alguns pares UF/ano, a linha 12.364 não aparece†. Entre 2014 e 2025:
@@ -103,7 +108,8 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Riscos:** a regra geral do projeto ("ausência não é zero") aponta para (b), mas no DCA é comum que uma conta sem movimento simplesmente não seja publicada, o que favorece (a). Para AC, RO e SE, a hipótese de que o estado não mantém universidade estadual nesses anos favoreceria (a), mas ainda não foi verificada. No RS, a linha existe antes e depois da lacuna de 2018–2023, o que sugere dado faltante ou classificação em outra conta.
 - **Implementação provisória:** `Transform_SICONFI.py` gera as duas versões, `GASTO_BASICA_A_*` e `GASTO_BASICA_B_*`, além da marca `SUP364_AUSENTE`. A escolha fica para depois da reunião, sem refazer nada.
 - **Dossiê da conta anterior:** a especificação original do Transform estadual já previa tratar a ausência como zero (versão A). O dossiê também registra que o RS tem universidade estadual, e por isso o zero no RS seria provavelmente uma classificação diferente, de efeito pequeno diante do total. Isso não foi verificado.
-- **Encaminhamento:** levar à orientadora. Antes disso, conferir no DCA de RS (2018–2023) se o Ensino Superior foi lançado em outra subfunção.
+- **Decisão (Henrique, 2026-10-30):** usar a **versão A**: a ausência da linha 12.364 é tratada como "nada a descontar", para não deixar UF/anos sem informação. A versão B continua calculada nos painéis, só para teste de sensibilidade. O dashboard oficial usa a A.
+- **Limitação que permanece (L2):** no RS de 2018 a 2023, se o Ensino Superior estiver lançado em outra subfunção, o gasto da educação básica fica superestimado nesses anos. A conferência no DCA do RS continua recomendada, mas não bloqueia nada.
 
 ### G4b. Total da função 12 maior que a soma das subfunções listadas ⚠️ (achado de 2026-10-22)
 - **Evidência:** no SICONFI, a soma das subfunções publicadas (12.122, 12.361, …, 12.999) fica abaixo do total "12 - Educação" em vários pares UF/ano. A razão vai de 0,61 a 1,00, com mediana de 0,994; no AC, por exemplo, fica entre 0,67 e 0,75†.
@@ -240,7 +246,38 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Problema:** a primeira versão do dashboard mostrava só Matemática, uma simplificação que não havia sido registrada.
 - **Decisão:** o dashboard passou a ter um seletor com Matemática, Português, nota padronizada N (0 a 10, que combina as duas provas) e IDEB, e a tabela mostra as quatro medidas.
 - **Evidência:** em AI 2023, a correlação entre municípios é de 0,96 entre Matemática e Português e de 0,99 entre Matemática e N†.
-- **Pendente:** a medida principal da análise continua sendo a definida em S2 (notas do Saeb). Qual delas é a principal fica para a análise, e a nota padronizada N é a candidata natural a medida-resumo.
+- **Medida principal, 1ª versão (2026-10-30):** a nota padronizada N seria a medida padrão, desde que o cálculo da padronização ficasse claro (S10). **Substituída no mesmo dia** pela decisão abaixo.
+- **Medida principal, decisão final (Henrique, 2026-10-30) ✅:** usar as **proficiências do Saeb em pontos**, Matemática e Língua Portuguesa, analisadas separadamente. A nota N fica só como medida secundária, ao lado do IDEB, por causa das limitações vistas em S10:
+  - **Saturação no teto:** a N corta a proficiência nos limites de 1997. Isso já acontece nos dados: 43 redes municipais de Anos Iniciais têm Matemática acima de 322 pontos e ficam presas em 10, e 6 têm Português acima de 324†. A proficiência em pontos preserva essa informação.
+  - **Comparação entre etapas:** a escala do Saeb em pontos é comum às etapas, então um 5º ano com 220 e um 9º ano com 250 estão na mesma régua. A N não é: cada etapa tem limites próprios.
+  - **Duas disciplinas:** a N mistura Matemática e Português. Em pontos, as duas podem ser analisadas em separado.
+  - **Igualdade dentro da etapa:** fora do corte, a N é uma transformação linear das proficiências. Por isso, dentro de uma etapa, a troca não muda o sinal das associações.
+- **"Dados brutos" aqui significa a proficiência média da rede em pontos**, que vem nas planilhas do Inep (`VL_NOTA_MATEMATICA` e `VL_NOTA_PORTUGUES`). Não são os microdados do Saeb por aluno, que continuam fora do escopo (S1).
+- **Efeito no dashboard e no Power BI:** a medida padrão passa a ser Matemática em pontos, com Português ao lado. O seletor do dashboard HTML já abre em Matemática.
+
+### S10. Como a nota padronizada N é calculada ✅ (verificado em 2026-10-30)
+- **Quem calcula:** o **Inep**. A N vem pronta nas planilhas de divulgação (`VL_NOTA_MEDIA`). O projeto não padroniza nada, só usa o valor publicado.
+- **Fórmula:** para cada disciplina, a proficiência do Saeb é levada a uma escala de 0 a 10 entre um limite inferior e um superior fixos. Valores fora dos limites são cortados no limite. A N é a média simples das duas disciplinas:
+  - N_disciplina = 10 × (proficiência − limite inferior) ÷ (limite superior − limite inferior)
+  - N = (N_Matemática + N_Português) ÷ 2
+- **Limites por etapa:**
+
+  | Etapa | Matemática | Língua Portuguesa |
+  |---|---|---|
+  | Anos Iniciais (5º ano) | 60 a 322 | 49 a 324 |
+  | Anos Finais (9º ano) | 100 a 400 | 100 a 400 |
+  | Ensino Médio | 111 a 467 | 117 a 451 |
+
+- **Verificação†:** com esses limites, a fórmula reproduz **exatamente** a N publicada em todas as 41.465 linhas de município e UF com as duas notas (diferença máxima de 0,0000). A relação IDEB = N × indicador de rendimento também confere, com diferença máxima de 0,05 (arredondamento do Inep).
+- **Interpretação:** como os limites são fixos, a N é comparável entre edições dentro da mesma etapa. Ela **não** é comparável entre etapas: um 5,0 em Anos Iniciais não equivale a um 5,0 em Anos Finais. Por isso o dashboard sempre filtra uma etapa por vez.
+- **Fonte formal, conferida em 2026-10-30:** Inep, *Nota Técnica – Índice de Desenvolvimento da Educação Básica (Ideb)*, a "Nota Técnica nº 1, concepção do Ideb", com cópia em `docs/referencias/Inep_Nota_Tecnica_n1_concepcao_IDEB.pdf`, baixada de download.inep.gov.br. A nota confirma:
+  - a fórmula (equação 2);
+  - o corte nos limites: abaixo do inferior, fixa no inferior; acima do superior, fixa no superior;
+  - os limites da Tabela 2, iguais aos usados acima;
+  - a origem dos limites: média ± 3 desvios-padrão das proficiências do Saeb de 1997, o ano em que a escala foi definida (Tabela 1);
+  - o IDEB = N × P, sendo P o indicador de rendimento (equações 1 e 3).
+
+  A nota usa a nomenclatura antiga (4ª e 8ª séries), que corresponde ao 5º e ao 9º ano atuais.
 
 ---
 
@@ -256,11 +293,12 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Para o Método:** "O controle socioeconômico é o IDHM da UF no mesmo ano da aplicação do Saeb. Como a série do PNUD termina em 2024, a edição de 2025 não tem esse controle."
 - **Observação:** o rodapé da planilha diz "Atlas … 2022", embora a série vá até 2024. Registrar a data em que o arquivo foi baixado na citação da fonte.
 
-### C1b. O IDHM impacta ou é impactado pela educação? 🟡 (pedido da orientadora, 2026-10-23)
+### C1b. O IDHM impacta ou é impactado pela educação? ✅ (decidido em 2026-10-30)
 - **Problema:** o IDHM tem uma dimensão de Educação, que mede a escolaridade da população adulta e o fluxo escolar de crianças e jovens. Controlar pelo IDHM total pode significar controlar, em parte, pelo próprio resultado educacional (circularidade, ou "mau controle").
 - **Evidência inicial (estados, Anos Finais, IDHM do mesmo ano, 2017–2023)†:** correlação com a nota padronizada N de 0,49 para o IDHM total, 0,48 para o IDHM Educação e 0,45 para o IDHM Renda. Educação e Renda têm 0,77 entre si.
-- **Proposta:** usar o **IDHM Renda** (e eventualmente Longevidade) como controle principal, no lugar do IDHM total, e mostrar no Método a comparação com o total. Investigar a direção da relação na análise exploratória.
-- **Pendente:** validar a proposta com a orientadora.
+- **Decisão (Henrique, 2026-10-30):** **excluir da análise os índices que medem escolaridade**, para evitar circularidade. Saem o IDHM Educação e o IDHM total, que contém a dimensão de Educação. Os controles de contexto socioeconômico passam a ser o **IDHM Renda** e o **IDHM Longevidade**.
+- **Implementação:** as colunas continuam nos painéis, para registro e transparência, mas os modelos, os clusters e o dashboard oficial usam só Renda e Longevidade.
+- **A taxa de alfabetização (C2) continua sendo usada?** Ela também mede escolaridade, só que da população de 15 anos ou mais. A diferença é que se refere à população adulta e é uma foto fixa de 2022, que não varia com o desempenho das edições do Saeb. Por isso, o risco de circularidade é menor. Ela é usada para formar os grupos de pares (P5). Se a orientadora entender que ela também deve sair, os grupos passam a usar só porte e IDHM Renda.
 
 ### C2. Alfabetização: Censo 2022, estática ✅
 - **Decisão:** usar a taxa de alfabetização de 15 anos ou mais do Censo Demográfico 2022, por município, como controle fixo no tempo. Com efeitos fixos de município, ela só entra em análises sem efeito fixo, como a comparação entre municípios.
@@ -293,8 +331,9 @@ Falar sempre em associação e eficiência relativa.
 
 *(Revisão de 2026-10-23: saiu o teste "com e sem os gastos extremos", porque a orientadora decidiu não removê-los (A5). Saiu também o teste "IDHM do mesmo ano", porque ele passou a ser a especificação principal (C1).)*
 
-### A6. Análise de clusters 🟡 (pedido da orientadora, 2026-10-23)
+### A6. Análise de clusters ✅ desenvolver · 🟡 desenho técnico (2026-10-30)
 - **Decisão da orientadora:** incluir uma análise de clusters.
+- **Decisão (Henrique, 2026-10-30):** os clusters **devem ser desenvolvidos**, aproveitando a riqueza da distribuição já disponível (o histograma de gasto e notas por município). O desenho técnico abaixo é a proposta de trabalho e foi mantido, porque não houve objeção. Fica sujeito a ajuste quando os primeiros grupos forem vistos.
 - **Proposta de desenho (a validar):** agrupar os municípios **só pelo contexto** (porte da rede, população, alfabetização, IDHM Renda, infraestrutura) e depois comparar gasto por aluno e nota dentro de cada grupo. Assim se identifica quem entrega mais ou menos do que os pares comparáveis, que é o centro da pergunta do TCC e é fácil de explicar a um gestor.
 - **Alternativa:** agrupar por tudo junto (gasto, nota e contexto), para descrever perfis como "alto gasto e baixo desempenho". É mais descritiva e responde menos à pergunta de eficiência.
 - **A definir:** unidade (municípios em Anos Iniciais, como principal), período (uma edição ou a média das edições), método (k-médias com variáveis padronizadas; número de grupos por silhueta e cotovelo) e se haverá uma versão estadual (27 UFs é pouco para clusters).
@@ -451,32 +490,50 @@ Anotações do Henrique, registradas como vieram:
 | Acesso ao projeto | Ao final, uma forma simples de acesso, como QR Code | A7 |
 | Registro | Manter anotada toda e qualquer decisão e limitação | Este documento e a seção 10 |
 
-### Pendências para a próxima reunião
-Itens que a reunião de 2026-10-23 não cobriu, ou que geraram proposta nova:
+### Decisões de 2026-10-30 (Henrique, com base nas reuniões já feitas)
+| Item | Decisão |
+|---|---|
+| A6 Clusters | Desenvolver; desenho de trabalho = agrupar por contexto e comparar gasto e nota dentro dos grupos |
+| S9 Medida principal | Proficiências em pontos (Matemática e Português); nota N do Inep só como secundária (S10) |
+| C1b IDHM | Excluir os índices de escolaridade (IDHM Educação e IDHM total); usar IDHM Renda e Longevidade |
+| G4 Ensino Superior | Versão A (ausência = nada a descontar) |
+| E3 Recorte | Brasil inteiro, ferramenta nacional, mesma perspectiva para todos os estados |
+| E4/D3 Usuário-alvo | Agente de secretaria de educação ou analista da educação pública |
+| Power BI | Instalado e funcionando na máquina do Henrique |
 
-1. **A6:** desenho da análise de clusters (agrupar por contexto e comparar gasto e nota dentro dos grupos?).
-2. **C1b:** usar o IDHM Renda no lugar do IDHM total?
-3. **S9:** qual será a medida principal de desempenho (proposta: nota padronizada N)?
-4. **S8:** a seleção da amostra pela divulgação do Saeb. A proposta é descrever a seleção, controlar o porte e testar com painel balanceado, sem imputar notas.
-5. **G4:** tratamento da ausência da 12.364 (RO em todos os anos, AC e SE até 2024, RS em 2018–2023). **G4b:** o total da função 12 inclui gastos fora das subfunções listadas.
-6. **S4:** manter Anos Finais na camada municipal, com a amostra selecionada?
-7. **E3:** recorte geográfico (Brasil ou SP).
-8. **A4 e P3:** lista de testes de sensibilidade; vale estender as matrículas para 2015–2016?
-9. **Integridade acadêmica:** o Manual exige informar e discutir previamente o uso de IA. Parte do código e deste registro foi produzida com apoio de IA, o que deve ser comunicado e documentado no Método (roteiro no item D5 abaixo).
-10. **D1:** formato do TCC: método científico ou consultoria?
-11. **D2:** perguntas analíticas e indicadores formais, que respondem aos pontos do e-mail de 02/10.
-12. **D3:** usuário-alvo: secretaria estadual, municipal ou as duas?
+### Pendências restantes (nenhuma bloqueia o desenvolvimento)
+1. **S8 e S4:** as propostas (não imputar notas, controlar o porte, painel balanceado; Anos Finais como complementar) seguem como padrão de trabalho, sem objeção registrada.
+2. **A4 e P3:** lista de testes de sensibilidade; extensão das matrículas para 2015–2016 é opcional.
+3. **D1:** formato do TCC (científico ou consultoria). Afeta o texto, não o dashboard.
+4. **D2:** indicadores formais (nome, fórmula, unidade, interpretação). Serão escritos junto com a especificação do dashboard.
+5. **D4:** referências e APA; **D5/IA:** forma de documentar o uso de IA no Método.
+6. **A7:** endereço público para o QR Code (Power BI Service com "Publicar na Web", ou o HTML), a verificar na publicação.
 
 ### Dossiê da conta anterior (incorporado em 2026-10-26)
 O dossiê das conversas anteriores (arquivos 01 a 05, guardados em `docs/historico/`) foi comparado com o estado atual. Os achados de dados entraram nos itens G4, G5, M2, S8 e E2 e nas limitações L13 e L14. Abaixo ficam as pendências que só apareciam no dossiê.
 
-- **D1. Formato do TCC 🟡:** o Manual aceita três formatos (método científico, consultoria e empreendedor). O projeto vem sendo chamado de consultoria, mas a pergunta central ("o gasto se associa ao desempenho? com que defasagem?") é de descoberta, típica de estudo quantitativo, com o dashboard como produto aplicado. A escolha muda a estrutura e os critérios de avaliação. Confirmar com a orientadora e conferir no PDF do Manual as exigências de cada formato.
+- **D1. Formato do TCC 🟡 (Manual lido em 2026-10-30):** o projeto vem sendo chamado de consultoria, mas pelo Manual o enquadramento mais natural é **método científico, estudo quantitativo**. A decisão é da dupla com a orientadora. O que o Manual de TCC ADM 2025 (Depto. de Administração, FEA/USP, atualizado em abril de 2025) diz:
+  - **Formatos (4.2):**
+    - **Método científico, com estudos quantitativos** (longitudinais, multivariados, levantamentos populacionais): o objetivo é "de descobrimento" e busca diminuir uma lacuna de conhecimento, não alterar a realidade. É o caso de "o gasto se associa ao desempenho? com que defasagem?".
+    - **Consultoria:** é um plano para uma organização (objetivo gerencial, que altera a realidade administrativa, com diagnóstico da empresa e plano de ação) ou um relato técnico de uma situação-problema numa organização específica. Exige acesso a uma organização. Hoje não temos uma organização-cliente; o produto serve a qualquer secretaria.
+    - **Empreendedor:** plano de negócio para uma nova organização. Não se aplica.
+  - **Conteúdo mínimo, método científico (4.4):**
+    - **TCC I:** Introdução (questão de pesquisa, objetivos, contexto), Revisão bibliográfica, Método (definido, justificado e planejado, com coleta e análise), Cronograma do TCC II e Referências.
+    - **TCC II:** o TCC I revisado, mais Resultados, Análise e discussão, e Conclusões, limitações e sugestões de pesquisa futura.
+  - **Avaliação (5.2 e 5.3):**
+    - **TCC II:** 80% trabalho escrito, avaliado pelo orientador e por um 2º professor (um 3º entra se a diferença passar de 2 pontos), e 20% vídeo.
+    - **Vídeo:** de cerca de 5 minutos, no máximo 7. Cada integrante grava o seu, com o rosto numa janela menor e os slides na maior. O link do YouTube vai no 1º slide, e o PPT nomeado com os nomes completos é postado no Moodle.
+    - **Rubrica do método científico:** pesa fundamentação teórica (autores relevantes e atuais), referências de artigos nacionais e internacionais, método compatível com os objetivos e detalhado com citação de autores, profundidade da análise conectada à teoria, e conclusões coerentes com as evidências.
+  - **Formatação:** diretriz USP para teses e dissertações, com **APA obrigatório a partir de 2026**. Recomenda-se submeter ao Turnitin (pela Biblioteca da FEA) e enviar o relatório ao orientador. Plágio dá nota zero.
+  - **IA (item 2.3, p. 9):** qualquer uso de IA deve ser **informado e discutido previamente com o orientador**, que decide se será permitido. O uso não autorizado pode levar à reprovação, como o plágio.
+  - **Pesquisa com seres humanos (4.2 e Apêndices 6 a 8):** trabalhos com método científico que envolvem pessoas podem precisar de aprovação de comitê de ética. Há modelos de Termo de Consentimento (TCLE). **Isso afeta a etapa de "Avaliação com usuários" do fluxo:** entrevistar ou aplicar questionário a gestores exige TCLE e deve ser alinhado com a orientadora.
+  - **Outros pontos:** dupla é permitida (até 3 alunos); mínimo de 2 reuniões com o orientador por semestre; prazos sem exceção. O Prêmio Ruy Leme exige uma versão em formato de artigo do SemeAd.
 - **D2. Os pontos do e-mail de 02/10 ainda sem resposta depois do pivô 🟡:** a orientadora pediu um documento de 3 a 5 páginas com nove pontos. O documento entregue (`Delimitacao_TCC_Reuniao.docx`) era anterior ao pivô. Falta responder, nos termos do projeto atual:
   - **pergunta de pesquisa;**
   - **perguntas analíticas:** de 5 a 8. Há 6 em rascunho no arquivo 01: associação gasto × nota com defasagem; efeito dentro do município; quem está acima ou abaixo do esperado; camada estadual; heterogeneidade por porte e região; robustez à fonte e a 2021;
   - **indicadores formais:** nome, fórmula, unidade, variáveis e interpretação de cada um (por exemplo, gasto por aluno real, nota padronizada N, resíduo de eficiência);
   - **unidade de análise e chaves de integração:** já definidas (município na camada municipal, UF na estadual; chave de 7 dígitos, UF, rede e ano). Falta só escrevê-las no formato pedido.
-- **D3. Usuário-alvo 🟡:** a orientadora pediu definir se é a secretaria estadual ou as municipais. A proposta do dossiê era a secretaria estadual, com leitura por município dentro do estado. Com as duas camadas, o produto serve aos dois perfis. Confirmar.
+- **D3. Usuário-alvo ✅ (2026-10-30):** decidido em E4: agente de secretaria de educação ou analista da educação pública, de qualquer estado ou município.
 - **D4. Referências 🟡:** vários itens da bibliografia do documento original (por exemplo, Benjamin e Kim 2018, Dehghan et al. 2020 e Franco et al. 2015) nunca foram verificados. Confirmar a existência de cada um antes de citar. O formato APA é obrigatório a partir de 2026. A série de Leonardo Sales no Medium sobre o ENEM entra como literatura cinzenta.
 - **D5. Roteiro para o registro do uso de IA:**
   - quais ferramentas foram usadas e para quê: apoio na escrita do código de extração e tratamento, revisão de achados e estruturação de documentos;
@@ -491,9 +548,10 @@ O dossiê das conversas anteriores (arquivos 01 a 05, guardados em `docs/histori
 Lista consolidada, conforme o pedido da orientadora de manter anotada toda limitação. Cada item remete à decisão que o originou.
 
 - **L1. Fonte do gasto [G1–G3]:** o nível do gasto depende da fonte. O SIOPE e o SICONFI divergem para o mesmo ente, sobretudo nas capitais. Cada camada usa uma única fonte.
-- **L2. Composição do gasto estadual [G4, G4b]:** a linha do Ensino Superior falta para alguns estados e anos, e o total da função 12 inclui despesas fora das subfunções detalhadas (provavelmente inativos).
+- **L2. Composição do gasto estadual [G4, G4b]:** a linha do Ensino Superior falta para alguns estados e anos e, nesses casos, nada é descontado (versão A). Se no RS (2018–2023) o Ensino Superior estiver em outra subfunção, o gasto da educação básica fica superestimado. Além disso, o total da função 12 inclui despesas fora das subfunções detalhadas (provavelmente inativos).
 - **L3. Seleção da amostra [S4, S8]:** só entram as redes com nota divulgada pelo Inep. As redes pequenas, que gastam mais por aluno, ficam sub-representadas, sobretudo em Anos Finais e em 2021.
-- **L4. IDHM [C1, C1b]:** o IDHM só existe por UF, não por município, e a série termina em 2024. Por isso, a edição de 2025 não tem esse controle. Além disso, o IDHM inclui uma dimensão de educação, com risco de circularidade.
+- **L4. IDHM [C1, C1b]:** o IDHM só existe por UF, não por município, e a série termina em 2024. Por isso, a edição de 2025 não tem esse controle. Para evitar circularidade com o desempenho, a análise usa só as dimensões Renda e Longevidade, e deixa de fora a Educação e o índice total.
+- **L15. Medida de desempenho [S9, S10]:** a análise usa a proficiência média da rede (Matemática e Português, em pontos), e não o desempenho de cada aluno. A nota padronizada N, usada só como medida secundária, satura nos limites fixados em 1997 e não é comparável entre etapas.
 - **L5. Pandemia [S5]:** a edição de 2021 tem menos resultados com nota e condições atípicas de aplicação.
 - **L6. Matrículas de 2025 [M3]:** as matrículas estaduais caem cerca de 5% em 2025, e não se sabe se é efeito real ou da mudança de layout do Censo Escolar.
 - **L7. Valores extremos [A5, G11]:** cerca de 0,7% dos municípios com nota têm gasto por aluno implausível (provável erro de registro ou rede muito pequena). Eles ficam na análise, conforme a decisão da orientadora.
