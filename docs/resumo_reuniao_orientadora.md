@@ -7,7 +7,8 @@
 - **Dados prontos.** Todas as bases foram extraídas, tratadas, validadas e cruzadas em dois painéis (municípios e estados, 2017–2025), com gasto por aluno em reais de 2025, notas do Saeb e controles.
 - **Ferramenta de análise pronta.** Dashboard HTML com seis abas (visão geral, defasagens, porte e contexto, mapa, ficha e pares), usado para explorar os dados.
 - **Desenho fechado.** As decisões de método estão tomadas (seção 2).
-- **Próxima etapa:** clusters e indicador de eficiência, e o dashboard oficial em Power BI.
+- **Clusters e eficiência calculados:** 7 grupos de municípios por contexto e indicador de eficiência por município, etapa e disciplina.
+- **Próxima etapa:** dashboard oficial em Power BI.
 
 | | Municípios | Estados |
 |---|---|---|
@@ -28,10 +29,13 @@
 | Ensino Superior no gasto estadual [G4] | Versão A: quando a linha não existe, nada é descontado, para não perder UF/anos |
 | Recorte [E3] | Brasil inteiro: ferramenta nacional, mesma perspectiva para todos os estados |
 | Usuário-alvo [E4] | Agente de secretaria de educação ou analista da educação pública |
+| Indicador de eficiência [A8] | Pontos do Saeb acima ou abaixo do esperado para o gasto e o contexto. Versão oficial: **nacional, com IDHM** (edições 2017–2023); a versão dentro do estado, que inclui 2025, fica como teste de robustez |
 | Acesso [A7] | QR Code ao final, apontando para o dashboard publicado |
 | Registro [seção 10] | Toda decisão e limitação anotada |
 
 ## 3. Pontos ainda abertos (não bloqueiam o desenvolvimento)
+
+- **Saltos atípicos [S11]:** algumas redes, sobretudo no CE e em AL, sobem mais de 100 pontos em poucos anos (por exemplo, Ibateguara-AL, de 195 para 345). Como tratar esses casos antes de chamá-los de "eficientes"?
 
 - **Formato do TCC [D1]:** pelo Manual de 2025, o enquadramento mais natural é **método científico (estudo quantitativo)**: a pergunta é de descoberta, e não há uma organização-cliente para um plano de consultoria. Confirmar. Muda a estrutura do texto, não o dashboard.
 - **Avaliação com usuários:** o Manual prevê TCLE (e possivelmente comitê de ética) para pesquisa com pessoas. Como fazer a avaliação com gestores?

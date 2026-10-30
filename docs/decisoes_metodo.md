@@ -2,7 +2,7 @@
 
 Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada base e das decisões tomadas para contorná-los. Serve de base para a seção de Método e para as reuniões com a orientadora.
 
-- **Última atualização:** 2026-10-30 (decisões de 2026-10-30: clusters, nota N, IDHM sem escolaridade, versão A, Brasil inteiro, usuário-alvo)
+- **Última atualização:** 2026-10-30 (decisões de 30/10, Manual de TCC, clusters e indicador de eficiência)
 - **Fontes deste registro:** código e dados do repositório, os testes em `src/Testes`, os diagnósticos em `data/interim/diagnosticos`, as instruções do projeto e o dossiê das conversas anteriores (`docs/historico/`). Os números marcados com † foram recalculados a partir dos parquets em `data/interim`; os marcados "(dossiê)" vêm das conversas anteriores; os demais vêm dos testes ou das instruções. Esses dois últimos grupos não foram reverificados.
 - **Status:** ✅ fechada · 🟡 provisória (validar com a orientadora) · ⚠️ problema em aberto. As pendências estão na seção 9 e as limitações consolidadas na seção 10.
 
@@ -336,7 +336,66 @@ Falar sempre em associação e eficiência relativa.
 - **Decisão (Henrique, 2026-10-30):** os clusters **devem ser desenvolvidos**, aproveitando a riqueza da distribuição já disponível (o histograma de gasto e notas por município). O desenho técnico abaixo é a proposta de trabalho e foi mantido, porque não houve objeção. Fica sujeito a ajuste quando os primeiros grupos forem vistos.
 - **Proposta de desenho (a validar):** agrupar os municípios **só pelo contexto** (porte da rede, população, alfabetização, IDHM Renda, infraestrutura) e depois comparar gasto por aluno e nota dentro de cada grupo. Assim se identifica quem entrega mais ou menos do que os pares comparáveis, que é o centro da pergunta do TCC e é fácil de explicar a um gestor.
 - **Alternativa:** agrupar por tudo junto (gasto, nota e contexto), para descrever perfis como "alto gasto e baixo desempenho". É mais descritiva e responde menos à pergunta de eficiência.
-- **A definir:** unidade (municípios em Anos Iniciais, como principal), período (uma edição ou a média das edições), método (k-médias com variáveis padronizadas; número de grupos por silhueta e cotovelo) e se haverá uma versão estadual (27 UFs é pouco para clusters).
+- **Implementação (2026-10-30, `src/Analise/Analise_Clusters.py`) ✅:**
+  - **Unidade:** o município, num agrupamento único para todo o período. As variáveis de contexto são médias de 2017–2025, e os mesmos grupos servem a todas as etapas e edições. Ficam de fora só os 3 municípios sem variáveis completas: Fernando de Noronha, Boa Esperança do Norte e Brasília. No total, são 5.568 municípios.
+  - **Variáveis (padronizadas), sem gasto nem nota:**
+    - log10 da população (Censo 2022);
+    - taxa de alfabetização de 15 anos ou mais (Censo 2022);
+    - IDHM Renda e IDHM Longevidade da UF, média de 2017–2023, sem a dimensão Educação (C1b);
+    - índice de infraestrutura da rede municipal: média das 8 proporções do Censo Escolar, de 2017–2025.
+  - **Método:** k-médias com 50 inicializações e semente fixa (42).
+  - **Escolha de k (diagnóstico em `diagnosticos/clusters_escolha_k.csv`)†:** a silhueta é de 0,32 com k=3 e fica em torno de 0,23 de k=5 a k=10. Foi escolhido **k = 7**: a silhueta é praticamente igual à de k=6 (0,233 contra 0,229), e o 7º grupo separa os municípios grandes do Norte e do Nordeste, cuja mediana é de 101 mil habitantes, para que grandes cidades sejam comparadas entre si. Com k=3, os grupos seriam amplos demais para servir de pares.
+  - **Os 7 grupos†**, ordenados pela alfabetização média:
+
+    | Grupo | Rótulo | Municípios | População mediana | Alfabetização média |
+    |---|---|---|---|---|
+    | 1 | Nordeste · pequenos · alfabetização mais baixa | 952 | 7,4 mil | 78,3% |
+    | 2 | Nordeste · médios · alfabetização mais baixa | 1.037 | 18,3 mil | 81,2% |
+    | 3 | Sudeste · pequenos · alfabetização intermediária | 844 | 6,8 mil | 90,5% |
+    | 4 | Centro-Oeste · pequenos · alfabetização intermediária | 578 | 9,5 mil | 90,9% |
+    | 5 | Nordeste e Norte · grandes · alfabetização intermediária | 272 | 101,7 mil | 92,3% |
+    | 6 | Sul e Sudeste · pequenos · alfabetização mais alta | 1.166 | 5,4 mil | 93,8% |
+    | 7 | Sudeste · médios · alfabetização mais alta | 719 | 44,8 mil | 96,1% |
+
+  - **Rótulos:** são automáticos. A região é a predominante, ou as duas principais quando a primeira tem menos de 60% dos municípios. O porte segue a população mediana (pequenos, abaixo de 10 mil; médios, até 50 mil; grandes, acima). A alfabetização usa os terços nacionais dos municípios (85,3% e 93,4%).
+  - **Leitura honesta:** a silhueta baixa indica que o contexto varia de forma contínua. Os grupos são uma **partição útil para formar pares**, e não "tipos" naturalmente separados (L16). Eles também saem muito ligados à região, porque o IDHM só existe por UF.
+  - **Saídas:** `data/processed/cluster_municipio.parquet` (grupo de cada município) e `cluster_resumo.parquet` (perfil de cada grupo).
+  - **Versão estadual:** não haverá. Com 27 UFs, não há como formar grupos com pares suficientes.
+
+### A8. Indicador de eficiência municipal ✅ (implementado e escolhido em 2026-10-30)
+- **Definição:** o indicador mostra **quantos pontos do Saeb o município ficou acima (+) ou abaixo (−) do esperado para o seu gasto por aluno e o seu contexto**. É o resíduo de um modelo de regressão, estimado por etapa (AI e AF) e por disciplina (Matemática e Português, em pontos; S9). Script: `src/Analise/Eficiencia.py`.
+- **Modelo:** proficiência = a + b·log(gasto por aluno do ano) + contexto + efeitos de edição + erro, estimado por MQO com erros-padrão agrupados por município. O contexto é:
+  - log da população e alfabetização (Censo 2022);
+  - infraestrutura da rede municipal no ano;
+  - log das matrículas do Fundamental, que mede o tamanho da rede;
+  - IDHM Renda e Longevidade da UF no ano (só no modelo principal).
+- **Duas versões, ambas gravadas em `data/processed/eficiencia_municipal.parquet`:**
+  - **Principal (com IDHM), de 2017 a 2023:** compara os municípios **em escala nacional**. Não cobre 2025, porque não há IDHM 2025 (C1).
+  - **Alternativo (efeitos fixos de UF), de 2017 a 2025:** compara cada município **com os do mesmo estado**. Cobre 2025.
+- **Resultados (associação, não causa)†:**
+
+  | Etapa e disciplina | log(gasto), modelo principal | log(gasto), modelo alternativo | R² principal / alternativo |
+  |---|---|---|---|
+  | AI Matemática | +0,92 (EP 0,72; p = 0,20) | +4,33 (EP 0,60; p < 0,001) | 0,39 / 0,52 |
+  | AI Português | +0,89 (EP 0,62; p = 0,15) | +4,15 (EP 0,52; p < 0,001) | 0,41 / 0,52 |
+  | AF Matemática | +1,57 (EP 0,94; p = 0,10) | +5,20 (EP 0,82; p < 0,001) | 0,28 / 0,35 |
+  | AF Português | +1,18 (EP 0,81; p = 0,15) | +3,19 (EP 0,68; p < 0,001) | 0,28 / 0,37 |
+
+  - **Leitura:** dentro do mesmo estado, 10% a mais de gasto por aluno se associa a cerca de 0,3 a 0,5 ponto a mais no Saeb. Na comparação nacional com o IDHM, a associação é menor e não significativa. Coeficientes completos em `diagnosticos/eficiencia_coeficientes.csv`.
+- **Robustez do ranking†:**
+  - os resíduos dos dois modelos têm correlação de 0,87 (AI) a 0,92 (AF), então a ordem dos municípios muda pouco;
+  - o indicador é persistente: o resíduo de 2019 tem correlação de 0,61 com o de 2023, e o de 2023 tem 0,70 com o de 2025 (AI Matemática). Quem fica acima do esperado tende a continuar acima.
+- **Diferença que importa para o dashboard:** o modelo principal capta diferenças entre estados. Por exemplo, 90% dos municípios do Ceará ficam acima do esperado em AI Matemática 2023. O alternativo, por construção, coloca cerca de metade de cada estado acima e metade abaixo (CE: 45%).
+- **Decisão (Henrique, 2026-10-30): o indicador oficial é a versão nacional, com IDHM.** Ela é coerente com a ferramenta nacional, que usa a mesma régua para todos os estados (E3), e preserva as diferenças entre estados, que interessam a um analista da educação pública.
+  - **Consequência:** o indicador de eficiência existe para as edições de **2017, 2019, 2021 e 2023**. Em 2025, o dashboard mostra gasto e proficiência, mas não a eficiência, por falta do IDHM 2025 (C1, L4).
+  - **A versão dentro do estado fica como teste de robustez:** a correlação entre os rankings é de 0,87 a 0,92. As colunas `*_ALT` continuam no arquivo.
+- **Também gravado:** a comparação descritiva com os pares do cluster (nota − mediana do cluster; gasto ÷ mediana do cluster), por edição, e o percentil do resíduo dentro de cada etapa, disciplina e edição.
+
+### S11. Saltos atípicos de proficiência ⚠️ (achado de 2026-10-30)
+- **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
+- **Concentração:** as redes de AI com mais de 300 pontos em Matemática estão quase todas no Ceará e em Alagoas (2025: 30 no CE e 10 em AL). A média de AL subiu de 200 (2017) para 238 (2025).
+- **Leitura:** pode ser melhoria real, artefato de participação ou distorção ligada a incentivos. Por exemplo, a distribuição do ICMS educacional pelo IDEB em alguns estados é citada nesse debate. **Nenhuma dessas hipóteses foi verificada aqui.**
+- **Encaminhamento:** marcar esses casos no dashboard como "salto atípico", com regra a definir, e não interpretá-los como eficiência sem checagem. Vale procurar notas do Inep e literatura sobre o tema antes de escrever os resultados.
 
 ### A7. Forma simples de acessar o projeto 🟡 (pedido da orientadora, 2026-10-23)
 - **Decisão da orientadora:** ao final, oferecer um acesso simples ao projeto, como um QR Code.
@@ -502,6 +561,7 @@ Anotações do Henrique, registradas como vieram:
 | Power BI | Instalado e funcionando na máquina do Henrique |
 
 ### Pendências restantes (nenhuma bloqueia o desenvolvimento)
+0. **S11 (novo, 2026-10-30):** regra para marcar os saltos atípicos de proficiência. (A8 foi decidido: versão nacional.)
 1. **S8 e S4:** as propostas (não imputar notas, controlar o porte, painel balanceado; Anos Finais como complementar) seguem como padrão de trabalho, sem objeção registrada.
 2. **A4 e P3:** lista de testes de sensibilidade; extensão das matrículas para 2015–2016 é opcional.
 3. **D1:** formato do TCC (científico ou consultoria). Afeta o texto, não o dashboard.
@@ -552,6 +612,9 @@ Lista consolidada, conforme o pedido da orientadora de manter anotada toda limit
 - **L3. Seleção da amostra [S4, S8]:** só entram as redes com nota divulgada pelo Inep. As redes pequenas, que gastam mais por aluno, ficam sub-representadas, sobretudo em Anos Finais e em 2021.
 - **L4. IDHM [C1, C1b]:** o IDHM só existe por UF, não por município, e a série termina em 2024. Por isso, a edição de 2025 não tem esse controle. Para evitar circularidade com o desempenho, a análise usa só as dimensões Renda e Longevidade, e deixa de fora a Educação e o índice total.
 - **L15. Medida de desempenho [S9, S10]:** a análise usa a proficiência média da rede (Matemática e Português, em pontos), e não o desempenho de cada aluno. A nota padronizada N, usada só como medida secundária, satura nos limites fixados em 1997 e não é comparável entre etapas.
+- **L16. Clusters [A6]:** a separação entre os grupos é fraca (silhueta de cerca de 0,23). Os grupos são uma partição útil para formar pares, e não tipos naturalmente distintos. Eles saem ligados à região, porque o IDHM só existe por UF.
+- **L17. Indicador de eficiência [A8]:** é o resíduo de um modelo de associação. Ele reflete tudo o que o modelo não mede (gestão, contexto familiar, qualidade do registro), e não só eficiência no uso do gasto. O indicador oficial (versão nacional) não cobre a edição de 2025.
+- **L18. Saltos atípicos de proficiência [S11]:** algumas redes, sobretudo no Ceará e em Alagoas, têm crescimentos de proficiência muito acima do usual. Se não forem reais, inflam o indicador de eficiência desses municípios.
 - **L5. Pandemia [S5]:** a edição de 2021 tem menos resultados com nota e condições atípicas de aplicação.
 - **L6. Matrículas de 2025 [M3]:** as matrículas estaduais caem cerca de 5% em 2025, e não se sabe se é efeito real ou da mudança de layout do Censo Escolar.
 - **L7. Valores extremos [A5, G11]:** cerca de 0,7% dos municípios com nota têm gasto por aluno implausível (provável erro de registro ou rede muito pequena). Eles ficam na análise, conforme a decisão da orientadora.

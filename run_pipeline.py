@@ -35,6 +35,8 @@ TRATAMENTO = [
     "Transform/Transform_SIOPE.py",  # depende de IBGE, matrículas e IPCA
     "Transform/Transform_SICONFI.py",
     "Transform/Montar_Paineis.py",
+    "Analise/Analise_Clusters.py",
+    "Analise/Eficiencia.py",  # depende dos clusters
     "Visualizacao/Gerar_Dashboard_HTML.py",
 ]
 # A malha simplificada (data/processed/malha_municipios.json) é versionada; só é refeita com

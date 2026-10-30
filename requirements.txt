@@ -6,3 +6,5 @@ xlsxwriter==3.2.9      # pacote de exportação (Excel) e src/Testes/Visualizaç
 markdown               # pacote de exportação (documentos em HTML)
 numpy                  # simplificação da malha municipal
 pyshp==3.1.6           # leitura do shapefile da Malha Municipal (src/Visualizacao/Gerar_Malha.py)
+scikit-learn==1.5.1    # clusters (src/Analise/Analise_Clusters.py)
+statsmodels==0.14.2    # modelos de eficiência (src/Analise/Eficiencia.py)
