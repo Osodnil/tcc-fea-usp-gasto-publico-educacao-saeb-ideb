@@ -37,6 +37,7 @@ TRATAMENTO = [
     "Transform/Montar_Paineis.py",
     "Analise/Analise_Clusters.py",
     "Analise/Eficiencia.py",  # depende dos clusters
+    "Visualizacao/Preparar_PowerBI.py",
     "Visualizacao/Gerar_Dashboard_HTML.py",
 ]
 # A malha simplificada (data/processed/malha_municipios.json) é versionada; só é refeita com

@@ -65,23 +65,43 @@ def base() -> pl.DataFrame:
 def ajustar(df: pl.DataFrame, nota: str, op: dict) -> tuple[pl.DataFrame, list[dict], dict]:
     x_cols = ["LOG_GASTO", *CONTEXTO] + (["IDHM_RENDA", "IDHM_LONGEVIDADE"] if op["idhm"] else [])
     d = df.filter(pl.col("ANO").is_in(op["anos"])).drop_nulls([nota, *x_cols])
-    X = d.select(x_cols).to_pandas()
+    # matriz em NumPy puro (sem pandas/pyarrow), com os nomes guardados à parte
+    nomes = ["const", *x_cols]
+    colunas = [np.ones(d.height), *[d[c].cast(pl.Float64).to_numpy() for c in x_cols]]
     for a in op["anos"][1:]:  # efeitos de edição (2017 é a referência)
-        X[f"ANO_{a}"] = (d["ANO"] == a).cast(pl.Int8).to_numpy()
+        nomes.append(f"ANO_{a}"); colunas.append((d["ANO"] == a).cast(pl.Float64).to_numpy())
     if op["uf"]:
         for uf in sorted(d["SG_UF"].unique().to_list())[1:]:
-            X[f"UF_{uf}"] = (d["SG_UF"] == uf).cast(pl.Int8).to_numpy()
-    X = sm.add_constant(X)
+            nomes.append(f"UF_{uf}"); colunas.append((d["SG_UF"] == uf).cast(pl.Float64).to_numpy())
+    X = np.column_stack(colunas)
     y = d[nota].to_numpy()
     grupos = d["CO_MUNICIPIO"].cast(pl.Int64).to_numpy()
     res = sm.OLS(y, X).fit(cov_type="cluster", cov_kwds={"groups": grupos})
-    coefs = [{"VARIAVEL": v, "COEF": res.params[v], "EP": res.bse[v], "P": res.pvalues[v]}
-             for v in res.params.index if not v.startswith(("ANO_", "UF_"))]
-    pred = res.fittedvalues.to_numpy()
+    coefs = [{"VARIAVEL": v, "COEF": res.params[i], "EP": res.bse[i], "P": res.pvalues[i]}
+             for i, v in enumerate(nomes) if not v.startswith(("ANO_", "UF_"))]
+    pred = np.asarray(res.fittedvalues)
     saida = d.select("CO_MUNICIPIO", "ETAPA", "ANO").with_columns(
         pl.Series("NOTA", y), pl.Series("NOTA_ESPERADA", pred), pl.Series("RESIDUO", y - pred))
     ajuste = {"N": int(res.nobs), "R2": res.rsquared, "MUNICIPIOS": len(set(grupos))}
     return saida, coefs, ajuste
+
+
+def saltos(df: pl.DataFrame, nota: str) -> pl.DataFrame:
+    """Marca (não exclui) variação atípica de proficiência em relação à edição anterior (decisão S11, proposta).
+
+    Atípica = a variação entre duas edições consecutivas (2 anos) se afasta mais de 3 desvios-padrão
+    da média das variações da mesma etapa e disciplina, para cima ou para baixo.
+    """
+    d = (df.drop_nulls(nota).sort("CO_MUNICIPIO", "ANO")
+         .with_columns((pl.col(nota) - pl.col(nota).shift(1).over("CO_MUNICIPIO")).alias("VARIACAO"),
+                       (pl.col("ANO") - pl.col("ANO").shift(1).over("CO_MUNICIPIO")).alias("INTERVALO")))
+    v = d.filter(pl.col("INTERVALO") == 2)["VARIACAO"]
+    m, dp = v.mean(), v.std()
+    return d.select(
+        "CO_MUNICIPIO", "ETAPA", "ANO",
+        pl.when(pl.col("INTERVALO") == 2).then(pl.col("VARIACAO")).alias("VARIACAO_EDICAO_ANTERIOR"),
+        pl.when(pl.col("INTERVALO") == 2).then((pl.col("VARIACAO") - m).abs() > 3 * dp).otherwise(False).alias("SALTO_ATIPICO"),
+    )
 
 
 def pares_cluster(df: pl.DataFrame, nota: str) -> pl.DataFrame:
@@ -114,7 +134,8 @@ if __name__ == "__main__":
                 por_modelo["alternativo_uf"].rename({"NOTA_ESPERADA": "NOTA_ESPERADA_ALT", "RESIDUO": "RESIDUO_ALT"})
                 .join(por_modelo["principal"].select("CO_MUNICIPIO", "ANO", "NOTA_ESPERADA", "RESIDUO"), on=["CO_MUNICIPIO", "ANO"], how="left")
                 .join(pares, on=["CO_MUNICIPIO", "ETAPA", "ANO"], how="left")
-                .with_columns(pl.lit(disc).alias("DISCIPLINA"))
+                .join(saltos(de, nota), on=["CO_MUNICIPIO", "ETAPA", "ANO"], how="left")
+                .with_columns(pl.lit(disc).alias("DISCIPLINA"), pl.col("SALTO_ATIPICO").fill_null(False))
             )
             r = juntos.drop_nulls(["RESIDUO", "RESIDUO_ALT"])
             print(f"    correlação entre os resíduos dos dois modelos: {np.corrcoef(r['RESIDUO'], r['RESIDUO_ALT'])[0, 1]:.3f}")
@@ -132,7 +153,7 @@ if __name__ == "__main__":
         )
         .select("CO_MUNICIPIO", "ETAPA", "DISCIPLINA", "ANO", "CLUSTER", "CLUSTER_ROTULO", "NOTA",
                 "NOTA_ESPERADA", "RESIDUO", "PERCENTIL_RESIDUO", "NOTA_ESPERADA_ALT", "RESIDUO_ALT", "PERCENTIL_RESIDUO_ALT",
-                "NOTA_VS_CLUSTER", "GASTO_VS_CLUSTER")
+                "NOTA_VS_CLUSTER", "GASTO_VS_CLUSTER", "VARIACAO_EDICAO_ANTERIOR", "SALTO_ATIPICO")
         .sort("CO_MUNICIPIO", "ETAPA", "DISCIPLINA", "ANO")
     )
     efic.write_parquet(PROCESSED_DIR / "eficiencia_municipal.parquet")
@@ -143,6 +164,9 @@ if __name__ == "__main__":
     print("[INFO] Linhas por edição (resíduo principal / alternativo):")
     print(efic.group_by("ETAPA", "ANO").agg(pl.col("RESIDUO").is_not_null().sum().alias("principal"),
                                             pl.col("RESIDUO_ALT").is_not_null().sum().alias("alternativo")).sort("ETAPA", "ANO"))
+    s = efic.filter(pl.col("SALTO_ATIPICO"))
+    print(f"[INFO] Saltos atípicos marcados: {s.height} linhas ({s.height / efic.height:.1%}); "
+          f"altas: {(s['VARIACAO_EDICAO_ANTERIOR'] > 0).sum()}, quedas: {(s['VARIACAO_EDICAO_ANTERIOR'] < 0).sum()}")
     # persistência: o mesmo município tende a ficar acima/abaixo do esperado entre edições?
     w = (efic.filter((pl.col("ETAPA") == "AI") & (pl.col("DISCIPLINA") == "MT"))
          .pivot(on="ANO", index="CO_MUNICIPIO", values="RESIDUO_ALT"))

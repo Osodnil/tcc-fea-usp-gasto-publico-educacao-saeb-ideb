@@ -130,12 +130,17 @@ Para rodar um script isolado, chame-o diretamente, por exemplo `python src/Trans
 | `Transform_SIOPE.py` | `siope_municipal_transformado` (precisa de IBGE, matrículas e IPCA) |
 | `Transform_SICONFI.py` | `siconfi_estadual_transformado` (versões A e B do gasto) |
 
-**3. Painéis e dashboard**
+**3. Painéis, análise e dashboards**
 
 | Script | Saída |
 |---|---|
-| `Transform/Montar_Paineis.py` | `data/processed/painel_municipal.parquet` e `painel_estadual.parquet` |
+| `Transform/Montar_Paineis.py` | `data/processed/painel_municipal.parquet` e `painel_estadual.parquet`, mais as tabelas de apoio |
+| `Analise/Analise_Clusters.py` | `data/processed/cluster_municipio.parquet` e `cluster_resumo.parquet` (7 grupos por contexto) |
+| `Analise/Eficiencia.py` | `data/processed/eficiencia_municipal.parquet` (indicador de eficiência e marca de salto atípico) |
+| `Visualizacao/Preparar_PowerBI.py` | `data/processed/powerbi/` (modelo em estrela do dashboard oficial) |
 | `Visualizacao/Gerar_Dashboard_HTML.py` | `relatorios/dashboard_conferencia.html` |
+
+Use o Python do Anaconda (`%USERPROFILE%\anaconda3\python.exe`); na máquina de desenvolvimento, o `python` do terminal aponta para outra instalação (ver T6 no registro).
 
 Cada script imprime um resumo com contagens e validações, como chave única, cobertura por ano e valores fora do esperado. Saídas maiores vão para `data/interim/diagnosticos/`.
 
@@ -154,7 +159,9 @@ Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os doc
 - **`painel_municipal.parquet`:** uma linha por município × etapa (AI/AF) × edição do Saeb. Traz notas, IDEB, matrículas, gasto por aluno em R$ de 2025 no mesmo ano e com 1, 2 e 4 anos de defasagem (`_L0`, `_L1`, `_L2`, `_L4`), marca de gasto extremo e controles (alfabetização, população, região, IDHM da UF do mesmo ano, vazio em 2025, e infraestrutura).
 - **`painel_estadual.parquet`:** uma linha por UF × etapa (AF/EM) × edição. Traz o gasto por aluno nas versões A e B (tratamento da ausência da subfunção 12.364), com as mesmas defasagens, e os controles por UF.
 - **Tabelas de apoio** (`dim_municipio`, `dim_uf`, `gasto_municipal_anual`, `gasto_estadual_anual`): dimensões com porte e faixa de alfabetização, e gasto por aluno de todos os anos de 2017 a 2025. São a base comum do dashboard e do Power BI.
-- **`malha_municipios.json`:** contornos dos municípios (Malha Municipal do IBGE 2025) simplificados para o navegador, com cerca de 0,7 MB. É gerado por `src/Visualizacao/Gerar_Malha.py` a partir do shapefile bruto (`data/raw/Malha Municipal/`) e só é refeito com `run_pipeline.py --com-extracao`.
+- **Clusters e eficiência:** `cluster_municipio` (grupo de contexto de cada município), `cluster_resumo` (perfil dos 7 grupos) e `eficiencia_municipal` (proficiência observada × esperada para o gasto e o contexto, por município, etapa, disciplina e edição; versão oficial nacional com IDHM, 2017–2023, e versão de robustez dentro da UF).
+- **`powerbi/`:** as 12 tabelas do modelo em estrela que o `.pbix` lê (8 dimensões e 4 fatos). A especificação do dashboard, as medidas DAX, a consulta de carregamento e o tema estão na pasta `powerbi/` da raiz.
+- **`malha_municipios.json` e `malha_municipios.topojson`:** contornos dos municípios (Malha Municipal do IBGE 2025) simplificados, com cerca de 0,7 MB (caminhos SVG, para o HTML) e 1,5 MB (TopoJSON, para o "Mapa de formas" do Power BI, chave `CD_MUN`). São gerados por `src/Visualizacao/Gerar_Malha.py` a partir do shapefile bruto (`data/raw/Malha Municipal/`) e só são refeitos com `run_pipeline.py --com-extracao`.
 - **`dashboard_conferencia.html`:** ferramenta de análise numa página única, que abre offline em qualquer navegador. Tem seis abas:
   - **Visão geral:** dispersão gasto × nota, evolução, ranking por UF, cobertura e tabela.
   - **Defasagens:** gasto de 0, 1, 2 e 4 anos antes × nota, com a correlação de Spearman.
@@ -169,10 +176,12 @@ Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os doc
 
 - ✅ Extração, tratamento e painéis concluídos e validados.
 - ✅ Dashboard HTML de conferência.
-- ✅ Decisões da reunião de 23/10/2026 aplicadas: IDHM do mesmo ano (2025 sem IDHM, como limitação) e outliers mantidos.
-- 🟡 Pendentes com a orientadora (seção 9 de `docs/decisoes_metodo.md`): desenho dos clusters, IDHM Renda × IDHM total, medida principal de desempenho, seleção da amostra, ausência da 12.364, escopo e testes de sensibilidade.
+- ✅ Decisões de 23/10 e 30/10/2026 aplicadas: IDHM do mesmo ano, só Renda e Longevidade (2025 sem IDHM); outliers mantidos; proficiência em pontos como medida principal; versão A do gasto estadual; Brasil inteiro.
 - ✅ Dashboard HTML ampliado como ferramenta de análise (6 abas, incluindo mapa).
-- ⏳ Análise de clusters, estimações, dashboard final em Power BI e acesso simples ao projeto (QR Code).
+- ✅ Clusters por contexto (7 grupos) e indicador de eficiência municipal (versão oficial nacional, com IDHM).
+- ✅ Modelo de dados e especificação do dashboard oficial em Power BI (`powerbi/`).
+- ⏳ Construção do `.pbix`, testes de sensibilidade e acesso simples ao projeto (QR Code).
+- 🟡 Abertos (seção 9 de `docs/decisoes_metodo.md`): regra dos saltos atípicos, indicadores formais, formato do TCC, lista de sensibilidade e forma de documentar o uso de IA.
 
 As limitações do trabalho estão consolidadas na seção 10 de `docs/decisoes_metodo.md`.
 

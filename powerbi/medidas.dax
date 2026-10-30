@@ -1,0 +1,271 @@
+// Medidas do dashboard oficial (Power BI). Criar numa tabela vazia "_Medidas" e organizar nas pastas indicadas.
+// Convenções (decisões S9, A8, G4): proficiência em pontos do Saeb, uma disciplina por vez; eficiência oficial =
+// modelo nacional com IDHM (2017–2023); gasto estadual na versão A. Agregações iguais às do HTML de conferência:
+// gasto = mediana entre as redes; nota = média simples entre as redes, sem ponderar por matrículas.
+// "fdm" abrevia fato_desempenho_municipal e "fde", fato_desempenho_estadual (apenas neste comentário).
+
+// ───────────────────────── Pasta: 0 Parâmetros ─────────────────────────
+
+Defasagem = SELECTEDVALUE ( dim_defasagem[DEFASAGEM], 0 )
+
+Modelo = SELECTEDVALUE ( dim_modelo[MODELO], "Oficial" )
+
+// Proficiências de etapas ou disciplinas diferentes não se somam nem se tiram médias juntas
+Seleção comparável =
+    HASONEVALUE ( dim_disciplina[DISCIPLINA] ) && HASONEVALUE ( dim_etapa[ETAPA] )
+
+Aviso de seleção =
+    IF ( NOT [Seleção comparável], "Escolha uma etapa e uma disciplina para ver as notas." )
+
+// ───────────────────────── Pasta: 1 Gasto ─────────────────────────
+
+// Todas as redes com gasto no ano (inclusive as que não têm nota no Saeb)
+Gasto por aluno (mediana anual) =
+    MEDIAN ( fato_gasto_municipal[GASTO_ALUNO_R2025] )
+
+// Só as redes avaliadas, com o gasto da defasagem escolhida (L0 = mesmo ano da edição)
+Gasto das redes avaliadas (mediana) =
+VAR k = [Defasagem]
+VAR redes =
+    SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ANO] )
+RETURN
+    MEDIANX (
+        redes,
+        SWITCH (
+            k,
+            0, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ) ),
+            1, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L1] ) ),
+            2, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L2] ) ),
+            4, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L4] ) )
+        )
+    )
+
+Gasto estadual por aluno (mediana, versão A) =
+    MEDIAN ( fato_gasto_estadual[GASTO_ALUNO_A_R2025] )
+
+// Teste de sensibilidade G4 (desconta o Ensino Superior só onde a linha 12.364 existe)
+Gasto estadual por aluno (mediana, versão B) =
+    MEDIAN ( fato_gasto_estadual[GASTO_ALUNO_B_R2025] )
+
+Redes com gasto extremo =
+    CALCULATE ( DISTINCTCOUNT ( fato_gasto_municipal[CO_MUNICIPIO] ), fato_gasto_municipal[GASTO_EXTREMO] = TRUE () )
+
+// ───────────────────────── Pasta: 2 Desempenho ─────────────────────────
+
+Proficiência média =
+    IF ( [Seleção comparável], AVERAGE ( fato_desempenho_municipal[PROFICIENCIA] ) )
+
+Proficiência mediana =
+    IF ( [Seleção comparável], MEDIAN ( fato_desempenho_municipal[PROFICIENCIA] ) )
+
+// Referências para a ficha do município: o mesmo recorte de etapa, disciplina e edição, em outro grupo
+Proficiência mediana do cluster =
+VAR c = SELECTEDVALUE ( dim_municipio[CLUSTER] )
+RETURN
+    IF (
+        [Seleção comparável] && NOT ISBLANK ( c ),
+        CALCULATE (
+            MEDIAN ( fato_desempenho_municipal[PROFICIENCIA] ),
+            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+            dim_municipio[CLUSTER] = c
+        )
+    )
+
+Proficiência mediana da UF =
+VAR u = SELECTEDVALUE ( dim_municipio[SG_UF] )
+RETURN
+    IF (
+        [Seleção comparável] && NOT ISBLANK ( u ),
+        CALCULATE (
+            MEDIAN ( fato_desempenho_municipal[PROFICIENCIA] ),
+            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+            dim_municipio[SG_UF] = u
+        )
+    )
+
+Proficiência mediana do Brasil =
+    IF (
+        [Seleção comparável],
+        CALCULATE (
+            MEDIAN ( fato_desempenho_municipal[PROFICIENCIA] ),
+            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
+        )
+    )
+
+// IDEB e nota N valem para a etapa (não para a disciplina): uma linha por rede e edição, sem contar duas vezes
+IDEB médio =
+    AVERAGEX (
+        SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ETAPA], fato_desempenho_municipal[ANO] ),
+        CALCULATE ( MAX ( fato_desempenho_municipal[IDEB] ) )
+    )
+
+Nota padronizada N média =
+    AVERAGEX (
+        SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ETAPA], fato_desempenho_municipal[ANO] ),
+        CALCULATE ( MAX ( fato_desempenho_municipal[NOTA_N] ) )
+    )
+
+Proficiência média estadual =
+    IF ( [Seleção comparável], AVERAGE ( fato_desempenho_estadual[PROFICIENCIA] ) )
+
+// ───────────────────────── Pasta: 3 Cobertura ─────────────────────────
+
+Redes avaliadas =
+    CALCULATE (
+        DISTINCTCOUNT ( fato_desempenho_municipal[CO_MUNICIPIO] ),
+        NOT ISBLANK ( fato_desempenho_municipal[PROFICIENCIA] )
+    )
+
+Municípios no recorte = COUNTROWS ( dim_municipio )
+
+// Ler por edição: com várias edições selecionadas, cada município conta uma vez
+Cobertura do Saeb = DIVIDE ( [Redes avaliadas], [Municípios no recorte] )
+
+// ───────────────────────── Pasta: 4 Eficiência ─────────────────────────
+
+Proficiência esperada =
+    IF (
+        [Seleção comparável],
+        SWITCH (
+            [Modelo],
+            "Oficial", AVERAGE ( fato_desempenho_municipal[NOTA_ESPERADA] ),
+            "Robustez", AVERAGE ( fato_desempenho_municipal[NOTA_ESPERADA_ALT] )
+        )
+    )
+
+// Pontos acima (+) ou abaixo (−) do esperado para o gasto e o contexto. Associação, não efeito causal.
+Eficiência (pontos) =
+    IF (
+        HASONEVALUE ( dim_disciplina[DISCIPLINA] ),
+        SWITCH (
+            [Modelo],
+            "Oficial", AVERAGE ( fato_desempenho_municipal[RESIDUO] ),
+            "Robustez", AVERAGE ( fato_desempenho_municipal[RESIDUO_ALT] )
+        )
+    )
+
+Percentil de eficiência =
+    IF (
+        HASONEVALUE ( dim_disciplina[DISCIPLINA] ),
+        SWITCH (
+            [Modelo],
+            "Oficial", AVERAGE ( fato_desempenho_municipal[PERCENTIL_RESIDUO] ),
+            "Robustez", AVERAGE ( fato_desempenho_municipal[PERCENTIL_RESIDUO_ALT] )
+        )
+    )
+
+Redes com eficiência calculada =
+    SWITCH (
+        [Modelo],
+        "Oficial", COUNT ( fato_desempenho_municipal[RESIDUO] ),
+        "Robustez", COUNT ( fato_desempenho_municipal[RESIDUO_ALT] )
+    )
+
+% acima do esperado =
+VAR acima =
+    SWITCH (
+        [Modelo],
+        "Oficial", CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[RESIDUO] > 0 ),
+        "Robustez", CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[RESIDUO_ALT] > 0 )
+    )
+RETURN
+    DIVIDE ( acima, [Redes com eficiência calculada] )
+
+// Faixas por quintil do percentil (proposta D2, a confirmar)
+Faixa de eficiência =
+VAR p = [Percentil de eficiência]
+RETURN
+    SWITCH (
+        TRUE (),
+        ISBLANK ( p ), "Sem cálculo",
+        p > 80, "Bem acima do esperado",
+        p > 60, "Acima do esperado",
+        p > 40, "Próximo do esperado",
+        p > 20, "Abaixo do esperado",
+        "Bem abaixo do esperado"
+    )
+
+Aviso do modelo =
+    IF (
+        [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
+        "A edição de 2025 não tem IDHM: a eficiência oficial cobre 2017–2023. Use o modelo de robustez para 2025."
+    )
+
+// ───────────────────────── Pasta: 5 Pares e cluster ─────────────────────────
+
+Nota menos a mediana do cluster =
+    IF ( [Seleção comparável], AVERAGE ( fato_desempenho_municipal[NOTA_VS_CLUSTER] ) )
+
+Gasto ÷ mediana do cluster =
+    AVERAGE ( fato_desempenho_municipal[GASTO_VS_CLUSTER] )
+
+// ───────────────────────── Pasta: 6 Qualidade dos dados ─────────────────────────
+
+Redes com salto atípico =
+    CALCULATE (
+        DISTINCTCOUNT ( fato_desempenho_municipal[CO_MUNICIPIO] ),
+        fato_desempenho_municipal[SALTO_ATIPICO] = TRUE ()
+    )
+
+Aviso de salto atípico =
+    IF (
+        CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () ) > 0,
+        "⚠ Variação atípica em relação à edição anterior (mais de 3 desvios-padrão). Conferir antes de interpretar."
+    )
+
+// ───────────────────────── Pasta: 7 Associação por defasagem ─────────────────────────
+
+// ρ de Spearman entre o gasto da defasagem escolhida e a proficiência, entre as redes do recorte
+// (o mesmo indicador da aba "Defasagens" do HTML). No RANKX, valores empatados recebem o mesmo posto (o menor);
+// se o HTML tratar empates de outro jeito, a 3ª casa decimal pode diferir. Mínimo de 30 redes.
+Correlação gasto × proficiência (Spearman) =
+VAR k = [Defasagem]
+VAR base =
+    FILTER (
+        ADDCOLUMNS (
+            SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ANO] ),
+            "@x",
+                SWITCH (
+                    k,
+                    0, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ) ),
+                    1, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L1] ) ),
+                    2, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L2] ) ),
+                    4, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L4] ) )
+                ),
+            "@y", CALCULATE ( MAX ( fato_desempenho_municipal[PROFICIENCIA] ) )
+        ),
+        NOT ISBLANK ( [@x] ) && NOT ISBLANK ( [@y] )
+    )
+VAR postos =
+    ADDCOLUMNS (
+        base,
+        "@rx", RANKX ( base, [@x], , ASC ),
+        "@ry", RANKX ( base, [@y], , ASC )
+    )
+VAR n = COUNTROWS ( postos )
+VAR mx = AVERAGEX ( postos, [@rx] )
+VAR my = AVERAGEX ( postos, [@ry] )
+VAR sxy = SUMX ( postos, ( [@rx] - mx ) * ( [@ry] - my ) )
+VAR sxx = SUMX ( postos, ( [@rx] - mx ) ^ 2 )
+VAR syy = SUMX ( postos, ( [@ry] - my ) ^ 2 )
+RETURN
+    IF ( [Seleção comparável] && n >= 30, DIVIDE ( sxy, SQRT ( sxx * syy ) ) )
+
+Redes na correlação =
+VAR k = [Defasagem]
+RETURN
+    COUNTROWS (
+        FILTER (
+            SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ANO] ),
+            NOT ISBLANK ( CALCULATE ( MAX ( fato_desempenho_municipal[PROFICIENCIA] ) ) )
+                && NOT ISBLANK (
+                    SWITCH (
+                        k,
+                        0, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ) ),
+                        1, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L1] ) ),
+                        2, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L2] ) ),
+                        4, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L4] ) )
+                    )
+                )
+        )
+    )

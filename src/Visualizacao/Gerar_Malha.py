@@ -26,6 +26,7 @@ def encontrar_raiz_projeto(marcador: str = ".git") -> Path:
 BASE_DIR = encontrar_raiz_projeto()
 SHP = BASE_DIR / "data" / "raw" / "Malha Municipal" / "BR_Municipios_2025.shp"
 DESTINO = BASE_DIR / "data" / "processed" / "malha_municipios.json"
+DESTINO_TOPO = BASE_DIR / "data" / "processed" / "malha_municipios.topojson"
 
 PASSO = 0.005            # grade de encaixe, em graus (~550 m); é a unidade das coordenadas gravadas
 TOLERANCIA = 3           # Douglas-Peucker, em unidades da grade (~1,6 km)
@@ -76,10 +77,40 @@ def caminho(aneis: list[np.ndarray]) -> str:
     return "".join(partes)
 
 
+def area_assinada(a: np.ndarray) -> float:
+    x, y = a[:, 0].astype(float), a[:, 1].astype(float)
+    return 0.5 * float(np.dot(x, np.roll(y, -1)) - np.dot(np.roll(x, -1), y))
+
+
+def geometria_topojson(aneis: list[tuple[np.ndarray, bool]], arcos: list) -> dict:
+    """Polígonos TopoJSON em (longitude, latitude) na grade.
+
+    Cada anel chega com a marca externo/buraco, tirada da orientação do anel ORIGINAL do shapefile
+    (externo no sentido horário, buraco anti-horário). Essa é também a convenção que o d3, usado pelo
+    Power BI, espera. O anel simplificado é forçado a essa orientação, porque a simplificação pode
+    inverter anéis minúsculos. Cada buraco entra no último polígono externo; cada anel vira um arco
+    próprio (sem arcos compartilhados), codificado em deltas.
+    """
+    poligonos = []
+    for a, externo in aneis:
+        anel = np.c_[a[:, 0], -a[:, 1]]  # y da grade era -latitude; volta a latitude
+        if (anel[0] != anel[-1]).any():
+            anel = np.vstack([anel, anel[:1]])
+        if (area_assinada(anel) < 0) != externo:  # horário = área negativa com y para cima
+            anel = anel[::-1]
+        arcos.append(np.vstack([anel[:1], np.diff(anel, axis=0)]).astype(int).tolist())
+        if externo or not poligonos:
+            poligonos.append([[len(arcos) - 1]])
+        else:
+            poligonos[-1].append([len(arcos) - 1])
+    return {"type": "MultiPolygon", "arcs": poligonos} if len(poligonos) > 1 else {"type": "Polygon", "arcs": poligonos[0]}
+
+
 if __name__ == "__main__":
     validos = set(pl.read_parquet(BASE_DIR / "data/processed/dim_municipio.parquet")["CO_MUNICIPIO"].to_list())
     r = shapefile.Reader(str(SHP))
     malha, bbox, fora, pontos = {}, {}, [], 0
+    arcos, geometrias = [], []
     for sr in r.iterShapeRecords(fields=["CD_MUN", "SIGLA_UF"]):
         cod, uf = sr.record["CD_MUN"], sr.record["SIGLA_UF"]
         if cod not in validos:
@@ -87,10 +118,18 @@ if __name__ == "__main__":
             continue
         pts = np.asarray(sr.shape.points)
         partes = list(sr.shape.parts) + [len(pts)]
-        aneis = [a for a in (simplificar_anel(pts[i:j]) for i, j in zip(partes[:-1], partes[1:])) if a is not None]
+        simplificados = [(simplificar_anel(pts[i:j]), area_assinada(pts[i:j]) < 0) for i, j in zip(partes[:-1], partes[1:])]
+        simplificados = [(a, externo) for a, externo in simplificados if a is not None]
+        # ilhas minúsculas viram anéis de área ~0 na grade; o d3 (Power BI) lê esses anéis
+        # degenerados como "o globo inteiro". Ficam de fora, mantendo ao menos o maior anel.
+        if len(simplificados) > 1:
+            maior = max(simplificados, key=lambda s: abs(area_assinada(s[0])))
+            simplificados = [s for s in simplificados if abs(area_assinada(s[0])) >= 1] or [maior]
+        aneis = [a for a, _ in simplificados]
         if not aneis:
             continue
         malha[cod] = caminho(aneis)
+        geometrias.append({**geometria_topojson(simplificados, arcos), "id": cod, "properties": {"CD_MUN": cod, "SG_UF": uf}})
         pontos += sum(len(a) for a in aneis)
         xy = np.vstack(aneis)
         b = bbox.setdefault(uf, [math.inf, math.inf, -math.inf, -math.inf])
@@ -101,7 +140,15 @@ if __name__ == "__main__":
              "bbox_brasil": [int(todos[:, 0].min()), int(todos[:, 1].min()), int(todos[:, 2].max()), int(todos[:, 3].max())],
              "bbox_uf": {uf: [int(v) for v in b] for uf, b in bbox.items()}, "municipios": malha}
     DESTINO.write_text(json.dumps(saida, separators=(",", ":")), encoding="utf-8")
+    # TopoJSON para o visual "Mapa de formas" do Power BI: coordenadas inteiras da grade e
+    # transformação de volta para graus (longitude = x·passo/cos15°, latitude = y·passo)
+    topo = {"type": "Topology",
+            "transform": {"scale": [PASSO / FATOR_X, PASSO], "translate": [0, 0]},
+            "objects": {"municipios": {"type": "GeometryCollection", "geometries": geometrias}},
+            "arcs": arcos}
+    DESTINO_TOPO.write_text(json.dumps(topo, separators=(",", ":")), encoding="utf-8")
     sem_malha = sorted(validos - set(malha))
     print(f"[OK] {DESTINO.name}: {len(malha)} municípios, {pontos:,} pontos, {DESTINO.stat().st_size / 1e6:.2f} MB".replace(",", "."))
+    print(f"[OK] {DESTINO_TOPO.name}: {len(geometrias)} geometrias, {DESTINO_TOPO.stat().st_size / 1e6:.2f} MB (chave: CD_MUN)")
     print(f"[INFO] Polígonos fora da dimensão de municípios (descartados): {fora}")
     print(f"[INFO] Municípios da dimensão sem polígono: {sem_malha}")

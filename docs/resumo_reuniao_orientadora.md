@@ -8,7 +8,8 @@
 - **Ferramenta de análise pronta.** Dashboard HTML com seis abas (visão geral, defasagens, porte e contexto, mapa, ficha e pares), usado para explorar os dados.
 - **Desenho fechado.** As decisões de método estão tomadas (seção 2).
 - **Clusters e eficiência calculados:** 7 grupos de municípios por contexto e indicador de eficiência por município, etapa e disciplina.
-- **Próxima etapa:** dashboard oficial em Power BI.
+- **Dashboard oficial especificado:** modelo de dados pronto para o Power BI, 9 páginas definidas e indicadores formais propostos (`powerbi/especificacao_dashboard.md`).
+- **Próxima etapa:** construir o dashboard em Power BI.
 
 | | Municípios | Estados |
 |---|---|---|
@@ -35,11 +36,11 @@
 
 ## 3. Pontos ainda abertos (não bloqueiam o desenvolvimento)
 
-- **Saltos atípicos [S11]:** algumas redes, sobretudo no CE e em AL, sobem mais de 100 pontos em poucos anos (por exemplo, Ibateguara-AL, de 195 para 345). Como tratar esses casos antes de chamá-los de "eficientes"?
+- **Saltos atípicos [S11]:** algumas redes, sobretudo no CE e em AL, sobem mais de 100 pontos em poucos anos (por exemplo, Ibateguara-AL, de 195 para 345). Proposta: marcar, sem excluir, a variação entre edições que se afasta mais de 3 desvios-padrão da média (633 de 82 mil resultados), com aviso no dashboard. A regra serve?
 
 - **Formato do TCC [D1]:** pelo Manual de 2025, o enquadramento mais natural é **método científico (estudo quantitativo)**: a pergunta é de descoberta, e não há uma organização-cliente para um plano de consultoria. Confirmar. Muda a estrutura do texto, não o dashboard.
 - **Avaliação com usuários:** o Manual prevê TCLE (e possivelmente comitê de ética) para pesquisa com pessoas. Como fazer a avaliação com gestores?
-- **Indicadores formais [D2]:** nome, fórmula, unidade e interpretação de cada indicador. Serão propostos junto com a especificação do dashboard.
+- **Indicadores formais [D2]:** 12 indicadores propostos, com nome, fórmula, unidade e interpretação (seção 4 da especificação do dashboard), incluindo faixas de eficiência por quintil (de "bem abaixo" a "bem acima do esperado"). Confirmar.
 - **Testes de sensibilidade [A4]:**
   - sem 2021;
   - sem 2025 na camada estadual;

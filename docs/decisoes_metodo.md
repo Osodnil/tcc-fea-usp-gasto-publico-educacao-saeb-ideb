@@ -2,7 +2,7 @@
 
 Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada base e das decisões tomadas para contorná-los. Serve de base para a seção de Método e para as reuniões com a orientadora.
 
-- **Última atualização:** 2026-10-30 (decisões de 30/10, Manual de TCC, clusters e indicador de eficiência)
+- **Última atualização:** 2026-10-30 (decisões de 30/10, Manual de TCC, clusters, indicador de eficiência, marca de saltos atípicos e especificação do Power BI)
 - **Fontes deste registro:** código e dados do repositório, os testes em `src/Testes`, os diagnósticos em `data/interim/diagnosticos`, as instruções do projeto e o dossiê das conversas anteriores (`docs/historico/`). Os números marcados com † foram recalculados a partir dos parquets em `data/interim`; os marcados "(dossiê)" vêm das conversas anteriores; os demais vêm dos testes ou das instruções. Esses dois últimos grupos não foram reverificados.
 - **Status:** ✅ fechada · 🟡 provisória (validar com a orientadora) · ⚠️ problema em aberto. As pendências estão na seção 9 e as limitações consolidadas na seção 10.
 
@@ -34,7 +34,9 @@ Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada b
 | Censo Escolar, infraestrutura | ✅ | ✅ `Transform_Infraestrutura.py` (ver T4) | `censo_escolar_transformado` |
 | **Painéis** | — | ✅ `Montar_Paineis.py` (ver P1) | `data/processed/painel_{municipal,estadual}` |
 | **Tabelas de apoio** | — | ✅ `Montar_Paineis.py` (ver P4) | `data/processed/dim_{municipio,uf}`, `gasto_{municipal,estadual}_anual` |
+| **Clusters e eficiência** | — | ✅ `src/Analise/Analise_Clusters.py`, `Eficiencia.py` (ver A6, A8, S11) | `data/processed/cluster_*`, `eficiencia_municipal` |
 | **Dashboard (ferramenta de análise)** | — | ✅ `src/Visualizacao/Gerar_Dashboard_HTML.py` (ver P5) | `relatorios/dashboard_conferencia.html` |
+| **Dashboard oficial (Power BI)** | — | ✅ modelo `src/Visualizacao/Preparar_PowerBI.py`; especificação em `powerbi/` (ver P7) · `.pbix` a construir | `data/processed/powerbi/` |
 | Saeb/IDEB | ✅ `Extract_SAEB.py` | ✅ `Transform_SAEB.py` | `saeb_{municipal,estadual}_transformado` |
 | IDHM por UF | ✅ | ✅ (mesmo ano do Saeb; 2025 sem IDHM, ver C1) | `idhm_transformado` |
 | IBGE, Censo 2022 (alfabetização) | ✅ | ✅ | `ibge_transformado` |
@@ -42,7 +44,7 @@ Panorama do que foi desenvolvido até agora, dos problemas encontrados em cada b
 
 O dashboard é um HTML autocontido, que abre offline, gerado a partir dos painéis e das tabelas de apoio. É só descritivo (medianas, médias simples, correlação de Spearman), sem modelo estimado, e não muda nenhum resultado.
 
-A validação de 2026-10-21 concluiu que os Extracts estão completos para a pergunta. Em 2026-10-22, todas as bases foram tratadas e cruzadas nos painéis municipal e estadual. O próximo passo é a análise exploratória e, depois, as estimações.
+A validação de 2026-10-21 concluiu que os Extracts estão completos para a pergunta. Em 2026-10-22, todas as bases foram tratadas e cruzadas nos painéis municipal e estadual. Em 2026-10-30 saíram os clusters, o indicador de eficiência e a especificação do dashboard oficial. O próximo passo é construir o `.pbix` e, em paralelo, os testes de sensibilidade (A4).
 
 ---
 
@@ -395,7 +397,13 @@ Falar sempre em associação e eficiência relativa.
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
 - **Concentração:** as redes de AI com mais de 300 pontos em Matemática estão quase todas no Ceará e em Alagoas (2025: 30 no CE e 10 em AL). A média de AL subiu de 200 (2017) para 238 (2025).
 - **Leitura:** pode ser melhoria real, artefato de participação ou distorção ligada a incentivos. Por exemplo, a distribuição do ICMS educacional pelo IDEB em alguns estados é citada nesse debate. **Nenhuma dessas hipóteses foi verificada aqui.**
-- **Encaminhamento:** marcar esses casos no dashboard como "salto atípico", com regra a definir, e não interpretá-los como eficiência sem checagem. Vale procurar notas do Inep e literatura sobre o tema antes de escrever os resultados.
+- **Encaminhamento:** marcar esses casos no dashboard como "salto atípico" e não interpretá-los como eficiência sem checagem. Vale procurar notas do Inep e literatura sobre o tema antes de escrever os resultados.
+- **Regra proposta (implementada em `Eficiencia.py`, 2026-10-30; a confirmar) 🟡:**
+  - variação = proficiência da edição − proficiência da edição anterior da mesma rede, etapa e disciplina, só entre edições consecutivas (2 anos);
+  - atípica quando a variação se afasta **mais de 3 desvios-padrão** da média das variações da mesma etapa e disciplina, para cima ou para baixo;
+  - colunas `VARIACAO_EDICAO_ANTERIOR` e `SALTO_ATIPICO` em `eficiencia_municipal.parquet`. A marca **não exclui** ninguém (coerente com A5); o dashboard mostra um aviso na ficha e um ícone no ranking.
+- **Resultado†:** 633 linhas marcadas (0,8% das 82.260), 434 altas e 199 quedas. As quedas também entram, porque costumam ser o "outro lado" de uma alta isolada.
+- **Alternativas consideradas:** limite fixo em pontos (por exemplo, 50 pontos em dois anos, cerca de dois anos de aprendizado), mais fácil de explicar, mas que não se ajusta às diferenças de dispersão entre etapas e disciplinas; e regra pela distância à tendência da própria rede, que exige mais edições do que a série tem.
 
 ### A7. Forma simples de acessar o projeto 🟡 (pedido da orientadora, 2026-10-23)
 - **Decisão da orientadora:** ao final, oferecer um acesso simples ao projeto, como um QR Code.
@@ -458,6 +466,19 @@ Falar sempre em associação e eficiência relativa.
 - **Resultado:** 117 mil pontos e 0,74 MB, com todos os 5.571 municípios da dimensão. Os contornos são aproximados, servem para visualização e não para cálculo de área.
 - **Descartados:** os polígonos 4300001 e 4300002, que são as áreas operacionais da Lagoa Mirim e da Lagoa dos Patos (RS), e não municípios.
 - **Dependência nova:** `pyshp` (leitura do shapefile), instalada no Anaconda em 2026-10-27 com autorização do Henrique.
+- **TopoJSON para o Power BI (2026-10-30):** o mesmo script grava também `malha_municipios.topojson` (5.571 geometrias, 1,5 MB), para o visual "Mapa de formas". Coordenadas inteiras da grade, com transformação de volta para graus; chave `CD_MUN` (também em `id`), igual a `CO_MUNICIPIO`.
+  - **Orientação dos anéis:** o Power BI desenha com o d3, que exige anel externo no sentido horário e buraco no anti-horário. A marca externo/buraco vem do anel original do shapefile, e o anel simplificado é forçado a essa orientação.
+  - **Ilhas degeneradas:** em 3 municípios com ilhas minúsculas, a simplificação deixava anéis de área quase zero, que o d3 lê como "o globo inteiro". Esses anéis saem quando o município tem outro anel maior (o maior sempre fica). Isso também muda um pouco o JSON do HTML (116.311 pontos).
+  - **Conferência:** o TopoJSON foi desenhado com o d3 numa página de teste. Nenhuma geometria virou globo invertido, e o mapa ficou igual ao do HTML.
+
+### P7. Modelo de dados e especificação do dashboard oficial ✅ (2026-10-30)
+- **Script:** `src/Visualizacao/Preparar_PowerBI.py` grava 12 tabelas em `data/processed/powerbi/`, num modelo em estrela: 8 dimensões (município com cluster, UF, cluster, ano, etapa, disciplina e os parâmetros defasagem e modelo) e 4 fatos (desempenho e gasto, municipal e estadual).
+- **Formato longo:** os fatos de desempenho têm uma linha por rede × etapa × **disciplina** × edição, com a proficiência numa coluna só. Assim, um filtro de disciplina serve para todas as páginas.
+- **Nada é recalculado:** o script só junta e empilha tabelas já validadas. Ele confere chaves únicas, ausência de órfãos e que a proficiência da eficiência é a mesma do painel.
+- **Contagens†:** 93.630 linhas no fato municipal; 82.390 com proficiência; 65.084 com eficiência oficial; 82.260 com eficiência de robustez. **130 redes com nota ficam sem eficiência**, porque falta o gasto ou algum controle.
+- **Especificação (`powerbi/especificacao_dashboard.md`):** público, perguntas, modelo, relacionamentos, indicadores formais (proposta para D2), 9 páginas, regras visuais, riscos e critérios de aceite. Medidas em `powerbi/medidas.dax`, carregamento em `powerbi/carregar_dados.pq` e tema em `powerbi/tema_tcc.json`, com a mesma paleta do HTML.
+- **Agregações iguais às do HTML:** gasto = mediana entre as redes; nota = média simples; associação = ρ de Spearman. As proficiências só aparecem com uma etapa e uma disciplina selecionadas.
+- **Proposta a confirmar:** faixas de eficiência por quintil do percentil (bem abaixo, abaixo, próximo, acima e bem acima do esperado).
 
 ### P5. Dashboard como ferramenta de análise ✅ (2026-10-27)
 - **Decisão (Henrique, 2026-10-27):** usar o dashboard HTML como ferramenta de exploração para a análise, ampliado em abas. O Power BI fica para a apresentação final, alimentado pelas mesmas tabelas.
@@ -532,6 +553,12 @@ Falar sempre em associação e eficiência relativa.
 
   O Excel foi conferido contra os Parquet (mesmas linhas, colunas e somas).
 
+### T6. Ambiente Python da máquina do Henrique ⚠️ (achado de 2026-10-30)
+- **Situação:** há um polars 2.1.0 e um pyarrow 26.0 na pasta de pacotes do usuário (`AppData\Roaming\Python\Python312`), instalados em 2026-10-30 fora deste trabalho. Essa pasta tem prioridade sobre o Anaconda, que tem o polars 1.44.2 do `requirements.txt`. Além disso, o comando `python` do terminal aponta para o Python da Microsoft Store, e não para o Anaconda.
+- **Efeito:** o pyarrow 26 exige NumPy 2, e o Anaconda tem NumPy 1.26. Qualquer conversão para pandas falha.
+- **Contorno:** o código ficou livre de pandas (a matriz do modelo em `Eficiencia.py` é montada em NumPy). As tabelas foram conferidas e saíram iguais. Os scripts devem ser rodados com o Python do Anaconda (`%USERPROFILE%\anaconda3\python.exe`).
+- **Pendente:** decidir se o pacote da pasta do usuário fica (e o `requirements.txt` sobe para o polars 2.1) ou sai. Rodar com `python -s` ignora essa pasta.
+
 ---
 
 ## 9. Reuniões com a orientadora
@@ -561,11 +588,11 @@ Anotações do Henrique, registradas como vieram:
 | Power BI | Instalado e funcionando na máquina do Henrique |
 
 ### Pendências restantes (nenhuma bloqueia o desenvolvimento)
-0. **S11 (novo, 2026-10-30):** regra para marcar os saltos atípicos de proficiência. (A8 foi decidido: versão nacional.)
+0. **S11 (2026-10-30):** confirmar a regra proposta para marcar os saltos atípicos (mais de 3 desvios-padrão da variação média; 633 linhas marcadas, nenhuma excluída). (A8 foi decidido: versão nacional.)
 1. **S8 e S4:** as propostas (não imputar notas, controlar o porte, painel balanceado; Anos Finais como complementar) seguem como padrão de trabalho, sem objeção registrada.
 2. **A4 e P3:** lista de testes de sensibilidade; extensão das matrículas para 2015–2016 é opcional.
 3. **D1:** formato do TCC (científico ou consultoria). Afeta o texto, não o dashboard.
-4. **D2:** indicadores formais (nome, fórmula, unidade, interpretação). Serão escritos junto com a especificação do dashboard.
+4. **D2:** indicadores formais. Proposta escrita em 2026-10-30 (12 indicadores, seção 4 de `powerbi/especificacao_dashboard.md`), com as faixas de eficiência por quintil; falta confirmar.
 5. **D4:** referências e APA; **D5/IA:** forma de documentar o uso de IA no Método.
 6. **A7:** endereço público para o QR Code (Power BI Service com "Publicar na Web", ou o HTML), a verificar na publicação.
 
