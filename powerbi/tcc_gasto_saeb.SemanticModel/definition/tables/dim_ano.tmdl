@@ -1,0 +1,36 @@
+table dim_ano
+	lineageTag: 7aecaf9e-84e9-5aff-99de-04877f381391
+
+	column ANO
+		dataType: int64
+		lineageTag: f62f5c7d-e97b-53bc-8db6-fee2fc0c0db8
+		summarizeBy: none
+		sourceColumn: ANO
+
+	column EDICAO_SAEB
+		dataType: boolean
+		lineageTag: 8b0e49b9-c206-57d0-b1b1-d7aa5d859a10
+		summarizeBy: none
+		sourceColumn: EDICAO_SAEB
+
+	column TEM_IDHM
+		dataType: boolean
+		lineageTag: 6197cae6-a407-567f-9100-efb9f056946e
+		summarizeBy: none
+		sourceColumn: TEM_IDHM
+
+	column EFICIENCIA_OFICIAL
+		dataType: boolean
+		lineageTag: f8bf6909-f5a6-5cf1-aaac-29e65019be03
+		summarizeBy: none
+		sourceColumn: EFICIENCIA_OFICIAL
+
+	partition dim_ano = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_ano.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"ANO", Int64.Type}, {"EDICAO_SAEB", type logical}, {"TEM_IDHM", type logical}, {"EFICIENCIA_OFICIAL", type logical}})
+				in
+				    Tipos
+

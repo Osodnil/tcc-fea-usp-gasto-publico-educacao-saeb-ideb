@@ -23,22 +23,27 @@ Aviso de seleção =
 Gasto por aluno (mediana anual) =
     MEDIAN ( fato_gasto_municipal[GASTO_ALUNO_R2025] )
 
-// Só as redes avaliadas, com o gasto da defasagem escolhida (L0 = mesmo ano da edição)
+// Só as redes avaliadas (com proficiência), com o gasto da defasagem escolhida (L0 = mesmo ano da edição).
+// As redes sem gasto saem antes da mediana: no MEDIANX, o vazio entrava como zero (conferência de 2026-10-30).
 Gasto das redes avaliadas (mediana) =
 VAR k = [Defasagem]
 VAR redes =
-    SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ANO] )
-RETURN
-    MEDIANX (
-        redes,
-        SWITCH (
-            k,
-            0, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ) ),
-            1, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L1] ) ),
-            2, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L2] ) ),
-            4, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L4] ) )
-        )
+    ADDCOLUMNS (
+        CALCULATETABLE (
+            SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ANO] ),
+            NOT ISBLANK ( fato_desempenho_municipal[PROFICIENCIA] )
+        ),
+        "@gasto",
+            SWITCH (
+                k,
+                0, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ) ),
+                1, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L1] ) ),
+                2, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L2] ) ),
+                4, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L4] ) )
+            )
     )
+RETURN
+    MEDIANX ( FILTER ( redes, NOT ISBLANK ( [@gasto] ) ), [@gasto] )
 
 Gasto estadual por aluno (mediana, versão A) =
     MEDIAN ( fato_gasto_estadual[GASTO_ALUNO_A_R2025] )
@@ -198,6 +203,36 @@ Nota menos a mediana do cluster =
 
 Gasto ÷ mediana do cluster =
     AVERAGE ( fato_desempenho_municipal[GASTO_VS_CLUSTER] )
+
+// Página "Pares": o usuário escolhe o município de referência numa segmentação da tabela calculada abaixo,
+// que NÃO se relaciona com nada (assim a lista de pares não é filtrada pelo próprio município).
+// Tabela calculada (Modelagem > Nova tabela):
+//   ref_municipio = SELECTCOLUMNS ( dim_municipio,
+//       "REF_CO_MUNICIPIO", dim_municipio[CO_MUNICIPIO], "REF_MUNICIPIO_UF", dim_municipio[MUNICIPIO_UF],
+//       "REF_CLUSTER", dim_municipio[CLUSTER] )
+
+Gasto do município de referência =
+VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+RETURN
+    CALCULATE (
+        AVERAGE ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ),
+        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+        dim_municipio[CO_MUNICIPIO] = r
+    )
+
+// 1 = mesmo cluster do município de referência, com gasto (L0, na edição filtrada) entre 0,8 e 1,25 vez o dele
+É par =
+VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+VAR clusterRef = SELECTEDVALUE ( ref_municipio[REF_CLUSTER] )
+VAR razao = DIVIDE ( AVERAGE ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ), [Gasto do município de referência] )
+RETURN
+    IF (
+        NOT ISBLANK ( r )
+            && SELECTEDVALUE ( dim_municipio[CLUSTER] ) = clusterRef
+            && SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) <> r
+            && razao >= 0.8 && razao <= 1.25,
+        1, 0
+    )
 
 // ───────────────────────── Pasta: 6 Qualidade dos dados ─────────────────────────
 

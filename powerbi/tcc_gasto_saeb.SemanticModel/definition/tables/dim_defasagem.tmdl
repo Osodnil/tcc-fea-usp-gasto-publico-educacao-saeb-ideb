@@ -1,0 +1,25 @@
+table dim_defasagem
+	lineageTag: 7abeb6d7-9ff3-5e15-9131-57369f3108da
+
+	column DEFASAGEM
+		dataType: int64
+		lineageTag: 67eb85cf-d661-5378-8a49-6a3976f66b7a
+		summarizeBy: none
+		sourceColumn: DEFASAGEM
+
+	column ROTULO_DEFASAGEM
+		dataType: string
+		lineageTag: 46470954-0019-59c2-a849-67ec1595a3c8
+		summarizeBy: none
+		sourceColumn: ROTULO_DEFASAGEM
+		sortByColumn: DEFASAGEM
+
+	partition dim_defasagem = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_defasagem.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"DEFASAGEM", Int64.Type}, {"ROTULO_DEFASAGEM", type text}})
+				in
+				    Tipos
+

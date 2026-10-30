@@ -140,6 +140,8 @@ Para rodar um script isolado, chame-o diretamente, por exemplo `python src/Trans
 | `Visualizacao/Preparar_PowerBI.py` | `data/processed/powerbi/` (modelo em estrela do dashboard oficial) |
 | `Visualizacao/Gerar_Dashboard_HTML.py` | `relatorios/dashboard_conferencia.html` |
 
+O modelo do dashboard em Power BI é criado uma única vez por `src/Visualizacao/Gerar_Modelo_PowerBI.py`, dentro do projeto `powerbi/tcc_gasto_saeb.pbip`; o passo a passo está em `powerbi/roteiro_construcao.md`.
+
 Use o Python do Anaconda (`%USERPROFILE%\anaconda3\python.exe`); na máquina de desenvolvimento, o `python` do terminal aponta para outra instalação (ver T6 no registro).
 
 Cada script imprime um resumo com contagens e validações, como chave única, cobertura por ano e valores fora do esperado. Saídas maiores vão para `data/interim/diagnosticos/`.

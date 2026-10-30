@@ -1,0 +1,381 @@
+table _Medidas
+	lineageTag: b9111dac-862a-5801-a3cd-241fb43ff262
+
+	measure Defasagem = SELECTEDVALUE ( dim_defasagem[DEFASAGEM], 0 )
+		formatString: 0
+		displayFolder: 0 Parâmetros
+		lineageTag: 8d0dcbf6-a39b-5071-9313-b49c560139f0
+
+	measure Modelo = SELECTEDVALUE ( dim_modelo[MODELO], "Oficial" )
+		displayFolder: 0 Parâmetros
+		lineageTag: fedd6cd6-d586-57bb-a10a-c74846dcdc55
+
+	/// Proficiências de etapas ou disciplinas diferentes não se somam nem se tiram médias juntas
+	measure 'Seleção comparável' = HASONEVALUE ( dim_disciplina[DISCIPLINA] ) && HASONEVALUE ( dim_etapa[ETAPA] )
+		displayFolder: 0 Parâmetros
+		lineageTag: 4fd01478-23d5-5999-8ec4-cfc74e9eb9c5
+
+	measure 'Aviso de seleção' = IF ( NOT [Seleção comparável], "Escolha uma etapa e uma disciplina para ver as notas." )
+		displayFolder: 0 Parâmetros
+		lineageTag: dc57aa39-d6ae-569d-83d6-1f97cab418e0
+
+	/// Todas as redes com gasto no ano (inclusive as que não têm nota no Saeb)
+	measure 'Gasto por aluno (mediana anual)' = MEDIAN ( fato_gasto_municipal[GASTO_ALUNO_R2025] )
+		formatString: R$ #,0
+		displayFolder: 1 Gasto
+		lineageTag: d690f24c-3e21-5e11-bff9-976c87616080
+
+	/// Só as redes avaliadas (com proficiência), com o gasto da defasagem escolhida (L0 = mesmo ano da edição)
+	measure 'Gasto das redes avaliadas (mediana)' =
+			
+			VAR k = [Defasagem]
+			VAR redes =
+			    ADDCOLUMNS (
+			        CALCULATETABLE (
+			            SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ANO] ),
+			            NOT ISBLANK ( fato_desempenho_municipal[PROFICIENCIA] )
+			        ),
+			        "@gasto",
+			            SWITCH (
+			                k,
+			                0, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ) ),
+			                1, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L1] ) ),
+			                2, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L2] ) ),
+			                4, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L4] ) )
+			            )
+			    )
+			RETURN
+			    MEDIANX ( FILTER ( redes, NOT ISBLANK ( [@gasto] ) ), [@gasto] )
+		formatString: R$ #,0
+		displayFolder: 1 Gasto
+		lineageTag: 10ee760a-7921-50f3-8a37-b3395dc48b1a
+
+	measure 'Gasto estadual por aluno (mediana, versão A)' = MEDIAN ( fato_gasto_estadual[GASTO_ALUNO_A_R2025] )
+		formatString: R$ #,0
+		displayFolder: 1 Gasto
+		lineageTag: 0dc84816-057b-514b-a006-979b42b75bf1
+
+	/// Teste de sensibilidade G4 (desconta o Ensino Superior só onde a linha 12.364 existe)
+	measure 'Gasto estadual por aluno (mediana, versão B)' = MEDIAN ( fato_gasto_estadual[GASTO_ALUNO_B_R2025] )
+		formatString: R$ #,0
+		displayFolder: 1 Gasto
+		lineageTag: 700fa0fe-977b-53b3-a2d7-40185acd24de
+
+	measure 'Redes com gasto extremo' = CALCULATE ( DISTINCTCOUNT ( fato_gasto_municipal[CO_MUNICIPIO] ), fato_gasto_municipal[GASTO_EXTREMO] = TRUE () )
+		formatString: #,0
+		displayFolder: 1 Gasto
+		lineageTag: af7712bc-7ebb-54e7-9f3a-73ac6d3a2274
+
+	measure 'Proficiência média' = IF ( [Seleção comparável], AVERAGE ( fato_desempenho_municipal[PROFICIENCIA] ) )
+		formatString: 0.0
+		displayFolder: 2 Desempenho
+		lineageTag: 9f040e77-06b9-5f63-b3b9-31979e165e14
+
+	measure 'Proficiência mediana' = IF ( [Seleção comparável], MEDIAN ( fato_desempenho_municipal[PROFICIENCIA] ) )
+		formatString: 0.0
+		displayFolder: 2 Desempenho
+		lineageTag: b7088549-afb4-5b6f-ac56-fa79a6178229
+
+	/// Referências para a ficha do município: o mesmo recorte de etapa, disciplina e edição, em outro grupo
+	measure 'Proficiência mediana do cluster' =
+			VAR c = SELECTEDVALUE ( dim_municipio[CLUSTER] )
+			RETURN
+			    IF (
+			        [Seleção comparável] && NOT ISBLANK ( c ),
+			        CALCULATE (
+			            MEDIAN ( fato_desempenho_municipal[PROFICIENCIA] ),
+			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+			            dim_municipio[CLUSTER] = c
+			        )
+			    )
+		formatString: 0.0
+		displayFolder: 2 Desempenho
+		lineageTag: e37808eb-6af8-568d-9734-213441e330e9
+
+	measure 'Proficiência mediana da UF' =
+			VAR u = SELECTEDVALUE ( dim_municipio[SG_UF] )
+			RETURN
+			    IF (
+			        [Seleção comparável] && NOT ISBLANK ( u ),
+			        CALCULATE (
+			            MEDIAN ( fato_desempenho_municipal[PROFICIENCIA] ),
+			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+			            dim_municipio[SG_UF] = u
+			        )
+			    )
+		formatString: 0.0
+		displayFolder: 2 Desempenho
+		lineageTag: fa8fc029-9960-54ad-8de1-b12329aeefcc
+
+	measure 'Proficiência mediana do Brasil' =
+			IF (
+			    [Seleção comparável],
+			    CALCULATE (
+			        MEDIAN ( fato_desempenho_municipal[PROFICIENCIA] ),
+			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
+			    )
+			)
+		formatString: 0.0
+		displayFolder: 2 Desempenho
+		lineageTag: 0a551dca-e46e-5cfe-a3aa-66f40da173f1
+
+	/// IDEB e nota N valem para a etapa (não para a disciplina): uma linha por rede e edição, sem contar duas vezes
+	measure 'IDEB médio' =
+			AVERAGEX (
+			    SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ETAPA], fato_desempenho_municipal[ANO] ),
+			    CALCULATE ( MAX ( fato_desempenho_municipal[IDEB] ) )
+			)
+		formatString: 0.00
+		displayFolder: 2 Desempenho
+		lineageTag: ddc41f44-9f48-5b2b-a352-160812b3f226
+
+	measure 'Nota padronizada N média' =
+			AVERAGEX (
+			    SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ETAPA], fato_desempenho_municipal[ANO] ),
+			    CALCULATE ( MAX ( fato_desempenho_municipal[NOTA_N] ) )
+			)
+		formatString: 0.00
+		displayFolder: 2 Desempenho
+		lineageTag: 06078361-90a6-5fd2-851c-177e807f90ad
+
+	measure 'Proficiência média estadual' = IF ( [Seleção comparável], AVERAGE ( fato_desempenho_estadual[PROFICIENCIA] ) )
+		formatString: 0.0
+		displayFolder: 2 Desempenho
+		lineageTag: c009ad07-0ff5-5ac8-af79-89f4e3e2cc82
+
+	measure 'Redes avaliadas' =
+			CALCULATE (
+			    DISTINCTCOUNT ( fato_desempenho_municipal[CO_MUNICIPIO] ),
+			    NOT ISBLANK ( fato_desempenho_municipal[PROFICIENCIA] )
+			)
+		formatString: #,0
+		displayFolder: 3 Cobertura
+		lineageTag: d8761143-1176-5fea-b616-5e49cc252339
+
+	measure 'Municípios no recorte' = COUNTROWS ( dim_municipio )
+		formatString: #,0
+		displayFolder: 3 Cobertura
+		lineageTag: fdf6b559-ee2e-5828-b638-2aa17f0141a3
+
+	/// Ler por edição: com várias edições selecionadas, cada município conta uma vez
+	measure 'Cobertura do Saeb' = DIVIDE ( [Redes avaliadas], [Municípios no recorte] )
+		formatString: 0.0%
+		displayFolder: 3 Cobertura
+		lineageTag: a0ec8228-0323-5805-98f8-f218ea53f876
+
+	measure 'Proficiência esperada' =
+			IF (
+			    [Seleção comparável],
+			    SWITCH (
+			        [Modelo],
+			        "Oficial", AVERAGE ( fato_desempenho_municipal[NOTA_ESPERADA] ),
+			        "Robustez", AVERAGE ( fato_desempenho_municipal[NOTA_ESPERADA_ALT] )
+			    )
+			)
+		formatString: 0.0
+		displayFolder: 4 Eficiência
+		lineageTag: 910774b1-f0d3-56fa-a429-996ebf746eab
+
+	/// Pontos acima (+) ou abaixo (−) do esperado para o gasto e o contexto. Associação, não efeito causal.
+	measure 'Eficiência (pontos)' =
+			IF (
+			    HASONEVALUE ( dim_disciplina[DISCIPLINA] ),
+			    SWITCH (
+			        [Modelo],
+			        "Oficial", AVERAGE ( fato_desempenho_municipal[RESIDUO] ),
+			        "Robustez", AVERAGE ( fato_desempenho_municipal[RESIDUO_ALT] )
+			    )
+			)
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 4 Eficiência
+		lineageTag: 325ef8ee-940b-566e-a7d4-efba07fc9757
+
+	measure 'Percentil de eficiência' =
+			IF (
+			    HASONEVALUE ( dim_disciplina[DISCIPLINA] ),
+			    SWITCH (
+			        [Modelo],
+			        "Oficial", AVERAGE ( fato_desempenho_municipal[PERCENTIL_RESIDUO] ),
+			        "Robustez", AVERAGE ( fato_desempenho_municipal[PERCENTIL_RESIDUO_ALT] )
+			    )
+			)
+		formatString: 0
+		displayFolder: 4 Eficiência
+		lineageTag: 60e66f20-b90a-5da1-9dbe-8c54ef10c519
+
+	measure 'Redes com eficiência calculada' =
+			SWITCH (
+			    [Modelo],
+			    "Oficial", COUNT ( fato_desempenho_municipal[RESIDUO] ),
+			    "Robustez", COUNT ( fato_desempenho_municipal[RESIDUO_ALT] )
+			)
+		formatString: #,0
+		displayFolder: 4 Eficiência
+		lineageTag: 6b3448ff-0a67-5eeb-b9ba-14ea30ee997a
+
+	measure '% acima do esperado' =
+			VAR acima =
+			    SWITCH (
+			        [Modelo],
+			        "Oficial", CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[RESIDUO] > 0 ),
+			        "Robustez", CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[RESIDUO_ALT] > 0 )
+			    )
+			RETURN
+			    DIVIDE ( acima, [Redes com eficiência calculada] )
+		formatString: 0.0%
+		displayFolder: 4 Eficiência
+		lineageTag: 1564152d-4d81-5207-8147-84e4d117f3bc
+
+	/// Faixas por quintil do percentil (proposta D2, a confirmar)
+	measure 'Faixa de eficiência' =
+			VAR p = [Percentil de eficiência]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( p ), "Sem cálculo",
+			        p > 80, "Bem acima do esperado",
+			        p > 60, "Acima do esperado",
+			        p > 40, "Próximo do esperado",
+			        p > 20, "Abaixo do esperado",
+			        "Bem abaixo do esperado"
+			    )
+		displayFolder: 4 Eficiência
+		lineageTag: fb322437-2bcf-5b25-a703-0d38a3353909
+
+	measure 'Aviso do modelo' =
+			IF (
+			    [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
+			    "A edição de 2025 não tem IDHM: a eficiência oficial cobre 2017–2023. Use o modelo de robustez para 2025."
+			)
+		displayFolder: 4 Eficiência
+		lineageTag: 46469a65-6960-5bef-973b-813e34fdbfd6
+
+	measure 'Nota menos a mediana do cluster' = IF ( [Seleção comparável], AVERAGE ( fato_desempenho_municipal[NOTA_VS_CLUSTER] ) )
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 64980676-6632-5970-82b1-9aab0facce10
+
+	measure 'Gasto ÷ mediana do cluster' = AVERAGE ( fato_desempenho_municipal[GASTO_VS_CLUSTER] )
+		formatString: 0.00
+		displayFolder: 5 Pares e cluster
+		lineageTag: 12b2eba3-0323-53ed-9c42-3d1b268849b8
+
+	measure 'Gasto do município de referência' =
+			VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+			RETURN
+			    CALCULATE (
+			        AVERAGE ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ),
+			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+			        dim_municipio[CO_MUNICIPIO] = r
+			    )
+		formatString: R$ #,0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 7a75bf88-d800-53ae-96b9-72cb29ea9c8c
+
+	/// 1 = mesmo cluster do município de referência, com gasto (L0, na edição filtrada) entre 0,8 e 1,25 vez o dele
+	measure 'É par' =
+			VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+			VAR clusterRef = SELECTEDVALUE ( ref_municipio[REF_CLUSTER] )
+			VAR razao = DIVIDE ( AVERAGE ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ), [Gasto do município de referência] )
+			RETURN
+			    IF (
+			        NOT ISBLANK ( r )
+			            && SELECTEDVALUE ( dim_municipio[CLUSTER] ) = clusterRef
+			            && SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) <> r
+			            && razao >= 0.8 && razao <= 1.25,
+			        1, 0
+			    )
+		formatString: 0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 7e02c5a4-e843-5414-989e-c9a229603c0d
+
+	measure 'Redes com salto atípico' =
+			CALCULATE (
+			    DISTINCTCOUNT ( fato_desempenho_municipal[CO_MUNICIPIO] ),
+			    fato_desempenho_municipal[SALTO_ATIPICO] = TRUE ()
+			)
+		formatString: #,0
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: aec0668b-4312-5aa2-a987-994d4c54624b
+
+	measure 'Aviso de salto atípico' =
+			IF (
+			    CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () ) > 0,
+			    "⚠ Variação atípica em relação à edição anterior (mais de 3 desvios-padrão). Conferir antes de interpretar."
+			)
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: e467ef34-a785-5d0d-8d45-2d786ab79b6d
+
+	/// ρ de Spearman entre o gasto da defasagem escolhida e a proficiência, entre as redes do recorte
+	/// (o mesmo indicador da aba "Defasagens" do HTML). No RANKX, valores empatados recebem o mesmo posto (o menor);
+	/// se o HTML tratar empates de outro jeito, a 3ª casa decimal pode diferir. Mínimo de 30 redes.
+	measure 'Correlação gasto × proficiência (Spearman)' =
+			VAR k = [Defasagem]
+			VAR base =
+			    FILTER (
+			        ADDCOLUMNS (
+			            SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ANO] ),
+			            "@x",
+			                SWITCH (
+			                    k,
+			                    0, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ) ),
+			                    1, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L1] ) ),
+			                    2, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L2] ) ),
+			                    4, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L4] ) )
+			                ),
+			            "@y", CALCULATE ( MAX ( fato_desempenho_municipal[PROFICIENCIA] ) )
+			        ),
+			        NOT ISBLANK ( [@x] ) && NOT ISBLANK ( [@y] )
+			    )
+			VAR postos =
+			    ADDCOLUMNS (
+			        base,
+			        "@rx", RANKX ( base, [@x], , ASC ),
+			        "@ry", RANKX ( base, [@y], , ASC )
+			    )
+			VAR n = COUNTROWS ( postos )
+			VAR mx = AVERAGEX ( postos, [@rx] )
+			VAR my = AVERAGEX ( postos, [@ry] )
+			VAR sxy = SUMX ( postos, ( [@rx] - mx ) * ( [@ry] - my ) )
+			VAR sxx = SUMX ( postos, ( [@rx] - mx ) ^ 2 )
+			VAR syy = SUMX ( postos, ( [@ry] - my ) ^ 2 )
+			RETURN
+			    IF ( [Seleção comparável] && n >= 30, DIVIDE ( sxy, SQRT ( sxx * syy ) ) )
+		formatString: 0.00
+		displayFolder: 7 Associação por defasagem
+		lineageTag: 54c33142-829d-53e5-bd1e-2e77fa46f430
+
+	measure 'Redes na correlação' =
+			VAR k = [Defasagem]
+			RETURN
+			    COUNTROWS (
+			        FILTER (
+			            SUMMARIZE ( fato_desempenho_municipal, fato_desempenho_municipal[CO_MUNICIPIO], fato_desempenho_municipal[ANO] ),
+			            NOT ISBLANK ( CALCULATE ( MAX ( fato_desempenho_municipal[PROFICIENCIA] ) ) )
+			                && NOT ISBLANK (
+			                    SWITCH (
+			                        k,
+			                        0, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ) ),
+			                        1, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L1] ) ),
+			                        2, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L2] ) ),
+			                        4, CALCULATE ( MAX ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L4] ) )
+			                    )
+			                )
+			        )
+			    )
+		formatString: #,0
+		displayFolder: 7 Associação por defasagem
+		lineageTag: 4f9e8367-7f21-50d9-8385-878a54c14768
+
+	column Coluna
+		dataType: int64
+		isHidden
+		lineageTag: 84eace48-46db-5e7a-9764-9593ffb2d3bb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Coluna]
+
+	partition _Medidas = calculated
+		mode: import
+		source = ROW ( "Coluna", 0 )
+

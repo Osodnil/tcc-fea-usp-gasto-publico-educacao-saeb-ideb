@@ -1,6 +1,6 @@
 # Especificação do dashboard oficial (Power BI)
 
-*Versão 1, 2026-10-30. Base: decisões E3, E4, S9, S11, C1, C1b, G4, A5, A6, A8 e A7 de `docs/decisoes_metodo.md`. O HTML em `relatorios/` continua como ferramenta de conferência; o produto entregue é o `.pbix` desta pasta.*
+*Versão 1, 2026-10-30. Base: decisões E3, E4, S9, S11, C1, C1b, G4, A5, A6, A8 e A7 de `docs/decisoes_metodo.md`. O HTML em `relatorios/` continua como ferramenta de conferência; o produto entregue é o projeto `.pbip` desta pasta.*
 
 ## 1. Para quem e para quê
 
@@ -20,8 +20,10 @@
 | `powerbi/carregar_dados.pq` | Consulta M de carregamento e o parâmetro `PastaDados` |
 | `powerbi/medidas.dax` | Todas as medidas, por pasta |
 | `powerbi/tema_tcc.json` | Tema (mesma paleta do HTML de conferência) |
+| `powerbi/roteiro_construcao.md` | Passo a passo da construção, com os valores de conferência |
 | `data/processed/malha_municipios.topojson` | Malha para o visual "Mapa de formas" (chave `CD_MUN` = `CO_MUNICIPIO`) |
-| `powerbi/tcc_gasto_saeb.pbix` | O dashboard (a criar) |
+| `src/Visualizacao/Gerar_Modelo_PowerBI.py` | Escreve o modelo semântico (TMDL) no projeto, uma vez |
+| `powerbi/tcc_gasto_saeb.pbip` | O dashboard, como projeto do Power BI (a criar) |
 
 ## 3. Modelo de dados (estrela)
 
@@ -89,7 +91,7 @@ Filtros fixos no topo de todas as páginas, numa linha: **UF**, **Etapa** (sele�
 2. **Mapa.** Mapa de formas com a malha municipal (`CO_MUNICIPIO` no campo Local), cores por um parâmetro de campo: eficiência (escala divergente vermelho–cinza–azul, centro 0), proficiência ou gasto (escala sequencial azul). Zoom automático ao filtrar a UF. Ao lado, tabela das redes do recorte.
 3. **Eficiência.** Seletor de modelo (Oficial / Robustez). Dispersão proficiência esperada × observada (uma bolha por rede, cor por cluster, diagonal de referência); histograma do percentil; ranking com nome, cluster, proficiência, esperada, eficiência, percentil e ícone de salto atípico. Aviso fixo: "Associação, não efeito causal. A edição de 2025 só tem o modelo de robustez."
 4. **Ficha do município** (página de detalhamento, aberta com clique direito em qualquer município). Cartões: cluster, porte, gasto, faixa de eficiência. Linhas por edição: proficiência da rede × mediana do cluster × mediana da UF × mediana do Brasil; gasto anual 2017–2025. Tabela de eficiência por etapa, disciplina e edição. Aviso de salto atípico quando houver.
-5. **Pares.** Para o município da ficha: redes do mesmo cluster com gasto entre 0,8 e 1,25 vez o dele, ordenadas pela eficiência. É a lista "com quem conversar".
+5. **Pares.** O usuário escolhe o município de referência numa segmentação própria (tabela `ref_municipio`, sem relacionamento). A página lista as redes do mesmo cluster com gasto entre 0,8 e 1,25 vez o dele, ordenadas pela eficiência (medida `É par`). É a lista "com quem conversar".
 6. **Defasagens.** Barras do ρ de Spearman por defasagem (mesmo ano, 1, 2 e 4 anos antes), por edição. Nota sobre a cobertura: L2 só a partir de 2019, L4 a partir de 2021.
 7. **Contexto e clusters.** Perfil dos 7 grupos (tabela de `dim_cluster`), proficiência e gasto medianos por grupo e por porte, dispersão gasto × proficiência colorida por cluster.
 8. **Estados.** Camada estadual: 27 UFs, Anos Finais e Ensino Médio, gasto versão A, linha por edição e dispersão gasto × proficiência. Seletor de versão B como sensibilidade. Aviso: 27 unidades, leitura descritiva.

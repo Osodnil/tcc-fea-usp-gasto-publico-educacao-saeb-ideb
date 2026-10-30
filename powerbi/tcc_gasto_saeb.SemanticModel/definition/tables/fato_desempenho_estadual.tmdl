@@ -1,0 +1,142 @@
+table fato_desempenho_estadual
+	lineageTag: 189204eb-5a84-5424-8daa-d32736254099
+
+	column SG_UF
+		dataType: string
+		isHidden
+		lineageTag: ef164299-f254-5cca-b8d7-efe0920bf836
+		summarizeBy: none
+		sourceColumn: SG_UF
+
+	column ETAPA
+		dataType: string
+		isHidden
+		lineageTag: 7ff5ad25-f470-5de3-8483-9f8981cccbd4
+		summarizeBy: none
+		sourceColumn: ETAPA
+
+	column ANO
+		dataType: int64
+		isHidden
+		lineageTag: 3b63a787-47ae-5743-b591-3dfc950d63e9
+		summarizeBy: none
+		sourceColumn: ANO
+
+	column DISCIPLINA
+		dataType: string
+		isHidden
+		lineageTag: d9ec1a4d-782d-5350-9558-97f0d97f591f
+		summarizeBy: none
+		sourceColumn: DISCIPLINA
+
+	column PROFICIENCIA
+		dataType: double
+		lineageTag: a12ed5c9-39af-5464-8573-a6a883e6156f
+		summarizeBy: none
+		sourceColumn: PROFICIENCIA
+
+	column NOTA_N
+		dataType: double
+		lineageTag: 2e312dda-b502-578a-897e-93ef129db06d
+		summarizeBy: none
+		sourceColumn: NOTA_N
+
+	column IND_REND
+		dataType: double
+		lineageTag: c7c444a1-11b0-5159-8e75-9043a48e3709
+		summarizeBy: none
+		sourceColumn: IND_REND
+
+	column IDEB
+		dataType: double
+		lineageTag: 1522d41b-602d-5931-9ec7-d135030d9de2
+		summarizeBy: none
+		sourceColumn: IDEB
+
+	column SUP364_AUSENTE
+		dataType: boolean
+		lineageTag: a01ceda8-804b-585b-a5ee-28d027c9728e
+		summarizeBy: none
+		sourceColumn: SUP364_AUSENTE
+
+	column GASTO_ALUNO_A_R2025_L0
+		dataType: double
+		lineageTag: d2cca49e-8bb6-52a1-8c29-002e488457ef
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_A_R2025_L0
+
+	column GASTO_ALUNO_B_R2025_L0
+		dataType: double
+		lineageTag: ae72ab8e-58f5-5b2b-9894-9c742915c07d
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_B_R2025_L0
+
+	column GASTO_ALUNO_A_R2025_L1
+		dataType: double
+		lineageTag: f7254282-6fb0-535a-8080-18af5452948d
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_A_R2025_L1
+
+	column GASTO_ALUNO_B_R2025_L1
+		dataType: double
+		lineageTag: b372ec09-e175-5e81-a791-fd4fed9e0e05
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_B_R2025_L1
+
+	column GASTO_ALUNO_A_R2025_L2
+		dataType: double
+		lineageTag: 912c24a7-554c-5961-9cb4-ca01ad3d77c6
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_A_R2025_L2
+
+	column GASTO_ALUNO_B_R2025_L2
+		dataType: double
+		lineageTag: bd25b1de-ad35-5d4a-baf3-00c36cfececd
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_B_R2025_L2
+
+	column GASTO_ALUNO_A_R2025_L4
+		dataType: double
+		lineageTag: a135ed58-c591-5d1b-9dac-aa0705b82717
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_A_R2025_L4
+
+	column GASTO_ALUNO_B_R2025_L4
+		dataType: double
+		lineageTag: aac03867-4f2e-5450-95fc-56643f51cfd4
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_B_R2025_L4
+
+	column QT_MAT_BAS
+		dataType: double
+		lineageTag: fdae269a-d7b1-5a2e-a8ce-01e1986ee7af
+		summarizeBy: none
+		sourceColumn: QT_MAT_BAS
+
+	column IDHM_RENDA
+		dataType: double
+		lineageTag: 61ecd0df-741a-57a0-ad2e-25545752a86f
+		summarizeBy: none
+		sourceColumn: IDHM_RENDA
+
+	column IDHM_LONGEVIDADE
+		dataType: double
+		lineageTag: 8e0fb222-ff53-567c-afdd-1ea71b92acf7
+		summarizeBy: none
+		sourceColumn: IDHM_LONGEVIDADE
+
+	column INFRA
+		dataType: double
+		lineageTag: d0cfb584-3be7-558e-920f-b7f0a0078771
+		summarizeBy: none
+		sourceColumn: INFRA
+
+	partition fato_desempenho_estadual = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\fato_desempenho_estadual.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"SG_UF", type text}, {"ETAPA", type text}, {"ANO", Int64.Type}, {"DISCIPLINA", type text}, {"PROFICIENCIA", type number}, {"NOTA_N", type number}, {"IND_REND", type number}, {"IDEB", type number}, {"SUP364_AUSENTE", type logical}, {"GASTO_ALUNO_A_R2025_L0", type number}, {"GASTO_ALUNO_B_R2025_L0", type number}, {"GASTO_ALUNO_A_R2025_L1", type number}, {"GASTO_ALUNO_B_R2025_L1", type number}, {"GASTO_ALUNO_A_R2025_L2", type number}, {"GASTO_ALUNO_B_R2025_L2", type number}, {"GASTO_ALUNO_A_R2025_L4", type number}, {"GASTO_ALUNO_B_R2025_L4", type number}, {"QT_MAT_BAS", type number}, {"IDHM_RENDA", type number}, {"IDHM_LONGEVIDADE", type number}, {"INFRA", type number}})
+				in
+				    Tipos
+

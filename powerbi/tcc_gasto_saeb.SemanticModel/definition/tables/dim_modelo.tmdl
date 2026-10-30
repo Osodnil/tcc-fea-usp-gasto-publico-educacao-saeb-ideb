@@ -1,0 +1,31 @@
+table dim_modelo
+	lineageTag: e7d2e87d-ebe8-5dc2-9da5-0c40dd703c4a
+
+	column MODELO
+		dataType: string
+		lineageTag: a4d8ef40-bc8d-5033-abcd-ad2dd2d5407f
+		summarizeBy: none
+		sourceColumn: MODELO
+
+	column ROTULO_MODELO
+		dataType: string
+		lineageTag: cc9604a0-35a9-5c4d-b947-517412d26b68
+		summarizeBy: none
+		sourceColumn: ROTULO_MODELO
+		sortByColumn: ORDEM
+
+	column ORDEM
+		dataType: int64
+		lineageTag: a356835c-456d-56ee-86b0-b9853346b87a
+		summarizeBy: none
+		sourceColumn: ORDEM
+
+	partition dim_modelo = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_modelo.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"MODELO", type text}, {"ROTULO_MODELO", type text}, {"ORDEM", Int64.Type}})
+				in
+				    Tipos
+

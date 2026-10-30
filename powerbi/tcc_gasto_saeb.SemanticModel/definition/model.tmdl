@@ -1,0 +1,33 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: pt-BR
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["PastaDados","dim_municipio","dim_uf","dim_cluster","dim_ano","dim_etapa","dim_disciplina","dim_defasagem","dim_modelo","fato_desempenho_municipal","fato_gasto_municipal","fato_desempenho_estadual","fato_gasto_estadual"]
+
+annotation PBI_ProTooling = ["DevMode","DaxQueryView_Desktop"]
+
+ref table dim_municipio
+ref table dim_uf
+ref table dim_cluster
+ref table dim_ano
+ref table dim_etapa
+ref table dim_disciplina
+ref table dim_defasagem
+ref table dim_modelo
+ref table fato_desempenho_municipal
+ref table fato_gasto_municipal
+ref table fato_desempenho_estadual
+ref table fato_gasto_estadual
+ref table ref_municipio
+ref table _Medidas
+
+ref cultureInfo pt-BR
+

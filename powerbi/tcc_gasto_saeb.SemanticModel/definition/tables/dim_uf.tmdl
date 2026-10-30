@@ -1,0 +1,36 @@
+table dim_uf
+	lineageTag: 5ff7e5b6-698d-5b37-ad3c-1817831a534b
+
+	column SG_UF
+		dataType: string
+		lineageTag: f161a9fd-4332-550e-9f08-1eb0618e5c4f
+		summarizeBy: none
+		sourceColumn: SG_UF
+
+	column NM_UF
+		dataType: string
+		lineageTag: 30fb0dbd-b313-5f31-b791-2b14db70e107
+		summarizeBy: none
+		sourceColumn: NM_UF
+
+	column NM_REGIAO
+		dataType: string
+		lineageTag: 747f2d99-b4c4-5949-855f-e53e0b2fbe81
+		summarizeBy: none
+		sourceColumn: NM_REGIAO
+
+	column POPULACAO_TOTAL_CENSO
+		dataType: double
+		lineageTag: d1cf40f5-bd1e-59f7-a564-61bc7dde8b7c
+		summarizeBy: none
+		sourceColumn: POPULACAO_TOTAL_CENSO
+
+	partition dim_uf = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_uf.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"SG_UF", type text}, {"NM_UF", type text}, {"NM_REGIAO", type text}, {"POPULACAO_TOTAL_CENSO", type number}})
+				in
+				    Tipos
+

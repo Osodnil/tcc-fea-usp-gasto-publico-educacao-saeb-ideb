@@ -1,0 +1,92 @@
+table dim_municipio
+	lineageTag: 65b62c25-3227-50b7-8748-7818b178a34d
+
+	column CO_MUNICIPIO
+		dataType: string
+		lineageTag: e4c5c88f-0bd6-51bf-896b-da1d6fcf3b87
+		summarizeBy: none
+		sourceColumn: CO_MUNICIPIO
+
+	column NO_MUNICIPIO
+		dataType: string
+		lineageTag: 402eb46e-0b86-52cb-b5be-75eb744bdf9c
+		summarizeBy: none
+		sourceColumn: NO_MUNICIPIO
+
+	column MUNICIPIO_UF
+		dataType: string
+		lineageTag: 6eed3f10-d534-55a0-a8c0-7b005a2c47fd
+		summarizeBy: none
+		sourceColumn: MUNICIPIO_UF
+
+	column SG_UF
+		dataType: string
+		lineageTag: 030974bd-a682-5711-b5cc-15d426fbca77
+		summarizeBy: none
+		sourceColumn: SG_UF
+
+	column NM_UF
+		dataType: string
+		lineageTag: 5b5ba991-6af0-5d2c-9609-6fddff845988
+		summarizeBy: none
+		sourceColumn: NM_UF
+
+	column NM_REGIAO
+		dataType: string
+		lineageTag: 78db188d-fbd0-5b28-8921-656f72881cb5
+		summarizeBy: none
+		sourceColumn: NM_REGIAO
+
+	column POPULACAO_TOTAL_CENSO
+		dataType: double
+		lineageTag: 3597ea36-3ae1-5eed-91fe-cf8caa1abcc1
+		summarizeBy: none
+		sourceColumn: POPULACAO_TOTAL_CENSO
+
+	column TAXA_ALFABETIZACAO_15MAIS
+		dataType: double
+		lineageTag: 92fa9fbc-94ec-5be6-8456-2049fec53c88
+		summarizeBy: none
+		sourceColumn: TAXA_ALFABETIZACAO_15MAIS
+
+	column PORTE
+		dataType: string
+		lineageTag: ef0df4be-fbf1-5ef2-a8e1-edfcfaeb4396
+		summarizeBy: none
+		sourceColumn: PORTE
+		sortByColumn: PORTE_ORDEM
+
+	column PORTE_ORDEM
+		dataType: int64
+		lineageTag: 0d599d62-4ddb-5a71-9b64-a8c9b54d6d6a
+		summarizeBy: none
+		sourceColumn: PORTE_ORDEM
+
+	column FAIXA_ALFABETIZACAO
+		dataType: string
+		lineageTag: e3b6581f-9ee0-5964-aad5-94679e0d54e0
+		summarizeBy: none
+		sourceColumn: FAIXA_ALFABETIZACAO
+
+	column CLUSTER
+		dataType: int64
+		lineageTag: dfd9b7e3-d18e-5c60-a2d6-f35746513d76
+		summarizeBy: none
+		sourceColumn: CLUSTER
+
+	column CLUSTER_ROTULO
+		dataType: string
+		lineageTag: 72641e37-e673-5aa6-b707-c1e4562fb1ed
+		summarizeBy: none
+		sourceColumn: CLUSTER_ROTULO
+		sortByColumn: CLUSTER
+
+	partition dim_municipio = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_municipio.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"CO_MUNICIPIO", type text}, {"NO_MUNICIPIO", type text}, {"MUNICIPIO_UF", type text}, {"SG_UF", type text}, {"NM_UF", type text}, {"NM_REGIAO", type text}, {"POPULACAO_TOTAL_CENSO", type number}, {"TAXA_ALFABETIZACAO_15MAIS", type number}, {"PORTE", type text}, {"PORTE_ORDEM", Int64.Type}, {"FAIXA_ALFABETIZACAO", type text}, {"CLUSTER", Int64.Type}, {"CLUSTER_ROTULO", type text}})
+				in
+				    Tipos
+

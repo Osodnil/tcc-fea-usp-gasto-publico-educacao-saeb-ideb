@@ -1,0 +1,5 @@
+expression PastaDados = "C:\Users\lindo\OneDrive\Documentos\GitHub\tcc-fea-usp-gasto-publico-educacao-saeb-ideb\data\processed\powerbi" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 07682aad-8948-5d1d-94cc-68db9f52bc43
+
+	annotation PBI_ResultType = Text
+

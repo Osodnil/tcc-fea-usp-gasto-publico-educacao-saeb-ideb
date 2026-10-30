@@ -1,0 +1,50 @@
+table fato_gasto_estadual
+	lineageTag: 244a8b69-b895-5551-86a0-24c39f4eb1f5
+
+	column SG_UF
+		dataType: string
+		isHidden
+		lineageTag: 2bac2e70-e163-5d05-8a86-425ac7fd3d93
+		summarizeBy: none
+		sourceColumn: SG_UF
+
+	column ANO
+		dataType: int64
+		isHidden
+		lineageTag: 61b9d7ba-0216-5661-96e6-af1f6bb413eb
+		summarizeBy: none
+		sourceColumn: ANO
+
+	column QT_MAT_BAS
+		dataType: double
+		lineageTag: cbfaa951-d076-5378-84dc-c4b0e7fd9197
+		summarizeBy: none
+		sourceColumn: QT_MAT_BAS
+
+	column SUP364_AUSENTE
+		dataType: boolean
+		lineageTag: 994aa141-25d7-5e27-98f9-43ddf74b75e8
+		summarizeBy: none
+		sourceColumn: SUP364_AUSENTE
+
+	column GASTO_ALUNO_A_R2025
+		dataType: double
+		lineageTag: 5dd35e48-c034-583c-a8a0-c706e4679710
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_A_R2025
+
+	column GASTO_ALUNO_B_R2025
+		dataType: double
+		lineageTag: 3ecedb97-0a78-5dd3-9dd2-fd23bdcdb396
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_B_R2025
+
+	partition fato_gasto_estadual = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\fato_gasto_estadual.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"SG_UF", type text}, {"ANO", Int64.Type}, {"QT_MAT_BAS", type number}, {"SUP364_AUSENTE", type logical}, {"GASTO_ALUNO_A_R2025", type number}, {"GASTO_ALUNO_B_R2025", type number}})
+				in
+				    Tipos
+

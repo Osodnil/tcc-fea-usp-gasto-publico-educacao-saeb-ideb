@@ -1,0 +1,178 @@
+table fato_desempenho_municipal
+	lineageTag: 7f57d271-5f5e-5fa7-87d2-9465c3a0e746
+
+	column CO_MUNICIPIO
+		dataType: string
+		isHidden
+		lineageTag: 4dcfd781-653e-53fa-b0ad-eaf2362eceab
+		summarizeBy: none
+		sourceColumn: CO_MUNICIPIO
+
+	column ETAPA
+		dataType: string
+		isHidden
+		lineageTag: 4825ae7e-d195-523f-90e2-4ec0c15fdf14
+		summarizeBy: none
+		sourceColumn: ETAPA
+
+	column ANO
+		dataType: int64
+		isHidden
+		lineageTag: 1dfbcfa6-a067-5179-9fef-11836c2f5e95
+		summarizeBy: none
+		sourceColumn: ANO
+
+	column DISCIPLINA
+		dataType: string
+		isHidden
+		lineageTag: 9a0f0d0b-8ef4-558b-ad76-cd086bae80ba
+		summarizeBy: none
+		sourceColumn: DISCIPLINA
+
+	column PROFICIENCIA
+		dataType: double
+		lineageTag: 1ebc7c44-e500-5488-926f-f0f8e37d673f
+		summarizeBy: none
+		sourceColumn: PROFICIENCIA
+
+	column NOTA_N
+		dataType: double
+		lineageTag: 9768ef65-03ff-5c4b-bf87-b3c286c4a1f0
+		summarizeBy: none
+		sourceColumn: NOTA_N
+
+	column IND_REND
+		dataType: double
+		lineageTag: 65a33117-f19d-5560-87cb-493a3d9a3ffb
+		summarizeBy: none
+		sourceColumn: IND_REND
+
+	column IDEB
+		dataType: double
+		lineageTag: 233f3c74-af6e-5010-812c-8cd5bd1368f7
+		summarizeBy: none
+		sourceColumn: IDEB
+
+	column GASTO_ALUNO_R2025_L0
+		dataType: double
+		lineageTag: 474c31f6-57d3-5e74-bcd2-881932f3a47a
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_R2025_L0
+
+	column GASTO_ALUNO_R2025_L1
+		dataType: double
+		lineageTag: d1ce97a9-f8fc-53b5-a061-dc548f53b6c4
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_R2025_L1
+
+	column GASTO_ALUNO_R2025_L2
+		dataType: double
+		lineageTag: 42c89b18-f48b-5aeb-8231-785ab884fbf0
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_R2025_L2
+
+	column GASTO_ALUNO_R2025_L4
+		dataType: double
+		lineageTag: bc0fbcac-07ce-593b-98e0-2fb01ed11182
+		summarizeBy: none
+		sourceColumn: GASTO_ALUNO_R2025_L4
+
+	column GASTO_EXTREMO_L0
+		dataType: boolean
+		lineageTag: 2420be7f-69f0-57a1-8544-932dd3107181
+		summarizeBy: none
+		sourceColumn: GASTO_EXTREMO_L0
+
+	column QT_MAT_FUND
+		dataType: double
+		lineageTag: 11403b43-fcf4-5643-827c-cef6574606ff
+		summarizeBy: none
+		sourceColumn: QT_MAT_FUND
+
+	column IDHM_RENDA
+		dataType: double
+		lineageTag: 3e7ccbea-1157-57e7-8bbf-ab95e065cafb
+		summarizeBy: none
+		sourceColumn: IDHM_RENDA
+
+	column IDHM_LONGEVIDADE
+		dataType: double
+		lineageTag: 81b00579-3664-59e5-b9e2-2480ff4232fe
+		summarizeBy: none
+		sourceColumn: IDHM_LONGEVIDADE
+
+	column INFRA
+		dataType: double
+		lineageTag: c03cdd12-ea4c-5f2a-b475-6645e7d8eda8
+		summarizeBy: none
+		sourceColumn: INFRA
+
+	column NOTA_ESPERADA
+		dataType: double
+		lineageTag: 6b5d3311-1d9f-548b-af48-e192f6bd6f2b
+		summarizeBy: none
+		sourceColumn: NOTA_ESPERADA
+
+	column RESIDUO
+		dataType: double
+		lineageTag: 1023c20d-03e1-5b6c-bfa2-e446288c3780
+		summarizeBy: none
+		sourceColumn: RESIDUO
+
+	column PERCENTIL_RESIDUO
+		dataType: double
+		lineageTag: febb8196-519b-5dbb-86d4-0f28c92b5e1e
+		summarizeBy: none
+		sourceColumn: PERCENTIL_RESIDUO
+
+	column NOTA_ESPERADA_ALT
+		dataType: double
+		lineageTag: 7fe3040f-4bc0-57fe-a13f-7d0cbc13f861
+		summarizeBy: none
+		sourceColumn: NOTA_ESPERADA_ALT
+
+	column RESIDUO_ALT
+		dataType: double
+		lineageTag: 09f4d992-fa0e-53aa-a965-91b81f1bf865
+		summarizeBy: none
+		sourceColumn: RESIDUO_ALT
+
+	column PERCENTIL_RESIDUO_ALT
+		dataType: double
+		lineageTag: 11442d72-fea2-59db-8aff-449ce7cf487d
+		summarizeBy: none
+		sourceColumn: PERCENTIL_RESIDUO_ALT
+
+	column NOTA_VS_CLUSTER
+		dataType: double
+		lineageTag: cccfbbbb-2bfd-5688-a3f2-bc5dd95b7d8b
+		summarizeBy: none
+		sourceColumn: NOTA_VS_CLUSTER
+
+	column GASTO_VS_CLUSTER
+		dataType: double
+		lineageTag: 8ebd108f-4b54-5e1e-aac4-4ee2e78ad4d5
+		summarizeBy: none
+		sourceColumn: GASTO_VS_CLUSTER
+
+	column VARIACAO_EDICAO_ANTERIOR
+		dataType: double
+		lineageTag: 8f9719d3-54b2-5289-b728-4f041720b6a8
+		summarizeBy: none
+		sourceColumn: VARIACAO_EDICAO_ANTERIOR
+
+	column SALTO_ATIPICO
+		dataType: boolean
+		lineageTag: 2dc39f4d-6a9f-5694-a1d0-7825ed00c67a
+		summarizeBy: none
+		sourceColumn: SALTO_ATIPICO
+
+	partition fato_desempenho_municipal = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\fato_desempenho_municipal.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"CO_MUNICIPIO", type text}, {"ETAPA", type text}, {"ANO", Int64.Type}, {"DISCIPLINA", type text}, {"PROFICIENCIA", type number}, {"NOTA_N", type number}, {"IND_REND", type number}, {"IDEB", type number}, {"GASTO_ALUNO_R2025_L0", type number}, {"GASTO_ALUNO_R2025_L1", type number}, {"GASTO_ALUNO_R2025_L2", type number}, {"GASTO_ALUNO_R2025_L4", type number}, {"GASTO_EXTREMO_L0", type logical}, {"QT_MAT_FUND", type number}, {"IDHM_RENDA", type number}, {"IDHM_LONGEVIDADE", type number}, {"INFRA", type number}, {"NOTA_ESPERADA", type number}, {"RESIDUO", type number}, {"PERCENTIL_RESIDUO", type number}, {"NOTA_ESPERADA_ALT", type number}, {"RESIDUO_ALT", type number}, {"PERCENTIL_RESIDUO_ALT", type number}, {"NOTA_VS_CLUSTER", type number}, {"GASTO_VS_CLUSTER", type number}, {"VARIACAO_EDICAO_ANTERIOR", type number}, {"SALTO_ATIPICO", type logical}})
+				in
+				    Tipos
+

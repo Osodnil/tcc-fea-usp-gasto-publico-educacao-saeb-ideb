@@ -22,3 +22,8 @@ Thumbs.db
 
 # Pacotes de exportação gerados (src/Exportacao/Gerar_Pacote_Exportacao.py)
 /exportacao/
+
+# Projeto Power BI: cache de dados e preferências locais (refeitos ao abrir/atualizar)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+/powerbi/*.pbix

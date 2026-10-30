@@ -1,0 +1,28 @@
+table ref_municipio
+	lineageTag: 4054a6ff-aa6b-5bea-aec0-95e96e1d1f82
+
+	column REF_CO_MUNICIPIO
+		dataType: string
+		lineageTag: 7bba82a9-0f62-5ac6-8ec9-24c25b92f6d4
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [REF_CO_MUNICIPIO]
+
+	column REF_MUNICIPIO_UF
+		dataType: string
+		lineageTag: 8ce0ca8d-69dc-58dc-8548-9e6b1cee3b00
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [REF_MUNICIPIO_UF]
+
+	column REF_CLUSTER
+		dataType: int64
+		lineageTag: b3d6cc48-82fb-5e8a-a2b7-c181cb746f40
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [REF_CLUSTER]
+
+	partition ref_municipio = calculated
+		mode: import
+		source = SELECTCOLUMNS ( dim_municipio, "REF_CO_MUNICIPIO", dim_municipio[CO_MUNICIPIO], "REF_MUNICIPIO_UF", dim_municipio[MUNICIPIO_UF], "REF_CLUSTER", dim_municipio[CLUSTER] )
+

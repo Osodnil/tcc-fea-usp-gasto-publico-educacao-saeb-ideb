@@ -1,0 +1,56 @@
+relationship 39480e2d-9b51-5614-8b97-ee4dbff63e6f
+	fromColumn: dim_municipio.SG_UF
+	toColumn: dim_uf.SG_UF
+
+relationship 2a3eee3c-ae69-54e6-ab5e-a4324064eea4
+	fromColumn: fato_desempenho_estadual.SG_UF
+	toColumn: dim_uf.SG_UF
+
+relationship 288658ef-d877-5359-aa33-abee253a96a8
+	fromColumn: fato_gasto_estadual.SG_UF
+	toColumn: dim_uf.SG_UF
+
+relationship 7034c388-9520-5dde-9601-6fbfc43d6e02
+	fromColumn: dim_municipio.CLUSTER
+	toColumn: dim_cluster.CLUSTER
+
+relationship 80af4188-6cc9-54e5-b855-7b8e5abe5359
+	fromColumn: fato_desempenho_municipal.CO_MUNICIPIO
+	toColumn: dim_municipio.CO_MUNICIPIO
+
+relationship 18bea43e-1d9e-56bd-8d16-a383ded2923c
+	fromColumn: fato_gasto_municipal.CO_MUNICIPIO
+	toColumn: dim_municipio.CO_MUNICIPIO
+
+relationship 06f7363b-31c4-5a0e-820b-531bbc06b231
+	fromColumn: fato_desempenho_municipal.ANO
+	toColumn: dim_ano.ANO
+
+relationship 0606d8c4-bc23-5934-be03-0560e025c04d
+	fromColumn: fato_gasto_municipal.ANO
+	toColumn: dim_ano.ANO
+
+relationship 2aa27540-4ab2-5c33-8069-de71d86c6b9d
+	fromColumn: fato_desempenho_estadual.ANO
+	toColumn: dim_ano.ANO
+
+relationship d1e2a2e6-287f-5b57-8bb2-be5dcfdcd164
+	fromColumn: fato_gasto_estadual.ANO
+	toColumn: dim_ano.ANO
+
+relationship 7df82b97-6fcb-533b-a44d-d6dffeec324d
+	fromColumn: fato_desempenho_municipal.ETAPA
+	toColumn: dim_etapa.ETAPA
+
+relationship ca881249-35e4-5e1f-812e-242e65e1b497
+	fromColumn: fato_desempenho_municipal.DISCIPLINA
+	toColumn: dim_disciplina.DISCIPLINA
+
+relationship 9dddf6da-e463-565d-972f-1a29b404d920
+	fromColumn: fato_desempenho_estadual.ETAPA
+	toColumn: dim_etapa.ETAPA
+
+relationship 86ac7010-e5c2-5ef7-932f-e8987551f13f
+	fromColumn: fato_desempenho_estadual.DISCIPLINA
+	toColumn: dim_disciplina.DISCIPLINA
+

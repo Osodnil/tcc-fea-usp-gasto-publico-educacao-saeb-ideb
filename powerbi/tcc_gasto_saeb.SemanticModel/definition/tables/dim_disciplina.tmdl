@@ -1,0 +1,31 @@
+table dim_disciplina
+	lineageTag: 5226eb7d-fad3-57d4-9f11-b34f2ed04687
+
+	column DISCIPLINA
+		dataType: string
+		lineageTag: 77c2fc2b-4b05-5fa0-aee4-7d9af95b8bd5
+		summarizeBy: none
+		sourceColumn: DISCIPLINA
+
+	column NOME_DISCIPLINA
+		dataType: string
+		lineageTag: 290624be-5494-5298-8f26-fcacfff56521
+		summarizeBy: none
+		sourceColumn: NOME_DISCIPLINA
+		sortByColumn: ORDEM
+
+	column ORDEM
+		dataType: int64
+		lineageTag: 30d7ecb6-b5af-540a-837e-da935b4b930f
+		summarizeBy: none
+		sourceColumn: ORDEM
+
+	partition dim_disciplina = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_disciplina.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"DISCIPLINA", type text}, {"NOME_DISCIPLINA", type text}, {"ORDEM", Int64.Type}})
+				in
+				    Tipos
+

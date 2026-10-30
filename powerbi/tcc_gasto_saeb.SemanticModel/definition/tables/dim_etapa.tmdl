@@ -1,0 +1,37 @@
+table dim_etapa
+	lineageTag: 3f1ee9e9-4a4b-523e-a258-8661617fe53c
+
+	column ETAPA
+		dataType: string
+		lineageTag: 6baca08d-85ed-505f-b9f1-ca7e9c3f8d77
+		summarizeBy: none
+		sourceColumn: ETAPA
+
+	column NOME_ETAPA
+		dataType: string
+		lineageTag: 023b7de3-763c-538f-9aa4-ffceed179646
+		summarizeBy: none
+		sourceColumn: NOME_ETAPA
+		sortByColumn: ORDEM
+
+	column ORDEM
+		dataType: int64
+		lineageTag: f4361595-0105-5ff5-a76d-77fd11736245
+		summarizeBy: none
+		sourceColumn: ORDEM
+
+	column CAMADA
+		dataType: string
+		lineageTag: ad6d1a13-036a-5511-903b-8bb3ebfbbbab
+		summarizeBy: none
+		sourceColumn: CAMADA
+
+	partition dim_etapa = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_etapa.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"ETAPA", type text}, {"NOME_ETAPA", type text}, {"ORDEM", Int64.Type}, {"CAMADA", type text}})
+				in
+				    Tipos
+

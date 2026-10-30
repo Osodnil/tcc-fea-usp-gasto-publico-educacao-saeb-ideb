@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "tcc_gasto_saeb"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "4c558f79-ff47-4373-a2b6-431ae6f178eb"
+  }
+}

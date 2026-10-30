@@ -479,6 +479,23 @@ Falar sempre em associação e eficiência relativa.
 - **Especificação (`powerbi/especificacao_dashboard.md`):** público, perguntas, modelo, relacionamentos, indicadores formais (proposta para D2), 9 páginas, regras visuais, riscos e critérios de aceite. Medidas em `powerbi/medidas.dax`, carregamento em `powerbi/carregar_dados.pq` e tema em `powerbi/tema_tcc.json`, com a mesma paleta do HTML.
 - **Agregações iguais às do HTML:** gasto = mediana entre as redes; nota = média simples; associação = ρ de Spearman. As proficiências só aparecem com uma etapa e uma disciplina selecionadas.
 - **Proposta a confirmar:** faixas de eficiência por quintil do percentil (bem abaixo, abaixo, próximo, acima e bem acima do esperado).
+- **Correção (2026-10-30, antes de qualquer uso):** a medida "Gasto das redes avaliadas" contava também as linhas sem proficiência. No caso de Brasil, AI, MT, 2023, a mediana saía R$ 13.643, e o correto é R$ 13.526. A medida passou a filtrar as redes com nota, como no HTML.
+- **Pares no Power BI:** o município de referência é escolhido numa tabela à parte, sem relação com o modelo (`ref_municipio`), e a medida `É par` marca as redes do mesmo cluster com gasto entre 0,8 e 1,25 vez o dele. Essa faixa é uma escolha de apresentação, a mesma ideia da aba Pares do HTML.
+- **Roteiro de construção (`powerbi/roteiro_construcao.md`):** 7 fases, cada uma com uma conferência. A principal compara as medidas com valores calculados em Python a partir das mesmas tabelas (Brasil AI e AF, AL e Ibateguara-AL).
+- **Modelo gerado por script (Henrique, 2026-10-30):** o dashboard é um projeto `.pbip`, e não um `.pbix`. O modelo semântico (tabelas, parâmetro, relações, ordenações, formatos e medidas) é escrito em TMDL por `src/Visualizacao/Gerar_Modelo_PowerBI.py`; as páginas são feitas no Power BI.
+  - **Divisão do trabalho:** o Power BI cria o projeto em branco e escreve o relatório, cujo formato é mais sensível. O script só escreve o modelo, que tem sintaxe documentada.
+  - **Conferência antes de gravar:** o script confere que toda coluna e toda medida citadas nas fórmulas existem, que as ordenações são 1:1 e que o lado "um" das relações tem chave única. Um teste com uma coluna e uma medida inventadas confirmou que os dois erros são pegos.
+  - **Limitação:** o modelo gerado não pôde ser aberto no Power BI durante o desenvolvimento. A primeira abertura é o teste real.
+  - **Depois da criação, o Power BI é a fonte:** o script recusa sobrescrever um modelo com tabelas, salvo com `--forcar`. Cache e preferências locais ficam fora do Git.
+  - **Feito à mão:** o parâmetro de campo do mapa e o tema.
+- **Primeira abertura (2026-10-30):** o modelo gerado abriu no Power BI e carregou as 13 tabelas com o número de linhas esperado. Ao salvar, o Power BI só reformatou os arquivos (indentação e ordem de propriedades).
+- **Conferência 2 (`powerbi/conferencia_modelo.dax`):** bateram com o Python:
+  - redes avaliadas, proficiência média, % acima do esperado, eficiência média (zero), IDEB médio e saltos (Brasil AI e AF);
+  - os 8 ρ de Spearman e os respectivos números de redes;
+  - Alagoas, o gasto anual de 2023 e a série de Ibateguara-AL, inclusive a marca de salto em 2021 e a falta de eficiência em 2025.
+- **Erro encontrado e corrigido:** o gasto mediano das redes avaliadas saía R$ 13.524,86, e não R$ 13.525,81 (AI), e R$ 12.536 em vez de R$ 12.540 (AF).
+  - **Causa:** no `MEDIANX`, as 3 redes com nota e sem gasto entravam como zero, em vez de serem ignoradas. Recalculado em Python com os vazios como zero, o valor é idêntico ao do Power BI.
+  - **Correção:** a medida passou a tirar as redes sem gasto antes da mediana. Corrigida no Power BI e conferida de novo: R$ 13.525,81 (AI) e R$ 12.539,72 (AF), iguais ao Python. **Conferência 2 concluída.**
 
 ### P5. Dashboard como ferramenta de análise ✅ (2026-10-27)
 - **Decisão (Henrique, 2026-10-27):** usar o dashboard HTML como ferramenta de exploração para a análise, ampliado em abas. O Power BI fica para a apresentação final, alimentado pelas mesmas tabelas.

@@ -1,0 +1,79 @@
+table dim_cluster
+	lineageTag: 3bb5e3b2-5c96-5750-8888-be7ce31490aa
+
+	column CLUSTER
+		dataType: int64
+		lineageTag: d0ea2f69-f4a1-56a7-9e24-2c9c7d4e1bf9
+		summarizeBy: none
+		sourceColumn: CLUSTER
+
+	column MUNICIPIOS
+		dataType: int64
+		lineageTag: 43fd03bc-4e47-5949-a6d3-203075e9e81e
+		summarizeBy: none
+		sourceColumn: MUNICIPIOS
+
+	column POP_MEDIANA
+		dataType: double
+		lineageTag: f5470765-41bc-5b6e-af0d-d7d6380278b1
+		summarizeBy: none
+		sourceColumn: POP_MEDIANA
+
+	column ALFAB_MEDIA
+		dataType: double
+		lineageTag: 656e4b08-6b50-5715-a53e-663d072121fc
+		summarizeBy: none
+		sourceColumn: ALFAB_MEDIA
+
+	column IDHM_RENDA_MEDIO
+		dataType: double
+		lineageTag: 49911785-d42b-516b-ac36-967378c812be
+		summarizeBy: none
+		sourceColumn: IDHM_RENDA_MEDIO
+
+	column IDHM_LONGEVIDADE_MEDIO
+		dataType: double
+		lineageTag: 529b635c-5644-5ca8-8d74-3246f2261fea
+		summarizeBy: none
+		sourceColumn: IDHM_LONGEVIDADE_MEDIO
+
+	column INFRA_MEDIA
+		dataType: double
+		lineageTag: 0dce8a61-c466-5c3b-8d8d-c59cbe43278f
+		summarizeBy: none
+		sourceColumn: INFRA_MEDIA
+
+	column REGIAO_PREDOMINANTE
+		dataType: string
+		lineageTag: a4b65f7b-e78b-592b-a3b0-d38772c3da47
+		summarizeBy: none
+		sourceColumn: REGIAO_PREDOMINANTE
+
+	column PARCELA_REGIAO_PREDOMINANTE
+		dataType: double
+		lineageTag: 0b507ba3-a4c3-5402-a30a-1d8712068d79
+		summarizeBy: none
+		sourceColumn: PARCELA_REGIAO_PREDOMINANTE
+
+	column DUAS_REGIOES
+		dataType: string
+		lineageTag: ff41bc61-9e8f-5390-a345-53b9a67df3af
+		summarizeBy: none
+		sourceColumn: DUAS_REGIOES
+
+	column CLUSTER_ROTULO
+		dataType: string
+		lineageTag: 713a06df-a12f-517f-8c3b-fdef94d2881a
+		summarizeBy: none
+		sourceColumn: CLUSTER_ROTULO
+		sortByColumn: CLUSTER
+
+	partition dim_cluster = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_cluster.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"CLUSTER", Int64.Type}, {"MUNICIPIOS", Int64.Type}, {"POP_MEDIANA", type number}, {"ALFAB_MEDIA", type number}, {"IDHM_RENDA_MEDIO", type number}, {"IDHM_LONGEVIDADE_MEDIO", type number}, {"INFRA_MEDIA", type number}, {"REGIAO_PREDOMINANTE", type text}, {"PARCELA_REGIAO_PREDOMINANTE", type number}, {"DUAS_REGIOES", type text}, {"CLUSTER_ROTULO", type text}})
+				in
+				    Tipos
+

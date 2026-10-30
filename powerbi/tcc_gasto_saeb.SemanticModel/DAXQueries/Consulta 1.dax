@@ -1,0 +1,96 @@
+// Conferência do modelo (roteiro, Conferências 1 e 2).
+// Uso: Power BI Desktop > Exibição de consulta DAX (ícone "DAX" na barra da esquerda) > colar tudo > Executar.
+// Cada EVALUATE vira uma aba de resultado. Os valores esperados (calculados em Python a partir das mesmas
+// tabelas) estão no comentário acima de cada bloco. Diferença na 3ª casa do ρ é aceitável (empates no RANKX).
+
+// 1) Linhas por tabela. Esperado: dim_municipio 5571 · dim_uf 27 · dim_cluster 7 · dim_ano 9 · dim_etapa 3 ·
+//    dim_disciplina 2 · dim_defasagem 4 · dim_modelo 2 · fato_desempenho_municipal 93630 ·
+//    fato_gasto_municipal 50113 · fato_desempenho_estadual 540 · fato_gasto_estadual 243 · ref_municipio 5571
+EVALUATE
+{
+    ( "dim_municipio", COUNTROWS ( dim_municipio ) ),
+    ( "dim_uf", COUNTROWS ( dim_uf ) ),
+    ( "dim_cluster", COUNTROWS ( dim_cluster ) ),
+    ( "dim_ano", COUNTROWS ( dim_ano ) ),
+    ( "dim_etapa", COUNTROWS ( dim_etapa ) ),
+    ( "dim_disciplina", COUNTROWS ( dim_disciplina ) ),
+    ( "dim_defasagem", COUNTROWS ( dim_defasagem ) ),
+    ( "dim_modelo", COUNTROWS ( dim_modelo ) ),
+    ( "fato_desempenho_municipal", COUNTROWS ( fato_desempenho_municipal ) ),
+    ( "fato_gasto_municipal", COUNTROWS ( fato_gasto_municipal ) ),
+    ( "fato_desempenho_estadual", COUNTROWS ( fato_desempenho_estadual ) ),
+    ( "fato_gasto_estadual", COUNTROWS ( fato_gasto_estadual ) ),
+    ( "ref_municipio", COUNTROWS ( ref_municipio ) )
+}
+
+// 2) Brasil, Matemática, 2023, modelo Oficial.
+//    AI: 5243 redes · 220,21 · R$ 13.526 · 46,3% acima · eficiência 0,0 · IDEB 5,79 · 43 saltos
+//    AF: 3196 redes · 249,28 · R$ 12.540 · 45,6% acima · eficiência 0,0 · IDEB 4,59 · 29 saltos
+EVALUATE
+SUMMARIZECOLUMNS (
+    dim_etapa[ETAPA],
+    TREATAS ( { 2023 }, dim_ano[ANO] ),
+    TREATAS ( { "MT" }, dim_disciplina[DISCIPLINA] ),
+    "Redes avaliadas", [Redes avaliadas],
+    "Proficiência média", [Proficiência média],
+    "Gasto mediano (L0)", [Gasto das redes avaliadas (mediana)],
+    "% acima do esperado", [% acima do esperado],
+    "Eficiência (pontos)", [Eficiência (pontos)],
+    "IDEB médio", [IDEB médio],
+    "Redes com salto atípico", [Redes com salto atípico]
+)
+
+// 3) ρ de Spearman por defasagem, Matemática, 2023.
+//    AI: 0,26 / 0,26 / 0,32 / 0,38 (n = 5240 / 5239 / 5236 / 5229)
+//    AF: 0,17 / 0,17 / 0,24 / 0,27 (n = 3193 / 3194 / 3192 / 3185)
+EVALUATE
+SUMMARIZECOLUMNS (
+    dim_etapa[ETAPA],
+    dim_defasagem[DEFASAGEM],
+    TREATAS ( { 2023 }, dim_ano[ANO] ),
+    TREATAS ( { "MT" }, dim_disciplina[DISCIPLINA] ),
+    "ρ Spearman", [Correlação gasto × proficiência (Spearman)],
+    "Redes na correlação", [Redes na correlação]
+)
+
+// 4) Alagoas, AI, Matemática, 2023. Esperado: 100 redes · 222,41 · 87,0% acima · eficiência +27,2
+EVALUATE
+SUMMARIZECOLUMNS (
+    dim_uf[SG_UF],
+    TREATAS ( { "AL" }, dim_uf[SG_UF] ),
+    TREATAS ( { "AI" }, dim_etapa[ETAPA] ),
+    TREATAS ( { 2023 }, dim_ano[ANO] ),
+    TREATAS ( { "MT" }, dim_disciplina[DISCIPLINA] ),
+    "Redes avaliadas", [Redes avaliadas],
+    "Proficiência média", [Proficiência média],
+    "% acima do esperado", [% acima do esperado],
+    "Eficiência (pontos)", [Eficiência (pontos)]
+)
+
+// 5) Gasto por aluno, mediana anual de todas as redes, 2023. Esperado: R$ 13.721
+EVALUATE
+SUMMARIZECOLUMNS (
+    TREATAS ( { 2023 }, dim_ano[ANO] ),
+    "Gasto por aluno (mediana anual)", [Gasto por aluno (mediana anual)]
+)
+
+// 6) Ibateguara (AL), AI, Matemática. Esperado:
+//    2017: 194,9 · esperada 186,4 · +8,6 · percentil 72 · sem salto
+//    2019: 202,8 · 193,9 · +8,9 · 71 · sem salto
+//    2021: 284,3 · 191,1 · +93,2 · 100 · COM salto
+//    2023: 331,2 · 193,6 · +137,6 · 100 · sem salto
+//    2025: 345,1 · sem esperada nem eficiência (sem IDHM) · sem salto
+EVALUATE
+SUMMARIZECOLUMNS (
+    dim_ano[ANO],
+    TREATAS ( { "2703007" }, dim_municipio[CO_MUNICIPIO] ),
+    TREATAS ( { "AI" }, dim_etapa[ETAPA] ),
+    TREATAS ( { "MT" }, dim_disciplina[DISCIPLINA] ),
+    "Proficiência", [Proficiência média],
+    "Esperada", [Proficiência esperada],
+    "Eficiência", [Eficiência (pontos)],
+    "Percentil", [Percentil de eficiência],
+    "Faixa", [Faixa de eficiência],
+    "Salto atípico", [Aviso de salto atípico]
+)
+ORDER BY dim_ano[ANO]
