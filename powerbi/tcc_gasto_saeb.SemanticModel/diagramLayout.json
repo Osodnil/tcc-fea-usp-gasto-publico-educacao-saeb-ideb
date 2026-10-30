@@ -1,0 +1,204 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 381,
+        "y": 121
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 1448.7788173683068,
+            "y": 607.17009521834211
+          },
+          "nodeIndex": "_Medidas",
+          "nodeLineageTag": "b9111dac-862a-5801-a3cd-241fb43ff262",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 574.794720055195,
+            "y": 224.15582833149506
+          },
+          "nodeIndex": "dim_ano",
+          "nodeLineageTag": "7aecaf9e-84e9-5aff-99de-04877f381391",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 103.00226435174466,
+            "y": 1164.3401904366842
+          },
+          "nodeIndex": "dim_cluster",
+          "nodeLineageTag": "3bb5e3b2-5c96-5750-8888-be7ce31490aa",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1732.7788173683068,
+            "y": 693.17009521834211
+          },
+          "nodeIndex": "dim_defasagem",
+          "nodeLineageTag": "7abeb6d7-9ff3-5e15-9131-57369f3108da",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1178.196283055908,
+            "y": 450.37767538111893
+          },
+          "nodeIndex": "dim_disciplina",
+          "nodeLineageTag": "5226eb7d-fad3-57d4-9f11-b34f2ed04687",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1214.7788173683068,
+            "y": 181.83708387194133
+          },
+          "nodeIndex": "dim_etapa",
+          "nodeLineageTag": "3f1ee9e9-4a4b-523e-a258-8661617fe53c",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2016.7788173683068,
+            "y": 681.17009521834211
+          },
+          "nodeIndex": "dim_modelo",
+          "nodeLineageTag": "e7d2e87d-ebe8-5dc2-9da5-0c40dd703c4a",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 274.01196684366039,
+            "y": 814.09332615698963
+          },
+          "nodeIndex": "dim_municipio",
+          "nodeLineageTag": "65b62c25-3227-50b7-8748-7818b178a34d",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 334.1531177439889,
+            "y": 450.22524456308486
+          },
+          "nodeIndex": "dim_uf",
+          "nodeLineageTag": "5ff7e5b6-698d-5b37-ad3c-1817831a534b",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 930.60337048155952,
+            "y": 100.19850577026318
+          },
+          "nodeIndex": "fato_desempenho_estadual",
+          "nodeLineageTag": "189204eb-5a84-5424-8daa-d32736254099",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 832.79772256708475,
+            "y": 450.33987595069675
+          },
+          "nodeIndex": "fato_desempenho_municipal",
+          "nodeLineageTag": "7f57d271-5f5e-5fa7-87d2-9465c3a0e746",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 354.5943220122528,
+            "y": -50
+          },
+          "nodeIndex": "fato_gasto_estadual",
+          "nodeLineageTag": "244a8b69-b895-5551-86a0-24c39f4eb1f5",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 539.91238453347216
+          },
+          "nodeIndex": "fato_gasto_municipal",
+          "nodeLineageTag": "a2bc9607-c0a0-5099-8d10-8687daf2b9e2",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2300.7788173683066,
+            "y": 681.17009521834211
+          },
+          "nodeIndex": "ref_municipio",
+          "nodeLineageTag": "4054a6ff-aa6b-5bea-aec0-95e96e1d1f82",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "Todas as tabelas",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Todas as tabelas",
+  "defaultDiagram": "Todas as tabelas"
+}

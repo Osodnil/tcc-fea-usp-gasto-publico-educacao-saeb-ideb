@@ -1,5 +1,5 @@
 {
-  "name": "TCC gasto e Saeb",
+  "name": "Painel de Eficiência Educacional",
   "dataColors": [
     "#2a78d6",
     "#eb6834",
@@ -485,8 +485,8 @@
   "foreground": "#0b0b0b",
   "foregroundNeutralSecondary": "#52514e",
   "foregroundNeutralTertiary": "#898781",
-  "background": "#fcfcfb",
-  "backgroundLight": "#f9f9f7",
+  "background": "#ffffff",
+  "backgroundLight": "#f4f5f7",
   "backgroundNeutral": "#e1e0d9",
   "tableAccent": "#2a78d6",
   "good": "#0ca30c",
@@ -526,7 +526,7 @@
             "show": true,
             "color": {
               "solid": {
-                "color": "#fcfcfb"
+                "color": "#ffffff"
               }
             },
             "transparency": 0
@@ -537,10 +537,10 @@
             "show": true,
             "color": {
               "solid": {
-                "color": "#e1e0d9"
+                "color": "#e3e4e0"
               }
             },
-            "radius": 6
+            "radius": 8
           }
         ],
         "valueAxis": [
@@ -572,7 +572,7 @@
           {
             "fontColor": {
               "solid": {
-                "color": "#0b0b0b"
+                "color": "#0d366b"
               }
             },
             "alignment": "left"
@@ -586,7 +586,7 @@
           {
             "color": {
               "solid": {
-                "color": "#f9f9f7"
+                "color": "#f4f5f7"
               }
             },
             "transparency": 0

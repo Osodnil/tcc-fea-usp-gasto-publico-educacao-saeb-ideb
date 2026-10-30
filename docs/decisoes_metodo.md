@@ -496,6 +496,41 @@ Falar sempre em associação e eficiência relativa.
 - **Erro encontrado e corrigido:** o gasto mediano das redes avaliadas saía R$ 13.524,86, e não R$ 13.525,81 (AI), e R$ 12.536 em vez de R$ 12.540 (AF).
   - **Causa:** no `MEDIANX`, as 3 redes com nota e sem gasto entravam como zero, em vez de serem ignoradas. Recalculado em Python com os vazios como zero, o valor é idêntico ao do Power BI.
   - **Correção:** a medida passou a tirar as redes sem gasto antes da mediana. Corrigida no Power BI e conferida de novo: R$ 13.525,81 (AI) e R$ 12.539,72 (AF), iguais ao Python. **Conferência 2 concluída.**
+- **Página de Eficiência, revisão do desenho (2026-10-30):**
+  - **Dispersão:** a esperada × observada virou gasto por aluno (eixo log) × eficiência, com linha em zero. O Power BI não desenha a diagonal y = x, e o resíduo do MQO é, por construção, não correlacionado com o log do gasto na amostra conjunta das edições (dentro de uma edição, a correlação fica perto de zero). Assim, o gráfico mostra que há redes acima e abaixo do esperado em qualquer nível de gasto.
+  - **Histograma:** o do percentil (uniforme por construção) virou barras com a % de redes acima do esperado por UF, que mostram a concentração regional (por exemplo, o CE).
+  - **Medida nova:** `Marca de salto`, a versão curta do aviso, para a coluna do ranking.
+- **Páginas também geradas por script (Henrique, 2026-10-30):** montar cada página à mão levaria tempo demais. Por isso, `src/Visualizacao/Gerar_Relatorio_PowerBI.py` escreve as páginas no formato PBIR, que é público e tem esquemas JSON oficiais.
+  - **Como funciona:** cada página é descrita em poucas linhas (posição, tipo de visual e campos), e o cabeçalho com as cinco segmentações é comum a todas.
+  - **Conferência:** com `--validar`, cada arquivo é conferido contra os esquemas oficiais da Microsoft. Um teste com quatro erros inventados mostrou que todos são recusados.
+  - **Limite da conferência:** o esquema não confere os nomes dos papéis (X, Y, Values...) nem as propriedades de formatação. Esses seguem a convenção do Power BI e só se confirmam ao abrir.
+  - **Páginas existentes não são tocadas**, salvo com `--refazer`. As medidas novas entram no modelo com `Gerar_Modelo_PowerBI.py --adicionar-medidas`, que só acrescenta.
+  - **Primeira página gerada:** Eficiência, com 15 visuais. Abriu no Power BI com os números esperados (46,3% acima do esperado no Brasil, AI, MT, 2023).
+  - **Revisão após o primeiro print (2026-10-30):**
+    - segmentações com rótulo em português no próprio campo;
+    - cartões mais baixos;
+    - sem o subtítulo automático;
+    - cabeçalhos legíveis no ranking e sem linha de total;
+    - mais altura para o ranking.
+  - **Medidas ajustadas:**
+    - `Eficiência (pontos)` passou a ser arredondada em 4 casas: a média nacional aparecia como "-0,0" por um resíduo numérico de −3×10⁻¹³;
+    - `Aviso do modelo` passou a sempre dizer qual comparação está em uso, porque um cartão vazio mostrava "(Em branco)".
+  - **Nova opção:** `Gerar_Modelo_PowerBI.py --atualizar-medidas` troca só as medidas indicadas e preserva o identificador interno de cada uma.
+  - **Escala log da dispersão:** não pegou pelo arquivo. Foi ligada uma vez no Power BI, e o arquivo salvo mostrou o nome certo da propriedade (`logAxisScale: true`, e não `axisScale: 'log'`). Agora o gerador grava assim.
+    - **Método para o resto do relatório:** quando uma formatação não pegar, ela é feita uma vez no Power BI, e o gerador copia o que o Desktop gravou.
+    - **Ao salvar, o Desktop só reordenou campos e marcou `active: true` nos campos de categoria;** o gerador passou a fazer o mesmo.
+  - **Segundo print:**
+    - os rótulos dos cartões sumiram por falta de altura (passaram de 64 para 72 px, com o número em 18 pt);
+    - o aviso do modelo, que ficava cortado, foi encurtado para caber em uma linha.
+  - **Erro de renderização corrigido (2026-10-30):** o Power BI acusou "Erro ao renderizar o relatório" no módulo de tabelas (`Cannot read properties of undefined (reading 'isMeasure')`).
+    - **Causa:** a marca `active: true`, que o gerador passou a pôr nas colunas de todos os visuais. O Desktop só grava essa marca em gráficos e segmentações, nunca na tabela.
+    - **Correção:** a tabela ficou sem a marca.
+    - **Lição:** copiar do Desktop só o que ele grava no mesmo tipo de visual.
+- **Identidade visual (Henrique, 2026-10-30):** faixa azul institucional e o nome **Painel de Eficiência Educacional**.
+  - **Faixa azul-escura (`#0d366b`) no topo de todas as páginas:** traz o nome do painel, o título da página e o subtítulo, com as segmentações por cima, em caixas brancas.
+  - **Fundo da página cinza-claro (`#f4f5f7`):** cartões e gráficos ficam em caixas brancas com cantos arredondados (8 px), borda fina e sombra leve; números e títulos em azul-escuro.
+  - **Alternativas consideradas:** "clara e editorial" (melhor para imprimir, menos cara de produto) e "escura" (cansa em leitura longa, imprime mal e exigiria revalidar a paleta para fundo escuro).
+  - **Onde fica:** o estilo é gravado em cada visual e em cada página, partes que o esquema oficial cobre. O tema (`tema_tcc.json` e a cópia registrada no relatório) recebeu os mesmos ajustes, para que visuais criados à mão saiam no mesmo estilo.
 
 ### P5. Dashboard como ferramenta de análise ✅ (2026-10-27)
 - **Decisão (Henrique, 2026-10-27):** usar o dashboard HTML como ferramenta de exploração para a análise, ampliado em abas. O Power BI fica para a apresentação final, alimentado pelas mesmas tabelas.

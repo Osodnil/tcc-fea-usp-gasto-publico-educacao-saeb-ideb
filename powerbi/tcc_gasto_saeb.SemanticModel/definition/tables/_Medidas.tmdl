@@ -177,15 +177,16 @@ table _Medidas
 		lineageTag: 910774b1-f0d3-56fa-a429-996ebf746eab
 
 	/// Pontos acima (+) ou abaixo (−) do esperado para o gasto e o contexto. Associação, não efeito causal.
+	/// Arredondada em 4 casas: a média nacional do resíduo é zero, e sem isso aparecia "-0,0" (−3×10⁻¹³).
 	measure 'Eficiência (pontos)' =
-			IF (
-			    HASONEVALUE ( dim_disciplina[DISCIPLINA] ),
+			VAR e =
 			    SWITCH (
 			        [Modelo],
 			        "Oficial", AVERAGE ( fato_desempenho_municipal[RESIDUO] ),
 			        "Robustez", AVERAGE ( fato_desempenho_municipal[RESIDUO_ALT] )
 			    )
-			)
+			RETURN
+			    IF ( HASONEVALUE ( dim_disciplina[DISCIPLINA] ) && NOT ISBLANK ( e ), ROUND ( e, 4 ) )
 		formatString: +0.0;-0.0;0.0
 		displayFolder: 4 Eficiência
 		lineageTag: 325ef8ee-940b-566e-a7d4-efba07fc9757
@@ -242,10 +243,15 @@ table _Medidas
 		displayFolder: 4 Eficiência
 		lineageTag: fb322437-2bcf-5b25-a703-0d38a3353909
 
+	/// Sempre diz qual comparação está em uso (um cartão vazio mostraria "(Em branco)")
 	measure 'Aviso do modelo' =
-			IF (
+			SWITCH (
+			    TRUE (),
 			    [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
-			    "A edição de 2025 não tem IDHM: a eficiência oficial cobre 2017–2023. Use o modelo de robustez para 2025."
+			        "⚠ 2025 sem IDHM: use o modelo de robustez (o oficial cobre 2017–2023)",
+			    [Modelo] = "Oficial",
+			        "Comparação nacional: redes de todo o país com gasto e contexto parecidos",
+			    "Robustez: redes da mesma UF com gasto e contexto parecidos (inclui 2025)"
 			)
 		displayFolder: 4 Eficiência
 		lineageTag: 46469a65-6960-5bef-973b-813e34fdbfd6
@@ -366,6 +372,16 @@ table _Medidas
 		formatString: #,0
 		displayFolder: 7 Associação por defasagem
 		lineageTag: 4f9e8367-7f21-50d9-8385-878a54c14768
+
+	measure 'Marca de salto' = ```
+			
+			    IF (
+			        CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () ) > 0,
+			        "⚠ salto"
+			    )
+			```
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: f9c8c3d7-c6da-4e1a-a0b4-b7c2a87dae17
 
 	column Coluna
 		dataType: int64

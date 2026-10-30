@@ -102,7 +102,24 @@ Se algum valor não bater, pare e investigue antes de desenhar as páginas: quas
 
 ## Fase 4. Páginas, nesta ordem (1 a 2 dias)
 
-A ordem prioriza o que responde à pergunta do TCC. Cada página está descrita na seção 5 da especificação.
+**As páginas são geradas por script** (`src/Visualizacao/Gerar_Relatorio_PowerBI.py`), como o modelo. O fluxo para cada página nova:
+
+1. Salvar e **fechar o Power BI**.
+2. Se a página usar medidas novas, acrescentá-las ao modelo, que só adiciona e não altera nada:
+
+   ```powershell
+   & "$env:USERPROFILE\anaconda3\python.exe" src\Visualizacao\Gerar_Modelo_PowerBI.py --adicionar-medidas
+   ```
+
+3. Gerar as páginas. As que já existem não são tocadas; para regravar uma, use `--refazer <nome>`:
+
+   ```powershell
+   & "$env:USERPROFILE\anaconda3\python.exe" src\Visualizacao\Gerar_Relatorio_PowerBI.py
+   ```
+
+4. Abrir o `.pbip`, conferir e fazer os ajustes finos no próprio Power BI (cores condicionais, larguras de coluna).
+
+As descrições abaixo continuam valendo como especificação de cada página e como plano B manual. A ordem prioriza o que responde à pergunta do TCC; cada página está descrita na seção 5 da especificação.
 
 1. **Eficiência.** Seletor de `dim_modelo[ROTULO_MODELO]`; dispersão `Proficiência esperada` × `Proficiência média` com `dim_municipio[MUNICIPIO_UF]` em Valores e `CLUSTER_ROTULO` em Legenda; tabela-ranking com nome, cluster, proficiência, esperada, eficiência, percentil e salto atípico (ícone por formatação condicional).
 2. **Ficha do município.** Em **Detalhamento**, arraste `dim_municipio[MUNICIPIO_UF]`. Gráfico de linhas por `ANO` com `Proficiência média`, `Proficiência mediana do cluster`, `Proficiência mediana da UF` e `Proficiência mediana do Brasil`; colunas com o gasto anual (`fato_gasto_municipal`); cartões com cluster, porte, `Faixa de eficiência` e `Aviso de salto atípico`. Teste com Ibateguara (AL).

@@ -162,18 +162,71 @@ def tabela_importada(t: str, schema: dict) -> str:
     return "\n".join(linhas)
 
 
+def medida_tmdl(m: dict) -> list[str]:
+    linhas = [f"\t/// {d}" for d in m["descricao"]]
+    if len(m["corpo"]) == 1:
+        linhas.append(f"\tmeasure {nome(m['nome'])} = {m['corpo'][0].strip()}")
+    else:
+        linhas.append(f"\tmeasure {nome(m['nome'])} =")
+        linhas += [f"\t\t\t{l}" if l.strip() else "" for l in m["corpo"]]
+    if formato(m["nome"]):
+        linhas.append(f"\t\tformatString: {formato(m['nome'])}")
+    return linhas + [f"\t\tdisplayFolder: {m['pasta']}", f"\t\tlineageTag: {tag('m', m['nome'])}", ""]
+
+
+def adicionar_medidas(arquivo: Path, medidas: list[dict]) -> list[str]:
+    """Acrescenta ao _Medidas.tmdl do projeto só as medidas de medidas.dax que ainda não existem.
+    Não altera nem remove nenhuma medida existente (o Desktop é a fonte delas)."""
+    texto = arquivo.read_text(encoding="utf-8")
+    existentes = {n.strip("'").replace("''", "'") for n in re.findall(r"^\tmeasure (.+?) =", texto, flags=re.M)}
+    novas = [m for m in medidas if m["nome"] not in existentes]
+    if novas:
+        bloco = "\n".join(l for m in novas for l in medida_tmdl(m))
+        arquivo.write_text(texto.rstrip("\n") + "\n\n" + bloco + "\n", encoding="utf-8")
+    return [m["nome"] for m in novas]
+
+
+def atualizar_medidas(arquivo: Path, medidas: list[dict], nomes: list[str]) -> list[str]:
+    """Troca no _Medidas.tmdl do projeto só as medidas nomeadas pela versão de medidas.dax, mantendo o lineageTag.
+    O resto do arquivo (outras medidas, colunas, partição) fica como o Desktop gravou."""
+    por_nome = {m["nome"]: m for m in medidas}
+    faltando = [n for n in nomes if n not in por_nome]
+    if faltando:
+        sys.exit(f"[ERRO] Medidas que não estão em medidas.dax: {', '.join(faltando)}")
+    linhas = arquivo.read_text(encoding="utf-8").split("\n")
+    saida, trocadas, i = [], [], 0
+    while i < len(linhas):
+        j = i
+        while j < len(linhas) and linhas[j].startswith("\t///"):  # descrição colada acima da medida
+            j += 1
+        cab = re.match(r"^\tmeasure (.+?) =", linhas[j]) if j < len(linhas) else None
+        if not cab:
+            saida += linhas[i:j + 1]
+            i = j + 1
+            continue
+        k = j + 1  # o bloco vai até a próxima linha de nível 1 (medida, coluna, partição ou descrição)
+        while k < len(linhas) and not re.match(r"^\t[^\t]", linhas[k]):
+            k += 1
+        nome_m = cab.group(1).strip("'").replace("''", "'")
+        if nome_m in nomes:
+            antiga = next((m.group(1) for l in linhas[j:k] if (m := re.search(r"lineageTag: (\S+)", l))), None)
+            novo = medida_tmdl(por_nome[nome_m])
+            saida += [re.sub(r"lineageTag: \S+", f"lineageTag: {antiga}", l) if antiga else l for l in novo]
+            trocadas.append(nome_m)
+        else:
+            saida += linhas[i:k]
+        i = k
+    nao_achadas = [n for n in nomes if n not in trocadas]
+    if nao_achadas:
+        sys.exit(f"[ERRO] Medidas que não estão no modelo (use --adicionar-medidas): {', '.join(nao_achadas)}")
+    arquivo.write_text("\n".join(saida), encoding="utf-8")
+    return trocadas
+
+
 def tabela_calculada(t: str, dax: str, colunas: dict, medidas: list[dict]) -> str:
     linhas = [f"table {nome(t)}", f"\tlineageTag: {tag('t', t)}", ""]
     for m in medidas:
-        linhas += [f"\t/// {d}" for d in m["descricao"]]
-        if len(m["corpo"]) == 1:
-            linhas.append(f"\tmeasure {nome(m['nome'])} = {m['corpo'][0].strip()}")
-        else:
-            linhas.append(f"\tmeasure {nome(m['nome'])} =")
-            linhas += [f"\t\t\t{l}" if l.strip() else "" for l in m["corpo"]]
-        if formato(m["nome"]):
-            linhas.append(f"\t\tformatString: {formato(m['nome'])}")
-        linhas += [f"\t\tdisplayFolder: {m['pasta']}", f"\t\tlineageTag: {tag('m', m['nome'])}", ""]
+        linhas += medida_tmdl(m)
     for c, tipo in colunas.items():
         linhas += [f"\tcolumn {nome(c)}", f"\t\tdataType: {tipo}"]
         if t == "_Medidas":
@@ -234,9 +287,25 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--forcar", action="store_true", help="sobrescreve um modelo que já tem tabelas")
     ap.add_argument("--pasta", type=Path, help="outra pasta .SemanticModel (para testes)")
+    ap.add_argument("--adicionar-medidas", action="store_true",
+                    help="só acrescenta ao modelo existente as medidas novas de medidas.dax (feche o Power BI antes)")
+    ap.add_argument("--atualizar-medidas", nargs="+", metavar="MEDIDA",
+                    help="troca no modelo existente só estas medidas pela versão de medidas.dax (feche o Power BI antes)")
     args = ap.parse_args()
     if args.pasta:
         MODELO = args.pasta.resolve()
+
+    if args.adicionar_medidas or args.atualizar_medidas:
+        schemas = {t: dict(pl.read_parquet_schema(DADOS / f"{t}.parquet")) for t in TABELAS}
+        medidas = ler_medidas()
+        conferir(schemas, medidas)
+        arquivo = MODELO / "definition" / "tables" / "_Medidas.tmdl"
+        if args.adicionar_medidas:
+            novas = adicionar_medidas(arquivo, medidas)
+            print(f"[OK] Medidas acrescentadas: {', '.join(novas) if novas else 'nenhuma (todas já existem)'}")
+        if args.atualizar_medidas:
+            print(f"[OK] Medidas atualizadas: {', '.join(atualizar_medidas(arquivo, medidas, args.atualizar_medidas))}")
+        sys.exit(0)
 
     if not (MODELO / "definition.pbism").exists():
         if not args.pasta and (PASTA_PBI / "tcc_gasto_saeb.pbix").exists():

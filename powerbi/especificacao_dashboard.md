@@ -89,7 +89,12 @@ Filtros fixos no topo de todas as páginas, numa linha: **UF**, **Etapa** (sele�
 
 1. **Início.** Cartões: gasto por aluno (mediana anual), proficiência média, % acima do esperado, cobertura do Saeb. Linha: proficiência média por edição (Brasil e UF selecionada). Texto curto com as três perguntas do painel e onde cada uma é respondida. Botão "Ver meu município" (abre a ficha).
 2. **Mapa.** Mapa de formas com a malha municipal (`CO_MUNICIPIO` no campo Local), cores por um parâmetro de campo: eficiência (escala divergente vermelho–cinza–azul, centro 0), proficiência ou gasto (escala sequencial azul). Zoom automático ao filtrar a UF. Ao lado, tabela das redes do recorte.
-3. **Eficiência.** Seletor de modelo (Oficial / Robustez). Dispersão proficiência esperada × observada (uma bolha por rede, cor por cluster, diagonal de referência); histograma do percentil; ranking com nome, cluster, proficiência, esperada, eficiência, percentil e ícone de salto atípico. Aviso fixo: "Associação, não efeito causal. A edição de 2025 só tem o modelo de robustez."
+3. **Eficiência.** Seletor de modelo (Oficial / Robustez).
+   - **Dispersão** gasto por aluno (eixo logarítmico) × eficiência, uma bolha por rede, cor por cluster e linha em zero. Mostra que há redes acima e abaixo do esperado em qualquer nível de gasto.
+   - **Barras** com a % de redes acima do esperado por UF, com linha em 50%.
+   - **Ranking** com nome, cluster, gasto, proficiência, esperada, eficiência, percentil e marca de salto atípico.
+   - **Aviso fixo:** "Associação, não efeito causal. A edição de 2025 só tem o modelo de robustez."
+   - **Revisão de 2026-10-30:** a dispersão esperada × observada e o histograma do percentil foram trocados. O Power BI não desenha a diagonal y = x, e o percentil é uniforme por construção, então o histograma sairia plano.
 4. **Ficha do município** (página de detalhamento, aberta com clique direito em qualquer município). Cartões: cluster, porte, gasto, faixa de eficiência. Linhas por edição: proficiência da rede × mediana do cluster × mediana da UF × mediana do Brasil; gasto anual 2017–2025. Tabela de eficiência por etapa, disciplina e edição. Aviso de salto atípico quando houver.
 5. **Pares.** O usuário escolhe o município de referência numa segmentação própria (tabela `ref_municipio`, sem relacionamento). A página lista as redes do mesmo cluster com gasto entre 0,8 e 1,25 vez o dele, ordenadas pela eficiência (medida `É par`). É a lista "com quem conversar".
 6. **Defasagens.** Barras do ρ de Spearman por defasagem (mesmo ano, 1, 2 e 4 anos antes), por edição. Nota sobre a cobertura: L2 só a partir de 2019, L4 a partir de 2021.
