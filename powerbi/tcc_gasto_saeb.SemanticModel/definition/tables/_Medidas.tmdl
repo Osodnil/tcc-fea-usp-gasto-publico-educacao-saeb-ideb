@@ -409,3 +409,108 @@ table _Medidas
 		displayFolder: 8 Ficha do município
 		lineageTag: 51a4c765-d2ba-5567-b9d2-b51109bd9567
 
+	/// Valores do município de referência (o filtro da página Pares escolhe em ref_municipio, sem relação com o modelo)
+	measure 'Município de referência' = SELECTEDVALUE ( ref_municipio[REF_MUNICIPIO_UF], "Escolha um município de referência no filtro acima" )
+		displayFolder: 5 Pares e cluster
+		lineageTag: 75ea5d6c-43cd-5277-bed1-75df7bd44ba5
+
+	measure 'Proficiência do município de referência' =
+			VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+			RETURN
+			    CALCULATE (
+			        [Proficiência média],
+			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+			        dim_municipio[CO_MUNICIPIO] = r
+			    )
+		formatString: 0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: b64caf7f-132b-5104-aa96-8ca3952ad933
+
+	measure 'Eficiência do município de referência' =
+			VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+			RETURN
+			    CALCULATE (
+			        [Eficiência (pontos)],
+			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+			        dim_municipio[CO_MUNICIPIO] = r
+			    )
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: ae6615b3-4a55-54b3-aaea-2e646e25605f
+
+	/// Texto com a regra dos pares, já com os valores do município escolhido
+	measure 'Regra dos pares' =
+			VAR g = [Gasto do município de referência]
+			RETURN
+			    IF (
+			        NOT ISBLANK ( g ),
+			        "Mesmo cluster, gasto entre " & FORMAT ( 0.8 * g, "R$ #,0" ) & " e " & FORMAT ( 1.25 * g, "R$ #,0" )
+			    )
+		displayFolder: 5 Pares e cluster
+		lineageTag: bc49a966-968b-54ee-afb8-c1050f15beb0
+
+	measure 'Pares encontrados' =
+			VAR c = SELECTEDVALUE ( ref_municipio[REF_CLUSTER] )
+			RETURN
+			    IF (
+			        NOT ISBLANK ( c ),
+			        COUNTROWS (
+			            FILTER (
+			                CALCULATETABLE ( VALUES ( dim_municipio[CO_MUNICIPIO] ), REMOVEFILTERS ( dim_municipio ), dim_municipio[CLUSTER] = c ),
+			                [É par] = 1
+			            )
+			        ) + 0
+			    )
+		formatString: #,0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 43382945-312a-5ad6-9eaf-0380eb8a7e6d
+
+	measure 'Pares que entregam mais' =
+			VAR c = SELECTEDVALUE ( ref_municipio[REF_CLUSTER] )
+			VAR e = [Eficiência do município de referência]
+			RETURN
+			    IF (
+			        NOT ISBLANK ( e ),
+			        COUNTROWS (
+			            FILTER (
+			                CALCULATETABLE ( VALUES ( dim_municipio[CO_MUNICIPIO] ), REMOVEFILTERS ( dim_municipio ), dim_municipio[CLUSTER] = c ),
+			                // sem o NOT ISBLANK, um par sem eficiência contava (o vazio vira zero na comparação)
+			                [É par] = 1 && NOT ISBLANK ( [Eficiência (pontos)] ) && [Eficiência (pontos)] > e
+			            )
+			        ) + 0
+			    )
+		formatString: #,0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 7b1245d5-31e6-5a61-86a5-5b817c8e09b9
+
+	/// Colunas da tabela de pares: vazias quando a rede não é par, e o Power BI esconde a linha sozinho
+	/// (dispensa filtro de visual sobre medida)
+	measure 'Par: gasto por aluno' = IF ( [É par] = 1, [Gasto das redes avaliadas (mediana)] )
+		formatString: R$ #,0
+		displayFolder: 5 Pares e cluster
+		lineageTag: a20c6b58-5829-5ac7-b7fa-b7c8ffcc4774
+
+	measure 'Par: proficiência' = IF ( [É par] = 1, [Proficiência média] )
+		formatString: 0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: cceb11f2-5870-5708-843e-64e0205dd814
+
+	measure 'Par: eficiência' = IF ( [É par] = 1, [Eficiência (pontos)] )
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 0dbc3874-4d3e-5b74-987d-5acf52203681
+
+	measure 'Par: diferença para a referência' = IF ( [É par] = 1, [Eficiência (pontos)] - [Eficiência do município de referência] )
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: dba9f575-c4c8-52a5-8b37-56dfb7cca811
+
+	measure 'Par: percentil' = IF ( [É par] = 1, [Percentil de eficiência] )
+		formatString: 0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 3f272731-1f36-5e33-896e-697c248ec977
+
+	measure 'Par: salto' = IF ( [É par] = 1, [Marca de salto] )
+		displayFolder: 5 Pares e cluster
+		lineageTag: ee1af3b7-6187-502b-adf7-7baeadfd219f
+

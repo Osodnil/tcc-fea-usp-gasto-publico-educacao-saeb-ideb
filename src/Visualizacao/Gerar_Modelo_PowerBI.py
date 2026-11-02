@@ -80,10 +80,11 @@ CALCULADAS = {
 }
 
 FORMATOS = [  # (padrão no nome da medida, formatString); vale o primeiro que casar
-    (r"^Gasto (por aluno|das redes|estadual|do município)", "R$ #,0"),
-    (r"^(Eficiência \(pontos\)|Nota menos)", "+0.0;-0.0;0.0"),
-    (r"^Proficiência", "0.0"),
-    (r"^Percentil", "0"),
+    (r"^(Gasto (por aluno|das redes|estadual|do município)|Par: gasto)", "R$ #,0"),
+    (r"^(Eficiência \(pontos\)|Eficiência do município|Nota menos|Par: (eficiência|diferença))", "+0.0;-0.0;0.0"),
+    (r"^(Proficiência|Par: proficiência)", "0.0"),
+    (r"^(Percentil|Par: percentil)", "0"),
+    (r"^Pares (encontrados|que)", "#,0"),
     (r"^(% acima|Cobertura)", "0.0%"),
     (r"^Correlação", "0.00"),
     (r"^(IDEB|Nota padronizada|Gasto ÷)", "0.00"),

@@ -203,6 +203,11 @@ def com_padding(visual: dict, vertical: float = 2.0, horizontal: float = 8.0) ->
     return visual
 
 
+def quadro_texto(paragrafos: list[tuple[str, dict]]) -> dict:
+    """Caixa de texto em cartão (Como ler, Como usar), com margem interna para o texto não encostar na borda."""
+    return com_padding(texto(paragrafos), vertical=12.0, horizontal=16.0)
+
+
 def cartao(medida_nome: str, rotulo: str, tamanho: float = 18.0) -> dict:
     # labelDisplayUnits 1 = sem abreviação ("R$ 12.000", e não "R$ 12 Mil")
     return com_padding(grafico("card", {"Values": [(medida_nome, rotulo)]}, objetos={
@@ -232,6 +237,8 @@ def segmentacoes_padrao(prefixo: str) -> dict:
     return {
         "uf": ("dim_uf.SG_UF", "UF (vazio = Brasil)", None, False, None, "uf", False, 156),
         "municipio": ("dim_municipio.MUNICIPIO_UF", "Município (digite para buscar)", None, True, None, None, True, 252),
+        # tabela sem relação com o modelo: escolher a referência não filtra a lista de pares
+        "referencia": ("ref_municipio.REF_MUNICIPIO_UF", "Município de referência (busque)", None, True, None, None, True, 252),
         "etapa": ("dim_etapa.NOME_ETAPA", "Etapa", ["Anos Iniciais (5º ano)"], True,
                   [filtro_visual(f"{prefixo}_f_etapa", "dim_etapa", "ETAPA", ["AI", "AF"])], "etapa", False, 156),
         "disciplina": ("dim_disciplina.NOME_DISCIPLINA", "Disciplina", ["Matemática"], True, None, "disciplina", False, 156),
@@ -251,8 +258,9 @@ def cabecalho(prefixo: str, titulo: str, subtitulo: str, z0: int = 0,
     estilo_sub = {"fontSize": "9pt", "color": AZUL_CLARO}
     disponiveis = segmentacoes_padrao(prefixo)
     # a faixa é a própria caixa de texto do título, de ponta a ponta; as segmentações ficam por cima, à direita
-    vis = [container(f"{prefixo}_titulo", (0, 0, LARGURA, 72),
-                     texto([(NOME_PAINEL, estilo_nome), (titulo, estilo_tit), (subtitulo, estilo_sub)]), z0, estilo="faixa")]
+    faixa = com_padding(texto([(NOME_PAINEL, estilo_nome), (titulo, estilo_tit), (subtitulo, estilo_sub)]),
+                        vertical=6.0, horizontal=16.0)  # sem isso, o texto encostava na borda da página
+    vis = [container(f"{prefixo}_titulo", (0, 0, LARGURA, 72), faixa, z0, estilo="faixa")]
     x = LARGURA - 16 - sum(disponiveis[s][7] + 8 for s in segs) + 8
     for i, nome in enumerate(segs):
         ref, rot, padrao, unica, filtros, grupo, busca, largura = disponiveis[nome]
@@ -379,7 +387,7 @@ def pagina_ficha() -> tuple[dict, list[dict]]:
         22, so_edicoes("tabela"), titulo="Eficiência por edição"))
     titulo_ler = {"fontWeight": "bold", "fontSize": "11pt", "color": AZUL_FAIXA}
     corpo = {"fontSize": "9pt", "color": COR_TEXTO_2}
-    vis.append(container(f"{p}_como_ler", (788, 412, 476, 272), texto([
+    vis.append(container(f"{p}_como_ler", (788, 412, 476, 272), quadro_texto([
         ("Como ler esta ficha", titulo_ler),
         ("• Linhas: a proficiência do município em cada edição do Saeb, contra as medianas das redes do mesmo "
          "cluster (contexto parecido), da UF e do Brasil.", corpo),
@@ -395,7 +403,53 @@ def pagina_ficha() -> tuple[dict, list[dict]]:
     return pagina("tcc_ficha", "Ficha do município", sem_filtro), vis
 
 
-PAGINAS = [pagina_eficiencia, pagina_ficha]
+def pagina_pares() -> tuple[dict, list[dict]]:
+    """Pares: redes do mesmo cluster do município de referência, com gasto entre 0,8 e 1,25 vez o dele,
+    ordenadas pela eficiência. As colunas são medidas 'Par: ...', vazias fora dos pares (a linha some sozinha)."""
+    p = "par"
+    vis = cabecalho(p, "Pares: com quem conversar", "Redes de contexto e gasto parecidos, ordenadas pela eficiência",
+                    segs=("referencia", "etapa", "disciplina", "edicao", "modelo"))
+    vis.append(container(f"{p}_card_nome", (16, 80, 344, 44), cartao_destaque("Município de referência"), 10))
+    vis.append(container(f"{p}_card_regra", (16, 124, 344, 40), cartao_texto("Regra dos pares"), 11))
+    cartoes = [("gasto", "Gasto do município de referência", "Gasto por aluno"),
+               ("prof", "Proficiência do município de referência", "Proficiência"),
+               ("efic", "Eficiência do município de referência", "Eficiência (pontos)"),
+               ("pares", "Pares encontrados", "Pares encontrados"),
+               ("acima", "Pares que entregam mais", "Pares que entregam mais")]
+    for i, (nome, m, rot) in enumerate(cartoes):
+        vis.append(container(f"{p}_card_{nome}", (368 + i * 180, 80, 172, 84), cartao(m, rot), 12 + i))
+    vis.append(container(
+        f"{p}_tabela", (16, 172, 860, 512),
+        grafico("tableEx", {"Values": [("dim_municipio.MUNICIPIO_UF", "Município"),
+                                       ("Par: gasto por aluno", "Gasto por aluno"), ("Par: proficiência", "Proficiência"),
+                                       ("Par: eficiência", "Eficiência"),
+                                       ("Par: diferença para a referência", "Diferença para a referência"),
+                                       ("Par: percentil", "Percentil"), ("Par: salto", "Salto")]},
+                ordenar="Par: eficiência",
+                objetos={"total": [{"properties": {"totals": literal(False)}}]}),
+        20, titulo="Pares do município de referência, do mais ao menos eficiente"))
+    titulo_ler = {"fontWeight": "bold", "fontSize": "11pt", "color": AZUL_FAIXA}
+    corpo = {"fontSize": "9pt", "color": COR_TEXTO_2}
+    vis.append(container(f"{p}_como_usar", (884, 172, 380, 512), quadro_texto([
+        ("Como usar", titulo_ler),
+        ("1. Escolha o município de referência no filtro da faixa (digite o nome).", corpo),
+        ("2. A tabela lista as redes do mesmo cluster (contexto parecido) que gastam entre 0,8 e 1,25 vez o "
+         "gasto por aluno da referência na edição escolhida.", corpo),
+        ("3. No topo da tabela ficam as redes que mais entregam acima do esperado com gasto semelhante: são as "
+         "candidatas a uma conversa sobre práticas de gestão.", corpo),
+        ("4. Diferença para a referência: quantos pontos de eficiência o par tem a mais (+) ou a menos (−) que o "
+         "município escolhido.", corpo),
+        ("Cuidados", titulo_ler),
+        ("• ⚠ salto: o resultado do par mudou demais desde a edição anterior. Conferir antes de tomá-lo como exemplo.", corpo),
+        ("• Pares parecidos em contexto e gasto não são iguais em tudo: a eficiência descreve associação e também "
+         "capta gestão, contexto familiar e qualidade do registro.", corpo),
+        ("• A edição de 2025 só tem eficiência no modelo de robustez.", corpo),
+    ]), 21))
+    vis.append(rodape_fontes(p, 30))
+    return pagina("tcc_pares", "Pares"), vis
+
+
+PAGINAS = [pagina_eficiencia, pagina_ficha, pagina_pares]
 
 
 # ───────────────────────── gravação e validação ─────────────────────────

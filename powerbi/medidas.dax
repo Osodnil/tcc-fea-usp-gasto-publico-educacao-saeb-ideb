@@ -240,6 +240,79 @@ RETURN
         1, 0
     )
 
+// Valores do município de referência (o filtro da página Pares escolhe em ref_municipio, sem relação com o modelo)
+Município de referência =
+    SELECTEDVALUE ( ref_municipio[REF_MUNICIPIO_UF], "Escolha um município de referência no filtro acima" )
+
+Proficiência do município de referência =
+VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+RETURN
+    CALCULATE (
+        [Proficiência média],
+        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+        dim_municipio[CO_MUNICIPIO] = r
+    )
+
+Eficiência do município de referência =
+VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+RETURN
+    CALCULATE (
+        [Eficiência (pontos)],
+        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+        dim_municipio[CO_MUNICIPIO] = r
+    )
+
+// Texto com a regra dos pares, já com os valores do município escolhido
+Regra dos pares =
+VAR g = [Gasto do município de referência]
+RETURN
+    IF (
+        NOT ISBLANK ( g ),
+        "Mesmo cluster, gasto entre " & FORMAT ( 0.8 * g, "R$ #,0" ) & " e " & FORMAT ( 1.25 * g, "R$ #,0" )
+    )
+
+Pares encontrados =
+VAR c = SELECTEDVALUE ( ref_municipio[REF_CLUSTER] )
+RETURN
+    IF (
+        NOT ISBLANK ( c ),
+        COUNTROWS (
+            FILTER (
+                CALCULATETABLE ( VALUES ( dim_municipio[CO_MUNICIPIO] ), REMOVEFILTERS ( dim_municipio ), dim_municipio[CLUSTER] = c ),
+                [É par] = 1
+            )
+        ) + 0
+    )
+
+Pares que entregam mais =
+VAR c = SELECTEDVALUE ( ref_municipio[REF_CLUSTER] )
+VAR e = [Eficiência do município de referência]
+RETURN
+    IF (
+        NOT ISBLANK ( e ),
+        COUNTROWS (
+            FILTER (
+                CALCULATETABLE ( VALUES ( dim_municipio[CO_MUNICIPIO] ), REMOVEFILTERS ( dim_municipio ), dim_municipio[CLUSTER] = c ),
+                // sem o NOT ISBLANK, um par sem eficiência contava (o vazio vira zero na comparação)
+                [É par] = 1 && NOT ISBLANK ( [Eficiência (pontos)] ) && [Eficiência (pontos)] > e
+            )
+        ) + 0
+    )
+
+// Colunas da tabela de pares: vazias quando a rede não é par, e o Power BI esconde a linha sozinho
+// (dispensa filtro de visual sobre medida)
+Par: gasto por aluno = IF ( [É par] = 1, [Gasto das redes avaliadas (mediana)] )
+
+Par: proficiência = IF ( [É par] = 1, [Proficiência média] )
+
+Par: eficiência = IF ( [É par] = 1, [Eficiência (pontos)] )
+
+Par: diferença para a referência = IF ( [É par] = 1, [Eficiência (pontos)] - [Eficiência do município de referência] )
+
+Par: percentil = IF ( [É par] = 1, [Percentil de eficiência] )
+
+Par: salto = IF ( [É par] = 1, [Marca de salto] )
+
 // ───────────────────────── Pasta: 6 Qualidade dos dados ─────────────────────────
 
 Redes com salto atípico =

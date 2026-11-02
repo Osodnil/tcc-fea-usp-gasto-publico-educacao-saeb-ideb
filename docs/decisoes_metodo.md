@@ -546,6 +546,18 @@ Falar sempre em associação e eficiência relativa.
   - **Causa:** o cartão do Power BI reserva espaço interno acima e abaixo do conteúdo, e o rótulo saía cortado.
   - **Correção:** espaço interno reduzido (2 px na vertical), cartões de 84 px de altura e o cartão da faixa de eficiência mais largo.
   - **Gasto sem abreviação:** os cartões mostram "R$ 12.000", e não "R$ 12 Mil".
+- **Página Pares (2026-11-02):** o técnico escolhe um município de referência e vê as redes do mesmo cluster com gasto por aluno (mesmo ano da edição) entre 0,8 e 1,25 vez o dele, ordenadas pela eficiência.
+  - **Sem filtro de visual sobre medida:** a parte mais frágil do formato fica de fora. As colunas da tabela são medidas `Par: …`, vazias quando a rede não é par, e o Power BI esconde essas linhas sozinho.
+  - **Topo da página:** o nome da referência, a regra já com os valores ("Mesmo cluster, gasto entre R$ … e R$ …"), o gasto, a proficiência e a eficiência da referência, o número de pares e quantos deles entregam mais.
+  - **Medidas novas (12):** `Município de referência`, `Proficiência do município de referência`, `Eficiência do município de referência`, `Regra dos pares`, `Pares encontrados`, `Pares que entregam mais` e as seis colunas `Par: …`.
+  - **Conferência em Python (AI, MT, 2023, modelo oficial):**
+    - Campinas-SP: 34 pares, 30 entregam mais; o primeiro é Guararema-SP (+34,3);
+    - Ibateguara-AL: 690 pares, 2 entregam mais (Santana do Mundaú-AL e Coruripe-AL, ambos com salto atípico);
+    - Sobral-CE: 175 pares, nenhum entrega mais.
+  - **Conferida no Power BI com Campinas-SP:** 34 pares, a regra com os valores certos e Guararema-SP em primeiro, iguais ao Python.
+  - **Erro encontrado e corrigido:** o cartão "Pares que entregam mais" mostrava 32, e o certo é 30. Dois pares sem eficiência calculada entravam na conta, porque na comparação `eficiência do par > eficiência da referência` o DAX trata o vazio como zero, e 0 > −25,0. A medida passou a exigir eficiência não vazia.
+  - **Margem interna:** a faixa do topo e os quadros "Como ler" e "Como usar" ganharam margem interna, porque o texto encostava na borda.
+  - **Ponto a avaliar:** nos clusters grandes, a faixa de 0,8 a 1,25 vez o gasto pega quase todo o grupo (690 dos 1.037 municípios do cluster de Ibateguara). Opções: estreitar a faixa ou exigir também o mesmo porte. A lista ordenada já põe os mais relevantes no topo.
 - **Filtros sincronizados:** Etapa, Disciplina, Edição, Modelo e UF passaram a ter grupo de sincronização. A escolha feita numa página vale nas outras.
 - **Conferências do gerador de páginas:**
   - os esquemas oficiais são baixados pelo próprio script para `data/interim/esquemas_pbir` (fora do Git), e `--validar` funciona em qualquer máquina;
