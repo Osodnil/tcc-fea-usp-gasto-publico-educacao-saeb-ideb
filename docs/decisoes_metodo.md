@@ -530,7 +530,26 @@ Falar sempre em associação e eficiência relativa.
   - **Faixa azul-escura (`#0d366b`) no topo de todas as páginas:** traz o nome do painel, o título da página e o subtítulo, com as segmentações por cima, em caixas brancas.
   - **Fundo da página cinza-claro (`#f4f5f7`):** cartões e gráficos ficam em caixas brancas com cantos arredondados (8 px), borda fina e sombra leve; números e títulos em azul-escuro.
   - **Alternativas consideradas:** "clara e editorial" (melhor para imprimir, menos cara de produto) e "escura" (cansa em leitura longa, imprime mal e exigiria revalidar a paleta para fundo escuro).
-  - **Onde fica:** o estilo é gravado em cada visual e em cada página, partes que o esquema oficial cobre. O tema (`tema_tcc.json` e a cópia registrada no relatório) recebeu os mesmos ajustes, para que visuais criados à mão saiam no mesmo estilo.
+  - **Onde fica:** o estilo é gravado em cada visual e em cada página, partes que o esquema oficial cobre.
+- **Página Ficha do município (2026-11-02):**
+  - **Escolha do município:** por um filtro com busca na própria faixa, e não por detalhamento (clique direito). É mais simples para o técnico da secretaria, que digita o nome da cidade, e mais robusto para gerar. O detalhamento pode ser acrescentado depois.
+  - **Conteúdo:**
+    - cartões com o nome do município, o perfil (porte e cluster), o gasto do ano, a proficiência, a eficiência, o percentil e a faixa;
+    - linhas da proficiência por edição, contra as medianas do cluster, da UF e do Brasil;
+    - colunas com o gasto por aluno ano a ano;
+    - tabela de eficiência por edição, com a marca de salto;
+    - quadro "Como ler esta ficha", escrito para o usuário-alvo.
+  - **O filtro de Edição vale só para os cartões:** gráficos e tabela mostram todas as edições (interação "sem filtro" gravada na página).
+  - **Medidas novas:** `Município selecionado` e `Perfil do município`. Como o modelo desestimula agregações implícitas, os textos dos cartões vêm de medidas.
+  - **Conferida no Power BI com Ibateguara-AL:** 331,2 pontos, +137,6, percentil 100 e salto em 2021, iguais à conferência em Python.
+- **Cartões cortados (2026-11-02):**
+  - **Causa:** o cartão do Power BI reserva espaço interno acima e abaixo do conteúdo, e o rótulo saía cortado.
+  - **Correção:** espaço interno reduzido (2 px na vertical), cartões de 84 px de altura e o cartão da faixa de eficiência mais largo.
+  - **Gasto sem abreviação:** os cartões mostram "R$ 12.000", e não "R$ 12 Mil".
+- **Filtros sincronizados:** Etapa, Disciplina, Edição, Modelo e UF passaram a ter grupo de sincronização. A escolha feita numa página vale nas outras.
+- **Conferências do gerador de páginas:**
+  - os esquemas oficiais são baixados pelo próprio script para `data/interim/esquemas_pbir` (fora do Git), e `--validar` funciona em qualquer máquina;
+  - toda medida usada num visual tem de existir em `medidas.dax`. O tema (`tema_tcc.json` e a cópia registrada no relatório) recebeu os mesmos ajustes, para que visuais criados à mão saiam no mesmo estilo.
 
 ### P5. Dashboard como ferramenta de análise ✅ (2026-10-27)
 - **Decisão (Henrique, 2026-10-27):** usar o dashboard HTML como ferramenta de exploração para a análise, ampliado em abas. O Power BI fica para a apresentação final, alimentado pelas mesmas tabelas.

@@ -395,3 +395,17 @@ table _Medidas
 		mode: import
 		source = ROW ( "Coluna", 0 )
 
+	/// Cartões de texto da ficha (o modelo desestimula agregações implícitas, então o texto vem de medidas)
+	measure 'Município selecionado' = SELECTEDVALUE ( dim_municipio[MUNICIPIO_UF], "Escolha um município no filtro acima" )
+		displayFolder: 8 Ficha do município
+		lineageTag: 4dfcfdb7-603b-554e-9c8b-c0f148624021
+
+	measure 'Perfil do município' =
+			    IF (
+			        HASONEVALUE ( dim_municipio[CO_MUNICIPIO] ),
+			        "Porte: " & SELECTEDVALUE ( dim_municipio[PORTE] ) & " habitantes · Cluster: "
+			            & SELECTEDVALUE ( dim_municipio[CLUSTER_ROTULO] )
+			    )
+		displayFolder: 8 Ficha do município
+		lineageTag: 51a4c765-d2ba-5567-b9d2-b51109bd9567
+

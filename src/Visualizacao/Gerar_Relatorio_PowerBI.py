@@ -171,32 +171,51 @@ def texto(paragrafos: list[tuple[str, dict]]) -> dict:
         "paragraphs": [{"textRuns": [{"value": t, "textStyle": est}]} for t, est in paragrafos]}}]}}
 
 
-def segmentacao(ref: str, rotulo: str, padrao: list | None = None, unica: bool = True) -> dict:
-    """Lista suspensa; o rótulo vai no cabeçalho da própria segmentação (sem título de contêiner)."""
+def segmentacao(ref: str, rotulo: str, padrao: list | None = None, unica: bool = True,
+                grupo: str | None = None, busca: bool = False) -> dict:
+    """Lista suspensa; o rótulo vai no cabeçalho da própria segmentação (sem título de contêiner).
+    grupo: nome do grupo de sincronização (a mesma escolha vale em todas as páginas do grupo).
+    busca: caixa de pesquisa na lista (para listas longas, como a de municípios)."""
     tabela, col = ref.split(".", 1)
     objetos = {"data": [{"properties": {"mode": literal("Dropdown")}}],
                "selection": [{"properties": {"strictSingleSelect": literal(unica), "selectAllCheckboxEnabled": literal(not unica)}}],
                # sobre a faixa azul: cabeçalho azul-claro e caixa de seleção branca
                "header": [{"properties": {"show": literal(True), "fontColor": cor(AZUL_CLARO), "textSize": literal(9.0)}}],
                "items": [{"properties": {"textSize": literal(10.0), "fontColor": cor(AZUL_FAIXA), "background": cor(FUNDO_CARTAO)}}]}
+    geral = {}
     if padrao:
-        objetos["general"] = [{"properties": {"filter": {"filter": filtro_in(tabela, col, padrao)}}}]
-    return {"visualType": "slicer", "query": {"queryState": projecoes({"Values": [(ref, rotulo)]})},
-            "objects": objetos, "drillFilterOtherVisuals": True}
+        geral["filter"] = {"filter": filtro_in(tabela, col, padrao)}
+    if busca:
+        geral["selfFilterEnabled"] = literal(True)
+    if geral:
+        objetos["general"] = [{"properties": geral}]
+    v = {"visualType": "slicer", "query": {"queryState": projecoes({"Values": [(ref, rotulo)]})},
+         "objects": objetos, "drillFilterOtherVisuals": True}
+    if grupo:
+        v["syncGroup"] = {"groupName": grupo, "fieldChanges": True, "filterChanges": True}
+    return v
+
+
+def com_padding(visual: dict, vertical: float = 2.0, horizontal: float = 8.0) -> dict:
+    """Espaço interno pequeno: o cartão do Power BI reserva tanto espaço acima e abaixo que cortava o rótulo."""
+    visual.setdefault("visualContainerObjects", {})["padding"] = [{"properties": {
+        "top": literal(vertical), "bottom": literal(vertical), "left": literal(horizontal), "right": literal(horizontal)}}]
+    return visual
 
 
 def cartao(medida_nome: str, rotulo: str, tamanho: float = 18.0) -> dict:
-    return grafico("card", {"Values": [(medida_nome, rotulo)]}, objetos={
-        "labels": [{"properties": {"fontSize": literal(tamanho), "color": cor(AZUL_FAIXA)}}],
-        "categoryLabels": [{"properties": {"show": literal(True), "fontSize": literal(9.0), "color": cor(COR_TEXTO_2)}}]})
+    # labelDisplayUnits 1 = sem abreviação ("R$ 12.000", e não "R$ 12 Mil")
+    return com_padding(grafico("card", {"Values": [(medida_nome, rotulo)]}, objetos={
+        "labels": [{"properties": {"fontSize": literal(tamanho), "color": cor(AZUL_FAIXA), "labelDisplayUnits": literal(1.0)}}],
+        "categoryLabels": [{"properties": {"show": literal(True), "fontSize": literal(9.0), "color": cor(COR_TEXTO_2)}}]}))
 
 
 def cartao_texto(medida_nome: str) -> dict:
     """Cartão para medida de texto longo: fonte pequena, com quebra de linha e sem rótulo."""
-    return grafico("card", {"Values": [medida_nome]}, objetos={
+    return com_padding(grafico("card", {"Values": [medida_nome]}, objetos={
         "labels": [{"properties": {"fontSize": literal(10.0), "color": cor(COR_TEXTO_2)}}],
         "categoryLabels": [{"properties": {"show": literal(False)}}],
-        "wordWrap": [{"properties": {"show": literal(True)}}]})
+        "wordWrap": [{"properties": {"show": literal(True)}}]}))
 
 
 def linha_constante(objeto: str, valor: float, cor_hexa: str = COR_GRADE) -> dict:
@@ -207,38 +226,69 @@ def linha_constante(objeto: str, valor: float, cor_hexa: str = COR_GRADE) -> dic
 
 # ───────────────────────── páginas ─────────────────────────
 
-def cabecalho(prefixo: str, titulo: str, subtitulo: str, z0: int = 0) -> list[dict]:
-    """Faixa azul com o nome do painel, o título da página e as cinco segmentações comuns às páginas municipais."""
+def segmentacoes_padrao(prefixo: str) -> dict:
+    """Segmentações disponíveis para a faixa: (campo, rótulo, seleção padrão, seleção única, filtros do visual,
+    grupo de sincronização, caixa de busca, largura)."""
+    return {
+        "uf": ("dim_uf.SG_UF", "UF (vazio = Brasil)", None, False, None, "uf", False, 156),
+        "municipio": ("dim_municipio.MUNICIPIO_UF", "Município (digite para buscar)", None, True, None, None, True, 252),
+        "etapa": ("dim_etapa.NOME_ETAPA", "Etapa", ["Anos Iniciais (5º ano)"], True,
+                  [filtro_visual(f"{prefixo}_f_etapa", "dim_etapa", "ETAPA", ["AI", "AF"])], "etapa", False, 156),
+        "disciplina": ("dim_disciplina.NOME_DISCIPLINA", "Disciplina", ["Matemática"], True, None, "disciplina", False, 156),
+        "edicao": ("dim_ano.ANO", "Edição do Saeb", [2023], True,
+                   [filtro_visual(f"{prefixo}_f_edicao", "dim_ano", "EDICAO_SAEB", [True])], "edicao", False, 156),
+        "modelo": ("dim_modelo.ROTULO_MODELO", "Modelo de eficiência", ["Nacional, com IDHM (2017–2023)"], True, None,
+                   "modelo", False, 156),
+    }
+
+
+def cabecalho(prefixo: str, titulo: str, subtitulo: str, z0: int = 0,
+              segs: tuple = ("uf", "etapa", "disciplina", "edicao", "modelo")) -> list[dict]:
+    """Faixa azul com o nome do painel, o título da página e as segmentações escolhidas, alinhadas à direita.
+    As segmentações comuns são sincronizadas entre as páginas (mesmo grupo = mesma escolha)."""
     estilo_nome = {"fontWeight": "bold", "fontSize": "8pt", "color": AZUL_MEDIO}
     estilo_tit = {"fontWeight": "bold", "fontSize": "16pt", "color": "#ffffff"}
     estilo_sub = {"fontSize": "9pt", "color": AZUL_CLARO}
-    seg = [
-        ("uf", "dim_uf.SG_UF", "UF (vazio = Brasil)", None, False, None),
-        ("etapa", "dim_etapa.NOME_ETAPA", "Etapa", ["Anos Iniciais (5º ano)"], True,
-         [filtro_visual(f"{prefixo}_f_etapa", "dim_etapa", "ETAPA", ["AI", "AF"])]),
-        ("disciplina", "dim_disciplina.NOME_DISCIPLINA", "Disciplina", ["Matemática"], True, None),
-        ("edicao", "dim_ano.ANO", "Edição do Saeb", [2023], True,
-         [filtro_visual(f"{prefixo}_f_edicao", "dim_ano", "EDICAO_SAEB", [True])]),
-        ("modelo", "dim_modelo.ROTULO_MODELO", "Modelo de eficiência", ["Nacional, com IDHM (2017–2023)"], True, None),
-    ]
+    disponiveis = segmentacoes_padrao(prefixo)
     # a faixa é a própria caixa de texto do título, de ponta a ponta; as segmentações ficam por cima, à direita
     vis = [container(f"{prefixo}_titulo", (0, 0, LARGURA, 72),
                      texto([(NOME_PAINEL, estilo_nome), (titulo, estilo_tit), (subtitulo, estilo_sub)]), z0, estilo="faixa")]
-    for i, (nome, ref, rot, padrao, unica, filtros) in enumerate(seg):
-        vis.append(container(f"{prefixo}_seg_{nome}", (456 + i * 164, 8, 156, 56), segmentacao(ref, rot, padrao, unica),
-                             z0 + 1 + i, filtros, estilo="nenhum"))
+    x = LARGURA - 16 - sum(disponiveis[s][7] + 8 for s in segs) + 8
+    for i, nome in enumerate(segs):
+        ref, rot, padrao, unica, filtros, grupo, busca, largura = disponiveis[nome]
+        vis.append(container(f"{prefixo}_seg_{nome}", (x, 8, largura, 56),
+                             segmentacao(ref, rot, padrao, unica, grupo, busca), z0 + 1 + i, filtros, estilo="nenhum"))
+        x += largura + 8
     return vis
 
 
-def pagina(nome: str, titulo: str) -> dict:
-    """page.json com o fundo cinza-claro da identidade (também na área fora da tela)."""
-    return {"$schema": ESQ_PAGINA, "name": nome, "displayName": titulo, "displayOption": "FitToPage",
-            "height": ALTURA, "width": LARGURA,
-            "objects": {"background": [{"properties": {"color": cor(FUNDO_PAGINA), "transparency": literal(0.0)}}],
-                        "outspace": [{"properties": {"color": cor(FUNDO_PAGINA), "transparency": literal(0.0)}}]}}
+def pagina(nome: str, titulo: str, sem_filtro: list[tuple[str, str]] | None = None) -> dict:
+    """page.json com o fundo cinza-claro da identidade (também na área fora da tela).
+    sem_filtro: pares (visual de origem, visual de destino) em que a origem NÃO filtra o destino."""
+    p = {"$schema": ESQ_PAGINA, "name": nome, "displayName": titulo, "displayOption": "FitToPage",
+         "height": ALTURA, "width": LARGURA,
+         "objects": {"background": [{"properties": {"color": cor(FUNDO_PAGINA), "transparency": literal(0.0)}}],
+                     "outspace": [{"properties": {"color": cor(FUNDO_PAGINA), "transparency": literal(0.0)}}]}}
+    if sem_filtro:
+        p["visualInteractions"] = [{"source": a, "target": b, "type": "NoFilter"} for a, b in sem_filtro]
+    return p
 
 
-# grade da página (1280 × 720): faixa 0–72, cartões 80–152, gráficos 160–404, tabela 412–684, rodapé 690–714
+def cartao_destaque(medida_nome: str, tamanho: float = 14.0) -> dict:
+    """Cartão de texto em destaque (nome do município), sem rótulo."""
+    return com_padding(grafico("card", {"Values": [medida_nome]}, objetos={
+        "labels": [{"properties": {"fontSize": literal(tamanho), "color": cor(AZUL_FAIXA)}}],
+        "categoryLabels": [{"properties": {"show": literal(False)}}]}))
+
+
+def rodape_fontes(prefixo: str, z: int) -> dict:
+    return container(f"{prefixo}_rodape", (16, 690, 1248, 24), texto([(
+        "Fontes: SIOPE (gasto), Censo Escolar (matrículas e infraestrutura), Saeb/Inep (proficiência), IBGE e PNUD "
+        "(contexto). Valores em R$ de 2025, corrigidos pelo IPCA. Resultados de associação, não de causalidade.",
+        {"fontSize": "9pt", "color": COR_TEXTO_2})]), z, estilo="nenhum")
+
+
+# grade da página (1280 × 720): faixa 0–72, cartões 80–164, gráficos 172–404, tabela 412–684, rodapé 690–714
 def pagina_eficiencia() -> tuple[dict, list[dict]]:
     p = "efic"
     vis = cabecalho(p, "Quem entrega mais do que o esperado?",
@@ -248,10 +298,10 @@ def pagina_eficiencia() -> tuple[dict, list[dict]]:
                ("media", "Eficiência (pontos)", "Eficiência média (pontos)"),
                ("saltos", "Redes com salto atípico", "Redes com salto atípico")]
     for i, (nome, m, rot) in enumerate(cartoes):
-        vis.append(container(f"{p}_card_{nome}", (16 + i * 164, 80, 156, 72), cartao(m, rot), 10 + i))
-    vis.append(container(f"{p}_card_aviso", (672, 80, 592, 72), cartao_texto("Aviso do modelo"), 14))
+        vis.append(container(f"{p}_card_{nome}", (16 + i * 164, 80, 156, 84), cartao(m, rot), 10 + i))
+    vis.append(container(f"{p}_card_aviso", (672, 80, 592, 84), cartao_texto("Aviso do modelo"), 14))
     vis.append(container(
-        f"{p}_dispersao", (16, 160, 760, 244),
+        f"{p}_dispersao", (16, 172, 760, 232),
         grafico("scatterChart",
                 {"Category": [("dim_municipio.MUNICIPIO_UF", "Município")], "Series": [("dim_municipio.CLUSTER_ROTULO", "Cluster")],
                  "X": [("Gasto das redes avaliadas (mediana)", "Gasto por aluno (R$ de 2025)")],
@@ -262,7 +312,7 @@ def pagina_eficiencia() -> tuple[dict, list[dict]]:
                          **linha_constante("y1AxisReferenceLine", 0)}),
         20, titulo="Gasto por aluno × eficiência: há redes acima e abaixo do esperado em todo nível de gasto"))
     vis.append(container(
-        f"{p}_barras_uf", (788, 160, 476, 244),
+        f"{p}_barras_uf", (788, 172, 476, 232),
         grafico("clusteredBarChart", {"Category": [("dim_uf.SG_UF", "UF")], "Y": [("% acima do esperado", "Acima do esperado")]},
                 ordenar="% acima do esperado",
                 objetos={"labels": [{"properties": {"show": literal(True)}}],
@@ -287,10 +337,94 @@ def pagina_eficiencia() -> tuple[dict, list[dict]]:
     return pagina("tcc_eficiencia", "Eficiência"), vis
 
 
-PAGINAS = [pagina_eficiencia]
+def pagina_ficha() -> tuple[dict, list[dict]]:
+    """Ficha de um município: série por edição contra cluster, UF e Brasil; gasto anual; eficiência por edição.
+    O filtro de Edição vale só para os cartões (as séries mostram todas as edições)."""
+    p = "fic"
+    vis = cabecalho(p, "Ficha do município", "Um município ao longo das edições do Saeb",
+                    segs=("municipio", "etapa", "disciplina", "edicao", "modelo"))
+    vis.append(container(f"{p}_card_nome", (16, 80, 344, 44), cartao_destaque("Município selecionado"), 10))
+    vis.append(container(f"{p}_card_perfil", (16, 124, 344, 40), cartao_texto("Perfil do município"), 11))
+    cartoes = [("gasto", "Gasto por aluno (mediana anual)", "Gasto por aluno no ano"),
+               ("prof", "Proficiência média", "Proficiência"),
+               ("efic", "Eficiência (pontos)", "Eficiência (pontos)"),
+               ("pct", "Percentil de eficiência", "Percentil")]
+    for i, (nome, m, rot) in enumerate(cartoes):
+        vis.append(container(f"{p}_card_{nome}", (368 + i * 158, 80, 150, 84), cartao(m, rot), 12 + i))
+    vis.append(container(f"{p}_card_faixa", (1000, 80, 264, 84), cartao_destaque("Faixa de eficiência", 12.0), 16))
+    so_edicoes = lambda nome: [filtro_visual(f"{p}_f_{nome}", "dim_ano", "EDICAO_SAEB", [True])]
+    eixo_ano = {"categoryAxis": [{"properties": {"axisType": literal("Categorical"), "showAxisTitle": literal(False)}}]}
+    vis.append(container(
+        f"{p}_linhas", (16, 172, 760, 232),
+        grafico("lineChart",
+                {"Category": [("dim_ano.ANO", "Edição")],
+                 "Y": [("Proficiência média", "Município"), ("Proficiência mediana do cluster", "Mediana do cluster"),
+                       ("Proficiência mediana da UF", "Mediana da UF"), ("Proficiência mediana do Brasil", "Mediana do Brasil")]},
+                objetos={**eixo_ano, "legend": [{"properties": {"show": literal(True), "position": literal("Top")}}]}),
+        20, so_edicoes("linhas"), titulo="Proficiência por edição: o município contra o cluster, a UF e o Brasil"))
+    vis.append(container(
+        f"{p}_gasto", (788, 172, 476, 232),
+        grafico("clusteredColumnChart", {"Category": [("dim_ano.ANO", "Ano")], "Y": [("Gasto por aluno (mediana anual)", "Gasto por aluno")]},
+                objetos={**eixo_ano, "labels": [{"properties": {"show": literal(True)}}],
+                         "valueAxis": [{"properties": {"showAxisTitle": literal(False)}}]}),
+        21, titulo="Gasto por aluno por ano (R$ de 2025)"))
+    vis.append(container(
+        f"{p}_tabela", (16, 412, 760, 272),
+        grafico("tableEx", {"Values": [("dim_ano.ANO", "Edição"), ("Proficiência média", "Proficiência"),
+                                       ("Proficiência esperada", "Esperada"), ("Eficiência (pontos)", "Eficiência"),
+                                       ("Percentil de eficiência", "Percentil"), ("Faixa de eficiência", "Faixa"),
+                                       ("Marca de salto", "Salto")]},
+                ordenar="dim_ano.ANO", decrescente=False,
+                objetos={"total": [{"properties": {"totals": literal(False)}}]}),
+        22, so_edicoes("tabela"), titulo="Eficiência por edição"))
+    titulo_ler = {"fontWeight": "bold", "fontSize": "11pt", "color": AZUL_FAIXA}
+    corpo = {"fontSize": "9pt", "color": COR_TEXTO_2}
+    vis.append(container(f"{p}_como_ler", (788, 412, 476, 272), texto([
+        ("Como ler esta ficha", titulo_ler),
+        ("• Linhas: a proficiência do município em cada edição do Saeb, contra as medianas das redes do mesmo "
+         "cluster (contexto parecido), da UF e do Brasil.", corpo),
+        ("• Eficiência: pontos acima (+) ou abaixo (−) do que redes com gasto e contexto parecidos alcançaram. "
+         "Percentil 80 = resultado melhor que o de 80% das redes.", corpo),
+        ("• ⚠ salto: o resultado mudou demais desde a edição anterior. Conferir antes de tirar conclusões.", corpo),
+        ("• O filtro de edição muda só os cartões; gráficos e tabela mostram todas as edições.", corpo),
+        ("• O indicador descreve associação, não efeito do gasto: ele também capta gestão, contexto familiar e "
+         "qualidade do registro.", corpo),
+    ]), 23))
+    vis.append(rodape_fontes(p, 30))
+    sem_filtro = [(f"{p}_seg_edicao", f"{p}_{alvo}") for alvo in ("linhas", "gasto", "tabela")]
+    return pagina("tcc_ficha", "Ficha do município", sem_filtro), vis
+
+
+PAGINAS = [pagina_eficiencia, pagina_ficha]
 
 
 # ───────────────────────── gravação e validação ─────────────────────────
+
+PASTA_ESQUEMAS = BASE_DIR / "data" / "interim" / "esquemas_pbir"
+RAW_ESQUEMAS = "https://raw.githubusercontent.com/microsoft/json-schemas/main/fabric/item/report/definition"
+
+
+def baixar_esquemas(pasta: Path) -> None:
+    """Baixa do repositório público da Microsoft os esquemas usados (visual, página, lista de páginas) e todos os
+    que eles referenciam, espelhando os caminhos. Só roda quando a pasta ainda não tem esquemas."""
+    import requests
+    from urllib.parse import urljoin
+    fila = [ESQ_VISUAL, ESQ_PAGINA, ESQ_PAGINAS]
+    vistos = set()
+    while fila:
+        url = fila.pop()
+        if url in vistos:
+            continue
+        vistos.add(url)
+        resp = requests.get(url.replace(ESQ, RAW_ESQUEMAS), timeout=60)
+        resp.raise_for_status()
+        json.loads(resp.text)  # garante que é JSON antes de gravar
+        destino = pasta / url.replace(ESQ + "/", "")
+        destino.parent.mkdir(parents=True, exist_ok=True)
+        destino.write_text(resp.text, encoding="utf-8")
+        fila += [urljoin(url, ref) for ref in re.findall(r'"\$ref"\s*:\s*"([^"#]+)', resp.text)]
+    print(f"[INFO] {len(vistos)} esquemas baixados para {pasta}")
+
 
 def validador(pasta: Path):
     from jsonschema import Draft7Validator
@@ -323,14 +457,20 @@ def gravar(caminho: Path, doc: dict) -> None:
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--refazer", nargs="*", default=[], help="páginas a refazer (apaga e grava de novo)")
-    ap.add_argument("--validar", type=Path, help="pasta com os esquemas PBIR baixados")
+    ap.add_argument("--validar", type=Path, nargs="?", const=PASTA_ESQUEMAS,
+                    help="confere os JSON contra os esquemas oficiais (baixados para data/interim/esquemas_pbir "
+                         "na primeira vez, ou lidos da pasta indicada)")
     ap.add_argument("--pasta", type=Path, help="outra pasta .Report (para testes)")
     args = ap.parse_args()
     raiz = (args.pasta or RELATORIO).resolve()
     paginas_dir = raiz / "definition" / "pages"
     if not (paginas_dir / "pages.json").exists():
         sys.exit(f"[ERRO] Não achei {paginas_dir / 'pages.json'}: o projeto .pbip foi criado (roteiro, Fase 1)?")
-    validar = validador(args.validar) if args.validar else None
+    validar = None
+    if args.validar:
+        if not any(args.validar.rglob("*.json")):
+            baixar_esquemas(args.validar)
+        validar = validador(args.validar)
 
     meta = json.loads((paginas_dir / "pages.json").read_text(encoding="utf-8"))
     ordem = list(meta.get("pageOrder", []))
@@ -344,6 +484,15 @@ if __name__ == "__main__":
             shutil.rmtree(pasta)
             ordem.remove(nome)
             print(f"[INFO] Página em branco removida: {nome}")
+
+    # toda medida usada nos visuais precisa existir em powerbi/medidas.dax (pega nome digitado errado)
+    from Gerar_Modelo_PowerBI import ler_medidas
+    existentes = {m["nome"] for m in ler_medidas()}
+    usadas = {m.group(1) for montar in PAGINAS for v in montar()[1]
+              for m in re.finditer(r'"Measure": \{"Expression": \{"SourceRef": \{"Entity": "_Medidas"\}\}, "Property": "([^"]+)"',
+                                   json.dumps(v, ensure_ascii=False))}
+    if usadas - existentes:
+        sys.exit(f"[ERRO] Medidas usadas nos visuais e ausentes de medidas.dax: {', '.join(sorted(usadas - existentes))}")
 
     erros, gravadas = [], []
     for montar in PAGINAS:

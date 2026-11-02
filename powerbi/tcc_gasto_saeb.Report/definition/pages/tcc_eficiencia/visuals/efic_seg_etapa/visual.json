@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "efic_seg_etapa",
   "position": {
-    "x": 620,
+    "x": 616,
     "y": 8,
     "z": 2,
     "width": 156,
@@ -184,6 +184,11 @@
       ]
     },
     "drillFilterOtherVisuals": true,
+    "syncGroup": {
+      "groupName": "etapa",
+      "fieldChanges": true,
+      "filterChanges": true
+    },
     "visualContainerObjects": {
       "background": [
         {

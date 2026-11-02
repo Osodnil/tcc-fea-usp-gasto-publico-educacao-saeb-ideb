@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "efic_seg_disciplina",
   "position": {
-    "x": 784,
+    "x": 780,
     "y": 8,
     "z": 3,
     "width": 156,
@@ -184,6 +184,11 @@
       ]
     },
     "drillFilterOtherVisuals": true,
+    "syncGroup": {
+      "groupName": "disciplina",
+      "fieldChanges": true,
+      "filterChanges": true
+    },
     "visualContainerObjects": {
       "background": [
         {

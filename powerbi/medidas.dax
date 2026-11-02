@@ -261,6 +261,19 @@ Aviso de salto atípico =
         "⚠ Variação atípica em relação à edição anterior (mais de 3 desvios-padrão). Conferir antes de interpretar."
     )
 
+// ───────────────────────── Pasta: 8 Ficha do município ─────────────────────────
+
+// Cartões de texto da ficha (o modelo desestimula agregações implícitas, então o texto vem de medidas)
+Município selecionado =
+    SELECTEDVALUE ( dim_municipio[MUNICIPIO_UF], "Escolha um município no filtro acima" )
+
+Perfil do município =
+    IF (
+        HASONEVALUE ( dim_municipio[CO_MUNICIPIO] ),
+        "Porte: " & SELECTEDVALUE ( dim_municipio[PORTE] ) & " habitantes · Cluster: "
+            & SELECTEDVALUE ( dim_municipio[CLUSTER_ROTULO] )
+    )
+
 // ───────────────────────── Pasta: 7 Associação por defasagem ─────────────────────────
 
 // ρ de Spearman entre o gasto da defasagem escolhida e a proficiência, entre as redes do recorte

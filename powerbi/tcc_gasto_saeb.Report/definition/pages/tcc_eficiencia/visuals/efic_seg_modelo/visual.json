@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "efic_seg_modelo",
   "position": {
-    "x": 1112,
+    "x": 1108,
     "y": 8,
     "z": 5,
     "width": 156,
@@ -184,6 +184,11 @@
       ]
     },
     "drillFilterOtherVisuals": true,
+    "syncGroup": {
+      "groupName": "modelo",
+      "fieldChanges": true,
+      "filterChanges": true
+    },
     "visualContainerObjects": {
       "background": [
         {

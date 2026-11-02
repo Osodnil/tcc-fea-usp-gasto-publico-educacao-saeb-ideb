@@ -111,11 +111,13 @@ Se algum valor não bater, pare e investigue antes de desenhar as páginas: quas
    & "$env:USERPROFILE\anaconda3\python.exe" src\Visualizacao\Gerar_Modelo_PowerBI.py --adicionar-medidas
    ```
 
-3. Gerar as páginas. As que já existem não são tocadas; para regravar uma, use `--refazer <nome>`:
+3. Gerar as páginas. As que já existem não são tocadas; para regravar uma, use `--refazer <nome>`. Com `--validar`, cada arquivo é conferido contra os esquemas oficiais, que o script baixa para `data/interim/` na primeira vez:
 
    ```powershell
-   & "$env:USERPROFILE\anaconda3\python.exe" src\Visualizacao\Gerar_Relatorio_PowerBI.py
+   & "$env:USERPROFILE\anaconda3\python.exe" src\Visualizacao\Gerar_Relatorio_PowerBI.py --validar
    ```
+
+   Para mudar uma medida que já existe, edite `medidas.dax` e rode o gerador do modelo com `--atualizar-medidas "Nome da medida"`.
 
 4. Abrir o `.pbip`, conferir e fazer os ajustes finos no próprio Power BI (cores condicionais, larguras de coluna).
 
