@@ -45,6 +45,13 @@ VAR redes =
 RETURN
     MEDIANX ( FILTER ( redes, NOT ISBLANK ( [@gasto] ) ), [@gasto] )
 
+// Referência nacional para as séries da página Início (ignora UF, município e cluster)
+Gasto por aluno do Brasil (mediana anual) =
+    CALCULATE (
+        MEDIAN ( fato_gasto_municipal[GASTO_ALUNO_R2025] ),
+        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
+    )
+
 Gasto estadual por aluno (mediana, versão A) =
     MEDIAN ( fato_gasto_estadual[GASTO_ALUNO_A_R2025] )
 
@@ -85,6 +92,16 @@ RETURN
             MEDIAN ( fato_desempenho_municipal[PROFICIENCIA] ),
             REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
             dim_municipio[SG_UF] = u
+        )
+    )
+
+// Média nacional (mesma agregação da "Proficiência média"), para comparar com o recorte na página Início
+Proficiência média do Brasil =
+    IF (
+        [Seleção comparável],
+        CALCULATE (
+            AVERAGE ( fato_desempenho_municipal[PROFICIENCIA] ),
+            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
         )
     )
 

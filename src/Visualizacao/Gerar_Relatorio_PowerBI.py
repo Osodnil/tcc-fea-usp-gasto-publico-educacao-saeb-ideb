@@ -259,7 +259,7 @@ def cabecalho(prefixo: str, titulo: str, subtitulo: str, z0: int = 0,
     disponiveis = segmentacoes_padrao(prefixo)
     # a faixa é a própria caixa de texto do título, de ponta a ponta; as segmentações ficam por cima, à direita
     faixa = com_padding(texto([(NOME_PAINEL, estilo_nome), (titulo, estilo_tit), (subtitulo, estilo_sub)]),
-                        vertical=6.0, horizontal=16.0)  # sem isso, o texto encostava na borda da página
+                        vertical=2.0, horizontal=16.0)  # margem lateral; na vertical, mais que 2 px cortava o subtítulo
     vis = [container(f"{prefixo}_titulo", (0, 0, LARGURA, 72), faixa, z0, estilo="faixa")]
     x = LARGURA - 16 - sum(disponiveis[s][7] + 8 for s in segs) + 8
     for i, nome in enumerate(segs):
@@ -449,7 +449,59 @@ def pagina_pares() -> tuple[dict, list[dict]]:
     return pagina("tcc_pares", "Pares"), vis
 
 
-PAGINAS = [pagina_eficiencia, pagina_ficha, pagina_pares]
+def pagina_inicio() -> tuple[dict, list[dict]]:
+    """Porta de entrada: números do recorte, séries de proficiência e gasto (recorte × Brasil), guia das perguntas
+    e navegador de páginas. O filtro de Edição vale só para os cartões."""
+    p = "ini"
+    vis = cabecalho(p, "Gasto e aprendizado nas redes municipais", "Visão geral do recorte escolhido nos filtros")
+    cartoes = [("gasto", "Gasto por aluno (mediana anual)", "Gasto por aluno (mediana)"),
+               ("prof", "Proficiência média", "Proficiência média"),
+               ("acima", "% acima do esperado", "Redes acima do esperado"),
+               ("redes", "Redes avaliadas", "Redes com nota no Saeb"),
+               ("cobertura", "Cobertura do Saeb", "Cobertura do Saeb")]
+    for i, (nome, m, rot) in enumerate(cartoes):
+        vis.append(container(f"{p}_card_{nome}", (16 + i * 251, 80, 242, 84), cartao(m, rot), 10 + i))
+    titulo_ler = {"fontWeight": "bold", "fontSize": "11pt", "color": AZUL_FAIXA}
+    corpo = {"fontSize": "9pt", "color": COR_TEXTO_2}
+    vis.append(container(f"{p}_guia", (16, 172, 400, 400), quadro_texto([
+        ("O que este painel responde", titulo_ler),
+        ("1. Gastar mais por aluno se associa a aprender mais? Veja os números e as séries desta página e a "
+         "dispersão da página Eficiência.", corpo),
+        ("2. Minha rede entrega o que se espera para o seu gasto e o seu contexto? Veja a Ficha do município.", corpo),
+        ("3. Com quem conversar? A página Pares lista redes parecidas que entregam mais com gasto semelhante.", corpo),
+        ("Como ler", titulo_ler),
+        ("• Proficiência: pontos do Saeb, na escala de cada etapa (não compare etapas nem disciplinas).", corpo),
+        ("• Gasto por aluno: Ensino Fundamental da rede municipal, em R$ de 2025.", corpo),
+        ("• Eficiência: pontos acima (+) ou abaixo (−) do esperado para redes com gasto e contexto parecidos.", corpo),
+        ("• Os filtros da faixa (UF vazia = Brasil) valem em todas as páginas.", corpo),
+    ]), 20))
+    # no Desktop, botões e navegadores só respondem com Ctrl + clique; no modo de leitura e publicado, clique simples
+    vis.append(container(f"{p}_navegador", (16, 580, 400, 104),
+                         com_padding({"visualType": "pageNavigator", "drillFilterOtherVisuals": True}, vertical=6.0, horizontal=12.0),
+                         21, titulo="Ir para (no Power BI Desktop: Ctrl + clique)"))
+    so_edicoes = [filtro_visual(f"{p}_f_linhas_prof", "dim_ano", "EDICAO_SAEB", [True])]
+    eixo_ano = {"categoryAxis": [{"properties": {"axisType": literal("Categorical"), "showAxisTitle": literal(False)}}],
+                "valueAxis": [{"properties": {"showAxisTitle": literal(False)}}],
+                "legend": [{"properties": {"show": literal(True), "position": literal("Top")}}]}
+    vis.append(container(
+        f"{p}_linhas_prof", (424, 172, 840, 252),
+        grafico("lineChart", {"Category": [("dim_ano.ANO", "Edição")],
+                              "Y": [("Proficiência média", "Recorte escolhido"), ("Proficiência média do Brasil", "Brasil")]},
+                objetos=eixo_ano),
+        22, so_edicoes, titulo="Proficiência média por edição do Saeb: recorte escolhido × Brasil"))
+    vis.append(container(
+        f"{p}_linhas_gasto", (424, 432, 840, 252),
+        grafico("lineChart", {"Category": [("dim_ano.ANO", "Ano")],
+                              "Y": [("Gasto por aluno (mediana anual)", "Recorte escolhido"),
+                                    ("Gasto por aluno do Brasil (mediana anual)", "Brasil")]},
+                objetos=eixo_ano),
+        23, titulo="Gasto por aluno por ano (mediana, R$ de 2025): recorte escolhido × Brasil"))
+    vis.append(rodape_fontes(p, 30))
+    sem_filtro = [(f"{p}_seg_edicao", f"{p}_{alvo}") for alvo in ("linhas_prof", "linhas_gasto")]
+    return pagina("tcc_inicio", "Início", sem_filtro), vis
+
+
+PAGINAS = [pagina_inicio, pagina_eficiencia, pagina_ficha, pagina_pares]
 
 
 # ───────────────────────── gravação e validação ─────────────────────────

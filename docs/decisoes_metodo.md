@@ -558,6 +558,15 @@ Falar sempre em associação e eficiência relativa.
   - **Erro encontrado e corrigido:** o cartão "Pares que entregam mais" mostrava 32, e o certo é 30. Dois pares sem eficiência calculada entravam na conta, porque na comparação `eficiência do par > eficiência da referência` o DAX trata o vazio como zero, e 0 > −25,0. A medida passou a exigir eficiência não vazia.
   - **Margem interna:** a faixa do topo e os quadros "Como ler" e "Como usar" ganharam margem interna, porque o texto encostava na borda.
   - **Ponto a avaliar:** nos clusters grandes, a faixa de 0,8 a 1,25 vez o gasto pega quase todo o grupo (690 dos 1.037 municípios do cluster de Ibateguara). Opções: estreitar a faixa ou exigir também o mesmo porte. A lista ordenada já põe os mais relevantes no topo.
+- **Página Início (2026-11-02):** é a primeira do relatório e funciona como porta de entrada.
+  - **Cartões:** gasto mediano, proficiência média, % acima do esperado, redes com nota e cobertura do Saeb.
+  - **Séries:** proficiência por edição e gasto por ano, sempre do recorte escolhido contra o Brasil.
+  - **Guia:** as três perguntas do painel e a página que responde cada uma, mais um navegador de páginas.
+  - **Filtro de Edição:** vale só para os cartões, como na Ficha.
+  - **Medidas novas:** `Proficiência média do Brasil` e `Gasto por aluno do Brasil (mediana anual)`.
+  - **Valores esperados (Brasil, AI, MT, 2023):** R$ 13.721, 220,2 pontos, 46,3% acima do esperado, 5.243 redes e cobertura de 94,1%. Todos conferidos no Power BI.
+  - **Navegador de páginas:** no Power BI Desktop, botões e navegadores só respondem com Ctrl + clique, porque o clique simples seleciona o visual para edição. No modo de leitura e no relatório publicado, basta um clique. O título do bloco avisa isso.
+  - **Faixa:** a margem vertical voltou a 2 px, porque 6 px cortavam o subtítulo. O navegador ganhou margem interna.
 - **Filtros sincronizados:** Etapa, Disciplina, Edição, Modelo e UF passaram a ter grupo de sincronização. A escolha feita numa página vale nas outras.
 - **Conferências do gerador de páginas:**
   - os esquemas oficiais são baixados pelo próprio script para `data/interim/esquemas_pbir` (fora do Git), e `--validar` funciona em qualquer máquina;

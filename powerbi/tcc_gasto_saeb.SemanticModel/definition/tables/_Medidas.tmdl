@@ -514,3 +514,26 @@ table _Medidas
 		displayFolder: 5 Pares e cluster
 		lineageTag: ee1af3b7-6187-502b-adf7-7baeadfd219f
 
+	/// Referência nacional para as séries da página Início (ignora UF, município e cluster)
+	measure 'Gasto por aluno do Brasil (mediana anual)' =
+			    CALCULATE (
+			        MEDIAN ( fato_gasto_municipal[GASTO_ALUNO_R2025] ),
+			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
+			    )
+		formatString: R$ #,0
+		displayFolder: 1 Gasto
+		lineageTag: 9cba3a9c-35c9-5011-84a1-0fdd29530e4a
+
+	/// Média nacional (mesma agregação da "Proficiência média"), para comparar com o recorte na página Início
+	measure 'Proficiência média do Brasil' =
+			    IF (
+			        [Seleção comparável],
+			        CALCULATE (
+			            AVERAGE ( fato_desempenho_municipal[PROFICIENCIA] ),
+			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
+			        )
+			    )
+		formatString: 0.0
+		displayFolder: 2 Desempenho
+		lineageTag: 61608255-da97-5e5b-9b61-c3ab7bf9b441
+
