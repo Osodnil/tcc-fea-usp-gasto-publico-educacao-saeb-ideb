@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "ini_navegador",
   "position": {
     "x": 16,
     "y": 580,
-    "z": 21,
-    "width": 400,
+    "z": 12000,
     "height": 104,
-    "tabOrder": 21
+    "width": 400,
+    "tabOrder": 12000
   },
   "visual": {
     "visualType": "pageNavigator",
-    "drillFilterOtherVisuals": true,
     "visualContainerObjects": {
       "padding": [
         {
@@ -198,6 +197,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

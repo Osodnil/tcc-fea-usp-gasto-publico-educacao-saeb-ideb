@@ -155,7 +155,7 @@ def projecoes(papeis: dict, ativo: bool = True) -> dict:
 
 
 def grafico(tipo: str, papeis: dict, ordenar: str | None = None, decrescente: bool = True, objetos: dict | None = None) -> dict:
-    q = {"queryState": projecoes(papeis, ativo=tipo not in ("tableEx", "pivotTable"))}
+    q = {"queryState": projecoes(papeis, ativo=tipo not in ("tableEx", "pivotTable", "shapeMap"))}
     if ordenar:
         q["sortDefinition"] = {"sort": [{"field": campo(ordenar), "direction": "Descending" if decrescente else "Ascending"}],
                                "isDefaultSort": False}
@@ -221,6 +221,53 @@ def cartao_texto(medida_nome: str) -> dict:
         "labels": [{"properties": {"fontSize": literal(10.0), "color": cor(COR_TEXTO_2)}}],
         "categoryLabels": [{"properties": {"show": literal(False)}}],
         "wordWrap": [{"properties": {"show": literal(True)}}]}))
+
+
+MALHA = BASE_DIR / "data" / "processed" / "malha_municipios.topojson"
+RECURSO_MALHA = "malha_municipios.topojson"  # trocado no início da execução pelo nome registrado no relatório
+
+
+def registrar_malha(raiz: Path) -> str:
+    """Garante a malha TopoJSON como recurso do relatório (tipo ShapeMap) e copia a versão atual do pipeline.
+    Reaproveita o nome que o Desktop deu ao recurso, se já existir. Devolve o nome do recurso."""
+    rel = raiz / "definition" / "report.json"
+    rep = json.loads(rel.read_text(encoding="utf-8"))
+    pacotes = rep.setdefault("resourcePackages", [])
+    reg = next((p for p in pacotes if p.get("type") == "RegisteredResources"), None)
+    if reg is None:
+        reg = {"name": "RegisteredResources", "type": "RegisteredResources", "items": []}
+        pacotes.append(reg)
+    item = next((i for i in reg["items"] if i.get("type") == "ShapeMap"), None)
+    if item is None:
+        item = {"name": "malha_municipios.topojson", "path": "malha_municipios.topojson", "type": "ShapeMap"}
+        reg["items"].append(item)
+        rel.write_text(json.dumps(rep, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    destino = raiz / "StaticResources" / "RegisteredResources" / item["path"]
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(MALHA, destino)
+    return item["name"]
+
+
+LIMITE_COR_MAPA = 30  # pontos: ±30 cobre 88% a 94% das redes em 2023 (p5 ≈ −25 a −30; p95 ≈ +26 a +35)
+
+
+def mapa_formas(recurso: str, local: str, valor: tuple, dicas: list) -> dict:
+    """Mapa de formas com a malha municipal (formato copiado do que o Desktop grava, 2026-11-05).
+    Cor divergente com centro fixo em 0 e saturada em ±LIMITE_COR_MAPA pontos: vermelho abaixo, cinza perto de 0,
+    azul acima do esperado. Sem os limites, a escala ia do mínimo ao máximo do país (−77 a +165) e quase todo o mapa
+    ficava cinza-claro. Zoom: automático ao filtrar a UF, pela roda do mouse e ao selecionar."""
+    ponto = lambda hexa, v: {"color": literal(hexa), "value": literal(float(v))}
+    return grafico("shapeMap", {"Category": [local], "Value": [valor], "Tooltips": dicas}, objetos={
+        "shape": [{"properties": {
+            "datasourceType": literal("file_upload"),
+            "map": {"geoJson": {"type": literal("packaged"), "name": literal("malha_municipios.topojson"),
+                                "content": {"expr": {"ResourcePackageItem": {
+                                    "PackageName": "RegisteredResources", "PackageType": 1, "ItemName": recurso}}}}},
+            "projectionEnum": literal("mercator")}}],
+        "zoom": [{"properties": {"autoZoom": literal(True), "manualZoom": literal(True), "selectionZoom": literal(True)}}],
+        "dataPoint": [{"properties": {"fillRule": {"linearGradient3": {
+            "min": ponto(VERMELHO, -LIMITE_COR_MAPA), "mid": ponto(NEUTRO, 0), "max": ponto(AZUL, LIMITE_COR_MAPA),
+            "nullColoringStrategy": {"strategy": literal("asZero")}}}}}]})
 
 
 def linha_constante(objeto: str, valor: float, cor_hexa: str = COR_GRADE) -> dict:
@@ -501,7 +548,40 @@ def pagina_inicio() -> tuple[dict, list[dict]]:
     return pagina("tcc_inicio", "Início", sem_filtro), vis
 
 
-PAGINAS = [pagina_inicio, pagina_eficiencia, pagina_ficha, pagina_pares]
+def pagina_mapa() -> tuple[dict, list[dict]]:
+    """Mapa da eficiência por município, com resumo por UF ao lado.
+    O Mapa de formas desenha no máximo ~1.500 áreas: o mapa municipal completo pede uma UF escolhida
+    (decisão de 2026-11-05); a visão nacional fica no Resumo por UF."""
+    p = "map"
+    vis = cabecalho(p, "Mapa da eficiência", "Onde as redes entregam mais ou menos do que o esperado")
+    cartoes = [("redes", "Redes com eficiência calculada", "Redes comparadas"),
+               ("acima", "% acima do esperado", "Acima do esperado"),
+               ("media", "Eficiência (pontos)", "Eficiência média (pontos)"),
+               ("saltos", "Redes com salto atípico", "Redes com salto atípico")]
+    for i, (nome, m, rot) in enumerate(cartoes):
+        vis.append(container(f"{p}_card_{nome}", (16 + i * 164, 80, 156, 84), cartao(m, rot), 10 + i))
+    vis.append(container(f"{p}_card_aviso", (672, 80, 592, 84), cartao_texto("Aviso do modelo"), 14))
+    # mapa mais largo (924 px) e tabela mais estreita: os municípios ficavam pequenos demais
+    vis.append(container(f"{p}_aviso_mapa", (16, 172, 924, 40), cartao_texto("Aviso do mapa"), 19))
+    vis.append(container(
+        f"{p}_mapa", (16, 220, 924, 464),
+        mapa_formas(RECURSO_MALHA, "dim_municipio.CO_MUNICIPIO", ("Eficiência (pontos)", "Eficiência (pontos)"),
+                    [("Município selecionado", "Município"), ("Proficiência média", "Proficiência"),
+                     ("Gasto das redes avaliadas (mediana)", "Gasto por aluno")]),
+        20, titulo="Eficiência por município (pontos acima ou abaixo do esperado)"))
+    vis.append(container(
+        f"{p}_tabela_uf", (948, 172, 316, 512),
+        grafico("tableEx", {"Values": [("dim_uf.SG_UF", "UF"), ("% acima do esperado", "Acima"),
+                                       ("Eficiência (pontos)", "Eficiência"),
+                                       ("Redes com eficiência calculada", "Redes")]},
+                ordenar="% acima do esperado",
+                objetos={"total": [{"properties": {"totals": literal(False)}}]}),
+        21, titulo="Resumo por UF"))
+    vis.append(rodape_fontes(p, 30))
+    return pagina("tcc_mapa", "Mapa"), vis
+
+
+PAGINAS = [pagina_inicio, pagina_eficiencia, pagina_ficha, pagina_pares, pagina_mapa]
 
 
 # ───────────────────────── gravação e validação ─────────────────────────
@@ -590,6 +670,8 @@ if __name__ == "__main__":
             shutil.rmtree(pasta)
             ordem.remove(nome)
             print(f"[INFO] Página em branco removida: {nome}")
+
+    RECURSO_MALHA = registrar_malha(raiz)  # malha do mapa como recurso do relatório, na versão atual do pipeline
 
     # toda medida usada nos visuais precisa existir em powerbi/medidas.dax (pega nome digitado errado)
     from Gerar_Modelo_PowerBI import ler_medidas

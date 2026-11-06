@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "par_tabela",
   "position": {
     "x": 16,
     "y": 172,
-    "z": 20,
-    "width": 860,
+    "z": 13000,
     "height": 512,
-    "tabOrder": 20
+    "width": 860,
+    "tabOrder": 13000
   },
   "visual": {
     "visualType": "tableEx",
@@ -138,11 +138,9 @@
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
-    "drillFilterOtherVisuals": true,
     "objects": {
       "total": [
         {
@@ -310,6 +308,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

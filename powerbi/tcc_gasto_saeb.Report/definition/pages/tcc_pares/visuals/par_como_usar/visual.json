@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "par_como_usar",
   "position": {
     "x": 884,
     "y": 172,
-    "z": 21,
-    "width": 380,
+    "z": 14000,
     "height": 512,
-    "tabOrder": 21
+    "width": 380,
+    "tabOrder": 14000
   },
   "visual": {
     "visualType": "textbox",
-    "drillFilterOtherVisuals": true,
     "objects": {
       "general": [
         {
@@ -251,6 +250,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

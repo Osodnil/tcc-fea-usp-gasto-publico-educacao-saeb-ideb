@@ -567,6 +567,19 @@ Falar sempre em associação e eficiência relativa.
   - **Valores esperados (Brasil, AI, MT, 2023):** R$ 13.721, 220,2 pontos, 46,3% acima do esperado, 5.243 redes e cobertura de 94,1%. Todos conferidos no Power BI.
   - **Navegador de páginas:** no Power BI Desktop, botões e navegadores só respondem com Ctrl + clique, porque o clique simples seleciona o visual para edição. No modo de leitura e no relatório publicado, basta um clique. O título do bloco avisa isso.
   - **Faixa:** a margem vertical voltou a 2 px, porque 6 px cortavam o subtítulo. O navegador ganhou margem interna.
+- **Página Mapa (2026-11-05):** a eficiência de cada município aparece no "Mapa de formas" com a malha TopoJSON (P6), ao lado de um resumo por UF.
+  - **Cores divergentes com centro fixo em 0:** vermelho abaixo, cinza perto de 0 e azul acima do esperado. Na primeira montagem manual, o Power BI pôs o meio da escala na média (43,7 pontos), o que puxava o mapa para o vermelho.
+  - **Formato aprendido do Desktop:** o mapa foi inserido uma vez à mão e o gerador copiou o que o Power BI gravou: tipo `shapeMap`, papéis `Category` e `Value`, a malha como recurso `ShapeMap` do relatório e as cores numa regra de gradiente de três pontos. A cada execução, o gerador copia a malha atual do pipeline para esse recurso.
+  - **Limite do visual (decisão de Henrique: mapa por UF):** o Mapa de formas desenha no máximo cerca de 1.500 áreas por vez; o limite vem de relatos da comunidade, sem documentação oficial. Com o Brasil inteiro (5.571 municípios), ele mostra só uma amostra e avisa "Excesso de valores".
+    - Por UF, todos cabem: a maior, MG, tem 853.
+    - Acima do mapa, a medida `Aviso do mapa` pede para escolher uma UF quando o recorte passa de 1.500 municípios.
+    - A visão nacional fica no "Resumo por UF".
+  - **Escala de cor saturada em ±30 pontos (2026-11-05):** com o gradiente indo do mínimo ao máximo do país (−77 a +165), quase todo o mapa ficava cinza-claro. Em 2023, ±30 pontos cobrem de 88% a 94% das redes, conforme a etapa e a disciplina (p5 entre −25 e −30; p95 entre +26 e +35). Acima disso, a cor fica no máximo. O texto acima do mapa informa o limite.
+  - **Navegação:** zoom automático ao filtrar a UF, pela roda do mouse e ao selecionar; mapa mais largo (924 px) e tabela por UF mais estreita. As propriedades de zoom foram deduzidas, sem cópia do Desktop; se não pegarem, valem o mesmo método de ajustar uma vez e copiar.
+  - **Aviso encurtado** para caber em uma linha.
+  - **Alternativas descartadas:**
+    - um segundo mapa só com as 27 UFs, que exigiria gerar a malha das UFs e caberia pior na página;
+    - um visual de terceiros sem limite, que depende de componente externo, pode exigir licença e pode não funcionar no "Publicar na Web" (A7).
 - **Filtros sincronizados:** Etapa, Disciplina, Edição, Modelo e UF passaram a ter grupo de sincronização. A escolha feita numa página vale nas outras.
 - **Conferências do gerador de páginas:**
   - os esquemas oficiais são baixados pelo próprio script para `data/interim/esquemas_pbir` (fora do Git), e `--validar` funciona em qualquer máquina;

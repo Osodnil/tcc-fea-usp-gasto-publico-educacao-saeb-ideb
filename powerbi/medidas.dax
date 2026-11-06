@@ -364,6 +364,16 @@ Perfil do município =
             & SELECTEDVALUE ( dim_municipio[CLUSTER_ROTULO] )
     )
 
+// ───────────────────────── Pasta: 9 Mapa ─────────────────────────
+
+// O Mapa de formas desenha no máximo ~1.500 áreas por vez; o Brasil tem 5.571 municípios (decisão de 2026-11-05)
+Aviso do mapa =
+    IF (
+        [Municípios no recorte] > 1500,
+        "⚠ Escolha uma UF no filtro acima: o mapa mostra até ~1.500 municípios por vez (o Brasil tem 5.571).",
+        "Vermelho = abaixo do esperado · cinza = próximo · azul = acima (cor máxima a partir de ±30 pontos)."
+    )
+
 // ───────────────────────── Pasta: 7 Associação por defasagem ─────────────────────────
 
 // ρ de Spearman entre o gasto da defasagem escolhida e a proficiência, entre as redes do recorte

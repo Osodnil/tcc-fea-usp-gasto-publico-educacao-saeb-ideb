@@ -65,6 +65,11 @@
       "type": "RegisteredResources",
       "items": [
         {
+          "name": "malha_municipios29681943658898835.topojson",
+          "path": "malha_municipios29681943658898835.topojson",
+          "type": "ShapeMap"
+        },
+        {
           "name": "TCC_gasto_e_Saeb2855285083400855.json",
           "path": "TCC_gasto_e_Saeb2855285083400855.json",
           "type": "CustomTheme"

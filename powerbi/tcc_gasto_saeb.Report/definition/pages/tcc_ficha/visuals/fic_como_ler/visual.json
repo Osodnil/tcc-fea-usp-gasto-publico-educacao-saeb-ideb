@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "fic_como_ler",
   "position": {
     "x": 788,
     "y": 412,
-    "z": 23,
-    "width": 476,
+    "z": 16000,
     "height": 272,
-    "tabOrder": 23
+    "width": 476,
+    "tabOrder": 16000
   },
   "visual": {
     "visualType": "textbox",
-    "drillFilterOtherVisuals": true,
     "objects": {
       "general": [
         {
@@ -217,6 +216,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

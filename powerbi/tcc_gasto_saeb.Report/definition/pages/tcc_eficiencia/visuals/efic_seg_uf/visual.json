@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "efic_seg_uf",
   "position": {
     "x": 452,
     "y": 8,
-    "z": 1,
-    "width": 156,
+    "z": 1000,
     "height": 56,
-    "tabOrder": 1
+    "width": 156,
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "slicer",
@@ -136,12 +136,6 @@
         }
       ]
     },
-    "drillFilterOtherVisuals": true,
-    "syncGroup": {
-      "groupName": "uf",
-      "fieldChanges": true,
-      "filterChanges": true
-    },
     "visualContainerObjects": {
       "background": [
         {
@@ -182,6 +176,12 @@
           }
         }
       ]
-    }
+    },
+    "syncGroup": {
+      "groupName": "uf",
+      "fieldChanges": true,
+      "filterChanges": true
+    },
+    "drillFilterOtherVisuals": true
   }
 }

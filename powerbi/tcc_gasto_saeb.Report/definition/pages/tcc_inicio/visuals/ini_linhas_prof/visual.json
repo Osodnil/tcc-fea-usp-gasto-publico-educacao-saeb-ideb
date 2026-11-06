@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "ini_linhas_prof",
   "position": {
     "x": 424,
     "y": 172,
-    "z": 22,
-    "width": 840,
+    "z": 13000,
     "height": 252,
-    "tabOrder": 22
+    "width": 840,
+    "tabOrder": 13000
   },
   "visual": {
     "visualType": "lineChart",
@@ -69,7 +69,6 @@
         }
       }
     },
-    "drillFilterOtherVisuals": true,
     "objects": {
       "categoryAxis": [
         {
@@ -277,7 +276,8 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   },
   "filterConfig": {
     "filters": [

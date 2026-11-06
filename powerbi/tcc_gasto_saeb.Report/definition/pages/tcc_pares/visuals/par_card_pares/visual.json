@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "par_card_pares",
   "position": {
     "x": 908,
     "y": 80,
-    "z": 15,
-    "width": 172,
+    "z": 11000,
     "height": 84,
-    "tabOrder": 15
+    "width": 172,
+    "tabOrder": 11000
   },
   "visual": {
     "visualType": "card",
@@ -34,7 +34,6 @@
         }
       }
     },
-    "drillFilterOtherVisuals": true,
     "objects": {
       "labels": [
         {
@@ -227,6 +226,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

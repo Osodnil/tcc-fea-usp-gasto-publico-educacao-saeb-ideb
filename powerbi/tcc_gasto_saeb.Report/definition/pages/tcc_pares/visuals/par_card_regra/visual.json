@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "par_card_regra",
   "position": {
     "x": 16,
     "y": 124,
-    "z": 11,
-    "width": 344,
+    "z": 7000,
     "height": 40,
-    "tabOrder": 11
+    "width": 344,
+    "tabOrder": 7000
   },
   "visual": {
     "visualType": "card",
@@ -33,7 +33,6 @@
         }
       }
     },
-    "drillFilterOtherVisuals": true,
     "objects": {
       "labels": [
         {
@@ -214,6 +213,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

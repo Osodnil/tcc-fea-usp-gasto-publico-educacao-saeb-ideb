@@ -4,7 +4,8 @@
     "tcc_inicio",
     "tcc_eficiencia",
     "tcc_ficha",
-    "tcc_pares"
+    "tcc_pares",
+    "tcc_mapa"
   ],
   "activePageName": "tcc_inicio"
 }

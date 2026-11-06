@@ -383,29 +383,17 @@ table _Medidas
 		displayFolder: 6 Qualidade dos dados
 		lineageTag: f9c8c3d7-c6da-4e1a-a0b4-b7c2a87dae17
 
-	column Coluna
-		dataType: int64
-		isHidden
-		lineageTag: 84eace48-46db-5e7a-9764-9593ffb2d3bb
-		summarizeBy: none
-		isNameInferred
-		sourceColumn: [Coluna]
-
-	partition _Medidas = calculated
-		mode: import
-		source = ROW ( "Coluna", 0 )
-
 	/// Cartões de texto da ficha (o modelo desestimula agregações implícitas, então o texto vem de medidas)
 	measure 'Município selecionado' = SELECTEDVALUE ( dim_municipio[MUNICIPIO_UF], "Escolha um município no filtro acima" )
 		displayFolder: 8 Ficha do município
 		lineageTag: 4dfcfdb7-603b-554e-9c8b-c0f148624021
 
 	measure 'Perfil do município' =
-			    IF (
-			        HASONEVALUE ( dim_municipio[CO_MUNICIPIO] ),
-			        "Porte: " & SELECTEDVALUE ( dim_municipio[PORTE] ) & " habitantes · Cluster: "
-			            & SELECTEDVALUE ( dim_municipio[CLUSTER_ROTULO] )
-			    )
+			IF (
+			    HASONEVALUE ( dim_municipio[CO_MUNICIPIO] ),
+			    "Porte: " & SELECTEDVALUE ( dim_municipio[PORTE] ) & " habitantes · Cluster: "
+			        & SELECTEDVALUE ( dim_municipio[CLUSTER_ROTULO] )
+			)
 		displayFolder: 8 Ficha do município
 		lineageTag: 51a4c765-d2ba-5567-b9d2-b51109bd9567
 
@@ -516,24 +504,45 @@ table _Medidas
 
 	/// Referência nacional para as séries da página Início (ignora UF, município e cluster)
 	measure 'Gasto por aluno do Brasil (mediana anual)' =
-			    CALCULATE (
-			        MEDIAN ( fato_gasto_municipal[GASTO_ALUNO_R2025] ),
-			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
-			    )
+			CALCULATE (
+			    MEDIAN ( fato_gasto_municipal[GASTO_ALUNO_R2025] ),
+			    REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
+			)
 		formatString: R$ #,0
 		displayFolder: 1 Gasto
 		lineageTag: 9cba3a9c-35c9-5011-84a1-0fdd29530e4a
 
 	/// Média nacional (mesma agregação da "Proficiência média"), para comparar com o recorte na página Início
 	measure 'Proficiência média do Brasil' =
-			    IF (
-			        [Seleção comparável],
-			        CALCULATE (
-			            AVERAGE ( fato_desempenho_municipal[PROFICIENCIA] ),
-			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
-			        )
+			IF (
+			    [Seleção comparável],
+			    CALCULATE (
+			        AVERAGE ( fato_desempenho_municipal[PROFICIENCIA] ),
+			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
 			    )
+			)
 		formatString: 0.0
 		displayFolder: 2 Desempenho
 		lineageTag: 61608255-da97-5e5b-9b61-c3ab7bf9b441
 
+	column Coluna
+		dataType: int64
+		isHidden
+		lineageTag: 84eace48-46db-5e7a-9764-9593ffb2d3bb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Coluna]
+
+	partition _Medidas = calculated
+		mode: import
+		source = ROW ( "Coluna", 0 )
+
+	/// O Mapa de formas desenha no máximo ~1.500 áreas por vez; o Brasil tem 5.571 municípios (decisão de 2026-11-05)
+	measure 'Aviso do mapa' =
+			    IF (
+			        [Municípios no recorte] > 1500,
+			        "⚠ Escolha uma UF no filtro acima: o mapa mostra até ~1.500 municípios por vez (o Brasil tem 5.571).",
+			        "Vermelho = abaixo do esperado · cinza = próximo · azul = acima (cor máxima a partir de ±30 pontos)."
+			    )
+		displayFolder: 9 Mapa
+		lineageTag: 3c5a1540-e341-5c15-b728-8d7c1645ad1c

@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "ini_seg_edicao",
   "position": {
     "x": 944,
     "y": 8,
-    "z": 4,
-    "width": 156,
+    "z": 4000,
     "height": 56,
-    "tabOrder": 4
+    "width": 156,
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "slicer",
@@ -183,12 +183,6 @@
         }
       ]
     },
-    "drillFilterOtherVisuals": true,
-    "syncGroup": {
-      "groupName": "edicao",
-      "fieldChanges": true,
-      "filterChanges": true
-    },
     "visualContainerObjects": {
       "background": [
         {
@@ -229,7 +223,13 @@
           }
         }
       ]
-    }
+    },
+    "syncGroup": {
+      "groupName": "edicao",
+      "fieldChanges": true,
+      "filterChanges": true
+    },
+    "drillFilterOtherVisuals": true
   },
   "filterConfig": {
     "filters": [
