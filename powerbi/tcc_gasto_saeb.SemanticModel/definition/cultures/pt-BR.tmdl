@@ -64,6 +64,16 @@ cultureInfo pt-BR
 			            },
 			            "Weight": 0.9
 			          }
+			        },
+			        {
+			          "Acima": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -98,16 +108,6 @@ cultureInfo pt-BR
 			        },
 			        {
 			          "Eficiência": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "Eficiência média": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -191,6 +191,16 @@ cultureInfo pt-BR
 			        },
 			        {
 			          "Gasto por aluno": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Gasto por aluno (mediana)": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -932,6 +942,110 @@ cultureInfo pt-BR
 			      "Terms": [
 			        {
 			          "Município de referência (busque)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_medidas.município_selecionado": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Medidas",
+			          "ConceptualProperty": "Município selecionado"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Município": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_medidas.redes_na_correlação": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Medidas",
+			          "ConceptualProperty": "Redes na correlação"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Redes na correlação": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Redes": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_medidas.correlação_gasto__proficiência_spearman": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Medidas",
+			          "ConceptualProperty": "Correlação gasto × proficiência (Spearman)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "ρ de Spearman": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "ρ": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_defasagem.rotulo_defasagem": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_defasagem",
+			          "ConceptualProperty": "ROTULO_DEFASAGEM"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Gasto de quando": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",

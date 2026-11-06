@@ -175,12 +175,50 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'Abadia de Goiás (GO)'"
+                                "Value": "'São Paulo (SP)'"
                               }
                             }
                           ]
                         ]
                       }
+                    }
+                  }
+                ]
+              }
+            },
+            "selfFilter": {
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "r",
+                    "Entity": "ref_municipio",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "Contains": {
+                        "Left": {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "r"
+                              }
+                            },
+                            "Property": "REF_MUNICIPIO_UF"
+                          }
+                        },
+                        "Right": {
+                          "Literal": {
+                            "Value": "'são paulo'"
+                          }
+                        }
+                      }
+                    },
+                    "Annotations": {
+                      "PowerBI.MParameterBehavior": 1
                     }
                   }
                 ]

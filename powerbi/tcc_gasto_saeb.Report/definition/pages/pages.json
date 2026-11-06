@@ -5,7 +5,8 @@
     "tcc_eficiencia",
     "tcc_ficha",
     "tcc_pares",
+    "tcc_defasagens",
     "tcc_mapa"
   ],
-  "activePageName": "tcc_inicio"
+  "activePageName": "tcc_defasagens"
 }

@@ -430,3 +430,29 @@ RETURN
                 )
         )
     )
+
+// Frase de leitura do ρ para o cartão da página Defasagens. Faixas de força pela convenção usual
+// (|ρ| < 0,1 praticamente nula; < 0,3 fraca; < 0,5 moderada; ≥ 0,5 forte), decisão de 2026-11-06.
+// A série de gasto da base começa em 2017: 2017 só tem "mesmo ano", e 4 anos antes só existe a partir de 2021.
+Leitura da correlação =
+VAR r = [Correlação gasto × proficiência (Spearman)]
+VAR n = [Redes na correlação]
+VAR k = [Defasagem]
+VAR ano = SELECTEDVALUE ( dim_ano[ANO] )
+VAR a = ABS ( r )
+VAR forca =
+    SWITCH ( TRUE (), a < 0.1, "praticamente nula", a < 0.3, "fraca", a < 0.5, "moderada", "forte" )
+VAR sentido =
+    IF ( r >= 0, "redes que gastam mais tendem a ter nota maior", "redes que gastam mais tendem a ter nota menor" )
+RETURN
+    SWITCH (
+        TRUE (),
+        NOT [Seleção comparável], "Escolha uma etapa e uma disciplina.",
+        ISBLANK ( ano ), "Escolha uma edição do Saeb.",
+        ano - k < 2017, "Sem gasto de " & ( ano - k ) & " na base: a série do SIOPE usada começa em 2017.",
+        ISBLANK ( r ), "Menos de 30 redes no recorte: a correlação não é calculada.",
+        a < 0.1, "ρ = " & FORMAT ( r, "0.00" ) & ": associação praticamente nula entre gasto e nota ("
+            & FORMAT ( n, "#,0" ) & " redes).",
+        "ρ = " & FORMAT ( r, "0.00" ) & ": associação " & forca & " (" & FORMAT ( n, "#,0" ) & " redes): "
+            & sentido & ". Associação, não efeito do gasto."
+    )

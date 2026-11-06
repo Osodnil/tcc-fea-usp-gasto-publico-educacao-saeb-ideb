@@ -580,6 +580,32 @@ Falar sempre em associação e eficiência relativa.
   - **Alternativas descartadas:**
     - um segundo mapa só com as 27 UFs, que exigiria gerar a malha das UFs e caberia pior na página;
     - um visual de terceiros sem limite, que depende de componente externo, pode exigir licença e pode não funcionar no "Publicar na Web" (A7).
+- **Página Defasagens (2026-11-06):** responde à pergunta 4 do painel (gastar mais se associa a notas maiores, e com que defasagem?).
+  - **Conteúdo:**
+    - colunas e matriz com o ρ de Spearman por edição e defasagem, com todas as edições e defasagens ao mesmo tempo;
+    - cartões e uma dispersão gasto × proficiência para a edição e a defasagem escolhidas na faixa.
+  - **Filtros:**
+    - a segmentação de defasagem é nova e não é sincronizada, porque vale só nesta página;
+    - as segmentações de edição e de defasagem não filtram as colunas nem a matriz, pois a defasagem é a própria série desses dois visuais;
+    - Modelo de eficiência não entra, porque a página não usa a eficiência.
+  - **Matriz sem totais:** um ρ de várias edições juntas misturaria anos diferentes.
+  - **Leitura do ρ:** a medida `Leitura da correlação` descreve a força pela convenção usual: |ρ| < 0,1 praticamente nula, < 0,3 fraca, < 0,5 moderada e ≥ 0,5 forte. Ela também explica as lacunas da série (P2): 2017 só tem o mesmo ano, e 4 anos antes só existe a partir de 2021.
+  - **Valores de conferência (Brasil, Matemática, postos com empate no menor, como o RANKX):** a grade completa está em `data/interim/diagnosticos/conferencia_defasagens.csv`.
+
+    | Etapa | Edição | Mesmo ano | 1 ano antes | 2 anos antes | 4 anos antes |
+    |---|---|---|---|---|---|
+    | AI | 2017 | 0,46 | | | |
+    | AI | 2019 | 0,41 | 0,40 | 0,44 | |
+    | AI | 2021 | 0,33 | 0,37 | 0,41 | 0,45 |
+    | AI | 2023 | 0,26 | 0,26 | 0,32 | 0,38 |
+    | AI | 2025 | 0,16 | 0,17 | 0,25 | 0,31 |
+    | AF | 2023 | 0,17 | 0,17 | 0,24 | 0,28 |
+
+  - **Achado para o texto:**
+    - **No Brasil:** a associação é fraca a moderada, cresce com a defasagem e cai de uma edição para a outra.
+    - **Dentro de cada UF:** ela é bem menor. Em AI, Matemática, 2023, com o gasto do mesmo ano, o ρ mediano entre as 23 UFs com 30 redes ou mais é 0,08 (de −0,13 no RN a +0,32 no RJ), contra 0,26 no Brasil. No CE, fica entre −0,08 e +0,29, conforme a edição.
+    - **Leitura:** boa parte da correlação nacional vem das diferenças entre estados, o que reforça os efeitos fixos de UF (A2). O quadro "Como ler" da página avisa isso.
+  - **Desempenho:** o ρ é calculado em DAX, com RANKX, para cada célula. Se a página demorar mais de ~2 s, a alternativa registrada na especificação é calcular a grade no Python e carregá-la como tabela.
 - **Filtros sincronizados:** Etapa, Disciplina, Edição, Modelo e UF passaram a ter grupo de sincronização. A escolha feita numa página vale nas outras.
 - **Conferências do gerador de páginas:**
   - os esquemas oficiais são baixados pelo próprio script para `data/interim/esquemas_pbir` (fora do Git), e `--validar` funciona em qualquer máquina;

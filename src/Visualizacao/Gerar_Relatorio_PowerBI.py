@@ -293,6 +293,8 @@ def segmentacoes_padrao(prefixo: str) -> dict:
                    [filtro_visual(f"{prefixo}_f_edicao", "dim_ano", "EDICAO_SAEB", [True])], "edicao", False, 156),
         "modelo": ("dim_modelo.ROTULO_MODELO", "Modelo de eficiência", ["Nacional, com IDHM (2017–2023)"], True, None,
                    "modelo", False, 156),
+        # parâmetro sem relação com o modelo e sem sincronização: vale só na página Defasagens
+        "defasagem": ("dim_defasagem.ROTULO_DEFASAGEM", "Gasto de quando", ["Mesmo ano"], True, None, None, False, 156),
     }
 
 
@@ -581,7 +583,68 @@ def pagina_mapa() -> tuple[dict, list[dict]]:
     return pagina("tcc_mapa", "Mapa"), vis
 
 
-PAGINAS = [pagina_inicio, pagina_eficiencia, pagina_ficha, pagina_pares, pagina_mapa]
+def pagina_defasagens() -> tuple[dict, list[dict]]:
+    """Associação gasto × proficiência (ρ de Spearman) por edição e defasagem do gasto.
+    As segmentações de edição e de defasagem valem para os cartões e a dispersão; o gráfico de colunas e a matriz
+    mostram todas as edições e defasagens (a defasagem é a própria série/coluna, sem relação com o modelo)."""
+    p = "def"
+    vis = cabecalho(p, "Gastar mais se associa a notas maiores?",
+                    "Correlação entre o gasto por aluno e a proficiência, com o gasto do mesmo ano ou de anos antes",
+                    segs=("uf", "etapa", "disciplina", "edicao", "defasagem"))
+    cartoes = [("rho", "Correlação gasto × proficiência (Spearman)", "ρ de Spearman"),
+               ("redes", "Redes na correlação", "Redes na correlação"),
+               ("gasto", "Gasto das redes avaliadas (mediana)", "Gasto por aluno (mediana)"),
+               ("prof", "Proficiência média", "Proficiência média")]
+    for i, (nome, m, rot) in enumerate(cartoes):
+        vis.append(container(f"{p}_card_{nome}", (16 + i * 164, 80, 156, 84), cartao(m, rot), 10 + i))
+    vis.append(container(f"{p}_card_leitura", (672, 80, 592, 84), cartao_texto("Leitura da correlação"), 14))
+    so_edicoes = lambda nome: [filtro_visual(f"{p}_f_{nome}", "dim_ano", "EDICAO_SAEB", [True])]
+    rho = "Correlação gasto × proficiência (Spearman)"
+    vis.append(container(
+        f"{p}_colunas", (16, 172, 760, 232),
+        grafico("clusteredColumnChart",
+                {"Category": [("dim_ano.ANO", "Edição")], "Series": [("dim_defasagem.ROTULO_DEFASAGEM", "Gasto de quando")],
+                 "Y": [(rho, "ρ de Spearman")]},
+                ordenar="dim_ano.ANO", decrescente=False,
+                objetos={"categoryAxis": [{"properties": {"axisType": literal("Categorical"), "showAxisTitle": literal(False)}}],
+                         "valueAxis": [{"properties": {"showAxisTitle": literal(False)}}],
+                         "legend": [{"properties": {"show": literal(True), "position": literal("Top")}}],
+                         "labels": [{"properties": {"show": literal(True), "fontSize": literal(8.0)}}]}),
+        20, so_edicoes("colunas"), titulo="ρ de Spearman por edição, com o gasto do mesmo ano ou de 1, 2 e 4 anos antes"))
+    vis.append(container(
+        f"{p}_dispersao", (788, 172, 476, 232),
+        grafico("scatterChart",
+                {"Category": [("dim_municipio.MUNICIPIO_UF", "Município")],
+                 "X": [("Gasto das redes avaliadas (mediana)", "Gasto por aluno (R$ de 2025)")],
+                 "Y": [("Proficiência média", "Proficiência")]},
+                objetos={"categoryAxis": [{"properties": {"logAxisScale": literal(True)}}]}),
+        21, titulo="Cada ponto é uma rede (edição e defasagem escolhidas)"))
+    vis.append(container(
+        f"{p}_matriz", (16, 412, 760, 272),
+        grafico("pivotTable",
+                {"Rows": [("dim_ano.ANO", "Edição")], "Columns": [("dim_defasagem.ROTULO_DEFASAGEM", "Gasto de quando")],
+                 "Values": [(rho, "ρ"), ("Redes na correlação", "Redes")]},
+                # sem totais: o ρ de várias edições juntas misturaria anos diferentes
+                objetos={"subTotals": [{"properties": {"rowSubtotals": literal(False), "columnSubtotals": literal(False)}}]}),
+        22, so_edicoes("matriz"), titulo="ρ e número de redes por edição e defasagem (vazio = sem gasto daquele ano)"))
+    titulo_ler = {"fontWeight": "bold", "fontSize": "11pt", "color": AZUL_FAIXA}
+    corpo = {"fontSize": "9pt", "color": COR_TEXTO_2}
+    vis.append(container(f"{p}_como_ler", (788, 412, 476, 272), quadro_texto([
+        ("Como ler", titulo_ler),
+        ("• ρ de Spearman (−1 a 1): compara a ordem das redes no gasto com a ordem na nota. 0 = sem relação; "
+         "perto de 1 = quem gasta mais quase sempre tem nota maior. Só com 30 redes ou mais.", corpo),
+        ("• Defasagem: gasto do mesmo ano da prova ou de 1, 2 ou 4 anos antes, porque o aluno acumula anos de escola. "
+         "A série de gasto começa em 2017: 2017 só tem o mesmo ano, e 4 anos antes só a partir de 2021.", corpo),
+        ("• No Brasil, parte da associação vem das diferenças entre estados (os que gastam mais também têm notas "
+         "maiores). Escolha uma UF para comparar redes do mesmo estado: a correlação costuma cair muito.", corpo),
+        ("• Associação não é efeito do gasto: contexto, gestão e qualidade do registro também entram.", corpo),
+    ]), 23))
+    vis.append(rodape_fontes(p, 30))
+    sem_filtro = [(f"{p}_seg_{seg}", f"{p}_{alvo}") for seg in ("edicao", "defasagem") for alvo in ("colunas", "matriz")]
+    return pagina("tcc_defasagens", "Defasagens", sem_filtro), vis
+
+
+PAGINAS = [pagina_inicio, pagina_eficiencia, pagina_ficha, pagina_pares, pagina_mapa, pagina_defasagens]
 
 
 # ───────────────────────── gravação e validação ─────────────────────────
