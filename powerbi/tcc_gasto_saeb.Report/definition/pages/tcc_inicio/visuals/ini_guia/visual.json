@@ -20,7 +20,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "O que esta página mostra",
+                    "value": "Como ler esta página",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "11pt",
@@ -32,41 +32,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Cartões: os números do recorte escolhido na faixa (UF, etapa, disciplina e edição).",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "• Linhas: a proficiência por edição e o gasto por ano do recorte, contra o Brasil.",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "Como ler",
+                    "value": "Cartões: ",
                     "textStyle": {
                       "fontWeight": "bold",
-                      "fontSize": "11pt",
+                      "fontSize": "9pt",
                       "color": "#0d366b"
                     }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
+                  },
                   {
-                    "value": "• Proficiência: pontos do Saeb. Não compare etapas nem disciplinas.",
+                    "value": "os números do recorte escolhido na faixa (UF, etapa, disciplina e edição).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -77,55 +51,18 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Gasto por aluno: Ensino Fundamental da rede municipal, em R$ de 2025 (corrigido pelo IPCA).",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "• Redes acima do esperado: % das redes que tiraram mais do que redes de gasto e contexto parecidos.",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "• Cobertura: redes com nota divulgada ÷ municípios do recorte.",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "• O filtro de edição vale só para os cartões; as linhas mostram todas as edições.",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "Para onde ir",
+                    "value": "Linhas: ",
                     "textStyle": {
                       "fontWeight": "bold",
-                      "fontSize": "11pt",
+                      "fontSize": "9pt",
                       "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "a proficiência por edição e o gasto por ano do recorte, contra o Brasil.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
                     }
                   }
                 ]
@@ -133,10 +70,144 @@
               {
                 "textRuns": [
                   {
-                    "value": "Minha rede entrega o esperado? Ficha do município. Com quem conversar? Pares. Gastar mais se associa a aprender mais? Defasagens. Os botões estão na página Boas-vindas.",
+                    "value": "Gasto por aluno: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "Ensino Fundamental da rede municipal, mediana entre as redes, em R$ de 2025 (IPCA).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Proficiência: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "nota média das redes no Saeb, em pontos. Não compare etapas nem disciplinas.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Acima do esperado: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "% das redes que tiraram mais do que redes de gasto e contexto parecidos.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Redes com nota: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "redes municipais com nota divulgada pelo Inep na etapa e edição.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Cobertura: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "redes com nota ÷ municípios do recorte.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Edição: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "o filtro vale só para os cartões; as linhas mostram todas as edições.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Próximos passos: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "minha rede entrega o esperado? Ficha do município. Com quem conversar? Pares. Gastar mais se associa a aprender mais? Defasagens.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Valores de associação, não de efeito do gasto.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e",
+                      "fontStyle": "italic"
                     }
                   }
                 ]
@@ -153,28 +224,28 @@
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "10.0D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "10.0D"
                 }
               }
             },
             "left": {
               "expr": {
                 "Literal": {
-                  "Value": "16.0D"
+                  "Value": "14.0D"
                 }
               }
             },
             "right": {
               "expr": {
                 "Literal": {
-                  "Value": "16.0D"
+                  "Value": "14.0D"
                 }
               }
             }

@@ -32,7 +32,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Linhas: a proficiência do município em cada edição do Saeb, contra as medianas das redes do mesmo cluster (contexto parecido), da UF e do Brasil.",
+                    "value": "Linhas: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "a proficiência do município por edição, contra as medianas do cluster, da UF e do Brasil.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -43,7 +51,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Eficiência: pontos acima (+) ou abaixo (−) do que redes com gasto e contexto parecidos alcançaram. Percentil 80 = resultado melhor que o de 80% das redes.",
+                    "value": "Proficiência: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "nota média da rede no Saeb, em pontos.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -54,7 +70,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• ⚠ salto: o resultado mudou demais desde a edição anterior. Conferir antes de tirar conclusões.",
+                    "value": "Esperada: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "média de redes com gasto e contexto parecidos (modelo de regressão).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -65,7 +89,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• O filtro de edição muda só os cartões; gráficos e tabela mostram todas as edições.",
+                    "value": "Eficiência: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "proficiência − esperada, em pontos.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -76,10 +108,87 @@
               {
                 "textRuns": [
                   {
-                    "value": "• O indicador descreve associação, não efeito do gasto: ele também capta gestão, contexto familiar e qualidade do registro.",
+                    "value": "Percentil: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "80 = melhor que 80% das redes da mesma etapa, disciplina e edição.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Faixa: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "o percentil em cinco grupos, de bem abaixo a bem acima do esperado.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Salto: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "⚠ = mudou demais desde a edição anterior; não = sem salto.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "2025: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "só tem eficiência na comparação com o mesmo estado (não há IDHM de 2025).",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "O filtro de edição muda só os cartões. Associação, não efeito do gasto.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e",
+                      "fontStyle": "italic"
                     }
                   }
                 ]
@@ -96,28 +205,28 @@
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "10.0D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "10.0D"
                 }
               }
             },
             "left": {
               "expr": {
                 "Literal": {
-                  "Value": "16.0D"
+                  "Value": "14.0D"
                 }
               }
             },
             "right": {
               "expr": {
                 "Literal": {
-                  "Value": "16.0D"
+                  "Value": "14.0D"
                 }
               }
             }

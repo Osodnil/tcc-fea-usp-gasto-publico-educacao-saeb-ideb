@@ -88,7 +88,7 @@ def dimensoes(uf: pl.DataFrame) -> dict[str, pl.DataFrame]:
         # rótulos revistos na reunião de 2026-11-06: o modelo de UF não filtra a UF, muda a régua da comparação
         "dim_modelo": pl.DataFrame({
             "MODELO": ["Oficial", "Robustez"],
-            "ROTULO_MODELO": ["Comparação nacional (2017–2023)", "Comparação no próprio estado (2017–2025)"],
+            "ROTULO_MODELO": ["Nacional (até 2023)", "Mesmo estado (até 2025)"],  # curtos: cabem no filtro (2026-11-09)
             "ORDEM": [1, 2],
         }),
     }

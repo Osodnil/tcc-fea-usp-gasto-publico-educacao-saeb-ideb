@@ -3,10 +3,10 @@
   "name": "fic_card_perfil",
   "position": {
     "x": 16,
-    "y": 118,
+    "y": 114,
     "z": 11,
     "width": 344,
-    "height": 46,
+    "height": 50,
     "tabOrder": 11
   },
   "visual": {

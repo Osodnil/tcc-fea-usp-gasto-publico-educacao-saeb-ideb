@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "par_seg_modelo",
   "position": {
-    "x": 1076,
+    "x": 1068,
     "y": 8,
     "z": 5,
-    "width": 188,
+    "width": 196,
     "height": 56,
     "tabOrder": 5
   },
@@ -168,7 +168,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'Comparação nacional (2017–2023)'"
+                                "Value": "'Nacional (até 2023)'"
                               }
                             }
                           ]

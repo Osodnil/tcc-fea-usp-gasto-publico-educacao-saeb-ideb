@@ -60,6 +60,10 @@ Leitura descritiva, de associação, para Anos Iniciais e Matemática, salvo ind
   - O % de redes acima do esperado vai de 40% (Nordeste, municípios pequenos) a 59% (Sul e Sudeste, pequenos).
   - O modelo oficial inclui as variáveis de contexto, mas de forma linear e sem efeito de região.
   - Por isso, a comparação dentro do cluster (página Pares) é a mais justa.
+- **Rede municipal parcial [A9, L19]:**
+  - **Tamanho:** em 2,7% das redes com nota em Anos Iniciais e em 16% em Anos Finais (2023), a prefeitura atende menos da metade dos alunos públicos da etapa; o restante está na rede estadual.
+  - **Sensibilidade:** tirar essas redes não muda as conclusões. O coeficiente do gasto, a ordenação das demais e a correlação ficam praticamente iguais.
+  - **O que muda:** essas redes têm eficiência média bem menor (−13,5 contra +0,4 pontos em AI MT). Por isso ficam marcadas no painel.
 - **Gasto estadual, versões A e B [G4]:** onde a linha do Ensino Superior existe, as duas versões são iguais. A versão B só deixa de fora as UF/anos sem a linha (em 2023, AC, RO, RS e SE). O teste de sensibilidade é, portanto, de amostra.
 
 ## 4. Pontos ainda abertos (não bloqueiam o desenvolvimento)

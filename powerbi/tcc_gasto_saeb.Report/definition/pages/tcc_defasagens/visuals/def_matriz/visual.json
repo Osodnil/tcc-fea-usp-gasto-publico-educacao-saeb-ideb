@@ -1,37 +1,18 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "def_matriz",
   "position": {
     "x": 16,
     "y": 412,
     "z": 22,
-    "width": 760,
     "height": 272,
+    "width": 760,
     "tabOrder": 22
   },
   "visual": {
     "visualType": "pivotTable",
     "query": {
       "queryState": {
-        "Rows": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_ano"
-                    }
-                  },
-                  "Property": "ANO"
-                }
-              },
-              "queryRef": "dim_ano.ANO",
-              "nativeQueryRef": "ANO",
-              "displayName": "Edição"
-            }
-          ]
-        },
         "Columns": {
           "projections": [
             {
@@ -47,7 +28,28 @@
               },
               "queryRef": "dim_defasagem.ROTULO_DEFASAGEM",
               "nativeQueryRef": "ROTULO_DEFASAGEM",
+              "active": true,
               "displayName": "Gasto de quando"
+            }
+          ]
+        },
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_ano"
+                    }
+                  },
+                  "Property": "ANO"
+                }
+              },
+              "queryRef": "dim_ano.ANO",
+              "nativeQueryRef": "ANO",
+              "active": true,
+              "displayName": "Edição"
             }
           ]
         },
@@ -87,7 +89,6 @@
         }
       }
     },
-    "drillFilterOtherVisuals": true,
     "objects": {
       "subTotals": [
         {
@@ -262,7 +263,8 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   },
   "filterConfig": {
     "filters": [

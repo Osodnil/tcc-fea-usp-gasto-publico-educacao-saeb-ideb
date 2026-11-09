@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "efic_ranking",
   "position": {
     "x": 16,
     "y": 412,
     "z": 22,
-    "width": 860,
     "height": 272,
+    "width": 792,
     "tabOrder": 22
   },
   "visual": {
@@ -38,11 +38,11 @@
                       "Entity": "dim_municipio"
                     }
                   },
-                  "Property": "CLUSTER_ROTULO"
+                  "Property": "CLUSTER_CURTO"
                 }
               },
-              "queryRef": "dim_municipio.CLUSTER_ROTULO",
-              "nativeQueryRef": "CLUSTER_ROTULO",
+              "queryRef": "dim_municipio.CLUSTER_CURTO",
+              "nativeQueryRef": "CLUSTER_CURTO",
               "displayName": "Cluster"
             },
             {
@@ -134,6 +134,21 @@
               "queryRef": "_Medidas.Marca de salto",
               "nativeQueryRef": "Marca de salto",
               "displayName": "Salto"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Marca de rede parcial"
+                }
+              },
+              "queryRef": "_Medidas.Marca de rede parcial",
+              "nativeQueryRef": "Marca de rede parcial",
+              "displayName": "Rede atende"
             }
           ]
         }
@@ -153,11 +168,9 @@
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
-    "drillFilterOtherVisuals": true,
     "objects": {
       "total": [
         {
@@ -325,6 +338,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

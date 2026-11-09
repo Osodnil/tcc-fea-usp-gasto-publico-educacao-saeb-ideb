@@ -107,7 +107,13 @@ O painel agora mostra o motivo, usando as matrículas por rede do Censo Escolar 
   - os estados com mais Anos Iniciais na rede estadual são AC (42%), RS (33%), AP (32%), SP (25%), SC (25%) e MG (23%).
 - **O indicador continua coerente:** o gasto e a nota são da mesma rede municipal.
 - **O que muda é a leitura:** nesses municípios, a rede municipal não representa todas as crianças da cidade; Campinas é o exemplo acima.
-- **Encaminhamento (etapa 2 do plano de ação):** a parcela municipal já está calculada (`PART_MUN`). Falta:
-  - criar a marca e o teste de sensibilidade;
-  - medir a mesma limitação nos Anos Finais;
-  - registrar a nova limitação.
+- **Entre as redes com nota (2023):** as redes parciais, com a rede municipal abaixo de 50% dos alunos públicos da etapa, são 140 de 5.243 nos Anos Iniciais (2,7%) e 525 de 3.196 nos Anos Finais (16%) [A9].
+- **Sensibilidade (modelo reestimado sem as redes parciais):**
+  - **Coeficiente do gasto:** quase não muda. Em AI, MT, modelo nacional, vai de +0,92 a +1,13, e continua não significativo.
+  - **Ordenação das demais redes:** fica praticamente igual (correlação de 0,998).
+  - **ρ de Spearman:** muda menos de 0,02.
+- **O que muda é a leitura de cada rede parcial:**
+  - **Eficiência média:** é bem menor (em AI MT 2023, −13,5 pontos contra +0,4 das demais).
+  - **No painel:** a eficiência dessas redes aparece marcada com ⚠ no ranking, no Mapa e na Ficha.
+  - **Hipótese não verificada:** a rede municipal atenderia as escolas de áreas mais vulneráveis.
+- **Limitação registrada:** L19.

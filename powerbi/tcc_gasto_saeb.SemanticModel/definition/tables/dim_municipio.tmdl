@@ -93,8 +93,9 @@ table dim_municipio
 	partition dim_municipio = m
 		mode: import
 		source =
-			let
-			    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_municipio.parquet")),
-			    Tipos = Table.TransformColumnTypes(Fonte, {{"CO_MUNICIPIO", type text}, {"NO_MUNICIPIO", type text}, {"MUNICIPIO_UF", type text}, {"SG_UF", type text}, {"NM_UF", type text}, {"NM_REGIAO", type text}, {"POPULACAO_TOTAL_CENSO", type number}, {"TAXA_ALFABETIZACAO_15MAIS", type number}, {"PORTE", type text}, {"PORTE_ORDEM", Int64.Type}, {"FAIXA_ALFABETIZACAO", type text}, {"CLUSTER", Int64.Type}, {"CLUSTER_ROTULO", type text}, {"CLUSTER_CURTO", type text}})
-			in
-			    Tipos
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_municipio.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"CO_MUNICIPIO", type text}, {"NO_MUNICIPIO", type text}, {"MUNICIPIO_UF", type text}, {"SG_UF", type text}, {"NM_UF", type text}, {"NM_REGIAO", type text}, {"POPULACAO_TOTAL_CENSO", type number}, {"TAXA_ALFABETIZACAO_15MAIS", type number}, {"PORTE", type text}, {"PORTE_ORDEM", Int64.Type}, {"FAIXA_ALFABETIZACAO", type text}, {"CLUSTER", Int64.Type}, {"CLUSTER_ROTULO", type text}, {"CLUSTER_CURTO", type text}})
+				in
+				    Tipos
+

@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "efic_como_ler",
   "position": {
-    "x": 884,
+    "x": 816,
     "y": 412,
     "z": 23,
-    "width": 380,
+    "width": 448,
     "height": 272,
     "tabOrder": 23
   },
@@ -32,7 +32,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Proficiência: nota média da rede no Saeb, em pontos.",
+                    "value": "Cluster: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "grupo de contexto parecido, sem gasto nem nota (cores da dispersão).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -43,7 +51,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Esperada: a média de redes com o mesmo gasto por aluno, população, alfabetização, infraestrutura, tamanho e IDHM da UF (regressão).",
+                    "value": "Gasto por aluno: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "Fundamental da rede municipal, em R$ de 2025.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -54,7 +70,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Eficiência = proficiência − esperada. +10 = 10 pontos acima de redes parecidas.",
+                    "value": "Proficiência: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "nota média da rede no Saeb, em pontos.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -65,7 +89,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Cores: clusters, grupos de contexto parecido formados sem gasto nem nota.",
+                    "value": "Esperada: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "média de redes com gasto e contexto parecidos (regressão).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -76,10 +108,87 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Gastar mais não garante eficiência: as duas quase não se relacionam (correlação de 0,01).",
+                    "value": "Eficiência: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "proficiência − esperada. +10 = 10 pontos acima de redes parecidas.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Percentil: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "posição entre as redes: 80 = melhor que 80% delas.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Salto: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "⚠ = o resultado mudou demais desde a edição anterior: conferir.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Rede atende: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "% dos alunos públicos da etapa na rede municipal (⚠ abaixo de 50%).",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Gastar mais não garante eficiência: as duas quase não se relacionam (correlação de 0,01).",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e",
+                      "fontStyle": "italic"
                     }
                   }
                 ]
@@ -96,28 +205,28 @@
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "10.0D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "10.0D"
                 }
               }
             },
             "left": {
               "expr": {
                 "Literal": {
-                  "Value": "16.0D"
+                  "Value": "14.0D"
                 }
               }
             },
             "right": {
               "expr": {
                 "Literal": {
-                  "Value": "16.0D"
+                  "Value": "14.0D"
                 }
               }
             }

@@ -20,7 +20,53 @@
               {
                 "textRuns": [
                   {
-                    "value": "27 unidades: leitura descritiva, sem correlação nem eficiência. Gasto = Educação menos Ensino Superior (versão A). ⚠ = UF sem a linha do Ensino Superior: nada é descontado; a versão B deixa a UF de fora.",
+                    "value": "27 UFs: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "leitura descritiva, sem correlação nem eficiência.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Gasto: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "Educação menos Ensino Superior (versão A).",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "⚠: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "UF sem a linha do Ensino Superior; a versão B a deixa de fora.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -40,28 +86,28 @@
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "4.0D"
+                  "Value": "6.0D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "4.0D"
+                  "Value": "6.0D"
                 }
               }
             },
             "left": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "14.0D"
                 }
               }
             },
             "right": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "14.0D"
                 }
               }
             }

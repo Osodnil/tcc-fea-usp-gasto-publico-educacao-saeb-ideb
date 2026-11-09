@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "est_seg_etapa_est",
   "position": {
-    "x": 756,
+    "x": 740,
     "y": 8,
     "z": 1,
-    "width": 180,
+    "width": 196,
     "height": 56,
     "tabOrder": 1
   },

@@ -96,6 +96,21 @@
               "queryRef": "_Medidas.Gasto das redes avaliadas (mediana)",
               "nativeQueryRef": "Gasto das redes avaliadas (mediana)",
               "displayName": "Gasto por aluno"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Marca de rede parcial"
+                }
+              },
+              "queryRef": "_Medidas.Marca de rede parcial",
+              "nativeQueryRef": "Marca de rede parcial",
+              "displayName": "Rede municipal atende"
             }
           ]
         }

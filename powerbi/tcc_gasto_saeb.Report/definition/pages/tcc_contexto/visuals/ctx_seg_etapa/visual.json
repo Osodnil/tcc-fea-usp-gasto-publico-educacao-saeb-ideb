@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "ctx_seg_etapa",
   "position": {
-    "x": 584,
+    "x": 540,
     "y": 8,
     "z": 2,
-    "width": 156,
+    "width": 192,
     "height": 56,
     "tabOrder": 2
   },

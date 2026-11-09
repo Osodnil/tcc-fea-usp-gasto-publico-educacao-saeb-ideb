@@ -100,6 +100,7 @@ FORMATOS = [  # (padrão no nome da medida, formatString); vale o primeiro que c
     (r"^Comparado: percentil", "0"),
     (r"^(Proficiência|Par: proficiência)", "0.0"),
     (r"^(Percentil|Par: percentil)", "0"),
+    (r"^Parcela", "0%"),
     (r"^Pares (encontrados|que)", "#,0"),
     (r"^(% acima|Cobertura)", "0.0%"),
     (r"^Correlação", "0.00"),

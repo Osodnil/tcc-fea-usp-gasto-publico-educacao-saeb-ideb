@@ -32,7 +32,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• ρ de Spearman (−1 a 1): compara a ordem das redes no gasto com a ordem na nota. 0 = sem relação; perto de 1 = quem gasta mais quase sempre tem nota maior. Só com 30 redes ou mais.",
+                    "value": "ρ de Spearman: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "de −1 a 1; compara a ordem das redes no gasto com a ordem na nota. 0 = sem relação. Só com 30 redes ou mais.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -43,7 +51,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Defasagem: gasto do mesmo ano da prova ou de 1, 2 ou 4 anos antes, porque o aluno acumula anos de escola. A série de gasto começa em 2017: 2017 só tem o mesmo ano, e 4 anos antes só a partir de 2021.",
+                    "value": "Gasto de quando: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "gasto do mesmo ano da prova ou de 1, 2 ou 4 anos antes (o aluno acumula anos de escola).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -54,7 +70,15 @@
               {
                 "textRuns": [
                   {
-                    "value": "• No Brasil, parte da associação vem das diferenças entre estados (os que gastam mais também têm notas maiores). Escolha uma UF para comparar redes do mesmo estado: a correlação costuma cair muito.",
+                    "value": "Vazio: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "sem gasto daquele ano: a série começa em 2017, e 4 anos antes só existe a partir de 2021.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -65,10 +89,68 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Associação não é efeito do gasto: contexto, gestão e qualidade do registro também entram.",
+                    "value": "Redes: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "redes com gasto e nota que entram no cálculo.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Brasil × UF: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "no Brasil, parte da associação vem das diferenças entre estados; dentro de uma UF, costuma cair muito.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Dispersão: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "cada ponto é uma rede, na edição e na defasagem escolhidas.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Associação, não efeito do gasto: contexto, gestão e registro também entram.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e",
+                      "fontStyle": "italic"
                     }
                   }
                 ]
@@ -85,28 +167,28 @@
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "10.0D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "12.0D"
+                  "Value": "10.0D"
                 }
               }
             },
             "left": {
               "expr": {
                 "Literal": {
-                  "Value": "16.0D"
+                  "Value": "14.0D"
                 }
               }
             },
             "right": {
               "expr": {
                 "Literal": {
-                  "Value": "16.0D"
+                  "Value": "14.0D"
                 }
               }
             }

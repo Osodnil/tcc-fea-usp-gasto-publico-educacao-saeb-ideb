@@ -233,6 +233,8 @@ table _Medidas
 			RETURN
 			    SWITCH (
 			        TRUE (),
+			        // 2025 vazio na comparação nacional (sem IDHM de 2025): diz o porquê em vez de "Sem cálculo" (2026-11-09)
+			        ISBLANK ( p ) && [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025, "Só na comparação com o mesmo estado",
 			        ISBLANK ( p ), "Sem cálculo",
 			        p > 80, "Bem acima do esperado",
 			        p > 60, "Acima do esperado",
@@ -251,11 +253,11 @@ table _Medidas
 			    [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
 			        // aspas dentro de texto DAX se escrevem dobradas; a versão com \" quebrou a medida (2026-11-09)
 			        "⚠ A comparação nacional não cobre 2025: não existe IDHM de 2025. Para ver 2025, escolha "
-			            & "“Comparação no próprio estado” no filtro de comparação.",
+			            & "“Mesmo estado (até 2025)” no filtro de comparação.",
 			    [Modelo] = "Oficial",
-			        "Comparação nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos "
+			        "Nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos "
 			            & "(inclui o IDHM da UF). Diferenças entre estados aparecem na eficiência.",
-			    "Comparação no próprio estado: cada rede é comparada com as do mesmo estado de gasto e contexto parecidos. "
+			    "Mesmo estado: cada rede é comparada com as do mesmo estado de gasto e contexto parecidos. "
 			        & "Não filtra a UF: tira da eficiência a diferença média entre estados."
 			)
 		displayFolder: 4 Eficiência
@@ -399,8 +401,9 @@ table _Medidas
 	measure 'Perfil do município' =
 			IF (
 			    HASONEVALUE ( dim_municipio[CO_MUNICIPIO] ),
-			    "Porte: " & SELECTEDVALUE ( dim_municipio[PORTE] ) & " habitantes · Cluster: "
-			        & SELECTEDVALUE ( dim_municipio[CLUSTER_ROTULO] )
+			    // rótulo curto do cluster: o completo não cabia no cartão (2026-11-09)
+			    "Porte: " & SELECTEDVALUE ( dim_municipio[PORTE] ) & " habitantes · Cluster "
+			        & SELECTEDVALUE ( dim_municipio[CLUSTER_CURTO] )
 			)
 		displayFolder: 8 Ficha do município
 		lineageTag: 51a4c765-d2ba-5567-b9d2-b51109bd9567
@@ -645,9 +648,12 @@ table _Medidas
 			            "A rede municipal tem " & FORMAT ( mat, "#,0" ) & " alunos nos " & etapa
 			                & ", mas o Inep não divulgou a nota (participação ou número de alunos avaliados abaixo do mínimo).",
 			        ISBLANK ( [Eficiência (pontos)] ) && [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
-			            "Com nota. A comparação nacional não cobre 2025; use a comparação no próprio estado.",
+			            "Com nota. A comparação nacional não cobre 2025 (não há IDHM de 2025); escolha “Mesmo estado” no filtro de comparação.",
 			        ISBLANK ( [Eficiência (pontos)] ) && HASONEVALUE ( dim_disciplina[DISCIPLINA] ),
 			            "Com nota, mas sem eficiência: falta o gasto ou outra variável do modelo neste ano.",
+			        part < 0.5,
+			            "⚠ Rede parcial: a rede municipal atende só " & FORMAT ( part, "0%" ) & " dos alunos das escolas públicas "
+			                & "nesta etapa; o restante está na rede estadual. A eficiência é a da rede municipal, não a da cidade.",
 			        "Com nota. A rede municipal atende " & FORMAT ( part, "0%" ) & " dos alunos das escolas públicas nesta etapa."
 			    )
 		displayFolder: 6 Qualidade dos dados
@@ -762,6 +768,24 @@ table _Medidas
 			    )
 		displayFolder: 5 Pares e cluster
 		lineageTag: 3cefe245-a8bb-5d94-a574-af22424b4c5a
+
+	/// Etapa 2 da reunião de 2026-11-06 (decisão A9): parcela das matrículas públicas da etapa que está na rede municipal.
+	/// Só para um município com nota (assim a coluna não cria linhas nas tabelas). Abaixo de 50% = "rede parcial".
+	measure 'Parcela municipal na etapa' =
+			IF (
+			    HASONEVALUE ( dim_municipio[CO_MUNICIPIO] ) && NOT ISBLANK ( [Proficiência média] ),
+			    AVERAGE ( fato_oferta_municipal[PART_MUN] )
+			)
+		formatString: 0%
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: d51c3bf3-7e86-5880-a56c-60db0a3d1c01
+
+	measure 'Marca de rede parcial' =
+			VAR p = [Parcela municipal na etapa]
+			RETURN
+			    IF ( NOT ISBLANK ( p ), IF ( p < 0.5, "⚠ " & FORMAT ( p, "0%" ), FORMAT ( p, "0%" ) ) )
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: 607b57ea-8e9c-5d6a-ba5c-ff7e03c6d47c
 
 	column Coluna
 		dataType: int64

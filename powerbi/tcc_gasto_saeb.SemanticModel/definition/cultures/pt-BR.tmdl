@@ -373,19 +373,7 @@ cultureInfo pt-BR
 			          "ConceptualProperty": "CLUSTER_ROTULO"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Cluster": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "dim_disciplina.nome_disciplina": {
 			      "Definition": {
@@ -1683,6 +1671,58 @@ cultureInfo pt-BR
 			      "Terms": [
 			        {
 			          "Comparar com (opcional; vazio = par clicado)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_medidas.marca_de_rede_parcial": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Medidas",
+			          "ConceptualProperty": "Marca de rede parcial"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Rede atende": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Rede municipal atende": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_municipio.cluster_curto": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_municipio",
+			          "ConceptualProperty": "CLUSTER_CURTO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Cluster": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",

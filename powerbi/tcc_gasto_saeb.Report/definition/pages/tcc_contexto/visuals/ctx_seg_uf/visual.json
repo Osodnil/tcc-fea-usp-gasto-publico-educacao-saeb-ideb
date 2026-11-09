@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "ctx_seg_uf",
   "position": {
-    "x": 420,
+    "x": 396,
     "y": 8,
     "z": 1,
-    "width": 156,
+    "width": 136,
     "height": 56,
     "tabOrder": 1
   },

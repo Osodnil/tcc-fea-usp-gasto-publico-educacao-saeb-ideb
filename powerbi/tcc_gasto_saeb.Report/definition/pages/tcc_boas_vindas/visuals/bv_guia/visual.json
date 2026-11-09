@@ -202,7 +202,7 @@
                     }
                   },
                   {
-                    "value": "Nacional (padrão, edições de 2017 a 2023) ou no próprio estado (inclui 2025).",
+                    "value": "Nacional (padrão, edições de 2017 a 2023) ou com as redes do mesmo estado (inclui 2025).",
                     "textStyle": {
                       "fontSize": "10pt",
                       "color": "#52514e"

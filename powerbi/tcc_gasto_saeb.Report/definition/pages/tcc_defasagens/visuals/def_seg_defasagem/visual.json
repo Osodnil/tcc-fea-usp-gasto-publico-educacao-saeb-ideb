@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "def_seg_defasagem",
   "position": {
-    "x": 1108,
+    "x": 1124,
     "y": 8,
     "z": 5,
-    "width": 156,
+    "width": 140,
     "height": 56,
     "tabOrder": 5
   },

@@ -394,6 +394,24 @@ Falar sempre em associação e eficiência relativa.
   - **A versão dentro do estado fica como teste de robustez:** a correlação entre os rankings é de 0,87 a 0,92. As colunas `*_ALT` continuam no arquivo.
 - **Também gravado:** a comparação descritiva com os pares do cluster (nota − mediana do cluster; gasto ÷ mediana do cluster), por edição, e o percentil do resíduo dentro de cada etapa, disciplina e edição.
 
+### A9. Rede municipal parcial: quando a prefeitura não atende todos os alunos da etapa ✅ (2026-11-09)
+- **Origem:** reunião de 2026-11-06. Os Anos Iniciais são responsabilidade das prefeituras, mas há exceções que os dados de nota sozinhos não mostram.
+- **Medida:** `PART_MUN` = matrículas da etapa na rede municipal ÷ (municipal + estadual), por município, etapa e ano, a partir do Censo Escolar (tabela `fato_oferta_municipal`). "Rede parcial" é a rede com nota e `PART_MUN` < 50%.
+- **Tamanho, entre as redes com nota†:**
+  - **Anos Iniciais:** 140 de 5.243 em 2023 (2,7%), e de 2,5% a 4,4% conforme a edição. As UFs com mais redes parciais são RR (23%), AC (14%), RS (12%), SC (7%) e MG (6%).
+  - **Anos Finais:** 525 de 3.196 em 2023 (16%), e de 16% a 22% conforme a edição. As UFs com mais são GO (54%) e MG (45%).
+  - **Contagem anterior:** a de 266 municípios em AI incluía os municípios sem nota.
+- **Sensibilidade** (`src/Analise/Sensibilidade_Rede_Municipal.py`; saídas `diagnosticos/sensibilidade_rede_municipal_*.csv`):
+  - **Coeficiente do gasto:** quase não muda. AI MT, modelo nacional: +0,92 (p = 0,20) com todas as redes e +1,13 (p = 0,12) sem as parciais. Modelo no próprio estado: +4,33 e +4,40. Em AF, sobe um pouco (AF MT nacional: +1,57 → +2,06, p = 0,06), e continua não significativo a 5% no modelo nacional.
+  - **Ordenação das redes que ficam:** praticamente a mesma. A correlação entre as eficiências com e sem as parciais é de 0,998 em AI e 0,995 em AF. Mudam de quintil 6% das redes em AI e 9% a 11% em AF.
+  - **ρ de Spearman gasto × nota:** igual, com diferença menor que 0,02 em todas as edições.
+  - **Achado:** as redes parciais têm eficiência média bem menor que as demais. Em 2023, na comparação nacional, AI MT fica em −13,5 contra +0,4; AF MT, em −3,5 contra +0,7. Uma hipótese é que a rede municipal, nesses casos, atenda as escolas de áreas mais vulneráveis, mas **isso não foi verificado**.
+- **Decisão:** manter as redes parciais na análise (as conclusões agregadas não mudam) e **marcá-las** no painel. A marca aparece:
+  - na coluna "Rede atende" do ranking de Eficiência, com ⚠ abaixo de 50%;
+  - na dica do Mapa;
+  - no cartão "Situação da rede" da Ficha, que avisa que a eficiência é a da rede municipal, não a da cidade.
+- **No texto:** citar a sensibilidade como robustez e a limitação L19.
+
 ### S11. Saltos atípicos de proficiência ⚠️ (achado de 2026-10-30)
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
 - **Concentração:** as redes de AI com mais de 300 pontos em Matemática estão quase todas no Ceará e em Alagoas (2025: 30 no CE e 10 em AL). A média de AL subiu de 200 (2017) para 238 (2025).
@@ -712,6 +730,17 @@ Falar sempre em associação e eficiência relativa.
       - saíram os cartões de números;
       - as frases sobre cada página passaram para a dica do botão, que aparece ao passar o mouse (propriedade `tooltip` do `visualLink`);
       - o conteúdo das instruções ficou inteiro.
+  - **Terceira rodada de ajustes, a partir dos prints da Ficha (2026-11-09):**
+    - **Filtros da faixa com valor cortado:**
+      - os rótulos das comparações ficaram curtos: "Nacional (até 2023)" e "Mesmo estado (até 2025)";
+      - o filtro de Etapa passou a 192 px e o de comparação a 196 px; UF e defasagem ficaram mais estreitos;
+      - os títulos de Eficiência ("Quem entrega acima do esperado?") e de Pares ("Com quem conversar") foram encurtados para caber;
+      - a conferência de textos passou a medir, em cada filtro, o maior valor da coluna (lido do Parquet).
+    - **"Como ler" sem todas as colunas:** os quadros da Eficiência e da Ficha viraram glossários, com cada coluna da tabela em negrito e a definição ao lado. Na Eficiência entram cluster, gasto, proficiência, esperada, eficiência, percentil, salto e "Rede atende". Na Ficha entram as linhas, todas as colunas e o caso de 2025.
+    - **2025 sem eficiência na Ficha (Campinas):** com a comparação nacional, que não cobre 2025 (C1), a faixa mostrava "Sem cálculo". Agora diz "Só na comparação com o mesmo estado". O glossário e o rodapé da Eficiência explicam o motivo.
+    - **Perfil cortado:** a medida usa o rótulo curto do cluster (`CLUSTER_CURTO`), e o cartão ganhou altura.
+    - O ranking da Eficiência também passou a usar o rótulo curto do cluster.
+  - **Padrão de glossário (Henrique, 2026-11-09):** o desenho do "Como ler esta ficha" vira o padrão dos quadros explicativos: termo em negrito azul, definição ao lado e uma nota final em itálico. Ele foi aplicado também em Visão geral, Defasagens e no quadro das 27 unidades de Estados (sem título, por ser pequeno). A função `glossario` do gerador monta esses quadros.
  Ele depende de um endereço público, e o repositório é privado. Quando o destino for escolhido, o gerador cria a imagem e a coloca nesse quadro.
 
   - **Valores de conferência (AF, MT, 2023):**
@@ -839,7 +868,7 @@ Pontos levantados sobre o painel, com diagnóstico nos dados em 2026-11-09 e pla
 | Entender a nota esperada, a proficiência, a eficiência e os clusters | Explicação faltava no painel | ✅ Quadro "Como ler" na página Eficiência e `docs/nota_metodo_eficiencia.md` (etapa 1) |
 | 2025 sem eficiência | Decisão C1: sem IDHM 2025, o modelo nacional vai até 2023 | ✅ Aviso explícito quando a edição é 2025 (etapa 1); mudar sozinho de comparação fica para decisão |
 | Muitos municípios sem dados | Falta a nota, não o gasto. 2023: AI 5.243 com nota, 319 sem divulgação, 9 sem rede; AF 3.196, 723 e 1.652 | ✅ Tabela `fato_oferta_municipal`, "Situação da rede" na Ficha e contagem no aviso do Mapa (etapa 1) |
-| Exceções na rede dos Anos Iniciais | Em 923 municípios a rede municipal atende < 80% do AI público; em 266, < 50% (Campinas: 22%) | Etapa 2: marca, sensibilidade, AF e limitação nova |
+| Exceções na rede dos Anos Iniciais | Em 923 municípios a rede municipal atende < 80% do AI público; em 266, < 50% (Campinas: 22%) | ✅ Etapa 2 (A9, L19): marca no painel; sem as redes parciais, as conclusões agregadas não mudam |
 | Coluna "Salto" dos pares vazia | Correta, mas ambígua: só 10 dos 690 pares de Ibateguara têm salto | ✅ Mostra "não", "⚠ salto" ou "sem edição anterior" (etapa 1) |
 | Modelo "dentro da UF" não filtra a UF, "mas tira alguma coisa" | Muda a régua: tira a diferença média entre estados (CE: +33,6 → +4,0) | ✅ Rótulos "Comparação nacional" e "Comparação no próprio estado" e aviso explicativo (etapa 1) |
 | Selecionar um par não o compara com a referência; comparar dois municípios 1 para 1 | Função inexistente | Etapa 4: bloco de comparação na página Pares |
@@ -904,6 +933,7 @@ Lista consolidada, conforme o pedido da orientadora de manter anotada toda limit
 - **L16. Clusters [A6]:** a separação entre os grupos é fraca (silhueta de cerca de 0,23). Os grupos são uma partição útil para formar pares, e não tipos naturalmente distintos. Eles saem ligados à região, porque o IDHM só existe por UF.
 - **L17. Indicador de eficiência [A8]:** é o resíduo de um modelo de associação. Ele reflete tudo o que o modelo não mede (gestão, contexto familiar, qualidade do registro), e não só eficiência no uso do gasto. O indicador oficial (versão nacional) não cobre a edição de 2025.
 - **L18. Saltos atípicos de proficiência [S11]:** algumas redes, sobretudo no Ceará e em Alagoas, têm crescimentos de proficiência muito acima do usual. Se não forem reais, inflam o indicador de eficiência desses municípios.
+- **L19. Rede municipal parcial [A9]:** em parte dos municípios, a rede estadual atende boa parte dos alunos da etapa: 2,7% das redes com nota em Anos Iniciais e 16% em Anos Finais, em 2023, têm menos da metade dos alunos públicos. Nesses casos, o indicador descreve a rede municipal, e não a educação pública da cidade. Essas redes têm eficiência média menor, mas tirá-las não muda as conclusões agregadas.
 - **L5. Pandemia [S5]:** a edição de 2021 tem menos resultados com nota e condições atípicas de aplicação.
 - **L6. Matrículas de 2025 [M3]:** as matrículas estaduais caem cerca de 5% em 2025, e não se sabe se é efeito real ou da mudança de layout do Censo Escolar.
 - **L7. Valores extremos [A5, G11]:** cerca de 0,7% dos municípios com nota têm gasto por aluno implausível (provável erro de registro ou rede muito pequena). Eles ficam na análise, conforme a decisão da orientadora.
