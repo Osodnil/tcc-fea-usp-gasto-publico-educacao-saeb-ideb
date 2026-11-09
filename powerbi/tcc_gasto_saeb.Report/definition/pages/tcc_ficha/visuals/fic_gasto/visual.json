@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "fic_gasto",
   "position": {
     "x": 788,
     "y": 172,
-    "z": 14000,
-    "height": 232,
+    "z": 21,
     "width": 476,
-    "tabOrder": 14000
+    "height": 232,
+    "tabOrder": 21
   },
   "visual": {
     "visualType": "clusteredColumnChart",
@@ -54,6 +54,7 @@
         }
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "categoryAxis": [
         {
@@ -254,7 +255,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "map_seg_uf",
   "position": {
-    "x": 452,
+    "x": 420,
     "y": 8,
     "z": 1,
-    "height": 56,
     "width": 156,
+    "height": 56,
     "tabOrder": 1
   },
   "visual": {
@@ -43,13 +43,6 @@
               "expr": {
                 "Literal": {
                   "Value": "'Dropdown'"
-                }
-              }
-            },
-            "isInvertedSelectionMode": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
                 }
               }
             }
@@ -141,12 +134,13 @@
             }
           }
         }
-      ],
-      "general": [
-        {
-          "properties": {}
-        }
       ]
+    },
+    "drillFilterOtherVisuals": true,
+    "syncGroup": {
+      "groupName": "uf",
+      "fieldChanges": true,
+      "filterChanges": true
     },
     "visualContainerObjects": {
       "background": [
@@ -188,12 +182,6 @@
           }
         }
       ]
-    },
-    "syncGroup": {
-      "groupName": "uf",
-      "fieldChanges": true,
-      "filterChanges": true
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

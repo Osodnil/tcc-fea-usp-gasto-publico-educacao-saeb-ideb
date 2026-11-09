@@ -1,16 +1,17 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "ini_rodape",
   "position": {
     "x": 16,
     "y": 690,
-    "z": 15000,
-    "height": 24,
+    "z": 30,
     "width": 1248,
-    "tabOrder": 15000
+    "height": 24,
+    "tabOrder": 30
   },
   "visual": {
     "visualType": "textbox",
+    "drillFilterOtherVisuals": true,
     "objects": {
       "general": [
         {
@@ -19,7 +20,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Fontes: SIOPE (gasto), Censo Escolar (matrículas e infraestrutura), Saeb/Inep (proficiência), IBGE e PNUD (contexto). Valores em R$ de 2025, corrigidos pelo IPCA. Resultados de associação, não de causalidade.",
+                    "value": "Fontes: SIOPE, Censo Escolar, Saeb/Inep, IBGE e PNUD. Valores em R$ de 2025 (IPCA). Resultados de associação, não de causalidade. Detalhes na página Sobre os dados.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -72,7 +73,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

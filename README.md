@@ -23,7 +23,7 @@ A análise tem duas camadas, que nunca são misturadas:
 
 - **Janela:** 2017–2025, com as edições bienais do Saeb (2017, 2019, 2021, 2023 e 2025).
 - **Valores:** reais de 2025, corrigidos pelo IPCA médio anual.
-- **Decisões:** todas as decisões de método, com os problemas encontrados em cada base, estão em [`docs/decisoes_metodo.md`](docs/decisoes_metodo.md). A versão curta para as reuniões está em [`docs/resumo_reuniao_orientadora.md`](docs/resumo_reuniao_orientadora.md).
+- **Decisões:** todas as decisões de método, com os problemas encontrados em cada base, estão em [`docs/decisoes_metodo.md`](docs/decisoes_metodo.md). A versão curta para as reuniões está em [`docs/resumo_reuniao_orientadora.md`](docs/resumo_reuniao_orientadora.md). A explicação da proficiência, da nota esperada, da eficiência e dos clusters, com exemplos, está em [`docs/nota_metodo_eficiencia.md`](docs/nota_metodo_eficiencia.md).
 
 ## Estrutura do repositório
 

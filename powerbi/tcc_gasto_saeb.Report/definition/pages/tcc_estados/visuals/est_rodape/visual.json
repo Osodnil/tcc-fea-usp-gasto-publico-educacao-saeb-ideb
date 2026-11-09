@@ -20,7 +20,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Fontes: SICONFI/DCA (gasto estadual), Censo Escolar (matrículas da educação básica), Saeb/Inep (proficiência). Valores em R$ de 2025, corrigidos pelo IPCA. Resultados descritivos, não de causalidade.",
+                    "value": "Fontes: SICONFI/DCA (gasto estadual), Censo Escolar (matrículas), Saeb/Inep (proficiência). R$ de 2025 (IPCA). Leitura descritiva, não causal.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

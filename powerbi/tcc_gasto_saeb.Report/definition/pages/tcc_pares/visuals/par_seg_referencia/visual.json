@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "par_seg_referencia",
   "position": {
-    "x": 356,
+    "x": 324,
     "y": 8,
-    "z": 1000,
+    "z": 1,
     "height": 56,
     "width": 252,
-    "tabOrder": 1000
+    "tabOrder": 1
   },
   "visual": {
     "visualType": "slicer",
@@ -175,7 +175,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'São Paulo (SP)'"
+                                "Value": "'Campinas (SP)'"
                               }
                             }
                           ]
@@ -212,7 +212,7 @@
                         },
                         "Right": {
                           "Literal": {
-                            "Value": "'são paulo'"
+                            "Value": "'campinas'"
                           }
                         }
                       }

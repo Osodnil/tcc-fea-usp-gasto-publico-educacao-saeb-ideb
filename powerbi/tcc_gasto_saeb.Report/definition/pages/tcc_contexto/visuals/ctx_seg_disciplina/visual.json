@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "ctx_seg_disciplina",
   "position": {
-    "x": 780,
+    "x": 748,
     "y": 8,
     "z": 3,
-    "height": 56,
     "width": 156,
+    "height": 56,
     "tabOrder": 3
   },
   "visual": {
@@ -143,7 +143,7 @@
                 "Version": 2,
                 "From": [
                   {
-                    "Name": "d",
+                    "Name": "t",
                     "Entity": "dim_disciplina",
                     "Type": 0
                   }
@@ -157,7 +157,7 @@
                             "Column": {
                               "Expression": {
                                 "SourceRef": {
-                                  "Source": "d"
+                                  "Source": "t"
                                 }
                               },
                               "Property": "NOME_DISCIPLINA"
@@ -182,6 +182,12 @@
           }
         }
       ]
+    },
+    "drillFilterOtherVisuals": true,
+    "syncGroup": {
+      "groupName": "disciplina",
+      "fieldChanges": true,
+      "filterChanges": true
     },
     "visualContainerObjects": {
       "background": [
@@ -223,12 +229,6 @@
           }
         }
       ]
-    },
-    "syncGroup": {
-      "groupName": "disciplina",
-      "fieldChanges": true,
-      "filterChanges": true
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

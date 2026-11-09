@@ -54,3 +54,15 @@ relationship 86ac7010-e5c2-5ef7-932f-e8987551f13f
 	fromColumn: fato_desempenho_estadual.DISCIPLINA
 	toColumn: dim_disciplina.DISCIPLINA
 
+relationship 953bd60d-6e26-54bc-9379-36c2ce08cf2e
+	fromColumn: fato_oferta_municipal.CO_MUNICIPIO
+	toColumn: dim_municipio.CO_MUNICIPIO
+
+relationship ce056d3c-679a-5a44-a17e-d9c4607f4296
+	fromColumn: fato_oferta_municipal.ANO
+	toColumn: dim_ano.ANO
+
+relationship 03acb2ff-888a-5ba9-8185-6858cf05a7a7
+	fromColumn: fato_oferta_municipal.ETAPA
+	toColumn: dim_etapa.ETAPA
+

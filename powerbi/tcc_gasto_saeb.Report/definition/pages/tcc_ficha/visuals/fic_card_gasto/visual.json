@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "fic_card_gasto",
   "position": {
     "x": 368,
     "y": 80,
-    "z": 8000,
-    "height": 84,
+    "z": 12,
     "width": 150,
-    "tabOrder": 8000
+    "height": 84,
+    "tabOrder": 12
   },
   "visual": {
     "visualType": "card",
@@ -28,12 +28,13 @@
               },
               "queryRef": "_Medidas.Gasto por aluno (mediana anual)",
               "nativeQueryRef": "Gasto por aluno (mediana anual)",
-              "displayName": "Gasto por aluno no ano"
+              "displayName": "Gasto por aluno"
             }
           ]
         }
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "labels": [
         {
@@ -226,7 +227,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

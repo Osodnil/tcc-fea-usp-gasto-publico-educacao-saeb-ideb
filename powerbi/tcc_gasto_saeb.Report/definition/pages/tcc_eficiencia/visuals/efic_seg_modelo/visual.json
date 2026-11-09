@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "efic_seg_modelo",
   "position": {
-    "x": 1108,
+    "x": 1076,
     "y": 8,
-    "z": 5000,
+    "z": 5,
+    "width": 188,
     "height": 56,
-    "width": 156,
-    "tabOrder": 5000
+    "tabOrder": 5
   },
   "visual": {
     "visualType": "slicer",
@@ -29,7 +29,7 @@
               "queryRef": "dim_modelo.ROTULO_MODELO",
               "nativeQueryRef": "ROTULO_MODELO",
               "active": true,
-              "displayName": "Modelo de eficiência"
+              "displayName": "Comparação da eficiência"
             }
           ]
         }
@@ -143,7 +143,7 @@
                 "Version": 2,
                 "From": [
                   {
-                    "Name": "d",
+                    "Name": "t",
                     "Entity": "dim_modelo",
                     "Type": 0
                   }
@@ -157,7 +157,7 @@
                             "Column": {
                               "Expression": {
                                 "SourceRef": {
-                                  "Source": "d"
+                                  "Source": "t"
                                 }
                               },
                               "Property": "ROTULO_MODELO"
@@ -168,7 +168,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'Nacional, com IDHM (2017–2023)'"
+                                "Value": "'Comparação nacional (2017–2023)'"
                               }
                             }
                           ]
@@ -182,6 +182,12 @@
           }
         }
       ]
+    },
+    "drillFilterOtherVisuals": true,
+    "syncGroup": {
+      "groupName": "modelo",
+      "fieldChanges": true,
+      "filterChanges": true
     },
     "visualContainerObjects": {
       "background": [
@@ -223,12 +229,6 @@
           }
         }
       ]
-    },
-    "syncGroup": {
-      "groupName": "modelo",
-      "fieldChanges": true,
-      "filterChanges": true
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

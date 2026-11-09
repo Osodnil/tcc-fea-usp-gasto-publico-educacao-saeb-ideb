@@ -32,7 +32,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Gasto e aprendizado nas redes municipais",
+                    "value": "Visão geral",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "16pt",
@@ -44,7 +44,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Visão geral do recorte escolhido nos filtros",
+                    "value": "Números e séries do recorte escolhido nos filtros",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#cde2fb"

@@ -3,10 +3,10 @@
   "name": "sob_autoria",
   "position": {
     "x": 16,
-    "y": 508,
+    "y": 468,
     "z": 13,
     "width": 404,
-    "height": 176,
+    "height": 216,
     "tabOrder": 13
   },
   "visual": {
@@ -43,7 +43,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Dados preparados em 30/10/2026. Registro completo das decisões de método no repositório do projeto (docs/decisoes_metodo.md).",
+                    "value": "Dados preparados em 09/11/2026. Registro completo das decisões de método no repositório do projeto (docs/decisoes_metodo.md).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

@@ -44,7 +44,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Correlação entre o gasto por aluno e a proficiência, com o gasto do mesmo ano ou de anos antes",
+                    "value": "ρ de Spearman entre gasto por aluno e proficiência",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#cde2fb"

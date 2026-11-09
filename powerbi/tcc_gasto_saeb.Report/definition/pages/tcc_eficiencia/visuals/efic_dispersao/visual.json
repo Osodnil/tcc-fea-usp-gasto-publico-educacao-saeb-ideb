@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "efic_dispersao",
   "position": {
     "x": 16,
     "y": 172,
-    "z": 11000,
-    "height": 232,
+    "z": 20,
     "width": 760,
-    "tabOrder": 11000
+    "height": 232,
+    "tabOrder": 20
   },
   "visual": {
     "visualType": "scatterChart",
@@ -43,11 +43,11 @@
                       "Entity": "dim_municipio"
                     }
                   },
-                  "Property": "CLUSTER_ROTULO"
+                  "Property": "CLUSTER_CURTO"
                 }
               },
-              "queryRef": "dim_municipio.CLUSTER_ROTULO",
-              "nativeQueryRef": "CLUSTER_ROTULO",
+              "queryRef": "dim_municipio.CLUSTER_CURTO",
+              "nativeQueryRef": "CLUSTER_CURTO",
               "active": true,
               "displayName": "Cluster"
             }
@@ -68,7 +68,6 @@
               },
               "queryRef": "_Medidas.Gasto das redes avaliadas (mediana)",
               "nativeQueryRef": "Gasto das redes avaliadas (mediana)",
-              "active": true,
               "displayName": "Gasto por aluno (R$ de 2025)"
             }
           ]
@@ -94,6 +93,7 @@
         }
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "categoryAxis": [
         {
@@ -336,7 +336,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

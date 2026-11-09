@@ -41,7 +41,7 @@ NS = uuid.UUID("6f1c2a52-7d0e-4d43-9a57-3c1f2b8e9a10")  # lineageTags estáveis 
 
 TABELAS = ["dim_municipio", "dim_uf", "dim_cluster", "dim_ano", "dim_etapa", "dim_disciplina", "dim_defasagem",
            "dim_modelo", "fato_desempenho_municipal", "fato_gasto_municipal", "fato_desempenho_estadual",
-           "fato_gasto_estadual"]
+           "fato_gasto_estadual", "fato_oferta_municipal"]
 
 # (lado muitos, lado um)
 RELACOES = [
@@ -55,6 +55,10 @@ RELACOES = [
                                             "fato_desempenho_estadual", "fato_gasto_estadual")],
     *[(f"{f}.{c}", f"dim_{c.lower()}.{c}") for f in ("fato_desempenho_municipal", "fato_desempenho_estadual")
       for c in ("ETAPA", "DISCIPLINA")],
+    # oferta da rede municipal por etapa (motivo da falta de nota e parcela municipal; 2026-11-09)
+    ("fato_oferta_municipal.CO_MUNICIPIO", "dim_municipio.CO_MUNICIPIO"),
+    ("fato_oferta_municipal.ANO", "dim_ano.ANO"),
+    ("fato_oferta_municipal.ETAPA", "dim_etapa.ETAPA"),
 ]
 
 ORDENAR = {  # coluna de rótulo -> coluna que dá a ordem
@@ -64,6 +68,7 @@ ORDENAR = {  # coluna de rótulo -> coluna que dá a ordem
     ("dim_modelo", "ROTULO_MODELO"): "ORDEM",
     ("dim_municipio", "PORTE"): "PORTE_ORDEM",
     ("dim_municipio", "CLUSTER_ROTULO"): "CLUSTER",
+    ("dim_municipio", "CLUSTER_CURTO"): "CLUSTER",
     ("dim_cluster", "CLUSTER_ROTULO"): "CLUSTER",
 }
 
@@ -76,12 +81,23 @@ CALCULADAS = {
         "\"REF_MUNICIPIO_UF\", dim_municipio[MUNICIPIO_UF], \"REF_CLUSTER\", dim_municipio[CLUSTER] )",
         {"REF_CO_MUNICIPIO": "string", "REF_MUNICIPIO_UF": "string", "REF_CLUSTER": "int64"},
     ),
+    # segundo município da comparação 1 a 1 na página Pares (reunião de 2026-11-06), também sem relação
+    "cmp_municipio": (
+        "SELECTCOLUMNS ( dim_municipio, \"CMP_CO_MUNICIPIO\", dim_municipio[CO_MUNICIPIO], "
+        "\"CMP_MUNICIPIO_UF\", dim_municipio[MUNICIPIO_UF], \"CMP_CLUSTER\", dim_municipio[CLUSTER] )",
+        {"CMP_CO_MUNICIPIO": "string", "CMP_MUNICIPIO_UF": "string", "CMP_CLUSTER": "int64"},
+    ),
     "_Medidas": ("ROW ( \"Coluna\", 0 )", {"Coluna": "int64"}),
 }
 
 FORMATOS = [  # (padrão no nome da medida, formatString); vale o primeiro que casar
     (r"^(Gasto (por aluno|das redes|estadual|do município)|Par: gasto)", "R$ #,0"),
     (r"^(Eficiência \(pontos\)|Eficiência do município|Nota menos|Par: (eficiência|diferença))", "+0.0;-0.0;0.0"),
+    # comparação 1 a 1 da página Pares (2026-11-09)
+    (r"^Comparado: gasto", "R$ #,0"),
+    (r"^Comparado: eficiência", "+0.0;-0.0;0.0"),
+    (r"^(Comparado: (proficiência|esperada)|Esperada)", "0.0"),
+    (r"^Comparado: percentil", "0"),
     (r"^(Proficiência|Par: proficiência)", "0.0"),
     (r"^(Percentil|Par: percentil)", "0"),
     (r"^Pares (encontrados|que)", "#,0"),
@@ -103,7 +119,37 @@ FORMATOS_COLUNA = {
     ("dim_cluster", "PARCELA_REGIAO_PREDOMINANTE"): "0%",
     ("dim_municipio", "POPULACAO_TOTAL_CENSO"): "#,0",
     ("dim_municipio", "TAXA_ALFABETIZACAO_15MAIS"): "0.0%",
+    ("fato_oferta_municipal", "QT_MAT_MUN"): "#,0",
+    ("fato_oferta_municipal", "QT_MAT_EST"): "#,0",
+    ("fato_oferta_municipal", "PART_MUN"): "0.0%",
 }
+
+
+def adicionar_tabelas(definicao: Path, schemas: dict) -> list[str]:
+    """Acrescenta a um modelo existente as tabelas de TABELAS que ainda não têm arquivo, com as relações delas,
+    a referência em model.tmdl e a ordem de consulta. Não mexe nas tabelas, relações e medidas existentes."""
+    novas = [t for t in [*TABELAS, *CALCULADAS] if not (definicao / "tables" / f"{t}.tmdl").exists()]
+    if not novas:
+        return []
+    for t in novas:
+        texto_t = tabela_importada(t, schemas[t]) if t in TABELAS else tabela_calculada(t, *CALCULADAS[t], [])
+        (definicao / "tables" / f"{t}.tmdl").write_text(texto_t, encoding="utf-8")
+    rel = definicao / "relationships.tmdl"
+    texto_rel = rel.read_text(encoding="utf-8").rstrip("\n")
+    for a, b in RELACOES:
+        if a.split(".")[0] in novas or b.split(".")[0] in novas:
+            texto_rel += f"\n\nrelationship {tag('r', a, b)}\n\tfromColumn: {a}\n\ttoColumn: {b}"
+    rel.write_text(texto_rel + "\n", encoding="utf-8")
+    mod = definicao / "model.tmdl"
+    linhas = mod.read_text(encoding="utf-8").split("\n")
+    ultima_ref = max(i for i, l in enumerate(linhas) if l.startswith("ref table "))
+    linhas[ultima_ref + 1:ultima_ref + 1] = [f"ref table {nome(t)}" for t in novas]
+    texto = "\n".join(linhas)
+    ordem = ["PastaDados", *TABELAS]
+    texto = re.sub(r"annotation PBI_QueryOrder = \[.*\]",
+                   "annotation PBI_QueryOrder = [" + ",".join(f'"{q}"' for q in ordem) + "]", texto)
+    mod.write_text(texto, encoding="utf-8")
+    return novas
 
 
 def formatar_colunas(definicao: Path) -> list[str]:
@@ -291,6 +337,9 @@ def conferir(schemas: dict, medidas: list[dict]) -> None:
     problemas = []
     for m in medidas:
         texto = "\n".join(m["corpo"])
+        # em DAX, aspas dentro de texto se escrevem dobradas (""); \" invalida a medida inteira (2026-11-09)
+        if re.search(r'\\"', re.sub(r"//.*", "", texto)):
+            problemas.append(f'{m["nome"]}: use "" (e não \\") para aspas dentro de texto')
         for t, c in re.findall(r"\b([A-Za-z_]\w*)\[([^\]]+)\]", texto):
             if t not in colunas or c not in colunas[t]:
                 problemas.append(f"{m['nome']}: coluna {t}[{c}] não existe")
@@ -330,9 +379,33 @@ if __name__ == "__main__":
                     help="troca no modelo existente só estas medidas pela versão de medidas.dax (feche o Power BI antes)")
     ap.add_argument("--formatar-colunas", action="store_true",
                     help="só aplica FORMATOS_COLUNA às colunas do modelo existente (feche o Power BI antes)")
+    ap.add_argument("--adicionar-tabelas", action="store_true",
+                    help="só acrescenta ao modelo existente as tabelas novas de TABELAS, com as relações (feche o Power BI antes)")
+    ap.add_argument("--recriar-tabelas", nargs="+", metavar="TABELA",
+                    help="regrava só estas tabelas importadas a partir do Parquet atual (colunas novas; feche o Power BI antes)")
     args = ap.parse_args()
     if args.pasta:
         MODELO = args.pasta.resolve()
+
+    if args.recriar_tabelas:
+        # mesmas lineageTags (determinísticas): relações, medidas e visuais continuam apontando para as colunas
+        fora = [t for t in args.recriar_tabelas if t not in TABELAS]
+        if fora:
+            sys.exit(f"[ERRO] Não são tabelas importadas: {', '.join(fora)}")
+        schemas = {t: dict(pl.read_parquet_schema(DADOS / f"{t}.parquet")) for t in TABELAS}
+        conferir(schemas, ler_medidas())
+        for t in args.recriar_tabelas:
+            (MODELO / "definition" / "tables" / f"{t}.tmdl").write_text(tabela_importada(t, schemas[t]), encoding="utf-8")
+        print(f"[OK] Tabelas regravadas: {', '.join(args.recriar_tabelas)}")
+        if not (args.adicionar_medidas or args.atualizar_medidas or args.adicionar_tabelas or args.formatar_colunas):
+            sys.exit(0)
+
+    if args.adicionar_tabelas:
+        schemas = {t: dict(pl.read_parquet_schema(DADOS / f"{t}.parquet")) for t in TABELAS}
+        novas = adicionar_tabelas(MODELO / "definition", schemas)
+        print(f"[OK] Tabelas acrescentadas: {', '.join(novas) if novas else 'nenhuma (todas já existem)'}")
+        if not (args.adicionar_medidas or args.atualizar_medidas or args.formatar_colunas):
+            sys.exit(0)
 
     if args.formatar_colunas:
         feitas = formatar_colunas(MODELO / "definition")

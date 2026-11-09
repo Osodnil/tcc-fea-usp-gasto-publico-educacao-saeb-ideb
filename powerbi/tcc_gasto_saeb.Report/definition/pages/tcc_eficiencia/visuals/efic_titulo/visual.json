@@ -44,7 +44,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Pontos acima (+) ou abaixo (−) do esperado, dado o gasto e o contexto",
+                    "value": "Pontos acima (+) ou abaixo (−) do esperado",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#cde2fb"

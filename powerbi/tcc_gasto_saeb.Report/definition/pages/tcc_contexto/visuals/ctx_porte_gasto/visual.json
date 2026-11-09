@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "ctx_porte_gasto",
   "position": {
     "x": 644,
     "y": 308,
     "z": 21,
-    "height": 332,
     "width": 306,
+    "height": 332,
     "tabOrder": 21
   },
   "visual": {
@@ -68,9 +68,11 @@
             },
             "direction": "Ascending"
           }
-        ]
+        ],
+        "isDefaultSort": false
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "labels": [
         {
@@ -233,7 +235,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Gasto por aluno (mediana), por porte'"
+                  "Value": "'Gasto mediano, por porte'"
                 }
               }
             },
@@ -278,8 +280,7 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   },
   "filterConfig": {
     "filters": [

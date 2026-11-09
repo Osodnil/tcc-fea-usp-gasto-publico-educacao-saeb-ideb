@@ -28,7 +28,7 @@
               },
               "queryRef": "_Medidas.Gasto das redes avaliadas (mediana)",
               "nativeQueryRef": "Gasto das redes avaliadas (mediana)",
-              "displayName": "Gasto por aluno (mediana)"
+              "displayName": "Gasto mediano"
             }
           ]
         }

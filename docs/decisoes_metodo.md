@@ -657,7 +657,62 @@ Falar sempre em associação e eficiência relativa.
   - acesso ao projeto.
   - **Data dos dados:** é a do `.parquet` mais recente de `data/processed/powerbi`, gravada quando a página é gerada. Depois de rodar o pipeline de novo, é preciso regravar a página (`--refazer tcc_sobre`).
   - **Uso de IA:** a página repete a declaração do README (apoio do Claude no código e na documentação; decisões de método dos autores). A redação final deve seguir o que for combinado com a orientadora (Manual do TCC).
-  - **QR Code (A7):** por enquanto, é um espaço reservado. Ele depende de um endereço público, e o repositório é privado. Quando o destino for escolhido, o gerador cria a imagem e a coloca nesse quadro.
+  - **QR Code (A7):** por enquanto, é um espaço reservado.
+- **Etapa 1 do plano da reunião de 2026-11-06 (2026-11-09):**
+  - **Nova tabela `fato_oferta_municipal`:** uma linha por município, etapa (AI, AF) e ano de 2017 a 2025.
+    - **Conteúdo:** matrículas da etapa na rede municipal e na estadual (Censo Escolar), a parcela municipal `PART_MUN` e a situação nas edições do Saeb ("Com nota", "Sem nota divulgada pelo Inep" ou "Sem rede municipal na etapa").
+    - **Conferência:** "Com nota" bate com o painel, e as matrículas municipais de AI batem linha a linha.
+    - **Ligação com o modelo:** a tabela se liga a `dim_municipio`, `dim_ano` e `dim_etapa`. O gerador do modelo ganhou `--adicionar-tabelas`.
+  - **Medidas novas:** `Situação da rede` (cartão na Ficha), `Municípios sem rede municipal na etapa` e `Municípios sem nota divulgada` (no aviso do Mapa).
+  - **`Marca de salto`:** mostra "⚠ salto", "não" ou "sem edição anterior", e só onde há nota, para não criar linhas nas tabelas.
+  - **Rótulos dos modelos:** "Comparação nacional (2017–2023)" e "Comparação no próprio estado (2017–2025)". O filtro passou a se chamar "Comparação da eficiência", e `Aviso do modelo` explica o que cada comparação faz e o caso de 2025.
+  - **Página Eficiência:** a tabela de ranking ficou mais estreita para dar lugar a um quadro "Como ler", com proficiência, esperada, eficiência, clusters e o achado de que mais gasto não garante eficiência.
+  - **Páginas regravadas:** Início, Eficiência, Ficha, Pares, Mapa e Contexto, porque o padrão do filtro de comparação mudou.
+- **Correções depois da conferência da etapa 1 (2026-11-09):**
+  - **Erro nos cartões de aviso (Eficiência e Mapa):**
+    - **Causa:** `Aviso do modelo` usava `\"` para aspas dentro do texto, o que não existe em DAX, e a medida inteira ficou inválida.
+    - **Correção:** as aspas viraram tipográficas. O gerador do modelo agora recusa `\"` em qualquer medida.
+  - **Página Boas-vindas** (primeira do relatório, pedido da reunião):
+    - à esquerda, para que serve o painel e como usá-lo;
+    - à direita, um botão para cada página, com uma frase sobre o que ela responde.
+    - O botão é do tipo `actionButton`, com a navegação em `visualLink` (`type` = `PageNavigation`, `navigationSection` = nome interno da página); as propriedades foram conferidas no esquema oficial.
+    - Ela substitui o navegador de páginas da antiga Início, que cortava os nomes.
+  - **Início → "Visão geral":** o nome exibido mudou; o nome interno `tcc_inicio` ficou, para os botões e o histórico. Sem o navegador, o guia de leitura ocupa a coluna inteira.
+  - **Pares, comparação 1 a 1:**
+    - **Como escolher o segundo município:** pelo filtro "Comparar com", da tabela calculada `cmp_municipio`, sem relação com o modelo, ou, com esse filtro vazio, clicando num par da tabela.
+    - **O que aparece:** cartões lado a lado da referência e do comparado (gasto, proficiência, esperada, eficiência e percentil) e a frase `Comparação 1 a 1`, com a diferença de eficiência e de gasto e se o cluster é o mesmo.
+    - **Medidas novas:** `Município comparado`, `Comparado: …` (5), `Esperada do município de referência`, `Percentil do município de referência` e `Comparação 1 a 1`.
+    - O quadro "Como usar" virou o título da tabela e o rodapé.
+  - **Textos cortados:**
+    - **Nova conferência:** o gerador ganhou `--conferir-textos`, que estima, pela largura média das letras, se cada quadro de texto, título de visual e rótulo de cartão cabe no espaço.
+    - **Resultado da primeira execução:** 29 casos, entre eles o rodapé de todas as páginas, que quebrava em duas linhas numa faixa de uma.
+    - **Correção:** textos encurtados, rótulos trocados (por exemplo, "Eficiência média" e "Saltos atípicos") e alturas ajustadas, até zerar os avisos.
+    - **Limite:** a estimativa não mede a fonte de fato. O que ela não pegar é corrigido pelo print.
+  - **Páginas regravadas:** todas.
+  - **Segunda rodada de textos cortados, a partir dos prints:**
+    - **Botões da Boas-vindas:** o texto já estava no arquivo, mas não aparecia no Desktop.
+      - **Causa:** comparando o botão salvo pelo Desktop com o gerado, o Desktop grava no objeto `text` duas entradas: o texto, no estado `default`, e um `show` sem estado, que é o que liga a exibição.
+      - **Correção:** o gerador passou a gravar as duas entradas.
+    - **Legenda das dispersões por cluster (Eficiência e Contexto):** o rótulo completo era cortado. Agora a legenda fica à direita e usa a coluna nova `CLUSTER_CURTO` de `dim_municipio`, com número, região e porte (por exemplo, "1 · Nordeste · pequenos"). Para levar a coluna ao modelo, o gerador do modelo ganhou `--recriar-tabelas`, que regrava uma tabela importada a partir do Parquet com as mesmas lineageTags.
+    - **Perfil na Ficha:** o cartão ganhou altura para duas linhas, porque o cluster era cortado.
+    - **Faixa:** a conferência de textos passou a checar se o título e o subtítulo da faixa cabem antes da primeira segmentação. O subtítulo de Defasagens passava por baixo dos filtros; ele e os de Eficiência e Contexto foram encurtados.
+    - **Calibragem:** a largura média das letras foi medida nos prints: ~0,48 da altura da letra no texto comum e ~0,50 no negrito.
+  - **Boas-vindas redesenhada (2026-11-09):** a primeira versão cumpria a função, mas era pouco visual, e Henrique pediu outra forma de apresentar o mesmo conteúdo, sem tirar nada. A página passou a ter quatro faixas:
+    1. **Para que serve e o painel em números:** 4 cartões fixados por filtros ocultos em Brasil, Anos Iniciais, Matemática e Saeb 2023 (redes com nota, gasto mediano, proficiência média e % acima do esperado).
+    2. **As três perguntas do painel:** cada uma em faixa azul, com explicação e botão para a página que a responde (Defasagens, Ficha do município e Pares).
+    3. **Como usar, em seis passos:** blocos numerados lado a lado.
+    4. **Todas as páginas:** grade de 3 × 3, com botão e frase de cada uma.
+    - O rodapé de fontes saiu desta página e continua nas demais.
+  - **Boas-vindas, terceira versão (2026-11-09):** a segunda ficou poluída ("quantidade não quer dizer qualidade"). Entre três arranjos mostrados, Henrique escolheu duas colunas.
+    - **À esquerda:** um único quadro com "Para que serve" e "Como usar", com os seis passos numerados e espaço entre eles.
+    - **À direita:**
+      - "Comece por uma pergunta": as três perguntas como botões grandes;
+      - "Outras páginas": as seis páginas restantes como botões azul-claros.
+    - **O que saiu e o que ficou:**
+      - saíram os cartões de números;
+      - as frases sobre cada página passaram para a dica do botão, que aparece ao passar o mouse (propriedade `tooltip` do `visualLink`);
+      - o conteúdo das instruções ficou inteiro.
+ Ele depende de um endereço público, e o repositório é privado. Quando o destino for escolhido, o gerador cria a imagem e a coloca nesse quadro.
 
   - **Valores de conferência (AF, MT, 2023):**
     - 27 UFs, proficiência média de 247,5 (EM: 263,3);
@@ -775,6 +830,24 @@ Anotações do Henrique, registradas como vieram:
 | E3 Recorte | Brasil inteiro, ferramenta nacional, mesma perspectiva para todos os estados |
 | E4/D3 Usuário-alvo | Agente de secretaria de educação ou analista da educação pública |
 | Power BI | Instalado e funcionando na máquina do Henrique |
+
+### Reunião de 2026-11-06 (Henrique e Guilherme)
+Pontos levantados sobre o painel, com diagnóstico nos dados em 2026-11-09 e plano de ação em cinco etapas.
+
+| Ponto | Diagnóstico | Encaminhamento |
+|---|---|---|
+| Entender a nota esperada, a proficiência, a eficiência e os clusters | Explicação faltava no painel | ✅ Quadro "Como ler" na página Eficiência e `docs/nota_metodo_eficiencia.md` (etapa 1) |
+| 2025 sem eficiência | Decisão C1: sem IDHM 2025, o modelo nacional vai até 2023 | ✅ Aviso explícito quando a edição é 2025 (etapa 1); mudar sozinho de comparação fica para decisão |
+| Muitos municípios sem dados | Falta a nota, não o gasto. 2023: AI 5.243 com nota, 319 sem divulgação, 9 sem rede; AF 3.196, 723 e 1.652 | ✅ Tabela `fato_oferta_municipal`, "Situação da rede" na Ficha e contagem no aviso do Mapa (etapa 1) |
+| Exceções na rede dos Anos Iniciais | Em 923 municípios a rede municipal atende < 80% do AI público; em 266, < 50% (Campinas: 22%) | Etapa 2: marca, sensibilidade, AF e limitação nova |
+| Coluna "Salto" dos pares vazia | Correta, mas ambígua: só 10 dos 690 pares de Ibateguara têm salto | ✅ Mostra "não", "⚠ salto" ou "sem edição anterior" (etapa 1) |
+| Modelo "dentro da UF" não filtra a UF, "mas tira alguma coisa" | Muda a régua: tira a diferença média entre estados (CE: +33,6 → +4,0) | ✅ Rótulos "Comparação nacional" e "Comparação no próprio estado" e aviso explicativo (etapa 1) |
+| Selecionar um par não o compara com a referência; comparar dois municípios 1 para 1 | Função inexistente | Etapa 4: bloco de comparação na página Pares |
+| Mais gasto não significa mais eficiência | Confirmado: correlação de 0,01 entre eficiência e gasto; coeficiente do gasto não significativo no modelo nacional | ✅ No quadro "Como ler" e na nota de método |
+| IA na FEA | Pergunta para a orientadora | Etapa 5: declaração completa, por etapa do trabalho |
+| Inflação na Início ou VPL | IPCA já está na base (fator 1,51 para 2017); VPL não se aplica (desconta fluxos futuros por juros) | Etapa 3: curva do IPCA e gasto nominal × real |
+| Eficiência em % do esperado; mesma base no mapa | Escala diferente entre etapas (esperado ~220 em AI e ~249 em AF); a "base" do mapa é a régua nacional | Etapa 3: % do esperado (decisão pendente) e mapa com a comparação no próprio estado quando há UF |
+| O desempenho melhora a cada edição? | AI MT: 218,2 → 222,7 → 211,8 (2021) → 220,2 → 230,1; 79% das redes melhoraram de 2023 para 2025 | Etapa 3: tendência na Início, com a ressalva de que melhora não prova uso bom do gasto |
 
 ### Pendências restantes (nenhuma bloqueia o desenvolvimento)
 0. **S11 (2026-10-30):** confirmar a regra proposta para marcar os saltos atípicos (mais de 3 desvios-padrão da variação média; 633 linhas marcadas, nenhuma excluída). (A8 foi decidido: versão nacional.)

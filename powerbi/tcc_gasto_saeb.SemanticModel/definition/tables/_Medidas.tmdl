@@ -243,15 +243,20 @@ table _Medidas
 		displayFolder: 4 Eficiência
 		lineageTag: fb322437-2bcf-5b25-a703-0d38a3353909
 
-	/// Sempre diz qual comparação está em uso (um cartão vazio mostraria "(Em branco)")
+	/// Sempre diz qual comparação está em uso (um cartão vazio mostraria "(Em branco)").
+	/// Revisto na reunião de 2026-11-06: o modelo do próprio estado não filtra a UF, muda a régua; e 2025 precisa de aviso claro.
 	measure 'Aviso do modelo' =
 			SWITCH (
 			    TRUE (),
 			    [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
-			        "⚠ 2025 sem IDHM: use o modelo de robustez (o oficial cobre 2017–2023)",
+			        // aspas dentro de texto DAX se escrevem dobradas; a versão com \" quebrou a medida (2026-11-09)
+			        "⚠ A comparação nacional não cobre 2025: não existe IDHM de 2025. Para ver 2025, escolha "
+			            & "“Comparação no próprio estado” no filtro de comparação.",
 			    [Modelo] = "Oficial",
-			        "Comparação nacional: redes de todo o país com gasto e contexto parecidos",
-			    "Robustez: redes da mesma UF com gasto e contexto parecidos (inclui 2025)"
+			        "Comparação nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos "
+			            & "(inclui o IDHM da UF). Diferenças entre estados aparecem na eficiência.",
+			    "Comparação no próprio estado: cada rede é comparada com as do mesmo estado de gasto e contexto parecidos. "
+			        & "Não filtra a UF: tira da eficiência a diferença média entre estados."
 			)
 		displayFolder: 4 Eficiência
 		lineageTag: 46469a65-6960-5bef-973b-813e34fdbfd6
@@ -373,13 +378,16 @@ table _Medidas
 		displayFolder: 7 Associação por defasagem
 		lineageTag: 4f9e8367-7f21-50d9-8385-878a54c14768
 
-	measure 'Marca de salto' = ```
-			
-			    IF (
-			        CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () ) > 0,
-			        "⚠ salto"
-			    )
-			```
+	/// Versão curta, para colunas de tabela (o texto acompanha o ícone: a cor nunca é a única pista).
+	/// Revisto em 2026-11-09: a coluna vazia parecia defeito. Agora diz "não" quando houve comparação e não houve salto,
+	/// e "sem edição anterior" quando não há com o que comparar (2017, ou a rede não tinha nota na edição anterior).
+	/// Só responde onde há nota, para não criar linhas novas nas tabelas.
+	measure 'Marca de salto' =
+			VAR comNota = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), NOT ISBLANK ( fato_desempenho_municipal[PROFICIENCIA] ) )
+			VAR comparadas = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), NOT ISBLANK ( fato_desempenho_municipal[VARIACAO_EDICAO_ANTERIOR] ) )
+			VAR saltos = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () )
+			RETURN
+			    SWITCH ( TRUE (), saltos > 0, "⚠ salto", comparadas > 0, "não", comNota > 0, "sem edição anterior" )
 		displayFolder: 6 Qualidade dos dados
 		lineageTag: f9c8c3d7-c6da-4e1a-a0b4-b7c2a87dae17
 
@@ -530,7 +538,10 @@ table _Medidas
 			IF (
 			    [Municípios no recorte] > 1500,
 			    "⚠ Escolha uma UF no filtro acima: o mapa mostra até ~1.500 municípios por vez (o Brasil tem 5.571).",
-			    "Vermelho = abaixo do esperado · cinza = próximo · azul = acima (cor máxima a partir de ±30 pontos)."
+			    "Vermelho = abaixo do esperado · cinza = próximo · azul = acima (cor máxima a partir de ±30 pontos). "
+			        & "Sem nota no recorte: " & FORMAT ( [Municípios sem rede municipal na etapa], "#,0" )
+			        & " sem rede municipal na etapa e " & FORMAT ( [Municípios sem nota divulgada], "#,0" )
+			        & " sem nota divulgada pelo Inep (motivo de cada um na Ficha)."
 			)
 		displayFolder: 9 Mapa
 		lineageTag: 3c5a1540-e341-5c15-b728-8d7c1645ad1c
@@ -563,6 +574,195 @@ table _Medidas
 		displayFolder: 7 Associação por defasagem
 		lineageTag: aae99e21-65fd-57b7-adef-02a78222d056
 
+	/// Camada estadual: UFs com nota no recorte (no máximo 27)
+	measure 'UFs avaliadas' =
+			CALCULATE (
+			    DISTINCTCOUNT ( fato_desempenho_estadual[SG_UF] ),
+			    NOT ISBLANK ( fato_desempenho_estadual[PROFICIENCIA] )
+			)
+		formatString: #,0
+		displayFolder: 3 Cobertura
+		lineageTag: b3c4ad52-2f69-55b2-9cf0-336b575d2b75
+
+	/// G4: UF/anos sem a linha 12.364 (Ensino Superior). A versão A não desconta nada; a versão B deixa o par UF/ano vazio.
+	/// Onde a linha existe, A e B são iguais (conferido em 2026-11-09): B só muda a amostra.
+	/// Contagem: nenhuma UF sem a linha é zero de fato (não é dado ausente); sem o COALESCE, o cartão mostrava "(Em branco)"
+	measure 'UFs sem a linha do Ensino Superior' =
+			COALESCE (
+			    CALCULATE (
+			        DISTINCTCOUNT ( fato_gasto_estadual[SG_UF] ),
+			        fato_gasto_estadual[SUP364_AUSENTE] = TRUE ()
+			    ),
+			    0
+			)
+		formatString: #,0
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: b4e54192-b0e9-5806-bbe5-e9508a51faf9
+
+	measure 'Marca do Ensino Superior' =
+			IF (
+			    CALCULATE ( COUNTROWS ( fato_gasto_estadual ), fato_gasto_estadual[SUP364_AUSENTE] = TRUE () ) > 0,
+			    "⚠ sem a linha"
+			)
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: e3a7511a-4166-5d31-9c05-cc5822326b48
+
+	/// Motivo da falta de nota (reunião de 2026-11-06), a partir das matrículas do Censo Escolar por rede.
+	/// Contagens para uma etapa e uma edição: municípios do recorte em cada situação.
+	measure 'Municípios sem rede municipal na etapa' =
+			COALESCE (
+			    CALCULATE ( COUNTROWS ( fato_oferta_municipal ), fato_oferta_municipal[SITUACAO] = "Sem rede municipal na etapa" ),
+			    0
+			)
+		formatString: #,0
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: b7c061ed-5f8d-505f-8734-17047939300c
+
+	measure 'Municípios sem nota divulgada' =
+			COALESCE (
+			    CALCULATE ( COUNTROWS ( fato_oferta_municipal ), fato_oferta_municipal[SITUACAO] = "Sem nota divulgada pelo Inep" ),
+			    0
+			)
+		formatString: #,0
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: aa220341-4d1d-599e-9b3d-37c175fcc980
+
+	/// Frase para a ficha: por que o município tem ou não tem nota e eficiência na etapa e edição escolhidas
+	measure 'Situação da rede' =
+			VAR s = SELECTEDVALUE ( fato_oferta_municipal[SITUACAO] )
+			VAR mat = SUM ( fato_oferta_municipal[QT_MAT_MUN] )
+			VAR part = AVERAGE ( fato_oferta_municipal[PART_MUN] )
+			VAR etapa = LOWER ( SELECTEDVALUE ( dim_etapa[NOME_ETAPA] ) )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        NOT HASONEVALUE ( dim_municipio[CO_MUNICIPIO] ), BLANK (),
+			        NOT HASONEVALUE ( dim_ano[ANO] ) || NOT HASONEVALUE ( dim_etapa[ETAPA] ), "Escolha uma etapa e uma edição.",
+			        ISBLANK ( s ), "Ano sem edição do Saeb.",
+			        s = "Sem rede municipal na etapa",
+			            "A prefeitura não tem alunos nos " & etapa & " neste ano: a etapa é atendida por outra rede (em geral a estadual).",
+			        s = "Sem nota divulgada pelo Inep",
+			            "A rede municipal tem " & FORMAT ( mat, "#,0" ) & " alunos nos " & etapa
+			                & ", mas o Inep não divulgou a nota (participação ou número de alunos avaliados abaixo do mínimo).",
+			        ISBLANK ( [Eficiência (pontos)] ) && [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
+			            "Com nota. A comparação nacional não cobre 2025; use a comparação no próprio estado.",
+			        ISBLANK ( [Eficiência (pontos)] ) && HASONEVALUE ( dim_disciplina[DISCIPLINA] ),
+			            "Com nota, mas sem eficiência: falta o gasto ou outra variável do modelo neste ano.",
+			        "Com nota. A rede municipal atende " & FORMAT ( part, "0%" ) & " dos alunos das escolas públicas nesta etapa."
+			    )
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: 7e8aec30-eab1-59ef-84d2-dc52a5775301
+
+	/// Comparação 1 a 1 (reunião de 2026-11-06). O segundo município vem do filtro "Comparar com" (tabela cmp_municipio,
+	/// sem relação) ou, se ele estiver vazio, do par clicado na tabela (que filtra dim_municipio).
+	measure 'Município comparado' =
+			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
+			RETURN
+			    IF (
+			        ISBLANK ( c ),
+			        "Clique num par da tabela ou escolha em “Comparar com”",
+			        CALCULATE ( SELECTEDVALUE ( dim_municipio[MUNICIPIO_UF] ), REMOVEFILTERS ( dim_municipio ), dim_municipio[CO_MUNICIPIO] = c )
+			    )
+		displayFolder: 5 Pares e cluster
+		lineageTag: 16d3f6df-fbad-58cf-8961-0bbbf43134c4
+
+	measure 'Comparado: gasto por aluno' =
+			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
+			RETURN
+			    IF ( NOT ISBLANK ( c ),
+			        CALCULATE ( AVERAGE ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ),
+			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = c ) )
+		formatString: R$ #,0
+		displayFolder: 5 Pares e cluster
+		lineageTag: eb33d362-46e2-523a-a541-4aa09ceb1bbd
+
+	measure 'Comparado: proficiência' =
+			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
+			RETURN
+			    IF ( NOT ISBLANK ( c ),
+			        CALCULATE ( [Proficiência média],
+			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = c ) )
+		formatString: 0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: ff1d987f-b460-5b61-a761-5a1bf5d863b4
+
+	measure 'Comparado: esperada' =
+			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
+			RETURN
+			    IF ( NOT ISBLANK ( c ),
+			        CALCULATE ( [Proficiência esperada],
+			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = c ) )
+		formatString: 0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 1b250eca-1432-5c09-b7d4-e84c5af6d6f6
+
+	measure 'Comparado: eficiência' =
+			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
+			RETURN
+			    IF ( NOT ISBLANK ( c ),
+			        CALCULATE ( [Eficiência (pontos)],
+			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = c ) )
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 4ccf2a9b-3910-5e44-b94e-6fec8b8cc324
+
+	measure 'Comparado: percentil' =
+			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
+			RETURN
+			    IF ( NOT ISBLANK ( c ),
+			        CALCULATE ( [Percentil de eficiência],
+			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = c ) )
+		formatString: 0
+		displayFolder: 5 Pares e cluster
+		lineageTag: e9683ae3-3ebc-5b07-9c73-a52211251ab1
+
+	measure 'Esperada do município de referência' =
+			VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+			RETURN
+			    CALCULATE ( [Proficiência esperada],
+			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = r )
+		formatString: 0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 78db3df3-1c26-57df-a9f6-19ee1a90fc39
+
+	measure 'Percentil do município de referência' =
+			VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+			RETURN
+			    CALCULATE ( [Percentil de eficiência],
+			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = r )
+		formatString: 0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 23ea5a82-e9e6-527a-b901-2949803e6cfb
+
+	/// Frase-resumo da comparação 1 a 1: diferença de eficiência (ou de nota, sem eficiência) e de gasto, e se o contexto é o mesmo
+	measure 'Comparação 1 a 1' =
+			VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
+			VAR clusterRef = SELECTEDVALUE ( ref_municipio[REF_CLUSTER] )
+			VAR clusterCmp = CALCULATE ( SELECTEDVALUE ( dim_municipio[CLUSTER] ), REMOVEFILTERS ( dim_municipio ), dim_municipio[CO_MUNICIPIO] = c )
+			VAR er = [Eficiência do município de referência]
+			VAR ec = [Comparado: eficiência]
+			VAR pr = [Proficiência do município de referência]
+			VAR pc = [Comparado: proficiência]
+			VAR dg = DIVIDE ( [Comparado: gasto por aluno], [Gasto do município de referência] ) - 1
+			VAR contexto = IF ( clusterRef = clusterCmp, " Mesmo cluster.", " Outro cluster: o contexto é diferente." )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( r ), "Escolha o município de referência no filtro da faixa.",
+			        ISBLANK ( c ), "Clique num par da tabela ou escolha em “Comparar com” para comparar 1 a 1.",
+			        c = r, "Escolha um município diferente da referência.",
+			        NOT ISBLANK ( ec ) && NOT ISBLANK ( er ),
+			            "O comparado tem eficiência " & FORMAT ( ec - er, "+0.0;-0.0;0.0" ) & " pontos em relação à referência, com gasto por aluno "
+			                & FORMAT ( dg, "+0%;-0%;0%" ) & "." & contexto,
+			        NOT ISBLANK ( pc ) && NOT ISBLANK ( pr ),
+			            "Sem eficiência nesta edição e comparação. Proficiência " & FORMAT ( pc - pr, "+0.0;-0.0;0.0" )
+			                & " pontos, gasto por aluno " & FORMAT ( dg, "+0%;-0%;0%" ) & "." & contexto,
+			        "Um dos dois municípios não tem nota nesta etapa e edição (veja o motivo na Ficha)."
+			    )
+		displayFolder: 5 Pares e cluster
+		lineageTag: 3cefe245-a8bb-5d94-a574-af22424b4c5a
+
 	column Coluna
 		dataType: int64
 		isHidden
@@ -574,37 +774,4 @@ table _Medidas
 	partition _Medidas = calculated
 		mode: import
 		source = ROW ( "Coluna", 0 )
-
-	/// Camada estadual: UFs com nota no recorte (no máximo 27)
-	measure 'UFs avaliadas' =
-			    CALCULATE (
-			        DISTINCTCOUNT ( fato_desempenho_estadual[SG_UF] ),
-			        NOT ISBLANK ( fato_desempenho_estadual[PROFICIENCIA] )
-			    )
-		formatString: #,0
-		displayFolder: 3 Cobertura
-		lineageTag: b3c4ad52-2f69-55b2-9cf0-336b575d2b75
-
-	/// G4: UF/anos sem a linha 12.364 (Ensino Superior). A versão A não desconta nada; a versão B deixa o par UF/ano vazio.
-	/// Onde a linha existe, A e B são iguais (conferido em 2026-11-09): B só muda a amostra.
-	/// Contagem: nenhuma UF sem a linha é zero de fato (não é dado ausente); sem o COALESCE, o cartão mostrava "(Em branco)"
-	measure 'UFs sem a linha do Ensino Superior' =
-			    COALESCE (
-			        CALCULATE (
-			            DISTINCTCOUNT ( fato_gasto_estadual[SG_UF] ),
-			            fato_gasto_estadual[SUP364_AUSENTE] = TRUE ()
-			        ),
-			        0
-			    )
-		formatString: #,0
-		displayFolder: 6 Qualidade dos dados
-		lineageTag: b4e54192-b0e9-5806-bbe5-e9508a51faf9
-
-	measure 'Marca do Ensino Superior' =
-			    IF (
-			        CALCULATE ( COUNTROWS ( fato_gasto_estadual ), fato_gasto_estadual[SUP364_AUSENTE] = TRUE () ) > 0,
-			        "⚠ sem a linha"
-			    )
-		displayFolder: 6 Qualidade dos dados
-		lineageTag: e3a7511a-4166-5d31-9c05-cc5822326b48
 

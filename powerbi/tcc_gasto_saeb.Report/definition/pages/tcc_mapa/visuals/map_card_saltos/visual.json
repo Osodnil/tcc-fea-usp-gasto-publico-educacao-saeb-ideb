@@ -28,7 +28,7 @@
               },
               "queryRef": "_Medidas.Redes com salto atípico",
               "nativeQueryRef": "Redes com salto atípico",
-              "displayName": "Redes com salto atípico"
+              "displayName": "Saltos atípicos"
             }
           ]
         }

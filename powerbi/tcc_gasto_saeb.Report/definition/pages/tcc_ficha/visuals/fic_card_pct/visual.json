@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "fic_card_pct",
   "position": {
     "x": 842,
     "y": 80,
-    "z": 11000,
-    "height": 84,
+    "z": 15,
     "width": 150,
-    "tabOrder": 11000
+    "height": 84,
+    "tabOrder": 15
   },
   "visual": {
     "visualType": "card",
@@ -34,6 +34,7 @@
         }
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "labels": [
         {
@@ -226,7 +227,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

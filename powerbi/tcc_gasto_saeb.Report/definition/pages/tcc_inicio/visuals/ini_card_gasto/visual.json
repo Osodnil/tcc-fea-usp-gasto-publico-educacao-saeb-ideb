@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "ini_card_gasto",
   "position": {
     "x": 16,
     "y": 80,
-    "z": 6000,
-    "height": 84,
+    "z": 10,
     "width": 242,
-    "tabOrder": 6000
+    "height": 84,
+    "tabOrder": 10
   },
   "visual": {
     "visualType": "card",
@@ -34,6 +34,7 @@
         }
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "labels": [
         {
@@ -226,7 +227,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

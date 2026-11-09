@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "def_seg_defasagem",
   "position": {
     "x": 1108,
     "y": 8,
     "z": 5,
-    "height": 56,
     "width": 156,
+    "height": 56,
     "tabOrder": 5
   },
   "visual": {
@@ -143,7 +143,7 @@
                 "Version": 2,
                 "From": [
                   {
-                    "Name": "d",
+                    "Name": "t",
                     "Entity": "dim_defasagem",
                     "Type": 0
                   }
@@ -157,7 +157,7 @@
                             "Column": {
                               "Expression": {
                                 "SourceRef": {
-                                  "Source": "d"
+                                  "Source": "t"
                                 }
                               },
                               "Property": "ROTULO_DEFASAGEM"
@@ -183,6 +183,7 @@
         }
       ]
     },
+    "drillFilterOtherVisuals": true,
     "visualContainerObjects": {
       "background": [
         {
@@ -223,7 +224,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

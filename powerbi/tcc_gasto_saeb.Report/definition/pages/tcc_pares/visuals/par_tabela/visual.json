@@ -4,10 +4,10 @@
   "position": {
     "x": 16,
     "y": 172,
-    "z": 13000,
+    "z": 20,
     "height": 512,
-    "width": 860,
-    "tabOrder": 13000
+    "width": 744,
+    "tabOrder": 20
   },
   "visual": {
     "visualType": "tableEx",
@@ -88,7 +88,7 @@
               },
               "queryRef": "_Medidas.Par: diferença para a referência",
               "nativeQueryRef": "Par: diferença para a referência",
-              "displayName": "Diferença para a referência"
+              "displayName": "Diferença"
             },
             {
               "field": {
@@ -263,7 +263,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Pares do município de referência, do mais ao menos eficiente'"
+                  "Value": "'Pares, do mais ao menos eficiente (clique num par para compará-lo ao lado)'"
                 }
               }
             },

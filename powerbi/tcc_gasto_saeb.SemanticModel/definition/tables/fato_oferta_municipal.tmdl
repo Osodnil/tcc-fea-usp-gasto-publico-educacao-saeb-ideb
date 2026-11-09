@@ -1,0 +1,60 @@
+table fato_oferta_municipal
+	lineageTag: 3b6e9b25-5180-5ee5-b832-737e688030ea
+
+	column CO_MUNICIPIO
+		dataType: string
+		isHidden
+		lineageTag: e89b1266-7b7a-57bc-bb8c-70a64c448555
+		summarizeBy: none
+		sourceColumn: CO_MUNICIPIO
+
+	column ETAPA
+		dataType: string
+		isHidden
+		lineageTag: 236576ee-0565-5215-ba91-8b6de957970d
+		summarizeBy: none
+		sourceColumn: ETAPA
+
+	column ANO
+		dataType: int64
+		isHidden
+		lineageTag: 304424fc-92ad-5c60-ae4f-03b5ec17f8cf
+		summarizeBy: none
+		sourceColumn: ANO
+
+	column QT_MAT_MUN
+		dataType: double
+		formatString: #,0
+		lineageTag: ff825459-a66e-5266-b895-7e58f833cf8b
+		summarizeBy: none
+		sourceColumn: QT_MAT_MUN
+
+	column QT_MAT_EST
+		dataType: double
+		formatString: #,0
+		lineageTag: 513dc673-4232-5aa0-9ed9-a5d6cc930f9f
+		summarizeBy: none
+		sourceColumn: QT_MAT_EST
+
+	column PART_MUN
+		dataType: double
+		formatString: 0.0%
+		lineageTag: 647e5bdc-98d7-5702-a083-fd7048fd12f0
+		summarizeBy: none
+		sourceColumn: PART_MUN
+
+	column SITUACAO
+		dataType: string
+		lineageTag: e38256a2-d2b3-53bd-b83a-5fcc9401cadf
+		summarizeBy: none
+		sourceColumn: SITUACAO
+
+	partition fato_oferta_municipal = m
+		mode: import
+		source =
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\fato_oferta_municipal.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"CO_MUNICIPIO", type text}, {"ETAPA", type text}, {"ANO", Int64.Type}, {"QT_MAT_MUN", type number}, {"QT_MAT_EST", type number}, {"PART_MUN", type number}, {"SITUACAO", type text}})
+				in
+				    Tipos
+

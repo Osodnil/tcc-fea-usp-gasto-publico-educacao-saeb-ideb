@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "ctx_seg_etapa",
   "position": {
-    "x": 616,
+    "x": 584,
     "y": 8,
     "z": 2,
-    "height": 56,
     "width": 156,
+    "height": 56,
     "tabOrder": 2
   },
   "visual": {
@@ -143,7 +143,7 @@
                 "Version": 2,
                 "From": [
                   {
-                    "Name": "d",
+                    "Name": "t",
                     "Entity": "dim_etapa",
                     "Type": 0
                   }
@@ -157,7 +157,7 @@
                             "Column": {
                               "Expression": {
                                 "SourceRef": {
-                                  "Source": "d"
+                                  "Source": "t"
                                 }
                               },
                               "Property": "NOME_ETAPA"
@@ -182,6 +182,12 @@
           }
         }
       ]
+    },
+    "drillFilterOtherVisuals": true,
+    "syncGroup": {
+      "groupName": "etapa",
+      "fieldChanges": true,
+      "filterChanges": true
     },
     "visualContainerObjects": {
       "background": [
@@ -223,13 +229,7 @@
           }
         }
       ]
-    },
-    "syncGroup": {
-      "groupName": "etapa",
-      "fieldChanges": true,
-      "filterChanges": true
-    },
-    "drillFilterOtherVisuals": true
+    }
   },
   "filterConfig": {
     "filters": [

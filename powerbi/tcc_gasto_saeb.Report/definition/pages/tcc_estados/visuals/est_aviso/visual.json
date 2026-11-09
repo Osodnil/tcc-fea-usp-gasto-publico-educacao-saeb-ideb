@@ -20,7 +20,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "27 unidades: leitura descritiva, sem correlação nem eficiência. Gasto = função Educação menos o Ensino Superior (versão A). ⚠ = UF sem a linha do Ensino Superior no ano: nada é descontado (A); a versão B deixa essas UFs de fora.",
+                    "value": "27 unidades: leitura descritiva, sem correlação nem eficiência. Gasto = Educação menos Ensino Superior (versão A). ⚠ = UF sem a linha do Ensino Superior: nada é descontado; a versão B deixa a UF de fora.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -40,14 +40,14 @@
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "6.0D"
+                  "Value": "4.0D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "6.0D"
+                  "Value": "4.0D"
                 }
               }
             },

@@ -52,9 +52,15 @@ def dimensoes(uf: pl.DataFrame) -> dict[str, pl.DataFrame]:
         .with_columns(
             (pl.col("NO_MUNICIPIO") + " (" + pl.col("SG_UF") + ")").alias("MUNICIPIO_UF"),
             pl.col("CLUSTER_ROTULO").fill_null("Sem cluster"),
+            # rótulo curto para legendas (o completo era cortado nas dispersões, 2026-11-09): número, região e porte
+            pl.when(pl.col("CLUSTER").is_null()).then(pl.lit("Sem cluster"))
+            .otherwise(pl.col("CLUSTER").cast(pl.Utf8) + " · "
+                       + pl.col("CLUSTER_ROTULO").str.split(" · ").list.slice(0, 2).list.join(" · "))
+            .alias("CLUSTER_CURTO"),
         )
         .select("CO_MUNICIPIO", "NO_MUNICIPIO", "MUNICIPIO_UF", "SG_UF", "NM_UF", "NM_REGIAO", "POPULACAO_TOTAL_CENSO",
-                "TAXA_ALFABETIZACAO_15MAIS", "PORTE", "PORTE_ORDEM", "FAIXA_ALFABETIZACAO", "CLUSTER", "CLUSTER_ROTULO")
+                "TAXA_ALFABETIZACAO_15MAIS", "PORTE", "PORTE_ORDEM", "FAIXA_ALFABETIZACAO", "CLUSTER", "CLUSTER_ROTULO",
+                "CLUSTER_CURTO")
         .sort("CO_MUNICIPIO")
     )
     anos = list(range(2017, 2026))
@@ -79,12 +85,50 @@ def dimensoes(uf: pl.DataFrame) -> dict[str, pl.DataFrame]:
             "DEFASAGEM": [0, 1, 2, 4],
             "ROTULO_DEFASAGEM": ["Mesmo ano", "1 ano antes", "2 anos antes", "4 anos antes"],
         }),
+        # rótulos revistos na reunião de 2026-11-06: o modelo de UF não filtra a UF, muda a régua da comparação
         "dim_modelo": pl.DataFrame({
             "MODELO": ["Oficial", "Robustez"],
-            "ROTULO_MODELO": ["Nacional, com IDHM (2017–2023)", "Dentro da UF, efeitos fixos (2017–2025)"],
+            "ROTULO_MODELO": ["Comparação nacional (2017–2023)", "Comparação no próprio estado (2017–2025)"],
             "ORDEM": [1, 2],
         }),
     }
+
+
+SEM_REDE, SEM_DIVULGACAO, COM_NOTA = "Sem rede municipal na etapa", "Sem nota divulgada pelo Inep", "Com nota"
+
+
+def fato_oferta(municipio: pl.DataFrame, painel: pl.DataFrame) -> pl.DataFrame:
+    """Matrículas da etapa por rede (Censo Escolar) para cada município, etapa (AI, AF) e ano, e a situação da
+    rede municipal nas edições do Saeb: com nota, sem nota divulgada (há alunos na rede) ou sem rede na etapa.
+    PART_MUN = parcela das matrículas públicas (municipal + estadual) da etapa que está na rede municipal."""
+    blocos = []
+    for ano in range(2017, 2026):
+        c = pl.read_parquet(BASE_DIR / "data" / "interim" / f"censo_matriculas_{ano}.parquet")
+        for etapa, col in (("AI", "QT_MAT_FUND_AI"), ("AF", "QT_MAT_FUND_AF")):
+            blocos.append(c.filter(pl.col("REDE").is_in(["Municipal", "Estadual"]))
+                          .group_by("CO_MUNICIPIO").agg(
+                              pl.col(col).filter(pl.col("REDE") == "Municipal").sum().alias("QT_MAT_MUN"),
+                              pl.col(col).filter(pl.col("REDE") == "Estadual").sum().alias("QT_MAT_EST"))
+                          .with_columns(pl.lit(etapa).alias("ETAPA"), pl.lit(ano, dtype=pl.Int32).alias("ANO")))
+    mat = pl.concat(blocos)
+    grade = municipio.select("CO_MUNICIPIO").join(
+        pl.DataFrame({"ETAPA": ["AI", "AF"]}), how="cross").join(
+        pl.DataFrame({"ANO": list(range(2017, 2026))}, schema={"ANO": pl.Int32}), how="cross")
+    nota = painel.filter(pl.col("TEM_NOTA")).select("CO_MUNICIPIO", "ETAPA", "ANO").with_columns(pl.lit(True).alias("_NOTA"))
+    return (
+        grade.join(mat, on=["CO_MUNICIPIO", "ETAPA", "ANO"], how="left")
+        .join(nota, on=["CO_MUNICIPIO", "ETAPA", "ANO"], how="left")
+        .with_columns(pl.col("QT_MAT_MUN", "QT_MAT_EST").fill_null(0.0))
+        .with_columns(
+            pl.when(pl.col("QT_MAT_MUN") + pl.col("QT_MAT_EST") > 0)
+            .then(pl.col("QT_MAT_MUN") / (pl.col("QT_MAT_MUN") + pl.col("QT_MAT_EST"))).alias("PART_MUN"),
+            pl.when(~pl.col("ANO").is_in(EDICOES)).then(None)
+            .when(pl.col("_NOTA").fill_null(False)).then(pl.lit(COM_NOTA))
+            .when(pl.col("QT_MAT_MUN") == 0).then(pl.lit(SEM_REDE))
+            .otherwise(pl.lit(SEM_DIVULGACAO)).alias("SITUACAO"))
+        .drop("_NOTA")
+        .sort("CO_MUNICIPIO", "ETAPA", "ANO")
+    )
 
 
 def fatos_municipais() -> dict[str, pl.DataFrame]:
@@ -123,12 +167,14 @@ if __name__ == "__main__":
     DESTINO.mkdir(parents=True, exist_ok=True)
     uf = pl.read_parquet(PROCESSED_DIR / "dim_uf.parquet")
     tabelas = {**dimensoes(uf), **fatos_municipais(), **fatos_estaduais()}
+    tabelas["fato_oferta_municipal"] = fato_oferta(tabelas["dim_municipio"], pl.read_parquet(PROCESSED_DIR / "painel_municipal.parquet"))
 
     chaves = {
         "dim_municipio": ["CO_MUNICIPIO"], "dim_uf": ["SG_UF"], "dim_cluster": ["CLUSTER"], "dim_ano": ["ANO"],
         "dim_etapa": ["ETAPA"], "dim_disciplina": ["DISCIPLINA"], "dim_defasagem": ["DEFASAGEM"], "dim_modelo": ["MODELO"],
         "fato_desempenho_municipal": ["CO_MUNICIPIO", "ETAPA", "DISCIPLINA", "ANO"], "fato_gasto_municipal": ["CO_MUNICIPIO", "ANO"],
         "fato_desempenho_estadual": ["SG_UF", "ETAPA", "DISCIPLINA", "ANO"], "fato_gasto_estadual": ["SG_UF", "ANO"],
+        "fato_oferta_municipal": ["CO_MUNICIPIO", "ETAPA", "ANO"],
     }
     for nome, df in tabelas.items():
         dup = df.height - df.select(chaves[nome]).unique().height
@@ -145,3 +191,13 @@ if __name__ == "__main__":
     print(f"[INFO] Linhas com proficiência: {d['PROFICIENCIA'].is_not_null().sum()} | com eficiência oficial: "
           f"{d['RESIDUO'].is_not_null().sum()} | com eficiência de robustez: {d['RESIDUO_ALT'].is_not_null().sum()} | "
           f"saltos atípicos: {d['SALTO_ATIPICO'].sum()}")
+
+    # oferta: a situação "com nota" tem de bater com o painel, e as matrículas municipais com as do painel
+    o = tabelas["fato_oferta_municipal"]
+    painel = pl.read_parquet(PROCESSED_DIR / "painel_municipal.parquet")
+    assert o.filter(pl.col("SITUACAO") == COM_NOTA).height == painel.filter(pl.col("TEM_NOTA")).height, "situação ≠ painel"
+    dif = painel.filter(pl.col("ETAPA") == "AI").join(o.filter(pl.col("ETAPA") == "AI"), on=["CO_MUNICIPIO", "ETAPA", "ANO"]) \
+        .filter((pl.col("QT_MAT_FUND_AI").fill_null(0) - pl.col("QT_MAT_MUN")).abs() > 0.5).height
+    print(f"[INFO] fato_oferta_municipal: linhas de AI com matrícula municipal diferente do painel = {dif}")
+    print("[INFO] Situação da rede nas edições:", o.filter(pl.col("SITUACAO").is_not_null())
+          .group_by("ETAPA", "SITUACAO").len().sort("ETAPA", "SITUACAO").rows())

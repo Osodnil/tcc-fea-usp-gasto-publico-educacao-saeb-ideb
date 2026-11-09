@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "def_dispersao",
   "position": {
     "x": 788,
     "y": 172,
     "z": 21,
-    "height": 232,
     "width": 476,
+    "height": 232,
     "tabOrder": 21
   },
   "visual": {
@@ -48,7 +48,6 @@
               },
               "queryRef": "_Medidas.Gasto das redes avaliadas (mediana)",
               "nativeQueryRef": "Gasto das redes avaliadas (mediana)",
-              "active": true,
               "displayName": "Gasto por aluno (R$ de 2025)"
             }
           ]
@@ -74,6 +73,7 @@
         }
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "categoryAxis": [
         {
@@ -241,7 +241,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

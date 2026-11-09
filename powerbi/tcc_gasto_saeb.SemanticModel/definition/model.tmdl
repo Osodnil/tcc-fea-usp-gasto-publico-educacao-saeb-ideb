@@ -10,7 +10,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
-annotation PBI_QueryOrder = ["PastaDados","dim_municipio","dim_uf","dim_cluster","dim_ano","dim_etapa","dim_disciplina","dim_defasagem","dim_modelo","fato_desempenho_municipal","fato_gasto_municipal","fato_desempenho_estadual","fato_gasto_estadual"]
+annotation PBI_QueryOrder = ["PastaDados","dim_municipio","dim_uf","dim_cluster","dim_ano","dim_etapa","dim_disciplina","dim_defasagem","dim_modelo","fato_desempenho_municipal","fato_gasto_municipal","fato_desempenho_estadual","fato_gasto_estadual","fato_oferta_municipal"]
 
 annotation PBI_ProTooling = ["DevMode","DaxQueryView_Desktop"]
 
@@ -28,6 +28,8 @@ ref table fato_desempenho_estadual
 ref table fato_gasto_estadual
 ref table ref_municipio
 ref table _Medidas
+ref table fato_oferta_municipal
+ref table cmp_municipio
 
 ref cultureInfo pt-BR
 

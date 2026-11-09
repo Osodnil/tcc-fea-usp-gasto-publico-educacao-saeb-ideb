@@ -239,7 +239,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Gasto por aluno das redes estaduais (mediana das UFs, R$ de 2025)'"
+                  "Value": "'Gasto por aluno estadual (mediana das UFs)'"
                 }
               }
             },

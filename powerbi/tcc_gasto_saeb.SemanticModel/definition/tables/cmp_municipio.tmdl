@@ -1,0 +1,28 @@
+table cmp_municipio
+	lineageTag: d90dca4e-2336-511b-bdeb-81f2aa3d27d0
+
+	column CMP_CO_MUNICIPIO
+		dataType: string
+		lineageTag: de6e6de7-9feb-5eef-a5bb-b843957f2259
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [CMP_CO_MUNICIPIO]
+
+	column CMP_MUNICIPIO_UF
+		dataType: string
+		lineageTag: 639d8e5d-5899-5035-9931-11b168a66470
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [CMP_MUNICIPIO_UF]
+
+	column CMP_CLUSTER
+		dataType: int64
+		lineageTag: 4ddb2060-cc35-5d75-b5ff-884b38dc5010
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [CMP_CLUSTER]
+
+	partition cmp_municipio = calculated
+		mode: import
+		source = SELECTCOLUMNS ( dim_municipio, "CMP_CO_MUNICIPIO", dim_municipio[CO_MUNICIPIO], "CMP_MUNICIPIO_UF", dim_municipio[MUNICIPIO_UF], "CMP_CLUSTER", dim_municipio[CLUSTER] )
+
