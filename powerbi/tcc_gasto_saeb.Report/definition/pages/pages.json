@@ -5,9 +5,10 @@
     "tcc_eficiencia",
     "tcc_ficha",
     "tcc_pares",
-    "tcc_defasagens",
     "tcc_mapa",
-    "tcc_contexto"
+    "tcc_defasagens",
+    "tcc_contexto",
+    "tcc_estados"
   ],
-  "activePageName": "tcc_eficiencia"
+  "activePageName": "tcc_inicio"
 }

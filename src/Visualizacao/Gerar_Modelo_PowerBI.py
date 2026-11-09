@@ -88,7 +88,7 @@ FORMATOS = [  # (padrão no nome da medida, formatString); vale o primeiro que c
     (r"^(% acima|Cobertura)", "0.0%"),
     (r"^Correlação", "0.00"),
     (r"^(IDEB|Nota padronizada|Gasto ÷)", "0.00"),
-    (r"^(Redes|Municípios)", "#,0"),
+    (r"^(Redes|Municípios|UFs)", "#,0"),
     (r"^(Defasagem|É par)", "0"),
 ]
 

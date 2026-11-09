@@ -575,3 +575,36 @@ table _Medidas
 		mode: import
 		source = ROW ( "Coluna", 0 )
 
+	/// Camada estadual: UFs com nota no recorte (no máximo 27)
+	measure 'UFs avaliadas' =
+			    CALCULATE (
+			        DISTINCTCOUNT ( fato_desempenho_estadual[SG_UF] ),
+			        NOT ISBLANK ( fato_desempenho_estadual[PROFICIENCIA] )
+			    )
+		formatString: #,0
+		displayFolder: 3 Cobertura
+		lineageTag: b3c4ad52-2f69-55b2-9cf0-336b575d2b75
+
+	/// G4: UF/anos sem a linha 12.364 (Ensino Superior). A versão A não desconta nada; a versão B deixa o par UF/ano vazio.
+	/// Onde a linha existe, A e B são iguais (conferido em 2026-11-09): B só muda a amostra.
+	/// Contagem: nenhuma UF sem a linha é zero de fato (não é dado ausente); sem o COALESCE, o cartão mostrava "(Em branco)"
+	measure 'UFs sem a linha do Ensino Superior' =
+			    COALESCE (
+			        CALCULATE (
+			            DISTINCTCOUNT ( fato_gasto_estadual[SG_UF] ),
+			            fato_gasto_estadual[SUP364_AUSENTE] = TRUE ()
+			        ),
+			        0
+			    )
+		formatString: #,0
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: b4e54192-b0e9-5806-bbe5-e9508a51faf9
+
+	measure 'Marca do Ensino Superior' =
+			    IF (
+			        CALCULATE ( COUNTROWS ( fato_gasto_estadual ), fato_gasto_estadual[SUP364_AUSENTE] = TRUE () ) > 0,
+			        "⚠ sem a linha"
+			    )
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: e3a7511a-4166-5d31-9c05-cc5822326b48
+

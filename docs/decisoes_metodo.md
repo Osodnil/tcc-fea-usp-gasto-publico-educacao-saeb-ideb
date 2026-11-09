@@ -111,6 +111,7 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Implementação provisória:** `Transform_SICONFI.py` gera as duas versões, `GASTO_BASICA_A_*` e `GASTO_BASICA_B_*`, além da marca `SUP364_AUSENTE`. A escolha fica para depois da reunião, sem refazer nada.
 - **Dossiê da conta anterior:** a especificação original do Transform estadual já previa tratar a ausência como zero (versão A). O dossiê também registra que o RS tem universidade estadual, e por isso o zero no RS seria provavelmente uma classificação diferente, de efeito pequeno diante do total. Isso não foi verificado.
 - **Decisão (Henrique, 2026-10-30):** usar a **versão A**: a ausência da linha 12.364 é tratada como "nada a descontar", para não deixar UF/anos sem informação. A versão B continua calculada nos painéis, só para teste de sensibilidade. O dashboard oficial usa a A.
+- **Como as versões diferem na prática (conferido em 2026-11-09):** onde a linha 12.364 existe, A e B são iguais. A versão B só deixa vazios os pares UF/ano sem a linha (em 2023, AC, RO, RS e SE). Logo, a sensibilidade à versão B é uma sensibilidade à **amostra**, e não ao valor do gasto de cada UF.
 - **Limitação que permanece (L2):** no RS de 2018 a 2023, se o Ensino Superior estiver lançado em outra subfunção, o gasto da educação básica fica superestimado nesses anos. A conferência no DCA do RS continua recomendada, mas não bloqueia nada.
 
 ### G4b. Total da função 12 maior que a soma das subfunções listadas ⚠️ (achado de 2026-10-22)
@@ -626,7 +627,33 @@ Falar sempre em associação e eficiência relativa.
     | 7 Sudeste · médios | 714 | R$ 13.461 | 232,5 | 51,7% |
 
     - **Por porte:** o gasto mediano cai de R$ 16.669 (até 5 mil habitantes) para R$ 11.987 (100 a 500 mil) e volta a R$ 14.093 acima de 500 mil. A proficiência mediana vai de 226,7 a 212,2 (mais de 500 mil).
-  - **Achado:** o % acima do esperado vai de 40% (cluster 1) a 59% (cluster 6). O modelo oficial (A8) já inclui as variáveis de contexto usadas nos clusters, mas de forma linear e sem efeito de região. Por isso parte da diferença entre os grupos, provavelmente regional, ainda aparece na eficiência, e a comparação dentro do cluster (página Pares) é a mais justa. Isso fica para avaliar com o Guilherme se cabe na seção de Método.
+  - **Achado (página Contexto e clusters):** o % acima do esperado vai de 40% (cluster 1) a 59% (cluster 6). O modelo oficial (A8) já inclui as variáveis de contexto usadas nos clusters, mas de forma linear e sem efeito de região. Por isso parte da diferença entre os grupos, provavelmente regional, ainda aparece na eficiência, e a comparação dentro do cluster (página Pares) é a mais justa. Isso fica para avaliar com o Guilherme se cabe na seção de Método.
+- **Página Estados (2026-11-09):** camada estadual, com 27 UFs, Anos Finais e Ensino Médio. A leitura é descritiva (L8): com 27 unidades, a página não mostra correlação (mínimo de 30, I12) nem eficiência.
+  - **Conteúdo:**
+    - cartões com UFs com nota, proficiência média, gasto mediano nas versões A e B e UFs sem a linha do Ensino Superior;
+    - dispersão gasto × proficiência por UF, colorida por região;
+    - proficiência por edição e por região;
+    - tabela das UFs;
+    - linha do gasto mediano por ano nas versões A e B.
+  - **Filtros:**
+    - **Etapa:** a segmentação é própria (AF e EM) e não sincronizada, porque o Ensino Médio não existe nas páginas municipais.
+    - **Edição:** vale para os cartões, a dispersão e a tabela, mas não para as duas linhas.
+    - **Gasto:** é o do mesmo ano da edição.
+  - **Mudança em relação à especificação:**
+    - **Previsto:** um seletor de versão A ou B.
+    - **Por que mudou:** a conferência mostrou que A e B são iguais onde a linha 12.364 existe (G4).
+    - **Como ficou:** a versão B aparece como segunda linha no gráfico de gasto e num cartão. A tabela marca com "⚠ sem a linha" as UFs que ela deixaria de fora, e não há seletor.
+    - **Vantagem:** mostra a sensibilidade sem esconder a versão oficial.
+  - **Medidas novas:** `UFs avaliadas`, `UFs sem a linha do Ensino Superior` e `Marca do Ensino Superior`.
+  - **Ajustes depois da primeira conferência (2026-11-09):**
+    - **Clique num ponto:** filtrava a página toda para aquela UF. Com MT selecionado, os cartões mostravam 1 UF, 243,2 e R$ 14.898, valores corretos para MT, e isso pareceu erro. O título da dispersão agora explica o clique.
+    - **Cartão "UFs sem a linha":** mostrava "(Em branco)" quando nenhuma UF do recorte estava sem a linha. Como zero UFs é um zero de fato, e não um dado ausente (A3), a medida agora devolve 0.
+    - **Rótulos dos cartões de gasto:** encurtados, porque não cabiam.
+  - **Valores de conferência (AF, MT, 2023):**
+    - 27 UFs, proficiência média de 247,5 (EM: 263,3);
+    - gasto mediano de R$ 13.343 na versão A e de R$ 13.467 na versão B; as 4 UFs sem a linha são AC, RO, RS e SE;
+    - maior proficiência em GO (266,8, R$ 13.301) e menor na BA (226,7, R$ 16.988);
+    - médias por região: Sul 258,2, Centro-Oeste 250,4, Sudeste 249,6, Nordeste 244,6 e Norte 243,7.
 - **Filtros sincronizados:** Etapa, Disciplina, Edição, Modelo e UF passaram a ter grupo de sincronização. A escolha feita numa página vale nas outras.
 - **Conferências do gerador de páginas:**
   - os esquemas oficiais são baixados pelo próprio script para `data/interim/esquemas_pbir` (fora do Git), e `--validar` funciona em qualquer máquina;

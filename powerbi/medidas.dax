@@ -143,6 +143,13 @@ Municípios no recorte = COUNTROWS ( dim_municipio )
 // Ler por edição: com várias edições selecionadas, cada município conta uma vez
 Cobertura do Saeb = DIVIDE ( [Redes avaliadas], [Municípios no recorte] )
 
+// Camada estadual: UFs com nota no recorte (no máximo 27)
+UFs avaliadas =
+    CALCULATE (
+        DISTINCTCOUNT ( fato_desempenho_estadual[SG_UF] ),
+        NOT ISBLANK ( fato_desempenho_estadual[PROFICIENCIA] )
+    )
+
 // ───────────────────────── Pasta: 4 Eficiência ─────────────────────────
 
 Proficiência esperada =
@@ -349,6 +356,24 @@ Aviso de salto atípico =
     IF (
         CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () ) > 0,
         "⚠ Variação atípica em relação à edição anterior (mais de 3 desvios-padrão). Conferir antes de interpretar."
+    )
+
+// G4: UF/anos sem a linha 12.364 (Ensino Superior). A versão A não desconta nada; a versão B deixa o par UF/ano vazio.
+// Onde a linha existe, A e B são iguais (conferido em 2026-11-09): B só muda a amostra.
+// Contagem: nenhuma UF sem a linha é zero de fato (não é dado ausente); sem o COALESCE, o cartão mostrava "(Em branco)"
+UFs sem a linha do Ensino Superior =
+    COALESCE (
+        CALCULATE (
+            DISTINCTCOUNT ( fato_gasto_estadual[SG_UF] ),
+            fato_gasto_estadual[SUP364_AUSENTE] = TRUE ()
+        ),
+        0
+    )
+
+Marca do Ensino Superior =
+    IF (
+        CALCULATE ( COUNTROWS ( fato_gasto_estadual ), fato_gasto_estadual[SUP364_AUSENTE] = TRUE () ) > 0,
+        "⚠ sem a linha"
     )
 
 // ───────────────────────── Pasta: 8 Ficha do município ─────────────────────────

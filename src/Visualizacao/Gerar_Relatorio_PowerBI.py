@@ -295,6 +295,9 @@ def segmentacoes_padrao(prefixo: str) -> dict:
                    "modelo", False, 156),
         # parâmetro sem relação com o modelo e sem sincronização: vale só na página Defasagens
         "defasagem": ("dim_defasagem.ROTULO_DEFASAGEM", "Gasto de quando", ["Mesmo ano"], True, None, None, False, 156),
+        # camada estadual: só AF e EM; sem sincronização, porque nas páginas municipais EM não existe
+        "etapa_est": ("dim_etapa.NOME_ETAPA", "Etapa (rede estadual)", ["Anos Finais (9º ano)"], True,
+                      [filtro_visual(f"{prefixo}_f_etapa_est", "dim_etapa", "ETAPA", ["AF", "EM"])], None, False, 180),
     }
 
 
@@ -697,7 +700,72 @@ def pagina_contexto() -> tuple[dict, list[dict]]:
     return pagina("tcc_contexto", "Contexto e clusters"), vis
 
 
-PAGINAS = [pagina_inicio, pagina_eficiencia, pagina_ficha, pagina_pares, pagina_mapa, pagina_defasagens, pagina_contexto]
+def pagina_estados() -> tuple[dict, list[dict]]:
+    """Camada estadual (27 UFs, AF e EM), leitura descritiva: sem correlação nem eficiência, por serem poucas unidades.
+    Gasto na versão A (G4). A versão B só difere por deixar vazias as UF/anos sem a linha do Ensino Superior
+    (onde a linha existe, A = B): aparece como segunda linha no gráfico de gasto e como marca na tabela."""
+    p = "est"
+    vis = cabecalho(p, "Redes estaduais", "Anos Finais e Ensino Médio nas 27 UFs: leitura descritiva",
+                    segs=("etapa_est", "disciplina", "edicao"))
+    cartoes = [("ufs", "UFs avaliadas", "UFs com nota"),
+               ("prof", "Proficiência média estadual", "Proficiência média (UFs)"),
+               # rótulos curtos: "Gasto por aluno (mediana)" não cabia em 156 px (2026-11-09)
+               ("gasto_a", "Gasto estadual por aluno (mediana, versão A)", "Gasto mediano (A)"),
+               ("gasto_b", "Gasto estadual por aluno (mediana, versão B)", "Gasto mediano (B)"),
+               ("sem_linha", "UFs sem a linha do Ensino Superior", "UFs sem a linha ⚠")]
+    for i, (nome, m, rot) in enumerate(cartoes):
+        vis.append(container(f"{p}_card_{nome}", (16 + i * 164, 80, 156, 84), cartao(m, rot), 10 + i))
+    corpo = {"fontSize": "9pt", "color": COR_TEXTO_2}
+    vis.append(container(f"{p}_aviso", (836, 80, 428, 84), com_padding(texto([
+        ("27 unidades: leitura descritiva, sem correlação nem eficiência. Gasto = função Educação menos o Ensino "
+         "Superior (versão A). ⚠ = UF sem a linha do Ensino Superior no ano: nada é descontado (A); a versão B deixa "
+         "essas UFs de fora.", corpo)]), vertical=6.0, horizontal=12.0), 15))
+    so_edicoes = lambda nome: [filtro_visual(f"{p}_f_{nome}", "dim_ano", "EDICAO_SAEB", [True])]
+    vis.append(container(
+        f"{p}_dispersao", (16, 172, 620, 300),
+        grafico("scatterChart",
+                {"Category": [("dim_uf.SG_UF", "UF")], "Series": [("dim_uf.NM_REGIAO", "Região")],
+                 "X": [("Gasto estadual por aluno (mediana, versão A)", "Gasto por aluno (R$ de 2025)")],
+                 "Y": [("Proficiência média estadual", "Proficiência")]},
+                objetos={"categoryLabels": [{"properties": {"show": literal(True), "fontSize": literal(8.0)}}],
+                         "legend": [{"properties": {"show": literal(True), "position": literal("Top"), "fontSize": literal(8.0)}}]}),
+        # um clique num ponto filtra a página toda para aquela UF (na conferência de 2026-11-09, parecia erro)
+        20, titulo="Gasto × proficiência por UF (clique num ponto filtra a página; clique de novo para limpar)"))
+    eixo_ano = {"categoryAxis": [{"properties": {"axisType": literal("Categorical"), "showAxisTitle": literal(False)}}],
+                "valueAxis": [{"properties": {"showAxisTitle": literal(False)}}],
+                "legend": [{"properties": {"show": literal(True), "position": literal("Top"), "fontSize": literal(8.0)}}]}
+    vis.append(container(
+        f"{p}_linhas_prof", (644, 172, 620, 300),
+        grafico("lineChart", {"Category": [("dim_ano.ANO", "Edição")], "Series": [("dim_uf.NM_REGIAO", "Região")],
+                              "Y": [("Proficiência média estadual", "Proficiência")]},
+                objetos=eixo_ano),
+        21, so_edicoes("linhas_prof"), titulo="Proficiência média das redes estaduais por edição, por região"))
+    vis.append(container(
+        f"{p}_tabela", (16, 480, 760, 204),
+        grafico("tableEx", {"Values": [("dim_uf.NM_UF", "UF"), ("dim_uf.NM_REGIAO", "Região"),
+                                       ("Gasto estadual por aluno (mediana, versão A)", "Gasto por aluno"),
+                                       ("Proficiência média estadual", "Proficiência"),
+                                       ("Marca do Ensino Superior", "Ensino Superior")]},
+                ordenar="Proficiência média estadual",
+                objetos={"total": [{"properties": {"totals": literal(False)}}]}),
+        22, titulo="UFs na edição escolhida (clique no cabeçalho para reordenar)"))
+    vis.append(container(
+        f"{p}_linhas_gasto", (788, 480, 476, 204),
+        grafico("lineChart", {"Category": [("dim_ano.ANO", "Ano")],
+                              "Y": [("Gasto estadual por aluno (mediana, versão A)", "Versão A (oficial)"),
+                                    ("Gasto estadual por aluno (mediana, versão B)", "Versão B (sem as UFs ⚠)")]},
+                objetos=eixo_ano),
+        23, titulo="Gasto por aluno das redes estaduais (mediana das UFs, R$ de 2025)"))
+    vis.append(container(f"{p}_rodape", (16, 690, 1248, 24), texto([(
+        "Fontes: SICONFI/DCA (gasto estadual), Censo Escolar (matrículas da educação básica), Saeb/Inep (proficiência). "
+        "Valores em R$ de 2025, corrigidos pelo IPCA. Resultados descritivos, não de causalidade.",
+        {"fontSize": "9pt", "color": COR_TEXTO_2})]), 30, estilo="nenhum"))
+    sem_filtro = [(f"{p}_seg_edicao", f"{p}_{alvo}") for alvo in ("linhas_prof", "linhas_gasto")]
+    return pagina("tcc_estados", "Estados", sem_filtro), vis
+
+
+PAGINAS = [pagina_inicio, pagina_eficiencia, pagina_ficha, pagina_pares, pagina_mapa, pagina_defasagens, pagina_contexto,
+           pagina_estados]
 
 
 # ───────────────────────── gravação e validação ─────────────────────────
