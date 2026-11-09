@@ -208,6 +208,16 @@ cultureInfo pt-BR
 			            },
 			            "Weight": 0.9
 			          }
+			        },
+			        {
+			          "Gasto (mediana)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -564,6 +574,16 @@ cultureInfo pt-BR
 			      "Terms": [
 			        {
 			          "Redes com nota no Saeb": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Redes com nota": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1046,6 +1066,237 @@ cultureInfo pt-BR
 			      "Terms": [
 			        {
 			          "Gasto de quando": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_medidas.proficiência_mediana": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Medidas",
+			          "ConceptualProperty": "Proficiência mediana"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Proficiência (mediana)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_municipio.porte": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_municipio",
+			          "ConceptualProperty": "PORTE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Porte": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_cluster.cluster_rotulo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_cluster",
+			          "ConceptualProperty": "CLUSTER_ROTULO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Cluster": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_cluster.municipios": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_cluster",
+			          "ConceptualProperty": "MUNICIPIOS"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Municípios": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_cluster.pop_mediana": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_cluster",
+			          "ConceptualProperty": "POP_MEDIANA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "População mediana": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_cluster.alfab_media": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_cluster",
+			          "ConceptualProperty": "ALFAB_MEDIA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Alfabetização": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_cluster.idhm_renda_medio": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_cluster",
+			          "ConceptualProperty": "IDHM_RENDA_MEDIO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "IDHM Renda": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_cluster.idhm_longevidade_medio": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_cluster",
+			          "ConceptualProperty": "IDHM_LONGEVIDADE_MEDIO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "IDHM Longev.": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_cluster.infra_media": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_cluster",
+			          "ConceptualProperty": "INFRA_MEDIA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Infraestrutura": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_cluster.regiao_predominante": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_cluster",
+			          "ConceptualProperty": "REGIAO_PREDOMINANTE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Região principal": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_cluster.parcela_regiao_predominante": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_cluster",
+			          "ConceptualProperty": "PARCELA_REGIAO_PREDOMINANTE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% na região": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",

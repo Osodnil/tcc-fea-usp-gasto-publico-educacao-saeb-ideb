@@ -39,12 +39,14 @@ table dim_municipio
 
 	column POPULACAO_TOTAL_CENSO
 		dataType: double
+		formatString: #,0
 		lineageTag: 3597ea36-3ae1-5eed-91fe-cf8caa1abcc1
 		summarizeBy: none
 		sourceColumn: POPULACAO_TOTAL_CENSO
 
 	column TAXA_ALFABETIZACAO_15MAIS
 		dataType: double
+		formatString: 0.0%
 		lineageTag: 92fa9fbc-94ec-5be6-8456-2049fec53c88
 		summarizeBy: none
 		sourceColumn: TAXA_ALFABETIZACAO_15MAIS

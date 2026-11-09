@@ -92,6 +92,40 @@ FORMATOS = [  # (padrão no nome da medida, formatString); vale o primeiro que c
     (r"^(Defasagem|É par)", "0"),
 ]
 
+# formato das colunas exibidas direto nos visuais (perfil dos clusters, página Contexto e clusters, 2026-11-06)
+FORMATOS_COLUNA = {
+    ("dim_cluster", "MUNICIPIOS"): "#,0",
+    ("dim_cluster", "POP_MEDIANA"): "#,0",
+    ("dim_cluster", "ALFAB_MEDIA"): "0.0%",
+    ("dim_cluster", "IDHM_RENDA_MEDIO"): "0.000",
+    ("dim_cluster", "IDHM_LONGEVIDADE_MEDIO"): "0.000",
+    ("dim_cluster", "INFRA_MEDIA"): "0.00",
+    ("dim_cluster", "PARCELA_REGIAO_PREDOMINANTE"): "0%",
+    ("dim_municipio", "POPULACAO_TOTAL_CENSO"): "#,0",
+    ("dim_municipio", "TAXA_ALFABETIZACAO_15MAIS"): "0.0%",
+}
+
+
+def formatar_colunas(definicao: Path) -> list[str]:
+    """Acrescenta formatString às colunas de FORMATOS_COLUNA num modelo existente (sem mexer no resto do arquivo)."""
+    feitas = []
+    for (t, c), f in FORMATOS_COLUNA.items():
+        arq = definicao / "tables" / f"{t}.tmdl"
+        texto = arq.read_text(encoding="utf-8")
+        bloco = re.search(rf"(\tcolumn {re.escape(nome(c))}\n)(.*?)(?=\n\t\S|\n\n\t\S|\Z)", texto, re.S)
+        if not bloco:
+            sys.exit(f"[ERRO] coluna {t}[{c}] não encontrada em {arq.name}")
+        corpo = bloco.group(2)
+        if "formatString:" in corpo:
+            novo = re.sub(r"formatString: .*", f"formatString: {f}", corpo)
+        else:
+            novo = re.sub(r"(\t\tdataType: \w+\n)", rf"\g<1>\t\tformatString: {f}\n", corpo, count=1)
+        if novo != corpo:
+            texto = texto[:bloco.start(2)] + novo + texto[bloco.end(2):]
+            arq.write_text(texto, encoding="utf-8")
+            feitas.append(f"{t}[{c}] = {f}")
+    return feitas
+
 
 def tipo_tmdl(dtype: pl.DataType) -> tuple[str, str]:
     """Tipo da coluna no TMDL e o tipo correspondente do Power Query."""
@@ -146,6 +180,8 @@ def tabela_importada(t: str, schema: dict) -> str:
     linhas = [f"table {nome(t)}", f"\tlineageTag: {tag('t', t)}", ""]
     for c, d in schema.items():
         linhas += [f"\tcolumn {nome(c)}", f"\t\tdataType: {tipo_tmdl(d)[0]}"]
+        if (t, c) in FORMATOS_COLUNA:
+            linhas.append(f"\t\tformatString: {FORMATOS_COLUNA[(t, c)]}")
         if t.startswith("fato_") and c in OCULTAS:
             linhas.append("\t\tisHidden")
         linhas += [f"\t\tlineageTag: {tag('c', t, c)}", "\t\tsummarizeBy: none", f"\t\tsourceColumn: {c}"]
@@ -292,9 +328,17 @@ if __name__ == "__main__":
                     help="só acrescenta ao modelo existente as medidas novas de medidas.dax (feche o Power BI antes)")
     ap.add_argument("--atualizar-medidas", nargs="+", metavar="MEDIDA",
                     help="troca no modelo existente só estas medidas pela versão de medidas.dax (feche o Power BI antes)")
+    ap.add_argument("--formatar-colunas", action="store_true",
+                    help="só aplica FORMATOS_COLUNA às colunas do modelo existente (feche o Power BI antes)")
     args = ap.parse_args()
     if args.pasta:
         MODELO = args.pasta.resolve()
+
+    if args.formatar_colunas:
+        feitas = formatar_colunas(MODELO / "definition")
+        print(f"[OK] Formatos de coluna: {', '.join(feitas) if feitas else 'nenhum (já aplicados)'}")
+        if not (args.adicionar_medidas or args.atualizar_medidas):
+            sys.exit(0)
 
     if args.adicionar_medidas or args.atualizar_medidas:
         schemas = {t: dict(pl.read_parquet_schema(DADOS / f"{t}.parquet")) for t in TABELAS}

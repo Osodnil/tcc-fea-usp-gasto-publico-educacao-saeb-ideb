@@ -1,0 +1,404 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "ctx_perfil",
+  "position": {
+    "x": 16,
+    "y": 80,
+    "z": 10,
+    "height": 220,
+    "width": 1248,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_cluster"
+                    }
+                  },
+                  "Property": "CLUSTER_ROTULO"
+                }
+              },
+              "queryRef": "dim_cluster.CLUSTER_ROTULO",
+              "nativeQueryRef": "CLUSTER_ROTULO",
+              "displayName": "Cluster"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_cluster"
+                    }
+                  },
+                  "Property": "MUNICIPIOS"
+                }
+              },
+              "queryRef": "dim_cluster.MUNICIPIOS",
+              "nativeQueryRef": "MUNICIPIOS",
+              "displayName": "Municípios"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_cluster"
+                    }
+                  },
+                  "Property": "POP_MEDIANA"
+                }
+              },
+              "queryRef": "dim_cluster.POP_MEDIANA",
+              "nativeQueryRef": "POP_MEDIANA",
+              "displayName": "População mediana"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_cluster"
+                    }
+                  },
+                  "Property": "ALFAB_MEDIA"
+                }
+              },
+              "queryRef": "dim_cluster.ALFAB_MEDIA",
+              "nativeQueryRef": "ALFAB_MEDIA",
+              "displayName": "Alfabetização"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_cluster"
+                    }
+                  },
+                  "Property": "IDHM_RENDA_MEDIO"
+                }
+              },
+              "queryRef": "dim_cluster.IDHM_RENDA_MEDIO",
+              "nativeQueryRef": "IDHM_RENDA_MEDIO",
+              "displayName": "IDHM Renda"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_cluster"
+                    }
+                  },
+                  "Property": "IDHM_LONGEVIDADE_MEDIO"
+                }
+              },
+              "queryRef": "dim_cluster.IDHM_LONGEVIDADE_MEDIO",
+              "nativeQueryRef": "IDHM_LONGEVIDADE_MEDIO",
+              "displayName": "IDHM Longev."
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_cluster"
+                    }
+                  },
+                  "Property": "INFRA_MEDIA"
+                }
+              },
+              "queryRef": "dim_cluster.INFRA_MEDIA",
+              "nativeQueryRef": "INFRA_MEDIA",
+              "displayName": "Infraestrutura"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_cluster"
+                    }
+                  },
+                  "Property": "REGIAO_PREDOMINANTE"
+                }
+              },
+              "queryRef": "dim_cluster.REGIAO_PREDOMINANTE",
+              "nativeQueryRef": "REGIAO_PREDOMINANTE",
+              "displayName": "Região principal"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_cluster"
+                    }
+                  },
+                  "Property": "PARCELA_REGIAO_PREDOMINANTE"
+                }
+              },
+              "queryRef": "dim_cluster.PARCELA_REGIAO_PREDOMINANTE",
+              "nativeQueryRef": "PARCELA_REGIAO_PREDOMINANTE",
+              "displayName": "% na região"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Redes avaliadas"
+                }
+              },
+              "queryRef": "_Medidas.Redes avaliadas",
+              "nativeQueryRef": "Redes avaliadas",
+              "displayName": "Redes com nota"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Gasto das redes avaliadas (mediana)"
+                }
+              },
+              "queryRef": "_Medidas.Gasto das redes avaliadas (mediana)",
+              "nativeQueryRef": "Gasto das redes avaliadas (mediana)",
+              "displayName": "Gasto (mediana)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Proficiência mediana"
+                }
+              },
+              "queryRef": "_Medidas.Proficiência mediana",
+              "nativeQueryRef": "Proficiência mediana",
+              "displayName": "Proficiência (mediana)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "% acima do esperado"
+                }
+              },
+              "queryRef": "_Medidas.% acima do esperado",
+              "nativeQueryRef": "% acima do esperado",
+              "displayName": "Acima do esperado"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_cluster"
+                  }
+                },
+                "Property": "CLUSTER_ROTULO"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#ffffff'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#e3e4e0'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "8.0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dropShadow": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#000000'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "90.0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Perfil dos 7 clusters (contexto nacional e fixo) e resultados no recorte escolhido'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11.0D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#0d366b'"
+                    }
+                  }
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

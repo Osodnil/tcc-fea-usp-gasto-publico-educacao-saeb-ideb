@@ -644,7 +644,60 @@ def pagina_defasagens() -> tuple[dict, list[dict]]:
     return pagina("tcc_defasagens", "Defasagens", sem_filtro), vis
 
 
-PAGINAS = [pagina_inicio, pagina_eficiencia, pagina_ficha, pagina_pares, pagina_mapa, pagina_defasagens]
+PORTES = ["Até 5 mil", "5 a 10 mil", "10 a 20 mil", "20 a 50 mil", "50 a 100 mil", "100 a 500 mil", "Mais de 500 mil"]
+
+
+def pagina_contexto() -> tuple[dict, list[dict]]:
+    """Perfil dos 7 clusters de contexto (A6) com gasto, nota e eficiência de cada um; gasto e nota por porte;
+    dispersão gasto × proficiência colorida por cluster. O perfil (colunas de dim_cluster) é nacional e fixo;
+    as medidas seguem os filtros da faixa."""
+    p = "ctx"
+    vis = cabecalho(p, "Contexto e clusters", "Grupos de municípios com contexto parecido, usados para comparar pares")
+    vis.append(container(
+        f"{p}_perfil", (16, 80, 1248, 220),
+        grafico("tableEx", {"Values": [
+            ("dim_cluster.CLUSTER_ROTULO", "Cluster"), ("dim_cluster.MUNICIPIOS", "Municípios"),
+            ("dim_cluster.POP_MEDIANA", "População mediana"), ("dim_cluster.ALFAB_MEDIA", "Alfabetização"),
+            ("dim_cluster.IDHM_RENDA_MEDIO", "IDHM Renda"), ("dim_cluster.IDHM_LONGEVIDADE_MEDIO", "IDHM Longev."),
+            ("dim_cluster.INFRA_MEDIA", "Infraestrutura"), ("dim_cluster.REGIAO_PREDOMINANTE", "Região principal"),
+            ("dim_cluster.PARCELA_REGIAO_PREDOMINANTE", "% na região"),
+            ("Redes avaliadas", "Redes com nota"), ("Gasto das redes avaliadas (mediana)", "Gasto (mediana)"),
+            ("Proficiência mediana", "Proficiência (mediana)"), ("% acima do esperado", "Acima do esperado")]},
+            ordenar="dim_cluster.CLUSTER_ROTULO", decrescente=False,
+            objetos={"total": [{"properties": {"totals": literal(False)}}]}),
+        10, titulo="Perfil dos 7 clusters (contexto nacional e fixo) e resultados no recorte escolhido"))
+    vis.append(container(
+        f"{p}_dispersao", (16, 308, 620, 332),
+        grafico("scatterChart",
+                {"Category": [("dim_municipio.MUNICIPIO_UF", "Município")], "Series": [("dim_municipio.CLUSTER_ROTULO", "Cluster")],
+                 "X": [("Gasto das redes avaliadas (mediana)", "Gasto por aluno (R$ de 2025)")],
+                 "Y": [("Proficiência média", "Proficiência")]},
+                objetos={"categoryAxis": [{"properties": {"logAxisScale": literal(True)}}],
+                         "legend": [{"properties": {"show": literal(True), "position": literal("Bottom"), "fontSize": literal(8.0)}}]}),
+        20, titulo="Gasto por aluno × proficiência, por cluster (cada ponto é uma rede)"))
+    so_portes = lambda nome: [filtro_visual(f"{p}_f_{nome}", "dim_municipio", "PORTE", PORTES)]
+    barras = lambda medida_nome, rotulo: grafico(
+        "clusteredBarChart", {"Category": [("dim_municipio.PORTE", "Porte")], "Y": [(medida_nome, rotulo)]},
+        ordenar="dim_municipio.PORTE", decrescente=False,
+        objetos={"labels": [{"properties": {"show": literal(True), "fontSize": literal(8.0)}}],
+                 "categoryAxis": [{"properties": {"showAxisTitle": literal(False)}}],
+                 "valueAxis": [{"properties": {"showAxisTitle": literal(False), "show": literal(False)}}]})
+    vis.append(container(f"{p}_porte_gasto", (644, 308, 306, 332),
+                         barras("Gasto das redes avaliadas (mediana)", "Gasto (mediana)"),
+                         21, so_portes("porte_gasto"), titulo="Gasto por aluno (mediana), por porte"))
+    vis.append(container(f"{p}_porte_prof", (958, 308, 306, 332),
+                         barras("Proficiência mediana", "Proficiência (mediana)"),
+                         22, so_portes("porte_prof"), titulo="Proficiência (mediana), por porte"))
+    vis.append(container(f"{p}_nota", (16, 646, 1248, 40), texto([(
+        "Clusters: k-médias com população, alfabetização, IDHM Renda e Longevidade da UF e infraestrutura das escolas, sem "
+        "gasto nem nota. A separação entre os grupos é fraca (silhueta ≈ 0,23): são uma partição útil para formar pares, não "
+        "tipos naturais, e saem ligados à região porque o IDHM só existe por UF. Porte = população do Censo 2022.",
+        {"fontSize": "9pt", "color": COR_TEXTO_2})]), 29, estilo="nenhum"))
+    vis.append(rodape_fontes(p, 30))
+    return pagina("tcc_contexto", "Contexto e clusters"), vis
+
+
+PAGINAS = [pagina_inicio, pagina_eficiencia, pagina_ficha, pagina_pares, pagina_mapa, pagina_defasagens, pagina_contexto]
 
 
 # ───────────────────────── gravação e validação ─────────────────────────

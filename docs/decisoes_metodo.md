@@ -606,6 +606,27 @@ Falar sempre em associação e eficiência relativa.
     - **Dentro de cada UF:** ela é bem menor. Em AI, Matemática, 2023, com o gasto do mesmo ano, o ρ mediano entre as 23 UFs com 30 redes ou mais é 0,08 (de −0,13 no RN a +0,32 no RJ), contra 0,26 no Brasil. No CE, fica entre −0,08 e +0,29, conforme a edição.
     - **Leitura:** boa parte da correlação nacional vem das diferenças entre estados, o que reforça os efeitos fixos de UF (A2). O quadro "Como ler" da página avisa isso.
   - **Desempenho:** o ρ é calculado em DAX, com RANKX, para cada célula. Se a página demorar mais de ~2 s, a alternativa registrada na especificação é calcular a grade no Python e carregá-la como tabela.
+- **Página Contexto e clusters (2026-11-06):**
+  - **Conteúdo:**
+    - **Tabela-perfil dos 7 clusters (A6):** as colunas de `dim_cluster` (municípios, população mediana, alfabetização, IDHM Renda e Longevidade, infraestrutura, região principal) vêm ao lado de redes com nota, gasto mediano, proficiência mediana e % acima do esperado.
+    - **Dispersão gasto × proficiência**, colorida por cluster.
+    - **Barras por porte:** gasto mediano e proficiência mediana. "Sem informação" fica fora, por ser um só município, sem nota.
+  - **Filtros:** o perfil é nacional e fixo, pois as colunas de `dim_cluster` não mudam com os filtros. As medidas seguem UF, etapa, disciplina, edição e modelo.
+  - **Formato das colunas:** o gerador do modelo ganhou `FORMATOS_COLUNA` e a opção `--formatar-colunas`, que acrescenta `formatString` às colunas exibidas direto, como percentual, milhar e três casas no IDHM, sem recriar o modelo.
+  - **Valores de conferência (Brasil, AI, MT, 2023, gasto do mesmo ano, modelo oficial):** o arquivo é `data/interim/diagnosticos/conferencia_contexto.csv`.
+
+    | Cluster | Redes com nota | Gasto (mediana) | Proficiência (mediana) | Acima do esperado |
+    |---|---|---|---|---|
+    | 1 Nordeste · pequenos | 925 | R$ 13.007 | 204,9 | 40,0% |
+    | 2 Nordeste · médios | 1.021 | R$ 11.302 | 196,2 | 43,4% |
+    | 3 Sudeste · pequenos | 722 | R$ 14.865 | 224,9 | 40,2% |
+    | 4 Centro-Oeste · pequenos | 557 | R$ 16.306 | 221,9 | 42,2% |
+    | 5 Nordeste e Norte · grandes | 272 | R$ 11.690 | 209,1 | 41,3% |
+    | 6 Sul e Sudeste · pequenos | 1.032 | R$ 15.602 | 237,2 | 58,7% |
+    | 7 Sudeste · médios | 714 | R$ 13.461 | 232,5 | 51,7% |
+
+    - **Por porte:** o gasto mediano cai de R$ 16.669 (até 5 mil habitantes) para R$ 11.987 (100 a 500 mil) e volta a R$ 14.093 acima de 500 mil. A proficiência mediana vai de 226,7 a 212,2 (mais de 500 mil).
+  - **Achado:** o % acima do esperado vai de 40% (cluster 1) a 59% (cluster 6). O modelo oficial (A8) já inclui as variáveis de contexto usadas nos clusters, mas de forma linear e sem efeito de região. Por isso parte da diferença entre os grupos, provavelmente regional, ainda aparece na eficiência, e a comparação dentro do cluster (página Pares) é a mais justa. Isso fica para avaliar com o Guilherme se cabe na seção de Método.
 - **Filtros sincronizados:** Etapa, Disciplina, Edição, Modelo e UF passaram a ter grupo de sincronização. A escolha feita numa página vale nas outras.
 - **Conferências do gerador de páginas:**
   - os esquemas oficiais são baixados pelo próprio script para `data/interim/esquemas_pbir` (fora do Git), e `--validar` funciona em qualquer máquina;

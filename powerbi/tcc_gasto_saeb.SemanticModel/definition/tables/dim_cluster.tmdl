@@ -9,36 +9,42 @@ table dim_cluster
 
 	column MUNICIPIOS
 		dataType: int64
+		formatString: #,0
 		lineageTag: 43fd03bc-4e47-5949-a6d3-203075e9e81e
 		summarizeBy: none
 		sourceColumn: MUNICIPIOS
 
 	column POP_MEDIANA
 		dataType: double
+		formatString: #,0
 		lineageTag: f5470765-41bc-5b6e-af0d-d7d6380278b1
 		summarizeBy: none
 		sourceColumn: POP_MEDIANA
 
 	column ALFAB_MEDIA
 		dataType: double
+		formatString: 0.0%
 		lineageTag: 656e4b08-6b50-5715-a53e-663d072121fc
 		summarizeBy: none
 		sourceColumn: ALFAB_MEDIA
 
 	column IDHM_RENDA_MEDIO
 		dataType: double
+		formatString: 0.000
 		lineageTag: 49911785-d42b-516b-ac36-967378c812be
 		summarizeBy: none
 		sourceColumn: IDHM_RENDA_MEDIO
 
 	column IDHM_LONGEVIDADE_MEDIO
 		dataType: double
+		formatString: 0.000
 		lineageTag: 529b635c-5644-5ca8-8d74-3246f2261fea
 		summarizeBy: none
 		sourceColumn: IDHM_LONGEVIDADE_MEDIO
 
 	column INFRA_MEDIA
 		dataType: double
+		formatString: 0.00
 		lineageTag: 0dce8a61-c466-5c3b-8d8d-c59cbe43278f
 		summarizeBy: none
 		sourceColumn: INFRA_MEDIA
@@ -51,6 +57,7 @@ table dim_cluster
 
 	column PARCELA_REGIAO_PREDOMINANTE
 		dataType: double
+		formatString: 0%
 		lineageTag: 0b507ba3-a4c3-5402-a30a-1d8712068d79
 		summarizeBy: none
 		sourceColumn: PARCELA_REGIAO_PREDOMINANTE
