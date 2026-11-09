@@ -102,6 +102,40 @@ Filtros fixos no topo de todas as páginas, numa linha: **UF**, **Etapa** (sele�
 8. **Estados.** Camada estadual: 27 UFs, Anos Finais e Ensino Médio, gasto versão A, linha por edição e dispersão gasto × proficiência. Seletor de versão B como sensibilidade. Aviso: 27 unidades, leitura descritiva.
 9. **Sobre os dados.** Fontes, indicadores (tabela da seção 4), limitações principais (seção 10 do registro), data de atualização, autores, QR Code (A7).
 
+### 5.1 Como as páginas ficaram (construção de 2026-10-30 a 2026-11-09)
+
+As páginas são gravadas por `src/Visualizacao/Gerar_Relatorio_PowerBI.py`, e o registro detalhado de cada uma está em P7 de `docs/decisoes_metodo.md`.
+
+- **Ordem no relatório:**
+  1. Início;
+  2. Eficiência;
+  3. Ficha do município;
+  4. Pares;
+  5. Mapa;
+  6. Defasagens;
+  7. Contexto e clusters;
+  8. Estados;
+  9. Sobre os dados.
+- **Filtros:** ficam numa faixa azul no topo. Cada página mostra só os filtros que usa.
+  - **Sincronizados entre as páginas:** UF, Etapa, Disciplina, Edição e Modelo.
+  - **Próprios de uma página, sem sincronização:**
+    - Município, na Ficha;
+    - Município de referência, em Pares;
+    - Gasto de quando (defasagem), em Defasagens;
+    - Etapa da rede estadual (AF e EM), em Estados.
+- **Diferenças em relação ao plano acima:**
+  - **Início:** o botão "Ver meu município" foi trocado por um navegador de páginas. No Desktop, ele responde com Ctrl + clique.
+  - **Mapa:**
+    - só mostra a eficiência, sem parâmetro de campo, com a escala saturada em ±30 pontos;
+    - o Mapa de formas desenha no máximo ~1.500 áreas, por isso o mapa pede uma UF;
+    - ao lado, em vez da tabela das redes, há um resumo por UF.
+  - **Defasagens:**
+    - o gráfico de colunas e a matriz mostram todas as edições e defasagens ao mesmo tempo;
+    - cartões, frase de leitura do ρ e dispersão seguem a edição e a defasagem escolhidas;
+    - a cobertura correta é: 2017 só com o mesmo ano, 1 e 2 anos antes a partir de 2019, e 4 anos antes a partir de 2021.
+  - **Estados:** não há seletor de versão B. Onde a linha 12.364 existe, A e B são iguais (G4). A versão B aparece como segunda linha no gráfico de gasto e num cartão, e a tabela marca as UFs que ela deixaria de fora.
+  - **Sobre os dados:** o QR Code é um espaço reservado até haver endereço público (A7).
+
 ## 6. Regras visuais
 
 - Tema `tema_tcc.json`: mesma paleta do HTML. Clusters usam as 7 primeiras cores categóricas, **na ordem fixa do número do cluster** (a cor segue o grupo, não a posição no gráfico).
@@ -115,7 +149,7 @@ Filtros fixos no topo de todas as páginas, numa linha: **UF**, **Etapa** (sele�
 
 | Risco | Plano |
 |---|---|
-| "Mapa de formas" é recurso em versão prévia (Arquivo > Opções > Recursos em versão prévia) e pode ficar lento com 5.571 polígonos | malha já simplificada (1,5 MB); se ficar lento, mostrar o mapa só com UF filtrada, ou usar o visual Azure Maps com a mesma malha |
+| "Mapa de formas" é recurso em versão prévia (Arquivo > Opções > Recursos em versão prévia) e pode ficar lento com 5.571 polígonos | malha já simplificada (1,5 MB); se ficar lento, mostrar o mapa só com UF filtrada, ou usar o visual Azure Maps com a mesma malha. **Ocorreu (2026-11-05):** o visual desenha só ~1.500 áreas; adotado o mapa por UF |
 | "Publicar na Web" (para o QR Code, A7) depende de conta corporativa e da permissão do administrador do locatário | testar com a conta USP; se não houver permissão, publicar o HTML de conferência (GitHub Pages) e o `.pbix` para download |
 | ρ de Spearman em DAX com ~10 mil redes pode demorar | se passar de ~2 s, calcular no Python (tabela pronta por edição, etapa, disciplina e defasagem) |
 | Atualização dos dados | rodar `run_pipeline.py` e depois "Atualizar" no Power BI; o caminho fica no parâmetro `PastaDados` |

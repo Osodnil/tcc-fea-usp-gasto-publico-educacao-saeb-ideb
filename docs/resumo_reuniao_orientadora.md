@@ -1,15 +1,25 @@
 # Resumo para a reunião com a orientadora
 
-*Versão curta de `decisoes_metodo.md` (os códigos entre colchetes remetem ao registro completo). Atualizado em 2026-10-30, depois da leitura do Manual de TCC.*
+*Versão curta de `decisoes_metodo.md` (os códigos entre colchetes remetem ao registro completo). Atualizado em 2026-11-09, com o dashboard em Power BI concluído.*
 
 ## 1. Onde estamos
 
 - **Dados prontos.** Todas as bases foram extraídas, tratadas, validadas e cruzadas em dois painéis (municípios e estados, 2017–2025), com gasto por aluno em reais de 2025, notas do Saeb e controles.
-- **Ferramenta de análise pronta.** Dashboard HTML com seis abas (visão geral, defasagens, porte e contexto, mapa, ficha e pares), usado para explorar os dados.
 - **Desenho fechado.** As decisões de método estão tomadas (seção 2).
 - **Clusters e eficiência calculados:** 7 grupos de municípios por contexto e indicador de eficiência por município, etapa e disciplina.
-- **Dashboard oficial especificado:** modelo de dados pronto para o Power BI, 9 páginas definidas e indicadores formais propostos (`powerbi/especificacao_dashboard.md`).
-- **Próxima etapa:** construir o dashboard em Power BI.
+- **Dashboard oficial construído em Power BI [P7]:** 9 páginas:
+  - Início;
+  - Eficiência;
+  - Ficha do município;
+  - Pares;
+  - Mapa;
+  - Defasagens;
+  - Contexto e clusters;
+  - Estados;
+  - Sobre os dados.
+
+  Os números foram conferidos contra os cálculos em Python. O dashboard HTML continua como ferramenta de conferência.
+- **Próxima etapa:** fechar os pontos abertos (seção 4), publicar o painel para o QR Code e escrever a análise.
 
 | | Municípios | Estados |
 |---|---|---|
@@ -34,7 +44,25 @@
 | Acesso [A7] | QR Code ao final, apontando para o dashboard publicado |
 | Registro [seção 10] | Toda decisão e limitação anotada |
 
-## 3. Pontos ainda abertos (não bloqueiam o desenvolvimento)
+## 3. Primeiros achados (para discutir)
+
+Leitura descritiva, de associação, para Anos Iniciais e Matemática, salvo indicação [P7].
+
+- **No Brasil, gastar mais se associa a notas um pouco maiores, cada vez menos:**
+  - **Medida:** correlação simples (ρ de Spearman, sem controles) entre o gasto por aluno do mesmo ano e a proficiência.
+  - **Tendência:** cai de 0,46 em 2017 para 0,16 em 2025.
+  - **Defasagem:** com o gasto de anos antes, a correlação é maior. Em 2023, vai de 0,26 com o gasto do mesmo ano a 0,38 com o de 4 anos antes.
+- **Dentro de cada estado, a associação quase some:**
+  - Em 2023, a mediana entre as UFs é de 0,08, contra 0,26 no Brasil, com variação de −0,13 (RN) a +0,32 (RJ).
+  - Boa parte da correlação nacional vem das diferenças entre estados, já que os que gastam mais também têm notas maiores.
+  - Isso reforça os efeitos fixos de UF [A2] e o modelo de robustez da eficiência [A8].
+- **A eficiência não é neutra entre os clusters:**
+  - O % de redes acima do esperado vai de 40% (Nordeste, municípios pequenos) a 59% (Sul e Sudeste, pequenos).
+  - O modelo oficial inclui as variáveis de contexto, mas de forma linear e sem efeito de região.
+  - Por isso, a comparação dentro do cluster (página Pares) é a mais justa.
+- **Gasto estadual, versões A e B [G4]:** onde a linha do Ensino Superior existe, as duas versões são iguais. A versão B só deixa de fora as UF/anos sem a linha (em 2023, AC, RO, RS e SE). O teste de sensibilidade é, portanto, de amostra.
+
+## 4. Pontos ainda abertos (não bloqueiam o desenvolvimento)
 
 - **Saltos atípicos [S11]:** algumas redes, sobretudo no CE e em AL, sobem mais de 100 pontos em poucos anos (por exemplo, Ibateguara-AL, de 195 para 345). Proposta: marcar, sem excluir, a variação entre edições que se afasta mais de 3 desvios-padrão da média (633 de 82 mil resultados), com aviso no dashboard. A regra serve?
 
@@ -50,9 +78,20 @@
   - gasto médio do biênio.
 
   A lista está suficiente?
-- **Uso de IA [D5]:** como você prefere que seja documentado no Método?
+- **Uso de IA [D5]:** como você prefere que seja documentado no Método? A página "Sobre os dados" do painel traz hoje a mesma declaração do README, a ajustar conforme a sua orientação.
+- **Faixa dos pares [P7]:**
+  - **Regra atual:** pares são as redes do mesmo cluster com gasto entre 0,8 e 1,25 vez o do município.
+  - **Problema:** nos clusters grandes, a faixa fica larga demais; Ibateguara-AL, por exemplo, tem 690 pares.
+  - **Pergunta:** estreitar a faixa ou limitar aos N pares de gasto mais próximo?
+- **Endereço do QR Code [A7]:**
+  - **Requisito:** o QR precisa abrir sem login, e o repositório é privado.
+  - **Opções:**
+    - publicar o Power BI na web pela conta da USP, se o administrador permitir;
+    - publicar o HTML de conferência no GitHub Pages;
+    - tornar o repositório público.
+  - **Pergunta:** qual você prefere?
 
-## 4. Principais limitações (lista completa na seção 10 do registro)
+## 5. Principais limitações (lista completa na seção 10 do registro)
 
 - O nível do gasto depende da fonte, sobretudo nas capitais.
 - Só entram redes com nota divulgada; redes pequenas ficam sub-representadas.
@@ -63,6 +102,6 @@
 - O gasto municipal usado (Ensino Fundamental) não separa Anos Iniciais de Finais e exclui a Educação Infantil.
 - Os resultados são de associação, não de causalidade.
 
-## 5. Uso de IA
+## 6. Uso de IA
 
 O Manual exige informar e discutir previamente o uso de IA. Usamos assistente de IA no desenvolvimento do código de tratamento dos dados e na organização dos registros. Todas as decisões são nossas e verificáveis no código e nos diagnósticos.

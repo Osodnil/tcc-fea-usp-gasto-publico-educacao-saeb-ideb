@@ -140,7 +140,7 @@ Para rodar um script isolado, chame-o diretamente, por exemplo `python src/Trans
 | `Visualizacao/Preparar_PowerBI.py` | `data/processed/powerbi/` (modelo em estrela do dashboard oficial) |
 | `Visualizacao/Gerar_Dashboard_HTML.py` | `relatorios/dashboard_conferencia.html` |
 
-O modelo do dashboard em Power BI é criado uma única vez por `src/Visualizacao/Gerar_Modelo_PowerBI.py`, dentro do projeto `powerbi/tcc_gasto_saeb.pbip`; o passo a passo está em `powerbi/roteiro_construcao.md`.
+O modelo do dashboard em Power BI é criado uma única vez por `src/Visualizacao/Gerar_Modelo_PowerBI.py`, dentro do projeto `powerbi/tcc_gasto_saeb.pbip`. As 9 páginas são gravadas por `src/Visualizacao/Gerar_Relatorio_PowerBI.py`, que as valida contra os esquemas oficiais do formato PBIR. Feche o Power BI antes de rodar qualquer um dos dois. O passo a passo está em `powerbi/roteiro_construcao.md`.
 
 Use o Python do Anaconda (`%USERPROFILE%\anaconda3\python.exe`); na máquina de desenvolvimento, o `python` do terminal aponta para outra instalação (ver T6 no registro).
 
@@ -182,8 +182,9 @@ Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os doc
 - ✅ Dashboard HTML ampliado como ferramenta de análise (6 abas, incluindo mapa).
 - ✅ Clusters por contexto (7 grupos) e indicador de eficiência municipal (versão oficial nacional, com IDHM).
 - ✅ Modelo de dados e especificação do dashboard oficial em Power BI (`powerbi/`).
-- ⏳ Construção do `.pbix`, testes de sensibilidade e acesso simples ao projeto (QR Code).
-- 🟡 Abertos (seção 9 de `docs/decisoes_metodo.md`): regra dos saltos atípicos, indicadores formais, formato do TCC, lista de sensibilidade e forma de documentar o uso de IA.
+- ✅ Dashboard oficial em Power BI com 9 páginas (Início, Eficiência, Ficha do município, Pares, Mapa, Defasagens, Contexto e clusters, Estados, Sobre os dados), com os números conferidos contra o Python (P7).
+- ⏳ Testes de sensibilidade e acesso simples ao projeto (QR Code: falta definir o endereço público).
+- 🟡 Abertos (seção 9 de `docs/decisoes_metodo.md`): regra dos saltos atípicos, indicadores formais, formato do TCC, lista de sensibilidade, largura da faixa dos pares e forma de documentar o uso de IA.
 
 As limitações do trabalho estão consolidadas na seção 10 de `docs/decisoes_metodo.md`.
 
