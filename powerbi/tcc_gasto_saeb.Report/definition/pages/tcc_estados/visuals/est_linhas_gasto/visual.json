@@ -48,22 +48,7 @@
               },
               "queryRef": "_Medidas.Gasto estadual por aluno (mediana, versão A)",
               "nativeQueryRef": "Gasto estadual por aluno (mediana, versão A)",
-              "displayName": "Versão A (oficial)"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "Gasto estadual por aluno (mediana, versão B)"
-                }
-              },
-              "queryRef": "_Medidas.Gasto estadual por aluno (mediana, versão B)",
-              "nativeQueryRef": "Gasto estadual por aluno (mediana, versão B)",
-              "displayName": "Versão B (sem as UFs ⚠)"
+              "displayName": "Gasto por aluno"
             }
           ]
         }

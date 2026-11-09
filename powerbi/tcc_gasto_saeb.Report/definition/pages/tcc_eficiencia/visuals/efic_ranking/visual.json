@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "efic_ranking",
   "position": {
     "x": 16,
     "y": 412,
     "z": 22,
-    "height": 272,
     "width": 792,
+    "height": 272,
     "tabOrder": 22
   },
   "visual": {
@@ -98,12 +98,27 @@
                       "Entity": "_Medidas"
                     }
                   },
+                  "Property": "Eficiência (% do esperado)"
+                }
+              },
+              "queryRef": "_Medidas.Eficiência (% do esperado)",
+              "nativeQueryRef": "Eficiência (% do esperado)",
+              "displayName": "Eficiência"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
                   "Property": "Eficiência (pontos)"
                 }
               },
               "queryRef": "_Medidas.Eficiência (pontos)",
               "nativeQueryRef": "Eficiência (pontos)",
-              "displayName": "Eficiência"
+              "displayName": "Pontos"
             },
             {
               "field": {
@@ -163,14 +178,16 @@
                     "Entity": "_Medidas"
                   }
                 },
-                "Property": "Eficiência (pontos)"
+                "Property": "Eficiência (% do esperado)"
               }
             },
             "direction": "Descending"
           }
-        ]
+        ],
+        "isDefaultSort": false
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "total": [
         {
@@ -338,7 +355,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

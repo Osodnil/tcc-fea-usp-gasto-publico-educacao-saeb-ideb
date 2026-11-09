@@ -91,7 +91,7 @@
                     }
                   },
                   {
-                    "value": "Ficam na faixa azul. UF vazia = Brasil. Etapa, disciplina, edição, UF e comparação valem em todas as páginas.",
+                    "value": "Ficam na faixa azul, só os que mudam a página. UF vazia = Brasil. A mesma escolha vale em todas as páginas que têm o filtro.",
                     "textStyle": {
                       "fontSize": "10pt",
                       "color": "#52514e"

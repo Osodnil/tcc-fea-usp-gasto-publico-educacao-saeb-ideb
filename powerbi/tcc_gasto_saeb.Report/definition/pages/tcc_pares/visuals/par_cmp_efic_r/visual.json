@@ -23,12 +23,12 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Eficiência do município de referência"
+                  "Property": "Eficiência % do município de referência"
                 }
               },
-              "queryRef": "_Medidas.Eficiência do município de referência",
-              "nativeQueryRef": "Eficiência do município de referência",
-              "displayName": "Eficiência (pontos)"
+              "queryRef": "_Medidas.Eficiência % do município de referência",
+              "nativeQueryRef": "Eficiência % do município de referência",
+              "displayName": "Eficiência (% do esperado)"
             }
           ]
         }

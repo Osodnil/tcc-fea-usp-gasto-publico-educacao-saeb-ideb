@@ -6,7 +6,7 @@
     "y": 80,
     "z": 10,
     "width": 404,
-    "height": 380,
+    "height": 364,
     "tabOrder": 10
   },
   "visual": {
@@ -98,7 +98,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "• Correção monetária: IPCA/IBGE, valores em R$ de 2025.",
+                    "value": "• Correção monetária: IPCA/IBGE. Todo valor em reais está em R$ de 2025: R$ 1 pago em 2017 vale R$ 1,51 de 2025 (gráfico ao lado).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "map_tabela_uf",
   "position": {
     "x": 948,
     "y": 172,
     "z": 21,
-    "height": 512,
     "width": 316,
+    "height": 512,
     "tabOrder": 21
   },
   "visual": {
@@ -38,11 +38,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "% acima do esperado"
+                  "Property": "UF: % acima do esperado"
                 }
               },
-              "queryRef": "_Medidas.% acima do esperado",
-              "nativeQueryRef": "% acima do esperado",
+              "queryRef": "_Medidas.UF: % acima do esperado",
+              "nativeQueryRef": "UF: % acima do esperado",
               "displayName": "Acima"
             },
             {
@@ -53,11 +53,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Eficiência (pontos)"
+                  "Property": "UF: eficiência (%)"
                 }
               },
-              "queryRef": "_Medidas.Eficiência (pontos)",
-              "nativeQueryRef": "Eficiência (pontos)",
+              "queryRef": "_Medidas.UF: eficiência (%)",
+              "nativeQueryRef": "UF: eficiência (%)",
               "displayName": "Eficiência"
             },
             {
@@ -68,11 +68,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Redes com eficiência calculada"
+                  "Property": "UF: redes comparadas"
                 }
               },
-              "queryRef": "_Medidas.Redes com eficiência calculada",
-              "nativeQueryRef": "Redes com eficiência calculada",
+              "queryRef": "_Medidas.UF: redes comparadas",
+              "nativeQueryRef": "UF: redes comparadas",
               "displayName": "Redes"
             }
           ]
@@ -88,14 +88,16 @@
                     "Entity": "_Medidas"
                   }
                 },
-                "Property": "% acima do esperado"
+                "Property": "UF: % acima do esperado"
               }
             },
             "direction": "Descending"
           }
-        ]
+        ],
+        "isDefaultSort": false
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "total": [
         {
@@ -218,7 +220,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Resumo por UF'"
+                  "Value": "'Resumo por UF (nacional)'"
                 }
               }
             },
@@ -263,7 +265,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

@@ -93,6 +93,18 @@ CALCULADAS = {
 FORMATOS = [  # (padrão no nome da medida, formatString); vale o primeiro que casar
     (r"^(Gasto (por aluno|das redes|estadual|do município)|Par: gasto)", "R$ #,0"),
     (r"^(Eficiência \(pontos\)|Eficiência do município|Nota menos|Par: (eficiência|diferença))", "+0.0;-0.0;0.0"),
+    # eficiência em % do esperado (medida principal desde 2026-11-09); tem de vir antes das regras em pontos
+    (r"^(Eficiência \(% do esperado\)|Eficiência % do|Par: eficiência \(%\)|Comparado: eficiência \(%\))", "+0.0%;-0.0%;0.0%"),
+    (r"^Par: diferença \(p\.p\.\)", "+0.0;-0.0;0.0"),
+    (r"^Mapa: eficiência \(%\)", "+0.0%;-0.0%;0.0%"),
+    (r"^Mapa: eficiência \(pontos\)", "+0.0;-0.0;0.0"),
+    (r"^Mapa: % acima", "0.0%"),
+    (r"^Mapa: redes", "#,0"),
+    (r"^UF: eficiência \(%\)", "+0.0%;-0.0%;0.0%"),
+    (r"^UF: % acima", "0.0%"),
+    (r"^UF: redes", "#,0"),
+    (r"^Fator do IPCA", "0.00"),
+    (r"^% de redes", "0%"),
     # comparação 1 a 1 da página Pares (2026-11-09)
     (r"^Comparado: gasto", "R$ #,0"),
     (r"^Comparado: eficiência", "+0.0;-0.0;0.0"),

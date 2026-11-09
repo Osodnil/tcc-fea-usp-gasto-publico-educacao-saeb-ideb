@@ -40,7 +40,7 @@
                     }
                   },
                   {
-                    "value": "a proficiência do município por edição, contra as medianas do cluster, da UF e do Brasil.",
+                    "value": "o município por edição, contra as medianas do cluster, da UF e do Brasil.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -97,7 +97,7 @@
                     }
                   },
                   {
-                    "value": "proficiência − esperada, em pontos.",
+                    "value": "(proficiência − esperada) ÷ esperada. Pontos: a diferença em pontos.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -135,7 +135,7 @@
                     }
                   },
                   {
-                    "value": "o percentil em cinco grupos, de bem abaixo a bem acima do esperado.",
+                    "value": "o percentil em cinco grupos, de bem abaixo a bem acima.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -173,7 +173,7 @@
                     }
                   },
                   {
-                    "value": "só tem eficiência na comparação com o mesmo estado (não há IDHM de 2025).",
+                    "value": "eficiência só na comparação com o mesmo estado (sem IDHM de 2025).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

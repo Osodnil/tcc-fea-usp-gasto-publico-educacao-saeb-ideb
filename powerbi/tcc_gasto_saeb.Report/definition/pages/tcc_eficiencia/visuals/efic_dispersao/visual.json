@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "efic_dispersao",
   "position": {
     "x": 16,
     "y": 172,
     "z": 20,
-    "height": 232,
     "width": 760,
+    "height": 232,
     "tabOrder": 20
   },
   "visual": {
@@ -68,7 +68,6 @@
               },
               "queryRef": "_Medidas.Gasto das redes avaliadas (mediana)",
               "nativeQueryRef": "Gasto das redes avaliadas (mediana)",
-              "active": true,
               "displayName": "Gasto por aluno (R$ de 2025)"
             }
           ]
@@ -83,17 +82,18 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Eficiência (pontos)"
+                  "Property": "Eficiência (% do esperado)"
                 }
               },
-              "queryRef": "_Medidas.Eficiência (pontos)",
-              "nativeQueryRef": "Eficiência (pontos)",
-              "displayName": "Eficiência (pontos)"
+              "queryRef": "_Medidas.Eficiência (% do esperado)",
+              "nativeQueryRef": "Eficiência (% do esperado)",
+              "displayName": "Eficiência (% do esperado)"
             }
           ]
         }
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "categoryAxis": [
         {
@@ -336,7 +336,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

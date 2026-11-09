@@ -23,11 +23,11 @@
                       "Entity": "dim_municipio"
                     }
                   },
-                  "Property": "CO_MUNICIPIO"
+                  "Property": "MUNICIPIO_UF"
                 }
               },
-              "queryRef": "dim_municipio.CO_MUNICIPIO",
-              "nativeQueryRef": "CO_MUNICIPIO"
+              "queryRef": "dim_municipio.MUNICIPIO_UF",
+              "nativeQueryRef": "MUNICIPIO_UF"
             }
           ]
         },
@@ -41,32 +41,17 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Eficiência (pontos)"
+                  "Property": "Mapa: eficiência (%)"
                 }
               },
-              "queryRef": "_Medidas.Eficiência (pontos)",
-              "nativeQueryRef": "Eficiência (pontos)",
-              "displayName": "Eficiência (pontos)"
+              "queryRef": "_Medidas.Mapa: eficiência (%)",
+              "nativeQueryRef": "Mapa: eficiência (%)",
+              "displayName": "Eficiência (% do esperado)"
             }
           ]
         },
         "Tooltips": {
           "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "Município selecionado"
-                }
-              },
-              "queryRef": "_Medidas.Município selecionado",
-              "nativeQueryRef": "Município selecionado",
-              "displayName": "Município"
-            },
             {
               "field": {
                 "Measure": {
@@ -81,6 +66,21 @@
               "queryRef": "_Medidas.Proficiência média",
               "nativeQueryRef": "Proficiência média",
               "displayName": "Proficiência"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Mapa: eficiência (pontos)"
+                }
+              },
+              "queryRef": "_Medidas.Mapa: eficiência (pontos)",
+              "nativeQueryRef": "Mapa: eficiência (pontos)",
+              "displayName": "Eficiência (pontos)"
             },
             {
               "field": {
@@ -208,7 +208,7 @@
                   "value": {
                     "expr": {
                       "Literal": {
-                        "Value": "-30.0D"
+                        "Value": "-0.12D"
                       }
                     }
                   }
@@ -240,7 +240,7 @@
                   "value": {
                     "expr": {
                       "Literal": {
-                        "Value": "30.0D"
+                        "Value": "0.12D"
                       }
                     }
                   }
@@ -367,7 +367,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Eficiência por município (pontos acima ou abaixo do esperado)'"
+                  "Value": "'Eficiência em % do esperado, na comparação escolhida no filtro'"
                 }
               }
             },

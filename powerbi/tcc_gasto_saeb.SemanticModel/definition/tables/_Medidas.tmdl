@@ -466,15 +466,16 @@ table _Medidas
 
 	measure 'Pares que entregam mais' =
 			VAR c = SELECTEDVALUE ( ref_municipio[REF_CLUSTER] )
-			VAR e = [Eficiência do município de referência]
+			VAR e = [Eficiência % do município de referência]
 			RETURN
 			    IF (
 			        NOT ISBLANK ( e ),
 			        COUNTROWS (
 			            FILTER (
 			                CALCULATETABLE ( VALUES ( dim_municipio[CO_MUNICIPIO] ), REMOVEFILTERS ( dim_municipio ), dim_municipio[CLUSTER] = c ),
-			                // sem o NOT ISBLANK, um par sem eficiência contava (o vazio vira zero na comparação)
-			                [É par] = 1 && NOT ISBLANK ( [Eficiência (pontos)] ) && [Eficiência (pontos)] > e
+			                // sem o NOT ISBLANK, um par sem eficiência contava (o vazio vira zero na comparação).
+			                // Em % do esperado desde 2026-11-09 (medida principal); e vem da mesma régua.
+			                [É par] = 1 && NOT ISBLANK ( [Eficiência (% do esperado)] ) && [Eficiência (% do esperado)] > e
 			            )
 			        ) + 0
 			    )
@@ -538,14 +539,16 @@ table _Medidas
 
 	/// O Mapa de formas desenha no máximo ~1.500 áreas por vez; o Brasil tem 5.571 municípios (decisão de 2026-11-05)
 	measure 'Aviso do mapa' =
-			IF (
-			    [Municípios no recorte] > 1500,
-			    "⚠ Escolha uma UF no filtro acima: o mapa mostra até ~1.500 municípios por vez (o Brasil tem 5.571).",
-			    "Vermelho = abaixo do esperado · cinza = próximo · azul = acima (cor máxima a partir de ±30 pontos). "
-			        & "Sem nota no recorte: " & FORMAT ( [Municípios sem rede municipal na etapa], "#,0" )
-			        & " sem rede municipal na etapa e " & FORMAT ( [Municípios sem nota divulgada], "#,0" )
-			        & " sem nota divulgada pelo Inep (motivo de cada um na Ficha)."
-			)
+			    IF (
+			        [Municípios no recorte] > 1500,
+			        "⚠ Escolha uma UF no filtro acima: o mapa mostra até ~1.500 municípios por vez (o Brasil tem 5.571).",
+			        // desde 2026-11-09: % do esperado, sempre na comparação com o mesmo estado (a mesma régua dentro da UF)
+			        "Cores: eficiência em % do esperado, na comparação "
+			            & IF ( [Mapa: comparação] = "Oficial", "nacional", "com o mesmo estado" ) & ". Vermelho = abaixo · "
+			            & "cinza = próximo · azul = acima (cor máxima a partir de ±12%). Sem nota: " & FORMAT ( [Municípios sem rede municipal na etapa], "#,0" )
+			            & " sem rede municipal na etapa e " & FORMAT ( [Municípios sem nota divulgada], "#,0" )
+			            & " sem nota divulgada (motivo na Ficha)."
+			    )
 		displayFolder: 9 Mapa
 		lineageTag: 3c5a1540-e341-5c15-b728-8d7c1645ad1c
 
@@ -746,8 +749,8 @@ table _Medidas
 			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
 			VAR clusterRef = SELECTEDVALUE ( ref_municipio[REF_CLUSTER] )
 			VAR clusterCmp = CALCULATE ( SELECTEDVALUE ( dim_municipio[CLUSTER] ), REMOVEFILTERS ( dim_municipio ), dim_municipio[CO_MUNICIPIO] = c )
-			VAR er = [Eficiência do município de referência]
-			VAR ec = [Comparado: eficiência]
+			VAR er = [Eficiência % do município de referência]
+			VAR ec = [Comparado: eficiência (%)]
 			VAR pr = [Proficiência do município de referência]
 			VAR pc = [Comparado: proficiência]
 			VAR dg = DIVIDE ( [Comparado: gasto por aluno], [Gasto do município de referência] ) - 1
@@ -759,7 +762,9 @@ table _Medidas
 			        ISBLANK ( c ), "Clique num par da tabela ou escolha em “Comparar com” para comparar 1 a 1.",
 			        c = r, "Escolha um município diferente da referência.",
 			        NOT ISBLANK ( ec ) && NOT ISBLANK ( er ),
-			            "O comparado tem eficiência " & FORMAT ( ec - er, "+0.0;-0.0;0.0" ) & " pontos em relação à referência, com gasto por aluno "
+			            "O comparado tem eficiência " & FORMAT ( ( ec - er ) * 100, "+0.0;-0.0;0.0" )
+			                & " pontos percentuais em relação à referência (" & FORMAT ( ec, "+0.0%;-0.0%;0.0%" ) & " contra "
+			                & FORMAT ( er, "+0.0%;-0.0%;0.0%" ) & " do esperado), com gasto por aluno "
 			                & FORMAT ( dg, "+0%;-0%;0%" ) & "." & contexto,
 			        NOT ISBLANK ( pc ) && NOT ISBLANK ( pr ),
 			            "Sem eficiência nesta edição e comparação. Proficiência " & FORMAT ( pc - pr, "+0.0;-0.0;0.0" )
@@ -798,4 +803,146 @@ table _Medidas
 	partition _Medidas = calculated
 		mode: import
 		source = ROW ( "Coluna", 0 )
+
+	/// Valor da época, sem a correção pelo IPCA (pedido da reunião de 2026-11-06: mostrar o efeito da inflação).
+	/// A mediana real dividida pelo fator do ano é a mediana nominal (o fator é o mesmo para todas as redes do ano).
+	measure 'Gasto por aluno da época (mediana anual)' = DIVIDE ( [Gasto por aluno (mediana anual)], SELECTEDVALUE ( dim_ano[FATOR_IPCA] ) )
+		formatString: R$ #,0
+		displayFolder: 1 Gasto
+		lineageTag: 0740fad3-1673-5985-9c50-724f167815e6
+
+	/// Tendência (reunião de 2026-11-06: "o desempenho está melhorando a cada edição?"): entre as redes com nota nesta e
+	/// na edição anterior, a parcela que subiu. Melhora não prova bom uso do gasto (associação).
+	measure '% de redes que melhoraram' =
+			    IF (
+			        [Seleção comparável],
+			        DIVIDE (
+			            CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[VARIACAO_EDICAO_ANTERIOR] > 0 ),
+			            CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), NOT ISBLANK ( fato_desempenho_municipal[VARIACAO_EDICAO_ANTERIOR] ) )
+			        )
+			    )
+		formatString: 0%
+		displayFolder: 3 Cobertura
+		lineageTag: 2ec5b892-0005-5bc5-a79e-355c8cd7298b
+
+	/// Medida principal desde 2026-11-09 (reunião de 2026-11-06): (proficiência − esperada) ÷ esperada, média entre as redes.
+	/// Põe etapas e disciplinas na mesma escala. A escala do Saeb não tem zero verdadeiro: o % é convenção de leitura.
+	measure 'Eficiência (% do esperado)' =
+			VAR e =
+			    SWITCH (
+			        [Modelo],
+			        "Oficial", AVERAGE ( fato_desempenho_municipal[EFIC_PCT] ),
+			        "Robustez", AVERAGE ( fato_desempenho_municipal[EFIC_PCT_ALT] )
+			    )
+			RETURN
+			    IF ( HASONEVALUE ( dim_disciplina[DISCIPLINA] ) && NOT ISBLANK ( e ), ROUND ( e, 6 ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 4 Eficiência
+		lineageTag: 415ab47f-99bc-58d3-8e0f-c06dbb0a14ef
+
+	measure 'Eficiência % do município de referência' =
+			VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+			RETURN
+			    CALCULATE (
+			        [Eficiência (% do esperado)],
+			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+			        dim_municipio[CO_MUNICIPIO] = r
+			    )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 5 Pares e cluster
+		lineageTag: ffe63756-ad34-5faa-8c92-61ae36f7fb45
+
+	/// Em % do esperado (medida principal desde 2026-11-09); a diferença fica em pontos percentuais
+	measure 'Par: eficiência (%)' = IF ( [É par] = 1, [Eficiência (% do esperado)] )
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 9890c03f-c88e-53bb-b781-b9b5582a220c
+
+	measure 'Par: diferença (p.p.)' = IF ( [É par] = 1, ( [Eficiência (% do esperado)] - [Eficiência % do município de referência] ) * 100 )
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 5 Pares e cluster
+		lineageTag: 760111b8-5799-5df3-acaa-7c61a8b0caf3
+
+	measure 'Comparado: eficiência (%)' =
+			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
+			RETURN
+			    IF ( NOT ISBLANK ( c ),
+			        CALCULATE ( [Eficiência (% do esperado)],
+			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = c ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 5 Pares e cluster
+		lineageTag: 92b3e8b7-aab5-5752-bc1c-01040c407939
+
+	measure 'Mapa: eficiência (%)' = CALCULATE ( [Eficiência (% do esperado)], REMOVEFILTERS ( dim_modelo ), TREATAS ( { [Mapa: comparação] }, dim_modelo[MODELO] ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 9 Mapa
+		lineageTag: 7faad2eb-478f-54c6-883f-d481a91638c6
+
+	measure 'Mapa: eficiência (pontos)' = CALCULATE ( [Eficiência (pontos)], REMOVEFILTERS ( dim_modelo ), TREATAS ( { [Mapa: comparação] }, dim_modelo[MODELO] ) )
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 9 Mapa
+		lineageTag: 7ba2992b-7b60-5670-8175-89a3486fd0c8
+
+	measure 'Mapa: % acima do esperado' = CALCULATE ( [% acima do esperado], REMOVEFILTERS ( dim_modelo ), TREATAS ( { [Mapa: comparação] }, dim_modelo[MODELO] ) )
+		formatString: 0.0%
+		displayFolder: 9 Mapa
+		lineageTag: a64028e7-5f03-5e94-8938-c37dfc558681
+
+	measure 'Mapa: redes comparadas' = CALCULATE ( [Redes com eficiência calculada], REMOVEFILTERS ( dim_modelo ), TREATAS ( { [Mapa: comparação] }, dim_modelo[MODELO] ) )
+		formatString: #,0
+		displayFolder: 9 Mapa
+		lineageTag: 5d4a6b29-78a4-5663-8d72-d9398745440f
+
+	measure 'Mapa: aviso da comparação' =
+			    SWITCH (
+			        TRUE (),
+			        [Mapa: comparação] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
+			            "⚠ A comparação nacional não cobre 2025 (não há IDHM de 2025): escolha “Mesmo estado” no filtro do mapa.",
+			        [Mapa: comparação] = "Oficial",
+			            "Nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos. "
+			                & "Diferenças entre estados aparecem nas cores.",
+			        "Mesmo estado: cada rede é comparada com as redes do seu estado de gasto e contexto parecidos (inclui 2025). "
+			            & "Para comparar com o país, escolha “Nacional” no filtro do mapa."
+			    )
+		displayFolder: 9 Mapa
+		lineageTag: 716262dd-09b0-527c-bcbb-43289f562a4a
+
+	/// Quanto vale R$ 1 de cada ano em R$ de 2025 (gráfico de Sobre os dados, 2026-11-09)
+	measure 'Fator do IPCA' = SELECTEDVALUE ( dim_ano[FATOR_IPCA] )
+		formatString: 0.00
+		displayFolder: 1 Gasto
+		lineageTag: b9cef1ce-7616-519b-8492-76f345f7b1fe
+
+	/// Mapa (A10): segue o filtro "Comparação do mapa", próprio da página; sem escolha, fica no mesmo estado.
+	/// A comparação vai dentro da medida (CALCULATE + TREATAS): filtros ocultos de visual sobre dim_modelo não pegaram
+	/// no Desktop (conferência de 2026-11-09). A opção nacional voltou a pedido de Henrique (2026-11-09).
+	measure 'Mapa: comparação' = SELECTEDVALUE ( dim_modelo[MODELO], "Robustez" )
+		displayFolder: 9 Mapa
+		lineageTag: 82e10024-f6c2-55bb-a4ed-645acd07b19f
+
+	/// Resumo por UF do Mapa: sempre na comparação nacional (no mesmo estado, a média de toda UF seria ~0)
+	measure 'UF: % acima do esperado' = CALCULATE ( [% acima do esperado], REMOVEFILTERS ( dim_modelo ), TREATAS ( { "Oficial" }, dim_modelo[MODELO] ) )
+		formatString: 0.0%
+		displayFolder: 9 Mapa
+		lineageTag: 6bb268e0-f1ae-55d2-9da6-1bd83dd51e9b
+
+	measure 'UF: eficiência (%)' = CALCULATE ( [Eficiência (% do esperado)], REMOVEFILTERS ( dim_modelo ), TREATAS ( { "Oficial" }, dim_modelo[MODELO] ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 9 Mapa
+		lineageTag: fbbce19d-7c6f-553e-8395-23a66c480563
+
+	measure 'UF: redes comparadas' = CALCULATE ( [Redes com eficiência calculada], REMOVEFILTERS ( dim_modelo ), TREATAS ( { "Oficial" }, dim_modelo[MODELO] ) )
+		formatString: #,0
+		displayFolder: 9 Mapa
+		lineageTag: 8928d0f1-8c24-58b6-b97e-7029206a194c
+
+	/// Para páginas sem o filtro de comparação (Visão geral e Contexto, revisão de filtros de 2026-11-09):
+	/// comparação nacional; em 2025, que a nacional não cobre (C1), a comparação no mesmo estado.
+	measure '% acima do esperado (padrão)' =
+			VAR m = IF ( SELECTEDVALUE ( dim_ano[ANO] ) = 2025, "Robustez", "Oficial" )
+			RETURN
+			    CALCULATE ( [% acima do esperado], REMOVEFILTERS ( dim_modelo ), TREATAS ( { m }, dim_modelo[MODELO] ) )
+		formatString: 0.0%
+		displayFolder: 4 Eficiência
+		lineageTag: 23d30242-5eaa-5382-8ee9-bfc9104f88d9
 

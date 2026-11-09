@@ -23,11 +23,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Eficiência (pontos)"
+                  "Property": "Mapa: eficiência (%)"
                 }
               },
-              "queryRef": "_Medidas.Eficiência (pontos)",
-              "nativeQueryRef": "Eficiência (pontos)",
+              "queryRef": "_Medidas.Mapa: eficiência (%)",
+              "nativeQueryRef": "Mapa: eficiência (%)",
               "displayName": "Eficiência média"
             }
           ]

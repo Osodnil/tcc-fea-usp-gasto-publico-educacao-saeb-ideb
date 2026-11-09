@@ -23,11 +23,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Redes com eficiência calculada"
+                  "Property": "Mapa: redes comparadas"
                 }
               },
-              "queryRef": "_Medidas.Redes com eficiência calculada",
-              "nativeQueryRef": "Redes com eficiência calculada",
+              "queryRef": "_Medidas.Mapa: redes comparadas",
+              "nativeQueryRef": "Mapa: redes comparadas",
               "displayName": "Redes comparadas"
             }
           ]

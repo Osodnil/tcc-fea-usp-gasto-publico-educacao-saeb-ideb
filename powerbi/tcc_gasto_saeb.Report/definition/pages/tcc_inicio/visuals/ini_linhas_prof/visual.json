@@ -5,7 +5,7 @@
     "x": 424,
     "y": 172,
     "z": 22,
-    "width": 840,
+    "width": 416,
     "height": 252,
     "tabOrder": 22
   },
@@ -232,7 +232,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Proficiência média por edição do Saeb: recorte escolhido × Brasil'"
+                  "Value": "'Proficiência média: recorte × Brasil'"
                 }
               }
             },

@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "par_tabela",
   "position": {
     "x": 16,
     "y": 172,
     "z": 20,
-    "height": 512,
     "width": 744,
+    "height": 512,
     "tabOrder": 20
   },
   "visual": {
@@ -68,11 +68,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Par: eficiência"
+                  "Property": "Par: eficiência (%)"
                 }
               },
-              "queryRef": "_Medidas.Par: eficiência",
-              "nativeQueryRef": "Par: eficiência",
+              "queryRef": "_Medidas.Par: eficiência (%)",
+              "nativeQueryRef": "Par: eficiência (%)",
               "displayName": "Eficiência"
             },
             {
@@ -83,12 +83,12 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Par: diferença para a referência"
+                  "Property": "Par: diferença (p.p.)"
                 }
               },
-              "queryRef": "_Medidas.Par: diferença para a referência",
-              "nativeQueryRef": "Par: diferença para a referência",
-              "displayName": "Diferença"
+              "queryRef": "_Medidas.Par: diferença (p.p.)",
+              "nativeQueryRef": ")",
+              "displayName": "Diferença (p.p.)"
             },
             {
               "field": {
@@ -133,14 +133,16 @@
                     "Entity": "_Medidas"
                   }
                 },
-                "Property": "Par: eficiência"
+                "Property": "Par: eficiência (%)"
               }
             },
             "direction": "Descending"
           }
-        ]
+        ],
+        "isDefaultSort": false
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "total": [
         {
@@ -308,7 +310,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

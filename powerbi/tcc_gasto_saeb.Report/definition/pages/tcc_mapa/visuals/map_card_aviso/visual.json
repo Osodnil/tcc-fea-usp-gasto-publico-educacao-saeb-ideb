@@ -23,11 +23,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Aviso do modelo"
+                  "Property": "Mapa: aviso da comparação"
                 }
               },
-              "queryRef": "_Medidas.Aviso do modelo",
-              "nativeQueryRef": "Aviso do modelo"
+              "queryRef": "_Medidas.Mapa: aviso da comparação",
+              "nativeQueryRef": "Mapa: aviso da comparação"
             }
           ]
         }

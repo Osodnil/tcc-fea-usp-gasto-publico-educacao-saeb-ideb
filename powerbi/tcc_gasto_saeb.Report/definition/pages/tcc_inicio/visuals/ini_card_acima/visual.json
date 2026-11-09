@@ -23,11 +23,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "% acima do esperado"
+                  "Property": "% acima do esperado (padrão)"
                 }
               },
-              "queryRef": "_Medidas.% acima do esperado",
-              "nativeQueryRef": "% acima do esperado",
+              "queryRef": "_Medidas.% acima do esperado (padrão)",
+              "nativeQueryRef": "% acima do esperado (padrão)",
               "displayName": "Redes acima do esperado"
             }
           ]

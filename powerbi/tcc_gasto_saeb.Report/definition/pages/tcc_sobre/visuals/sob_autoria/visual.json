@@ -3,10 +3,10 @@
   "name": "sob_autoria",
   "position": {
     "x": 16,
-    "y": 468,
+    "y": 452,
     "z": 13,
     "width": 404,
-    "height": 216,
+    "height": 232,
     "tabOrder": 13
   },
   "visual": {
@@ -55,6 +55,17 @@
                 "textRuns": [
                   {
                     "value": "Parte do código e da documentação foi desenvolvida com apoio de um assistente de IA (Claude, da Anthropic). As decisões de método são dos autores.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Acesso: o QR Code entra aqui quando o endereço público do painel for definido.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

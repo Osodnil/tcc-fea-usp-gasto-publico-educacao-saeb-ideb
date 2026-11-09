@@ -41,6 +41,8 @@
 | Recorte [E3] | Brasil inteiro: ferramenta nacional, mesma perspectiva para todos os estados |
 | Usuário-alvo [E4] | Agente de secretaria de educação ou analista da educação pública |
 | Indicador de eficiência [A8] | Pontos do Saeb acima ou abaixo do esperado para o gasto e o contexto. Versão oficial: **nacional, com IDHM** (edições 2017–2023); a versão dentro do estado, que inclui 2025, fica como teste de robustez |
+| Eficiência no painel [A10] | Em % do esperado ((nota − esperada) ÷ esperada), para pôr etapas e disciplinas na mesma escala; pontos e percentil ficam como referência. O mapa compara cada rede com as do mesmo estado |
+| Rede municipal parcial [A9] | Manter na análise e marcar no painel; a sensibilidade sem essas redes não muda as conclusões |
 | Acesso [A7] | QR Code ao final, apontando para o dashboard publicado |
 | Registro [seção 10] | Toda decisão e limitação anotada |
 

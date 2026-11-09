@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "ini_seg_modelo",
+  "name": "map_seg_modelo_mapa",
   "position": {
     "x": 1068,
     "y": 8,
@@ -29,7 +29,7 @@
               "queryRef": "dim_modelo.ROTULO_MODELO",
               "nativeQueryRef": "ROTULO_MODELO",
               "active": true,
-              "displayName": "Comparação da eficiência"
+              "displayName": "Comparação do mapa"
             }
           ]
         }
@@ -168,7 +168,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'Nacional (até 2023)'"
+                                "Value": "'Mesmo estado (até 2025)'"
                               }
                             }
                           ]
@@ -184,11 +184,6 @@
       ]
     },
     "drillFilterOtherVisuals": true,
-    "syncGroup": {
-      "groupName": "modelo",
-      "fieldChanges": true,
-      "filterChanges": true
-    },
     "visualContainerObjects": {
       "background": [
         {

@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "ini_seg_uf",
   "position": {
-    "x": 396,
+    "x": 600,
     "y": 8,
     "z": 1,
     "width": 136,

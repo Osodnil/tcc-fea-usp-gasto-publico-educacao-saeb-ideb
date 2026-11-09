@@ -25,12 +25,17 @@ table dim_ano
 		summarizeBy: none
 		sourceColumn: EFICIENCIA_OFICIAL
 
+	column FATOR_IPCA
+		dataType: double
+		lineageTag: 2b76a3d2-e996-5139-be24-414fdb7db081
+		summarizeBy: none
+		sourceColumn: FATOR_IPCA
+
 	partition dim_ano = m
 		mode: import
 		source =
-				let
-				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_ano.parquet")),
-				    Tipos = Table.TransformColumnTypes(Fonte, {{"ANO", Int64.Type}, {"EDICAO_SAEB", type logical}, {"TEM_IDHM", type logical}, {"EFICIENCIA_OFICIAL", type logical}})
-				in
-				    Tipos
-
+			let
+			    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_ano.parquet")),
+			    Tipos = Table.TransformColumnTypes(Fonte, {{"ANO", Int64.Type}, {"EDICAO_SAEB", type logical}, {"TEM_IDHM", type logical}, {"EFICIENCIA_OFICIAL", type logical}, {"FATOR_IPCA", type number}})
+			in
+			    Tipos

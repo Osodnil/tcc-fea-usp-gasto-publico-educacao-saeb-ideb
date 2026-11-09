@@ -53,6 +53,9 @@ As duas versões ordenam as redes de forma parecida (correlação de 0,89 entre 
 ## 3. Eficiência
 
 - **Definição:** eficiência = proficiência observada − proficiência esperada (o resíduo da regressão). +10 significa 10 pontos acima do que redes com gasto e contexto parecidos alcançaram.
+- **No painel, desde 2026-11-09 [A10]:**
+  - **Medida principal:** a mesma diferença dividida pela esperada (% do esperado), que põe etapas e disciplinas na mesma escala. Campinas, por exemplo, fica em −25,0 pontos, ou −10,5% do esperado.
+  - **Limite:** a escala do Saeb não tem zero verdadeiro, então o % é uma convenção de leitura. Os pontos e o percentil continuam como referência.
 - **Percentil:** a posição da rede entre as da mesma etapa, disciplina e edição. 80 = melhor que 80% das redes.
 - **Faixas:** "bem abaixo", "abaixo", "próximo", "acima" e "bem acima do esperado", por quintil do percentil. A proposta ainda está a confirmar [D2].
 - **Escala:** em 2023, 80% das redes ficam entre −23,7 e +24,7 pontos.

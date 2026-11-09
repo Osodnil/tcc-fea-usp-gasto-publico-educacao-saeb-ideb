@@ -116,7 +116,7 @@
                     }
                   },
                   {
-                    "value": "% das redes que tiraram mais do que redes de gasto e contexto parecidos.",
+                    "value": "% das redes acima de redes parecidas (comparação nacional; 2025: no mesmo estado).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -165,6 +165,44 @@
               {
                 "textRuns": [
                   {
+                    "value": "Melhoraram: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "% das redes com nota mais alta que na edição anterior (2021: pandemia).",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "R$ de 2025: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "todo valor em reais do painel está corrigido pelo IPCA (detalhes em Sobre os dados).",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
                     "value": "Edição: ",
                     "textStyle": {
                       "fontWeight": "bold",
@@ -173,7 +211,7 @@
                     }
                   },
                   {
-                    "value": "o filtro vale só para os cartões; as linhas mostram todas as edições.",
+                    "value": "o filtro vale só para os cartões; os gráficos mostram todas as edições.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -203,7 +241,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Valores de associação, não de efeito do gasto.",
+                    "value": "Valores de associação: melhorar não prova bom uso do gasto.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e",

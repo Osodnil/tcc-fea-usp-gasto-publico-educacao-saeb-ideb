@@ -116,7 +116,7 @@
                     }
                   },
                   {
-                    "value": "proficiência − esperada. +10 = 10 pontos acima de redes parecidas.",
+                    "value": "(proficiência − esperada) ÷ esperada; +5% = 5% acima. Pontos: a diferença em pontos.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

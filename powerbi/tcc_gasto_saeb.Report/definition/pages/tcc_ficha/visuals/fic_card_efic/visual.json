@@ -23,12 +23,12 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Eficiência (pontos)"
+                  "Property": "Eficiência (% do esperado)"
                 }
               },
-              "queryRef": "_Medidas.Eficiência (pontos)",
-              "nativeQueryRef": "Eficiência (pontos)",
-              "displayName": "Eficiência (pontos)"
+              "queryRef": "_Medidas.Eficiência (% do esperado)",
+              "nativeQueryRef": "Eficiência (% do esperado)",
+              "displayName": "Eficiência"
             }
           ]
         }

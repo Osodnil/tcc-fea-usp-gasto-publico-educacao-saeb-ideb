@@ -232,7 +232,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Gasto por aluno por ano (mediana, R$ de 2025): recorte escolhido × Brasil'"
+                  "Value": "'Gasto por aluno por ano (mediana, R$ de 2025): recorte × Brasil'"
                 }
               }
             },

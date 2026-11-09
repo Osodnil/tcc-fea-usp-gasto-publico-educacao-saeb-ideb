@@ -1,19 +1,39 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "est_card_gasto_b",
+  "name": "sob_ipca",
   "position": {
-    "x": 508,
-    "y": 80,
-    "z": 13,
-    "width": 156,
-    "height": 84,
-    "tabOrder": 13
+    "x": 856,
+    "y": 492,
+    "z": 14,
+    "width": 408,
+    "height": 192,
+    "tabOrder": 14
   },
   "visual": {
-    "visualType": "card",
+    "visualType": "clusteredColumnChart",
     "query": {
       "queryState": {
-        "Values": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_ano"
+                    }
+                  },
+                  "Property": "ANO"
+                }
+              },
+              "queryRef": "dim_ano.ANO",
+              "nativeQueryRef": "ANO",
+              "active": true,
+              "displayName": "Ano"
+            }
+          ]
+        },
+        "Y": {
           "projections": [
             {
               "field": {
@@ -23,12 +43,12 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Gasto estadual por aluno (mediana, versão B)"
+                  "Property": "Fator do IPCA"
                 }
               },
-              "queryRef": "_Medidas.Gasto estadual por aluno (mediana, versão B)",
-              "nativeQueryRef": "Gasto estadual por aluno (mediana, versão B)",
-              "displayName": "Gasto mediano (B)"
+              "queryRef": "_Medidas.Fator do IPCA",
+              "nativeQueryRef": "Fator do IPCA",
+              "displayName": "R$ de 2025"
             }
           ]
         }
@@ -36,38 +56,47 @@
     },
     "drillFilterOtherVisuals": true,
     "objects": {
-      "labels": [
+      "categoryAxis": [
         {
           "properties": {
-            "fontSize": {
+            "axisType": {
               "expr": {
                 "Literal": {
-                  "Value": "18.0D"
+                  "Value": "'Categorical'"
                 }
               }
             },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#0d366b'"
-                    }
-                  }
-                }
-              }
-            },
-            "labelDisplayUnits": {
+            "showAxisTitle": {
               "expr": {
                 "Literal": {
-                  "Value": "1.0D"
+                  "Value": "false"
                 }
               }
             }
           }
         }
       ],
-      "categoryLabels": [
+      "valueAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "labels": [
         {
           "properties": {
             "show": {
@@ -80,18 +109,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9.0D"
-                }
-              }
-            },
-            "color": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#52514e'"
-                    }
-                  }
+                  "Value": "8.0D"
                 }
               }
             }
@@ -100,40 +118,6 @@
       ]
     },
     "visualContainerObjects": {
-      "padding": [
-        {
-          "properties": {
-            "top": {
-              "expr": {
-                "Literal": {
-                  "Value": "2.0D"
-                }
-              }
-            },
-            "bottom": {
-              "expr": {
-                "Literal": {
-                  "Value": "2.0D"
-                }
-              }
-            },
-            "left": {
-              "expr": {
-                "Literal": {
-                  "Value": "8.0D"
-                }
-              }
-            },
-            "right": {
-              "expr": {
-                "Literal": {
-                  "Value": "8.0D"
-                }
-              }
-            }
-          }
-        }
-      ],
       "background": [
         {
           "properties": {
@@ -221,6 +205,64 @@
               "expr": {
                 "Literal": {
                   "Value": "90.0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Inflação: R$ 1 de cada ano em R$ de 2025'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11.0D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#0d366b'"
+                    }
+                  }
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

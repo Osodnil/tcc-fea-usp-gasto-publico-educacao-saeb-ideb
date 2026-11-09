@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "est_aviso",
   "position": {
-    "x": 836,
+    "x": 672,
     "y": 80,
     "z": 15,
-    "width": 428,
+    "width": 592,
     "height": 84,
     "tabOrder": 15
   },
@@ -47,7 +47,7 @@
                     }
                   },
                   {
-                    "value": "Educação menos Ensino Superior (versão A).",
+                    "value": "função Educação menos o Ensino Superior, em R$ de 2025.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -66,7 +66,7 @@
                     }
                   },
                   {
-                    "value": "UF sem a linha do Ensino Superior; a versão B a deixa de fora.",
+                    "value": "UF sem a linha do Ensino Superior no ano: nada é descontado.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

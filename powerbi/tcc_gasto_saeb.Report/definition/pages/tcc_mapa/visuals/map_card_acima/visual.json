@@ -23,11 +23,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "% acima do esperado"
+                  "Property": "Mapa: % acima do esperado"
                 }
               },
-              "queryRef": "_Medidas.% acima do esperado",
-              "nativeQueryRef": "% acima do esperado",
+              "queryRef": "_Medidas.Mapa: % acima do esperado",
+              "nativeQueryRef": "Mapa: % acima do esperado",
               "displayName": "Acima do esperado"
             }
           ]

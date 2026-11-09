@@ -73,7 +73,11 @@ def dimensoes(uf: pl.DataFrame) -> dict[str, pl.DataFrame]:
             "EDICAO_SAEB": [a in EDICOES for a in anos],
             "TEM_IDHM": [a <= 2024 for a in anos],
             "EFICIENCIA_OFICIAL": [a in EDICOES_OFICIAL for a in anos],
-        }, schema_overrides={"ANO": pl.Int32}),
+        }, schema_overrides={"ANO": pl.Int32}).join(
+            # fator do IPCA que leva o valor do ano a R$ de 2025 (o mesmo usado no pipeline, G8): gasto da época = R$ 2025 ÷ fator
+            pl.read_parquet(BASE_DIR / "data" / "interim" / "ipca_deflator_anual.parquet")
+            .select(pl.col("ANO").cast(pl.Int32), pl.col("FATOR_PARA_BASE").alias("FATOR_IPCA")),
+            on="ANO", how="left"),
         "dim_etapa": pl.DataFrame({
             "ETAPA": ["AI", "AF", "EM"],
             "NOME_ETAPA": ["Anos Iniciais (5º ano)", "Anos Finais (9º ano)", "Ensino Médio (3ª série)"],
@@ -140,7 +144,13 @@ def fatos_municipais() -> dict[str, pl.DataFrame]:
     desempenho = (
         longo(painel, ["CO_MUNICIPIO", "ETAPA", "ANO"], comuns)
         .join(efic, on=["CO_MUNICIPIO", "ETAPA", "DISCIPLINA", "ANO"], how="left")
-        .with_columns(pl.col("SALTO_ATIPICO").fill_null(False))
+        .with_columns(
+            pl.col("SALTO_ATIPICO").fill_null(False),
+            # eficiência em % do esperado (decisão da reunião de 2026-11-06, Henrique, 2026-11-09): resíduo ÷ esperada.
+            # Põe etapas e disciplinas na mesma escala; a escala do Saeb não tem zero verdadeiro (convenção de leitura).
+            (pl.col("RESIDUO") / pl.col("NOTA_ESPERADA")).alias("EFIC_PCT"),
+            (pl.col("RESIDUO_ALT") / pl.col("NOTA_ESPERADA_ALT")).alias("EFIC_PCT_ALT"),
+        )
         .sort("CO_MUNICIPIO", "ETAPA", "DISCIPLINA", "ANO")
     )
     # conferência: a proficiência da eficiência tem de ser a mesma do painel

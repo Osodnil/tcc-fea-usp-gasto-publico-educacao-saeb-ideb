@@ -65,6 +65,11 @@
       "source": "ini_seg_edicao",
       "target": "ini_linhas_gasto",
       "type": "NoFilter"
+    },
+    {
+      "source": "ini_seg_edicao",
+      "target": "ini_melhora",
+      "type": "NoFilter"
     }
   ]
 }

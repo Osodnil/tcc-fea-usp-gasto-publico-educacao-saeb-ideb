@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "est_card_sem_linha",
   "position": {
-    "x": 672,
+    "x": 508,
     "y": 80,
-    "z": 14,
+    "z": 13,
     "width": 156,
     "height": 84,
-    "tabOrder": 14
+    "tabOrder": 13
   },
   "visual": {
     "visualType": "card",

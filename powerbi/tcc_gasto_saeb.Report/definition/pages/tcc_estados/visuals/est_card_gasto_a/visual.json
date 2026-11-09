@@ -28,7 +28,7 @@
               },
               "queryRef": "_Medidas.Gasto estadual por aluno (mediana, versão A)",
               "nativeQueryRef": "Gasto estadual por aluno (mediana, versão A)",
-              "displayName": "Gasto mediano (A)"
+              "displayName": "Gasto mediano"
             }
           ]
         }

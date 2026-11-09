@@ -110,6 +110,7 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Riscos:** a regra geral do projeto ("ausência não é zero") aponta para (b), mas no DCA é comum que uma conta sem movimento simplesmente não seja publicada, o que favorece (a). Para AC, RO e SE, a hipótese de que o estado não mantém universidade estadual nesses anos favoreceria (a), mas ainda não foi verificada. No RS, a linha existe antes e depois da lacuna de 2018–2023, o que sugere dado faltante ou classificação em outra conta.
 - **Implementação provisória:** `Transform_SICONFI.py` gera as duas versões, `GASTO_BASICA_A_*` e `GASTO_BASICA_B_*`, além da marca `SUP364_AUSENTE`. A escolha fica para depois da reunião, sem refazer nada.
 - **Dossiê da conta anterior:** a especificação original do Transform estadual já previa tratar a ausência como zero (versão A). O dossiê também registra que o RS tem universidade estadual, e por isso o zero no RS seria provavelmente uma classificação diferente, de efeito pequeno diante do total. Isso não foi verificado.
+- **Painel (2026-11-09):** só a versão A aparece. A comparação com a B fica para o texto, como robustez (ver P7).
 - **Decisão (Henrique, 2026-10-30):** usar a **versão A**: a ausência da linha 12.364 é tratada como "nada a descontar", para não deixar UF/anos sem informação. A versão B continua calculada nos painéis, só para teste de sensibilidade. O dashboard oficial usa a A.
 - **Como as versões diferem na prática (conferido em 2026-11-09):** onde a linha 12.364 existe, A e B são iguais. A versão B só deixa vazios os pares UF/ano sem a linha (em 2023, AC, RO, RS e SE). Logo, a sensibilidade à versão B é uma sensibilidade à **amostra**, e não ao valor do gasto de cada UF.
 - **Limitação que permanece (L2):** no RS de 2018 a 2023, se o Ensino Superior estiver lançado em outra subfunção, o gasto da educação básica fica superestimado nesses anos. A conferência no DCA do RS continua recomendada, mas não bloqueia nada.
@@ -411,6 +412,18 @@ Falar sempre em associação e eficiência relativa.
   - na dica do Mapa;
   - no cartão "Situação da rede" da Ficha, que avisa que a eficiência é a da rede municipal, não a da cidade.
 - **No texto:** citar a sensibilidade como robustez e a limitação L19.
+
+### A10. Eficiência em % do esperado como medida principal do painel ✅ (Henrique, 2026-11-09)
+- **Origem:** reunião de 2026-11-06. Em pontos, a escala muda entre etapas: o esperado gira em torno de 220 em Anos Iniciais e de 249 em Anos Finais.
+- **Definição:** eficiência = (proficiência − esperada) ÷ esperada, rede a rede (colunas `EFIC_PCT` e `EFIC_PCT_ALT`). No agregado, é a média entre as redes.
+- **O que fica como referência:** os pontos e o percentil continuam no painel, em colunas e dicas.
+- **Limite:** a escala do Saeb não tem zero verdadeiro, então o % é uma convenção de leitura, e não uma razão no sentido estrito. O percentil é a alternativa mais robusta.
+- **O que não muda:** o sinal (acima ou abaixo do esperado), o "% acima do esperado" e os modelos. A ordem das redes muda pouco, porque o esperado varia de ~180 a ~260.
+- **Ordem de grandeza (AI MT 2023):**
+  - **intervalo:** 90% das redes ficam entre −13,8% e +16,1% na comparação nacional, e entre −12,1% e +13,8% no mesmo estado;
+  - **exemplos:** Campinas −10,5%; São Paulo −9,3%; Ibateguara +71,1%.
+- **Mapa:** passou a comparar cada rede com as do mesmo estado (a "mesma régua" pedida na reunião). A escala de cor fica saturada em ±12%, que cobre de 88% a 96% das redes. Os cartões do Mapa seguem a mesma comparação. O resumo por UF fica na comparação nacional, porque na comparação dentro do estado a média de toda UF seria ~0.
+- **Exemplo do Ceará (2023):** na comparação nacional, 90% das redes ficam acima do esperado (média de +16,1%); no mesmo estado, 45% (+1,7%).
 
 ### S11. Saltos atípicos de proficiência ⚠️ (achado de 2026-10-30)
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
@@ -740,6 +753,57 @@ Falar sempre em associação e eficiência relativa.
     - **2025 sem eficiência na Ficha (Campinas):** com a comparação nacional, que não cobre 2025 (C1), a faixa mostrava "Sem cálculo". Agora diz "Só na comparação com o mesmo estado". O glossário e o rodapé da Eficiência explicam o motivo.
     - **Perfil cortado:** a medida usa o rótulo curto do cluster (`CLUSTER_CURTO`), e o cartão ganhou altura.
     - O ranking da Eficiência também passou a usar o rótulo curto do cluster.
+  - **Etapa 3 do plano da reunião (2026-11-09):**
+    - **Eficiência em % do esperado (A10):**
+      - colunas `EFIC_PCT` e `EFIC_PCT_ALT` em `fato_desempenho_municipal`, calculadas no `Preparar_PowerBI.py` a partir do resíduo e da esperada;
+      - medida principal `Eficiência (% do esperado)`, usada nos cartões, na dispersão e na ordenação do ranking (Eficiência), na Ficha, nos Pares (tabela, "Pares que entregam mais", comparação 1 a 1 e diferença em pontos percentuais) e no Mapa;
+      - os pontos ficam como coluna "Pontos" e na dica do Mapa.
+    - **Mapa:** a página não tem mais o filtro de comparação. O mapa e os cartões têm um filtro oculto, "Mesmo estado"; o resumo por UF tem outro, "Nacional".
+    - **Visão geral:**
+      - novo gráfico com a parcela de redes que melhoraram desde a edição anterior;
+      - a linha de gasto ganhou o "valor da época" (R$ 2025 ÷ fator do IPCA, coluna `FATOR_IPCA` de `dim_ano`);
+      - o glossário explica os dois.
+    - **Valores de conferência (Brasil, AI, MT, 2023):**
+      - eficiência média +0,0% (nacional);
+      - redes que melhoraram 79,9% (2019: 66,0%; 2021: 14,9%; 2025: 79,2%);
+      - gasto mediano R$ 13.721 de 2025, que equivale a R$ 12.520 da época (2017: R$ 9.391 e R$ 6.236);
+      - Campinas −10,5%;
+      - Mapa com CE: 184 redes, 44,6% acima, +1,7%.
+  - **Correção do Mapa (2026-11-09):**
+    - **Problema:** na conferência, os cartões e as cores do Mapa saíram na comparação nacional (CE: 90,2% acima, +16,1%), apesar dos filtros ocultos de visual sobre `dim_modelo`.
+    - **Correção:** a comparação "mesmo estado" foi fixada dentro de medidas próprias (`Mapa: eficiência (%)`, `Mapa: eficiência (pontos)`, `Mapa: % acima do esperado`, `Mapa: redes comparadas`, com `CALCULATE` + `TREATAS`), e os filtros de visual saíram.
+    - **Lição:** para fixar um parâmetro num visual, a medida é mais confiável que o filtro oculto.
+  - **Mapa com as duas comparações (Henrique, 2026-11-09):**
+    - **Filtro "Comparação do mapa":** a página ganhou um filtro próprio, sem sincronização, que vem em "Mesmo estado (até 2025)" e permite trocar para "Nacional". As medidas `Mapa: …` leem esse filtro com `REMOVEFILTERS` + `TREATAS`.
+    - **Resumo por UF:** fica sempre na comparação nacional, com as medidas `UF: …`.
+    - **Dica do mouse:** mostrava "CO_MUNICIPIO 2304400". Agora as áreas da malha registrada no relatório usam "Nome (UF)" como id (o código fica em `properties.CD_MUN`), o local do mapa é `dim_municipio.MUNICIPIO_UF`, e a dica mostra o nome.
+  - **Inflação explicada em um só lugar (Henrique, 2026-11-09):**
+    - **O que saiu:** a linha "valor da época" saiu da Visão geral, porque sugeria que só aquele gasto dependia da inflação.
+    - **Onde ficou:** em Sobre os dados, um gráfico mostra quanto vale R$ 1 de cada ano em R$ de 2025 (medida `Fator do IPCA`), e o texto de fontes traz o exemplo de 2017 (1,51).
+    - **Resto do painel:** o glossário da Visão geral diz que todo valor em reais está corrigido.
+  - **Estados só com a versão A (Henrique, 2026-11-09):**
+    - **O que saiu:** o cartão e a linha da versão B. Onde a linha 12.364 existe, A = B (G4), e a mediana muda no máximo ~1% (2023: R$ 13.343 contra R$ 13.467).
+    - **O que ficou:** a marca ⚠ na tabela.
+    - **No texto:** a comparação A × B vai como teste de robustez.
+  - **Revisão dos filtros por página (Henrique, 2026-11-09):** cada página fica só com os filtros que mudam algum visual dela.
+
+    | Página | Filtros | O que mudou |
+    |---|---|---|
+    | Boas-vindas, Sobre os dados | nenhum | — |
+    | Visão geral | UF, etapa, disciplina, edição | saiu "Comparação da eficiência", que só mudava o cartão de % acima |
+    | Eficiência, Ficha, Pares | os de antes, com a comparação | todos mudam algum visual |
+    | Mapa | UF, etapa, disciplina, edição, comparação do mapa | — |
+    | Defasagens | UF, etapa, disciplina, edição, gasto de quando | — |
+    | Contexto e clusters | UF, etapa, disciplina, edição | saiu "Comparação da eficiência", que só mudava a coluna de % acima |
+    | Estados | etapa (rede estadual), disciplina, edição | — |
+
+    - **% acima nas páginas sem o filtro:** a Visão geral e o Contexto usam a medida `% acima do esperado (padrão)`. Ela fica na comparação nacional e, em 2025, que a nacional não cobre, passa para a comparação no mesmo estado. Os glossários avisam.
+  - **Conferência da inflação** (`src/Testes/Conferir_Inflacao.py`, 2026-11-09). Pergunta da conferência: os outros valores do painel também estão corrigidos? Todos os itens passaram:
+    - SIOPE e SICONFI: R$ 2025 = nominal × fator do IPCA em todas as linhas;
+    - gasto por aluno = R$ 2025 ÷ matrículas;
+    - defasagens: o gasto de k anos antes é o gasto real daquele ano, corrigido pelo próprio fator;
+    - as 16 colunas de gasto do painel e as 9 citadas nas medidas estão todas em R$ 2025.
+    - O que não é dinheiro (notas, eficiência, percentis, contagens) não depende da inflação. No modelo, o gasto entra em log e há efeito de edição, então um fator comum a todas as redes do ano não muda a eficiência.
   - **Padrão de glossário (Henrique, 2026-11-09):** o desenho do "Como ler esta ficha" vira o padrão dos quadros explicativos: termo em negrito azul, definição ao lado e uma nota final em itálico. Ele foi aplicado também em Visão geral, Defasagens e no quadro das 27 unidades de Estados (sem título, por ser pequeno). A função `glossario` do gerador monta esses quadros.
  Ele depende de um endereço público, e o repositório é privado. Quando o destino for escolhido, o gerador cria a imagem e a coloca nesse quadro.
 
@@ -874,9 +938,9 @@ Pontos levantados sobre o painel, com diagnóstico nos dados em 2026-11-09 e pla
 | Selecionar um par não o compara com a referência; comparar dois municípios 1 para 1 | Função inexistente | Etapa 4: bloco de comparação na página Pares |
 | Mais gasto não significa mais eficiência | Confirmado: correlação de 0,01 entre eficiência e gasto; coeficiente do gasto não significativo no modelo nacional | ✅ No quadro "Como ler" e na nota de método |
 | IA na FEA | Pergunta para a orientadora | Etapa 5: declaração completa, por etapa do trabalho |
-| Inflação na Início ou VPL | IPCA já está na base (fator 1,51 para 2017); VPL não se aplica (desconta fluxos futuros por juros) | Etapa 3: curva do IPCA e gasto nominal × real |
-| Eficiência em % do esperado; mesma base no mapa | Escala diferente entre etapas (esperado ~220 em AI e ~249 em AF); a "base" do mapa é a régua nacional | Etapa 3: % do esperado (decisão pendente) e mapa com a comparação no próprio estado quando há UF |
-| O desempenho melhora a cada edição? | AI MT: 218,2 → 222,7 → 211,8 (2021) → 220,2 → 230,1; 79% das redes melhoraram de 2023 para 2025 | Etapa 3: tendência na Início, com a ressalva de que melhora não prova uso bom do gasto |
+| Inflação na Início ou VPL | IPCA já está na base (fator 1,51 para 2017); o VPL não se aplica, porque desconta fluxos futuros por uma taxa de juros, e aqui a questão é poder de compra | ✅ Etapa 3: linha "valor da época" ao lado do gasto em R$ de 2025 na Visão geral (mediana do Brasil: R$ 6.236 da época em 2017 = R$ 9.391 de 2025) |
+| Eficiência em % do esperado; mesma base no mapa | Escala diferente entre etapas (esperado ~220 em AI e ~249 em AF); a "base" do mapa era a régua nacional | ✅ Etapa 3 (A10): % do esperado como medida principal; mapa sempre na comparação com o mesmo estado, com cor saturada em ±12% |
+| O desempenho melhora a cada edição? | AI MT: 218,2 → 222,7 → 211,8 (2021) → 220,2 → 230,1. Redes que melhoraram: 66% (2019), 15% (2021), 80% (2023), 79% (2025) | ✅ Etapa 3: gráfico "Redes que melhoraram" na Visão geral, com a ressalva de que melhorar não prova bom uso do gasto |
 
 ### Pendências restantes (nenhuma bloqueia o desenvolvimento)
 0. **S11 (2026-10-30):** confirmar a regra proposta para marcar os saltos atípicos (mais de 3 desvios-padrão da variação média; 633 linhas marcadas, nenhuma excluída). (A8 foi decidido: versão nacional.)
