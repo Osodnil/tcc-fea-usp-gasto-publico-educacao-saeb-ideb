@@ -649,6 +649,16 @@ Falar sempre em associação e eficiência relativa.
     - **Clique num ponto:** filtrava a página toda para aquela UF. Com MT selecionado, os cartões mostravam 1 UF, 243,2 e R$ 14.898, valores corretos para MT, e isso pareceu erro. O título da dispersão agora explica o clique.
     - **Cartão "UFs sem a linha":** mostrava "(Em branco)" quando nenhuma UF do recorte estava sem a linha. Como zero UFs é um zero de fato, e não um dado ausente (A3), a medida agora devolve 0.
     - **Rótulos dos cartões de gasto:** encurtados, porque não cabiam.
+- **Página Sobre os dados (2026-11-09):** quadros de texto com:
+  - fontes e recorte;
+  - indicadores, em versão curta da seção 4 da especificação;
+  - limitações principais, em versão curta da seção 10 deste registro;
+  - autoria e data de atualização;
+  - acesso ao projeto.
+  - **Data dos dados:** é a do `.parquet` mais recente de `data/processed/powerbi`, gravada quando a página é gerada. Depois de rodar o pipeline de novo, é preciso regravar a página (`--refazer tcc_sobre`).
+  - **Uso de IA:** a página repete a declaração do README (apoio do Claude no código e na documentação; decisões de método dos autores). A redação final deve seguir o que for combinado com a orientadora (Manual do TCC).
+  - **QR Code (A7):** por enquanto, é um espaço reservado. Ele depende de um endereço público, e o repositório é privado. Quando o destino for escolhido, o gerador cria a imagem e a coloca nesse quadro.
+
   - **Valores de conferência (AF, MT, 2023):**
     - 27 UFs, proficiência média de 247,5 (EM: 263,3);
     - gasto mediano de R$ 13.343 na versão A e de R$ 13.467 na versão B; as 4 UFs sem a linha são AC, RO, RS e SE;

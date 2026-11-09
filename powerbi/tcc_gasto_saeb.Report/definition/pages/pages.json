@@ -8,7 +8,8 @@
     "tcc_mapa",
     "tcc_defasagens",
     "tcc_contexto",
-    "tcc_estados"
+    "tcc_estados",
+    "tcc_sobre"
   ],
   "activePageName": "tcc_inicio"
 }

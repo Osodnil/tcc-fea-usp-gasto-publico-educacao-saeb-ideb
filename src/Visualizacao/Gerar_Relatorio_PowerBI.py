@@ -764,8 +764,91 @@ def pagina_estados() -> tuple[dict, list[dict]]:
     return pagina("tcc_estados", "Estados", sem_filtro), vis
 
 
+def data_dos_dados() -> str:
+    """Data da última preparação das tabelas do Power BI (arquivo .parquet mais recente), em dd/mm/aaaa."""
+    from datetime import datetime
+    arquivos = list((BASE_DIR / "data" / "processed" / "powerbi").glob("*.parquet"))
+    if not arquivos:
+        return "data não encontrada"
+    return datetime.fromtimestamp(max(a.stat().st_mtime for a in arquivos)).strftime("%d/%m/%Y")
+
+
+def pagina_sobre() -> tuple[dict, list[dict]]:
+    """Fontes, indicadores (seção 4 da especificação), limitações principais (seção 10 do registro), autores,
+    data dos dados e acesso ao projeto. O QR Code (A7) fica como espaço reservado até haver endereço público."""
+    p = "sob"
+    vis = cabecalho(p, "Sobre os dados", "Fontes, indicadores, limitações e autoria do painel", segs=())
+    tit = {"fontWeight": "bold", "fontSize": "11pt", "color": AZUL_FAIXA}
+    sub = {"fontWeight": "bold", "fontSize": "9pt", "color": AZUL_FAIXA}
+    corpo = {"fontSize": "9pt", "color": COR_TEXTO_2}
+    vis.append(container(f"{p}_fontes", (16, 80, 404, 420), quadro_texto([
+        ("Fontes", tit),
+        ("• Gasto municipal: SIOPE/FNDE, despesa paga na subfunção 361 (Ensino Fundamental), 2017–2025.", corpo),
+        ("• Gasto estadual: SICONFI/Tesouro (DCA), função 12 (Educação) menos a subfunção 364 (Ensino Superior).", corpo),
+        ("• Matrículas e infraestrutura das escolas: Censo Escolar/Inep.", corpo),
+        ("• Proficiência e IDEB: Saeb/Inep, edições de 2017 a 2025 (bienais).", corpo),
+        ("• População e alfabetização: Censo Demográfico 2022/IBGE.", corpo),
+        ("• IDHM Renda e Longevidade da UF: Atlas do Desenvolvimento Humano (PNUD, Ipea, FJP).", corpo),
+        ("• Correção monetária: IPCA/IBGE, valores em R$ de 2025.", corpo),
+        ("Recorte", tit),
+        ("Redes municipais (Anos Iniciais e Finais) de todo o Brasil e redes estaduais (Anos Finais e Ensino "
+         "Médio). Entram só as redes com nota divulgada pelo Inep.", corpo),
+    ]), 10))
+    vis.append(container(f"{p}_indicadores", (428, 80, 420, 604), quadro_texto([
+        ("Indicadores", tit),
+        ("Gasto por aluno", sub),
+        ("Despesa da rede ÷ matrículas da rede, em R$ de 2025 por aluno/ano. Nas redes municipais, só o Ensino "
+         "Fundamental (sem Educação Infantil). Agregado pela mediana entre as redes.", corpo),
+        ("Proficiência", sub),
+        ("Pontos do Saeb, média simples entre as redes, por etapa e disciplina. Não compare etapas nem disciplinas.", corpo),
+        ("Eficiência (pontos)", sub),
+        ("Proficiência observada menos a esperada para redes com o mesmo gasto e contexto (população, alfabetização, "
+         "infraestrutura, tamanho da rede, IDHM Renda e Longevidade da UF). Modelo oficial de 2017 a 2023; o modelo "
+         "de robustez compara dentro da UF e cobre 2025.", corpo),
+        ("Percentil e faixa de eficiência", sub),
+        ("Posição entre as redes da mesma etapa, disciplina e edição: 80 = melhor que 80% delas.", corpo),
+        ("Clusters e pares", sub),
+        ("7 grupos de municípios com contexto parecido, sem gasto nem nota. Pares = mesmo cluster e gasto entre "
+         "0,8 e 1,25 vez o do município de referência.", corpo),
+        ("ρ de Spearman", sub),
+        ("Associação entre a ordem das redes no gasto e na nota (−1 a 1), só com 30 redes ou mais.", corpo),
+        ("⚠ Salto atípico", sub),
+        ("Variação desde a edição anterior a mais de 3 desvios-padrão da média: conferir antes de interpretar.", corpo),
+        ("Cobertura do Saeb", sub),
+        ("Redes com nota ÷ municípios do recorte.", corpo),
+    ]), 11))
+    vis.append(container(f"{p}_limitacoes", (856, 80, 408, 420), quadro_texto([
+        ("Limitações principais", tit),
+        ("• Associação, não causalidade: o painel não mostra efeito do gasto sobre a nota.", corpo),
+        ("• A eficiência é um resíduo: também capta gestão, contexto familiar e qualidade do registro.", corpo),
+        ("• Só entram redes com nota divulgada; as pequenas, que gastam mais por aluno, ficam sub-representadas.", corpo),
+        ("• O IDHM só existe por UF e termina em 2024: a edição de 2025 não tem o modelo oficial.", corpo),
+        ("• O gasto municipal cobre todo o Fundamental: Anos Iniciais e Finais usam o mesmo valor.", corpo),
+        ("• Gasto da série começa em 2017: defasagens de 2 e 4 anos só a partir de 2019 e 2021.", corpo),
+        ("• 2021 foi aplicado na pandemia, com menos redes e condições atípicas.", corpo),
+        ("• Camada estadual: só 27 unidades, leitura descritiva.", corpo),
+        ("• Clusters com separação fraca (silhueta ≈ 0,23) e ligados à região.", corpo),
+    ]), 12))
+    vis.append(container(f"{p}_autoria", (16, 508, 404, 176), quadro_texto([
+        ("Autoria e atualização", tit),
+        ("Trabalho de Conclusão de Curso em Administração, FEA/USP. Autores: Henrique Lindoso (dados e painel) e "
+         "Guilherme (texto).", corpo),
+        (f"Dados preparados em {data_dos_dados()}. Registro completo das decisões de método no repositório do "
+         "projeto (docs/decisoes_metodo.md).", corpo),
+        ("Parte do código e da documentação foi desenvolvida com apoio de um assistente de IA (Claude, da Anthropic). "
+         "As decisões de método são dos autores.", corpo),
+    ]), 13))
+    # A7: o QR Code precisa de um endereço público (o repositório é privado); até lá, espaço reservado
+    vis.append(container(f"{p}_acesso", (856, 508, 408, 176), quadro_texto([
+        ("Acesso ao projeto", tit),
+        ("O QR Code de acesso entra aqui quando o endereço público do painel for definido.", corpo),
+    ]), 14))
+    vis.append(rodape_fontes(p, 30))
+    return pagina("tcc_sobre", "Sobre os dados"), vis
+
+
 PAGINAS = [pagina_inicio, pagina_eficiencia, pagina_ficha, pagina_pares, pagina_mapa, pagina_defasagens, pagina_contexto,
-           pagina_estados]
+           pagina_estados, pagina_sobre]
 
 
 # ───────────────────────── gravação e validação ─────────────────────────
