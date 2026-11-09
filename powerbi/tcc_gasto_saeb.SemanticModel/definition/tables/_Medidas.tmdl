@@ -539,16 +539,16 @@ table _Medidas
 
 	/// O Mapa de formas desenha no máximo ~1.500 áreas por vez; o Brasil tem 5.571 municípios (decisão de 2026-11-05)
 	measure 'Aviso do mapa' =
-			    IF (
-			        [Municípios no recorte] > 1500,
-			        "⚠ Escolha uma UF no filtro acima: o mapa mostra até ~1.500 municípios por vez (o Brasil tem 5.571).",
-			        // desde 2026-11-09: % do esperado, sempre na comparação com o mesmo estado (a mesma régua dentro da UF)
-			        "Cores: eficiência em % do esperado, na comparação "
-			            & IF ( [Mapa: comparação] = "Oficial", "nacional", "com o mesmo estado" ) & ". Vermelho = abaixo · "
-			            & "cinza = próximo · azul = acima (cor máxima a partir de ±12%). Sem nota: " & FORMAT ( [Municípios sem rede municipal na etapa], "#,0" )
-			            & " sem rede municipal na etapa e " & FORMAT ( [Municípios sem nota divulgada], "#,0" )
-			            & " sem nota divulgada (motivo na Ficha)."
-			    )
+			IF (
+			    [Municípios no recorte] > 1500,
+			    "⚠ Escolha uma UF no filtro acima: o mapa mostra até ~1.500 municípios por vez (o Brasil tem 5.571).",
+			    // desde 2026-11-09: % do esperado, sempre na comparação com o mesmo estado (a mesma régua dentro da UF)
+			    "Cores: eficiência em % do esperado, na comparação "
+			        & IF ( [Mapa: comparação] = "Oficial", "nacional", "com o mesmo estado" ) & ". Vermelho = abaixo · "
+			        & "cinza = próximo · azul = acima (cor máxima a partir de ±12%). Sem nota: " & FORMAT ( [Municípios sem rede municipal na etapa], "#,0" )
+			        & " sem rede municipal na etapa e " & FORMAT ( [Municípios sem nota divulgada], "#,0" )
+			        & " sem nota divulgada (motivo na Ficha)."
+			)
 		displayFolder: 9 Mapa
 		lineageTag: 3c5a1540-e341-5c15-b728-8d7c1645ad1c
 
@@ -792,18 +792,6 @@ table _Medidas
 		displayFolder: 6 Qualidade dos dados
 		lineageTag: 607b57ea-8e9c-5d6a-ba5c-ff7e03c6d47c
 
-	column Coluna
-		dataType: int64
-		isHidden
-		lineageTag: 84eace48-46db-5e7a-9764-9593ffb2d3bb
-		summarizeBy: none
-		isNameInferred
-		sourceColumn: [Coluna]
-
-	partition _Medidas = calculated
-		mode: import
-		source = ROW ( "Coluna", 0 )
-
 	/// Valor da época, sem a correção pelo IPCA (pedido da reunião de 2026-11-06: mostrar o efeito da inflação).
 	/// A mediana real dividida pelo fator do ano é a mediana nominal (o fator é o mesmo para todas as redes do ano).
 	measure 'Gasto por aluno da época (mediana anual)' = DIVIDE ( [Gasto por aluno (mediana anual)], SELECTEDVALUE ( dim_ano[FATOR_IPCA] ) )
@@ -814,13 +802,13 @@ table _Medidas
 	/// Tendência (reunião de 2026-11-06: "o desempenho está melhorando a cada edição?"): entre as redes com nota nesta e
 	/// na edição anterior, a parcela que subiu. Melhora não prova bom uso do gasto (associação).
 	measure '% de redes que melhoraram' =
-			    IF (
-			        [Seleção comparável],
-			        DIVIDE (
-			            CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[VARIACAO_EDICAO_ANTERIOR] > 0 ),
-			            CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), NOT ISBLANK ( fato_desempenho_municipal[VARIACAO_EDICAO_ANTERIOR] ) )
-			        )
+			IF (
+			    [Seleção comparável],
+			    DIVIDE (
+			        CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[VARIACAO_EDICAO_ANTERIOR] > 0 ),
+			        CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), NOT ISBLANK ( fato_desempenho_municipal[VARIACAO_EDICAO_ANTERIOR] ) )
 			    )
+			)
 		formatString: 0%
 		displayFolder: 3 Cobertura
 		lineageTag: 2ec5b892-0005-5bc5-a79e-355c8cd7298b
@@ -894,16 +882,16 @@ table _Medidas
 		lineageTag: 5d4a6b29-78a4-5663-8d72-d9398745440f
 
 	measure 'Mapa: aviso da comparação' =
-			    SWITCH (
-			        TRUE (),
-			        [Mapa: comparação] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
-			            "⚠ A comparação nacional não cobre 2025 (não há IDHM de 2025): escolha “Mesmo estado” no filtro do mapa.",
-			        [Mapa: comparação] = "Oficial",
-			            "Nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos. "
-			                & "Diferenças entre estados aparecem nas cores.",
-			        "Mesmo estado: cada rede é comparada com as redes do seu estado de gasto e contexto parecidos (inclui 2025). "
-			            & "Para comparar com o país, escolha “Nacional” no filtro do mapa."
-			    )
+			SWITCH (
+			    TRUE (),
+			    [Mapa: comparação] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
+			        "⚠ A comparação nacional não cobre 2025 (não há IDHM de 2025): escolha “Mesmo estado” no filtro do mapa.",
+			    [Mapa: comparação] = "Oficial",
+			        "Nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos. "
+			            & "Diferenças entre estados aparecem nas cores.",
+			    "Mesmo estado: cada rede é comparada com as redes do seu estado de gasto e contexto parecidos (inclui 2025). "
+			        & "Para comparar com o país, escolha “Nacional” no filtro do mapa."
+			)
 		displayFolder: 9 Mapa
 		lineageTag: 716262dd-09b0-527c-bcbb-43289f562a4a
 
@@ -945,4 +933,16 @@ table _Medidas
 		formatString: 0.0%
 		displayFolder: 4 Eficiência
 		lineageTag: 23d30242-5eaa-5382-8ee9-bfc9104f88d9
+
+	column Coluna
+		dataType: int64
+		isHidden
+		lineageTag: 84eace48-46db-5e7a-9764-9593ffb2d3bb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Coluna]
+
+	partition _Medidas = calculated
+		mode: import
+		source = ROW ( "Coluna", 0 )
 

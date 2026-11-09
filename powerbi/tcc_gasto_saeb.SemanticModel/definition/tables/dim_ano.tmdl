@@ -34,8 +34,9 @@ table dim_ano
 	partition dim_ano = m
 		mode: import
 		source =
-			let
-			    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_ano.parquet")),
-			    Tipos = Table.TransformColumnTypes(Fonte, {{"ANO", Int64.Type}, {"EDICAO_SAEB", type logical}, {"TEM_IDHM", type logical}, {"EFICIENCIA_OFICIAL", type logical}, {"FATOR_IPCA", type number}})
-			in
-			    Tipos
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\dim_ano.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"ANO", Int64.Type}, {"EDICAO_SAEB", type logical}, {"TEM_IDHM", type logical}, {"EFICIENCIA_OFICIAL", type logical}, {"FATOR_IPCA", type number}})
+				in
+				    Tipos
+

@@ -182,8 +182,9 @@ table fato_desempenho_municipal
 	partition fato_desempenho_municipal = m
 		mode: import
 		source =
-			let
-			    Fonte = Parquet.Document(File.Contents(PastaDados & "\fato_desempenho_municipal.parquet")),
-			    Tipos = Table.TransformColumnTypes(Fonte, {{"CO_MUNICIPIO", type text}, {"ETAPA", type text}, {"ANO", Int64.Type}, {"DISCIPLINA", type text}, {"PROFICIENCIA", type number}, {"NOTA_N", type number}, {"IND_REND", type number}, {"IDEB", type number}, {"GASTO_ALUNO_R2025_L0", type number}, {"GASTO_ALUNO_R2025_L1", type number}, {"GASTO_ALUNO_R2025_L2", type number}, {"GASTO_ALUNO_R2025_L4", type number}, {"GASTO_EXTREMO_L0", type logical}, {"QT_MAT_FUND", type number}, {"IDHM_RENDA", type number}, {"IDHM_LONGEVIDADE", type number}, {"INFRA", type number}, {"NOTA_ESPERADA", type number}, {"RESIDUO", type number}, {"PERCENTIL_RESIDUO", type number}, {"NOTA_ESPERADA_ALT", type number}, {"RESIDUO_ALT", type number}, {"PERCENTIL_RESIDUO_ALT", type number}, {"NOTA_VS_CLUSTER", type number}, {"GASTO_VS_CLUSTER", type number}, {"VARIACAO_EDICAO_ANTERIOR", type number}, {"SALTO_ATIPICO", type logical}, {"EFIC_PCT", type number}, {"EFIC_PCT_ALT", type number}})
-			in
-			    Tipos
+				let
+				    Fonte = Parquet.Document(File.Contents(PastaDados & "\fato_desempenho_municipal.parquet")),
+				    Tipos = Table.TransformColumnTypes(Fonte, {{"CO_MUNICIPIO", type text}, {"ETAPA", type text}, {"ANO", Int64.Type}, {"DISCIPLINA", type text}, {"PROFICIENCIA", type number}, {"NOTA_N", type number}, {"IND_REND", type number}, {"IDEB", type number}, {"GASTO_ALUNO_R2025_L0", type number}, {"GASTO_ALUNO_R2025_L1", type number}, {"GASTO_ALUNO_R2025_L2", type number}, {"GASTO_ALUNO_R2025_L4", type number}, {"GASTO_EXTREMO_L0", type logical}, {"QT_MAT_FUND", type number}, {"IDHM_RENDA", type number}, {"IDHM_LONGEVIDADE", type number}, {"INFRA", type number}, {"NOTA_ESPERADA", type number}, {"RESIDUO", type number}, {"PERCENTIL_RESIDUO", type number}, {"NOTA_ESPERADA_ALT", type number}, {"RESIDUO_ALT", type number}, {"PERCENTIL_RESIDUO_ALT", type number}, {"NOTA_VS_CLUSTER", type number}, {"GASTO_VS_CLUSTER", type number}, {"VARIACAO_EDICAO_ANTERIOR", type number}, {"SALTO_ATIPICO", type logical}, {"EFIC_PCT", type number}, {"EFIC_PCT_ALT", type number}})
+				in
+				    Tipos
+
