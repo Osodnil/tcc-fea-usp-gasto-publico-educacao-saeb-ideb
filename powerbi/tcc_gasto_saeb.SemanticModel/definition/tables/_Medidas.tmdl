@@ -1022,3 +1022,34 @@ table _Medidas
 		displayFolder: 9 Mapa
 		lineageTag: c982d596-41cd-5692-829a-ee6a41220947
 
+	/// Coluna "Atenção" das tabelas (revisão das tabelas, 2026-11-09): junta o salto atípico (S11) e a rede municipal
+	/// parcial (A9, menos de 50% dos alunos públicos da etapa) numa coluna só. Vazia quando não há alerta;
+	/// só responde onde há nota, para não criar linhas novas nas tabelas.
+	measure Atenção =
+			VAR comNota = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), NOT ISBLANK ( fato_desempenho_municipal[PROFICIENCIA] ) )
+			VAR salto = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () ) > 0
+			VAR p = [Parcela municipal na etapa]
+			VAR parcial = NOT ISBLANK ( p ) && p < 0.5
+			RETURN
+			    IF (
+			        comNota > 0,
+			        SWITCH (
+			            TRUE (),
+			            salto && parcial, "⚠ salto; rede parcial (" & FORMAT ( p, "0%" ) & ")",
+			            salto, "⚠ salto",
+			            parcial, "⚠ rede parcial (" & FORMAT ( p, "0%" ) & ")"
+			        )
+			    )
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: f4fbc405-889e-5719-a1e6-dbf26057abc9
+
+	measure 'Par: atenção' = IF ( [É par] = 1, [Atenção] )
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: 8d45d20c-76e8-5eaa-8bb6-f6694a65a0cc
+
+	/// Página Contexto e clusters: composição de cada cluster por região, sempre no Brasil todo (ignora o filtro de UF).
+	/// Sem os 3 municípios fora dos clusters (um deles, Boa Esperança do Norte-MT, também sem região no cadastro).
+	measure 'Municípios do cluster (Brasil)' = CALCULATE ( COUNTROWS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), NOT ISBLANK ( dim_municipio[CLUSTER] ) )
+		formatString: #,0
+		displayFolder: 6 Qualidade dos dados
+		lineageTag: ce204652-4b9f-5264-8f57-6af2ee71a4c1

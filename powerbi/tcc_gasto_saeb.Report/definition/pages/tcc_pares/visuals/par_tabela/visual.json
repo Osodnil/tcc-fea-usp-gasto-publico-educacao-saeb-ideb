@@ -83,42 +83,12 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Par: diferença (p.p.)"
+                  "Property": "Par: atenção"
                 }
               },
-              "queryRef": "_Medidas.Par: diferença (p.p.)",
-              "nativeQueryRef": ")",
-              "displayName": "Diferença (p.p.)"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "Par: percentil"
-                }
-              },
-              "queryRef": "_Medidas.Par: percentil",
-              "nativeQueryRef": "Par: percentil",
-              "displayName": "Percentil"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "Par: salto"
-                }
-              },
-              "queryRef": "_Medidas.Par: salto",
-              "nativeQueryRef": "Par: salto",
-              "displayName": "Salto"
+              "queryRef": "_Medidas.Par: atenção",
+              "nativeQueryRef": "Par: atenção",
+              "displayName": "Atenção"
             }
           ]
         }

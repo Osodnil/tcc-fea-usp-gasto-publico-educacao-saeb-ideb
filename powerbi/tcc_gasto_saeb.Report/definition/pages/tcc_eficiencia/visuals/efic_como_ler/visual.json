@@ -32,7 +32,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Cluster: ",
+                    "value": "Cores: ",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "9pt",
@@ -40,7 +40,7 @@
                     }
                   },
                   {
-                    "value": "grupo de contexto parecido (cores do gráfico).",
+                    "value": "clusters: grupos de municípios com contexto parecido.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -127,7 +127,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Pontos: ",
+                    "value": "Atenção: ",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "9pt",
@@ -135,7 +135,7 @@
                     }
                   },
                   {
-                    "value": "a mesma diferença, em pontos do Saeb.",
+                    "value": "⚠ salto: o resultado mudou demais desde a edição anterior; ⚠ rede parcial: a rede municipal tem menos de 50% dos alunos públicos da etapa. Conferir antes de usar como exemplo.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -146,64 +146,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Percentil: ",
-                    "textStyle": {
-                      "fontWeight": "bold",
-                      "fontSize": "9pt",
-                      "color": "#0d366b"
-                    }
-                  },
-                  {
-                    "value": "posição entre as redes: 80 = melhor que 80% delas.",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "Salto: ",
-                    "textStyle": {
-                      "fontWeight": "bold",
-                      "fontSize": "9pt",
-                      "color": "#0d366b"
-                    }
-                  },
-                  {
-                    "value": "⚠ = o resultado mudou demais desde a edição anterior: conferir.",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "Rede atende: ",
-                    "textStyle": {
-                      "fontWeight": "bold",
-                      "fontSize": "9pt",
-                      "color": "#0d366b"
-                    }
-                  },
-                  {
-                    "value": "% dos alunos públicos da etapa na rede municipal (⚠ abaixo de 50%).",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "Gastar mais não garante eficiência (correlação de 0,01).",
+                    "value": "Pontos, percentil e a série de cada rede estão na Ficha do município. Gastar mais não garante eficiência (correlação de 0,01).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e",

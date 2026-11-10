@@ -108,25 +108,6 @@
               {
                 "textRuns": [
                   {
-                    "value": "Pontos: ",
-                    "textStyle": {
-                      "fontWeight": "bold",
-                      "fontSize": "9pt",
-                      "color": "#0d366b"
-                    }
-                  },
-                  {
-                    "value": "a mesma diferença, em pontos do Saeb.",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
                     "value": "Percentil: ",
                     "textStyle": {
                       "fontWeight": "bold",
@@ -165,7 +146,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Salto: ",
+                    "value": "Atenção: ",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "9pt",
@@ -173,7 +154,7 @@
                     }
                   },
                   {
-                    "value": "⚠ = mudou demais desde a edição anterior; não = sem salto.",
+                    "value": "⚠ salto: mudou demais desde a edição anterior; ⚠ rede parcial: menos de 50% dos alunos.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

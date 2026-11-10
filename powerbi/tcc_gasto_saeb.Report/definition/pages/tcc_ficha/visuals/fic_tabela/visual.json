@@ -83,36 +83,6 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Eficiência (pontos)"
-                }
-              },
-              "queryRef": "_Medidas.Eficiência (pontos)",
-              "nativeQueryRef": "Eficiência (pontos)",
-              "displayName": "Pontos"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "Percentil de eficiência"
-                }
-              },
-              "queryRef": "_Medidas.Percentil de eficiência",
-              "nativeQueryRef": "Percentil de eficiência",
-              "displayName": "Percentil"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
                   "Property": "Faixa de eficiência"
                 }
               },
@@ -128,12 +98,12 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Marca de salto"
+                  "Property": "Atenção"
                 }
               },
-              "queryRef": "_Medidas.Marca de salto",
-              "nativeQueryRef": "Marca de salto",
-              "displayName": "Salto"
+              "queryRef": "_Medidas.Atenção",
+              "nativeQueryRef": "Atenção",
+              "displayName": "Atenção"
             }
           ]
         }

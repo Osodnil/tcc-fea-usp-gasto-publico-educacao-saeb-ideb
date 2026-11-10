@@ -822,6 +822,24 @@ Falar sempre em associação e eficiência relativa.
     - **Decisão:** na comparação no mesmo estado, os pares são do mesmo cluster **e da mesma UF** (medida `É par`). A regra no cartão, o rodapé, Sobre os dados e a comparação 1 a 1 (que avisa quando o comparado é de outro estado) dizem isso.
     - **Quantos pares sobram (AI, MT, 2023):** mediana de 78 por rede (eram 401 no país); AF, 60 (eram 282). Sem nenhum par na UF: 0,9% das redes; com menos de 5: 3,7% (AI) e 5,5% (AF). Campinas: 34 pares no país, 18 em SP.
   - **"Comparar com" podia ficar vazio só no papel:** a segmentação tinha seleção única obrigatória, e o Power BI marcava sempre o primeiro município, então a comparação com o par clicado nunca era usada. Agora ela aceita ficar vazia (opção `permite_vazio` do gerador).
+  - **Revisão das tabelas e das dispersões (Henrique, 2026-11-09):** as tabelas traziam informação demais, e duas dispersões pareciam a mesma.
+    - **Regra:** cada tabela fica com o que responde à pergunta da página; o detalhe de cada rede fica na Ficha.
+    - **Coluna "Atenção":** junta o salto atípico (S11) e a rede municipal parcial (A9) numa coluna só. Mostra "⚠ salto", "⚠ rede parcial (x%)" ou os dois, e fica vazia sem alerta.
+
+    | Página | Antes | Depois | O que saiu |
+    |---|---|---|---|
+    | Eficiência (ranking) | 10 colunas | Município, Gasto, Proficiência, Esperada, vs. esperado, Atenção | Cluster (é a cor do gráfico), Pontos e Percentil (na Ficha) |
+    | Ficha (por edição) | 8 | Edição, Proficiência, Esperada, vs. esperado, Faixa, Atenção | Pontos (diferença das colunas ao lado), Percentil (no cartão) |
+    | Pares | 7 | Município, Gasto, Proficiência, vs. esperado, Atenção | Diferença (p.p.) (o cartão traz a referência), Percentil (na comparação 1 a 1) |
+    | Contexto (perfil) | 13 | Cluster, Municípios, População, Alfabetização, IDHM Renda, Infraestrutura, Gasto, Proficiência | IDHM Longevidade (a nota lista as variáveis), Região e % na região (gráfico novo), Redes com nota e % acima (na Eficiência) |
+    | Estados | 5 | UF, Gasto, Proficiência, Ensino Superior ⚠ | Região (é a cor dos gráficos) |
+    | Mapa (resumo por UF) | 4 | sem mudança | — |
+
+    - **Dispersões:** a de gasto × proficiência fica em Defasagens, e a de gasto × vs. esperado fica em Eficiência. A do Contexto, que repetia a de Defasagens colorida por cluster, deu lugar a um gráfico com **a composição de cada cluster por região** (medida `Municípios do cluster (Brasil)`, sem os 3 municípios fora dos clusters).
+    - **Defasagens:** a matriz de ρ e redes saiu nesta revisão, por repetir os rótulos do gráfico de colunas, e a dispersão de gasto × proficiência ocupou o lugar.
+      - **Revertido (Henrique, 2026-11-10):** a matriz é o resultado central da página, e a dispersão parecia a de Eficiência. A matriz voltou no lugar da dispersão como **mapa de calor do ρ**: só o ρ, sem o número de redes (que está no cartão), com cor numa escala fixa de 0 a 0,5 para comparar edições e defasagens. O gráfico de colunas passou a ocupar a largura toda.
+      - **Formato da cor:** regra `FillRule` com `linearGradient2` e valores mínimo e máximo explícitos, gerada pelo script e aceita pelo Desktop na primeira tentativa.
+      - **Proporção (Henrique, 2026-11-10):** em 10 pt a matriz ocupava metade do bloco. Passou a 12 pt (células e cabeçalhos: `values`, `columnHeaders` e `rowHeaders` com `fontSize`), e o bloco dela e o do glossário ficaram com a mesma largura (620 px).
   - **Padrão de glossário (Henrique, 2026-11-09):** o desenho do "Como ler esta ficha" vira o padrão dos quadros explicativos: termo em negrito azul, definição ao lado e uma nota final em itálico. Ele foi aplicado também em Visão geral, Defasagens e no quadro das 27 unidades de Estados (sem título, por ser pequeno). A função `glossario` do gerador monta esses quadros.
  Ele depende de um endereço público, e o repositório é privado. Quando o destino for escolhido, o gerador cria a imagem e a coloca nesse quadro.
 

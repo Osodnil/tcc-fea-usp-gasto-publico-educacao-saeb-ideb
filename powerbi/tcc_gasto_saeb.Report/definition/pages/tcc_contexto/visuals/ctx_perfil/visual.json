@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "ctx_perfil",
   "position": {
     "x": 16,
     "y": 80,
     "z": 10,
-    "height": 220,
     "width": 1248,
+    "height": 220,
     "tabOrder": 10
   },
   "visual": {
@@ -98,72 +98,12 @@
                       "Entity": "dim_cluster"
                     }
                   },
-                  "Property": "IDHM_LONGEVIDADE_MEDIO"
-                }
-              },
-              "queryRef": "dim_cluster.IDHM_LONGEVIDADE_MEDIO",
-              "nativeQueryRef": "IDHM_LONGEVIDADE_MEDIO",
-              "displayName": "IDHM Longev."
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_cluster"
-                    }
-                  },
                   "Property": "INFRA_MEDIA"
                 }
               },
               "queryRef": "dim_cluster.INFRA_MEDIA",
               "nativeQueryRef": "INFRA_MEDIA",
               "displayName": "Infraestrutura"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_cluster"
-                    }
-                  },
-                  "Property": "REGIAO_PREDOMINANTE"
-                }
-              },
-              "queryRef": "dim_cluster.REGIAO_PREDOMINANTE",
-              "nativeQueryRef": "REGIAO_PREDOMINANTE",
-              "displayName": "Região principal"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_cluster"
-                    }
-                  },
-                  "Property": "PARCELA_REGIAO_PREDOMINANTE"
-                }
-              },
-              "queryRef": "dim_cluster.PARCELA_REGIAO_PREDOMINANTE",
-              "nativeQueryRef": "PARCELA_REGIAO_PREDOMINANTE",
-              "displayName": "% na região"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "Redes avaliadas"
-                }
-              },
-              "queryRef": "_Medidas.Redes avaliadas",
-              "nativeQueryRef": "Redes avaliadas",
-              "displayName": "Redes com nota"
             },
             {
               "field": {
@@ -194,21 +134,6 @@
               "queryRef": "_Medidas.Proficiência mediana",
               "nativeQueryRef": "Proficiência mediana",
               "displayName": "Proficiência (mediana)"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "% acima do esperado (padrão)"
-                }
-              },
-              "queryRef": "_Medidas.% acima do esperado (padrão)",
-              "nativeQueryRef": "% acima do esperado (padrão)",
-              "displayName": "Acima do esperado"
             }
           ]
         }
@@ -228,9 +153,11 @@
             },
             "direction": "Ascending"
           }
-        ]
+        ],
+        "isDefaultSort": false
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "total": [
         {
@@ -398,7 +325,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

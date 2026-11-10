@@ -1,16 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
-  "name": "def_dispersao",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "ctx_regioes",
   "position": {
-    "x": 788,
-    "y": 172,
-    "z": 21,
-    "height": 232,
-    "width": 476,
-    "tabOrder": 21
+    "x": 16,
+    "y": 308,
+    "z": 20,
+    "width": 620,
+    "height": 332,
+    "tabOrder": 20
   },
   "visual": {
-    "visualType": "scatterChart",
+    "visualType": "hundredPercentStackedBarChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,33 +23,33 @@
                       "Entity": "dim_municipio"
                     }
                   },
-                  "Property": "MUNICIPIO_UF"
+                  "Property": "CLUSTER_CURTO"
                 }
               },
-              "queryRef": "dim_municipio.MUNICIPIO_UF",
-              "nativeQueryRef": "MUNICIPIO_UF",
+              "queryRef": "dim_municipio.CLUSTER_CURTO",
+              "nativeQueryRef": "CLUSTER_CURTO",
               "active": true,
-              "displayName": "Município"
+              "displayName": "Cluster"
             }
           ]
         },
-        "X": {
+        "Series": {
           "projections": [
             {
               "field": {
-                "Measure": {
+                "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Medidas"
+                      "Entity": "dim_municipio"
                     }
                   },
-                  "Property": "Gasto das redes avaliadas (mediana)"
+                  "Property": "NM_REGIAO"
                 }
               },
-              "queryRef": "_Medidas.Gasto das redes avaliadas (mediana)",
-              "nativeQueryRef": "Gasto das redes avaliadas (mediana)",
+              "queryRef": "dim_municipio.NM_REGIAO",
+              "nativeQueryRef": "NM_REGIAO",
               "active": true,
-              "displayName": "Gasto por aluno (R$ de 2025)"
+              "displayName": "Região"
             }
           ]
         },
@@ -63,25 +63,84 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Proficiência média"
+                  "Property": "Municípios do cluster (Brasil)"
                 }
               },
-              "queryRef": "_Medidas.Proficiência média",
-              "nativeQueryRef": "Proficiência média",
-              "displayName": "Proficiência"
+              "queryRef": "_Medidas.Municípios do cluster (Brasil)",
+              "nativeQueryRef": "Municípios do cluster (Brasil)",
+              "displayName": "Municípios"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_municipio"
+                  }
+                },
+                "Property": "CLUSTER_CURTO"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": false
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "categoryAxis": [
         {
           "properties": {
-            "logAxisScale": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "legend": [
+        {
+          "properties": {
+            "show": {
               "expr": {
                 "Literal": {
                   "Value": "true"
+                }
+              }
+            },
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Top'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8.0D"
                 }
               }
             }
@@ -196,7 +255,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Cada ponto é uma rede (edição e defasagem escolhidas)'"
+                  "Value": "'De que regiões vêm os municípios de cada cluster (Brasil)'"
                 }
               }
             },
@@ -241,7 +300,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

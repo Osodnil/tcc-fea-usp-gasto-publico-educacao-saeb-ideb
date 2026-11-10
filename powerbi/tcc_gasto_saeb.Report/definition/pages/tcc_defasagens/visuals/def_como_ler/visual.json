@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "def_como_ler",
   "position": {
-    "x": 788,
+    "x": 644,
     "y": 412,
     "z": 23,
-    "width": 476,
+    "width": 620,
     "height": 272,
     "tabOrder": 23
   },
@@ -59,7 +59,26 @@
                     }
                   },
                   {
-                    "value": "gasto do mesmo ano da prova ou de 1, 2 ou 4 anos antes (o aluno acumula anos de escola).",
+                    "value": "do ano da prova ou de 1, 2 ou 4 anos antes (o aluno acumula anos de escola).",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Cor: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "mais escura = ρ maior, na mesma escala (0 a 0,5) em todas as células.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -89,25 +108,6 @@
               {
                 "textRuns": [
                   {
-                    "value": "Redes: ",
-                    "textStyle": {
-                      "fontWeight": "bold",
-                      "fontSize": "9pt",
-                      "color": "#0d366b"
-                    }
-                  },
-                  {
-                    "value": "redes com gasto e nota que entram no cálculo.",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
                     "value": "Brasil × UF: ",
                     "textStyle": {
                       "fontWeight": "bold",
@@ -117,25 +117,6 @@
                   },
                   {
                     "value": "no Brasil, parte da associação vem das diferenças entre estados; dentro de uma UF, costuma cair muito.",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#52514e"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "Dispersão: ",
-                    "textStyle": {
-                      "fontWeight": "bold",
-                      "fontSize": "9pt",
-                      "color": "#0d366b"
-                    }
-                  },
-                  {
-                    "value": "cada ponto é uma rede, na edição e na defasagem escolhidas.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
