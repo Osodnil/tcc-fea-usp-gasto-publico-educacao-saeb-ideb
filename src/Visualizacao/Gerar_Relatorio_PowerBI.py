@@ -191,13 +191,17 @@ def glossario(termos: list[tuple[str, str]], nota: str | None = None, titulo: st
 
 
 def segmentacao(ref: str, rotulo: str, padrao: list | None = None, unica: bool = True,
-                grupo: str | None = None, busca: bool = False, sobre_cartao: bool = False) -> dict:
+                grupo: str | None = None, busca: bool = False, sobre_cartao: bool = False,
+                permite_vazio: bool = False) -> dict:
     """Lista suspensa; o rótulo vai no cabeçalho da própria segmentação (sem título de contêiner).
     grupo: nome do grupo de sincronização (a mesma escolha vale em todas as páginas do grupo).
-    busca: caixa de pesquisa na lista (para listas longas, como a de municípios)."""
+    busca: caixa de pesquisa na lista (para listas longas, como a de municípios).
+    permite_vazio: sem seleção única obrigatória (que sempre marca o primeiro item) e sem "Selecionar tudo";
+    a medida lê SELECTEDVALUE, e o vazio tem significado (2026-11-09, "Comparar com" da página Pares)."""
     tabela, col = ref.split(".", 1)
+    estrita, marcar_tudo = (False, False) if permite_vazio else (unica, not unica)
     objetos = {"data": [{"properties": {"mode": literal("Dropdown")}}],
-               "selection": [{"properties": {"strictSingleSelect": literal(unica), "selectAllCheckboxEnabled": literal(not unica)}}],
+               "selection": [{"properties": {"strictSingleSelect": literal(estrita), "selectAllCheckboxEnabled": literal(marcar_tudo)}}],
                # sobre a faixa azul: cabeçalho azul-claro e caixa de seleção branca
                # sobre_cartao: segmentação fora da faixa, em fundo branco (cabeçalho azul-escuro)
                "header": [{"properties": {"show": literal(True), "fontColor": cor(AZUL_FAIXA if sobre_cartao else AZUL_CLARO),
@@ -394,20 +398,21 @@ def rodape_fontes(prefixo: str, z: int) -> dict:
 def pagina_eficiencia() -> tuple[dict, list[dict]]:
     p = "efic"
     vis = cabecalho(p, "Quem entrega acima do esperado?",
-                    "Pontos acima (+) ou abaixo (−) do esperado")
+                    "Em % do esperado: acima (+) ou abaixo (−)")
+    # "Eficiência média" em texto: "≈ 0" no Brasil inteiro, onde é zero por construção (2026-11-09); o aviso diz o porquê
     cartoes = [("redes", "Redes com eficiência calculada", "Redes comparadas"),
                ("acima", "% acima do esperado", "Acima do esperado"),
-               ("media", "Eficiência (% do esperado)", "Eficiência média"),
+               ("media", "Eficiência média (cartão)", "Média vs. esperado"),
                ("saltos", "Redes com salto atípico", "Saltos atípicos")]
     for i, (nome, m, rot) in enumerate(cartoes):
         vis.append(container(f"{p}_card_{nome}", (16 + i * 164, 80, 156, 84), cartao(m, rot), 10 + i))
-    vis.append(container(f"{p}_card_aviso", (672, 80, 592, 84), cartao_texto("Aviso do modelo"), 14))
+    vis.append(container(f"{p}_card_aviso", (672, 80, 592, 84), cartao_texto("Aviso da eficiência"), 14))
     vis.append(container(
         f"{p}_dispersao", (16, 172, 760, 232),
         grafico("scatterChart",
                 {"Category": [("dim_municipio.MUNICIPIO_UF", "Município")], "Series": [("dim_municipio.CLUSTER_CURTO", "Cluster")],
                  "X": [("Gasto das redes avaliadas (mediana)", "Gasto por aluno (R$ de 2025)")],
-                 "Y": [("Eficiência (% do esperado)", "Eficiência (% do esperado)")]},
+                 "Y": [("Eficiência (% do esperado)", "vs. esperado (%)")]},
                 # propriedade copiada do que o Desktop grava ao ligar a escala logarítmica
                 objetos={"categoryAxis": [{"properties": {"logAxisScale": literal(True)}}],
                          "legend": [{"properties": {"show": literal(True), "position": literal("Right"), "fontSize": literal(8.0)}}],  # rótulo curto do cluster (o completo era cortado)
@@ -427,7 +432,7 @@ def pagina_eficiencia() -> tuple[dict, list[dict]]:
         grafico("tableEx", {"Values": [("dim_municipio.MUNICIPIO_UF", "Município"), ("dim_municipio.CLUSTER_CURTO", "Cluster"),
                                        ("Gasto das redes avaliadas (mediana)", "Gasto por aluno"),
                                        ("Proficiência média", "Proficiência"), ("Proficiência esperada", "Esperada"),
-                                       ("Eficiência (% do esperado)", "Eficiência"), ("Eficiência (pontos)", "Pontos"),
+                                       ("Eficiência (% do esperado)", "vs. esperado"), ("Eficiência (pontos)", "Pontos"),
                                        ("Percentil de eficiência", "Percentil"), ("Marca de salto", "Salto"),
                                        # decisão A9: parcela dos alunos públicos da etapa na rede municipal (⚠ < 50%)
                                        ("Marca de rede parcial", "Rede atende")]},
@@ -436,15 +441,16 @@ def pagina_eficiencia() -> tuple[dict, list[dict]]:
         22, titulo="Ranking de eficiência (clique no cabeçalho para reordenar)"))
     # glossário de todas as colunas do ranking (pedido de 2026-11-09: faltavam colunas no "Como ler")
     vis.append(container(f"{p}_como_ler", (816, 412, 448, 272), glossario([
-        ("Cluster", "grupo de contexto parecido, sem gasto nem nota (cores da dispersão)."),
+        ("Cluster", "grupo de contexto parecido (cores do gráfico)."),
         ("Gasto por aluno", "Fundamental da rede municipal, em R$ de 2025."),
         ("Proficiência", "nota média da rede no Saeb, em pontos."),
         ("Esperada", "média de redes com gasto e contexto parecidos (regressão)."),
-        ("Eficiência", "(proficiência − esperada) ÷ esperada; +5% = 5% acima. Pontos: a diferença em pontos."),
+        ("vs. esperado", "nota acima (+) ou abaixo (−) da esperada, em %; 0% = igual a ela."),
+        ("Pontos", "a mesma diferença, em pontos do Saeb."),
         ("Percentil", "posição entre as redes: 80 = melhor que 80% delas."),
         ("Salto", "⚠ = o resultado mudou demais desde a edição anterior: conferir."),
         ("Rede atende", "% dos alunos públicos da etapa na rede municipal (⚠ abaixo de 50%)."),
-    ], "Gastar mais não garante eficiência: as duas quase não se relacionam (correlação de 0,01)."), 23))
+    ], "Gastar mais não garante eficiência (correlação de 0,01)."), 23))
     vis.append(container(f"{p}_rodape", (16, 690, 1248, 24), texto([(
         "Eficiência: associação, não efeito do gasto. A comparação nacional cobre 2017 a 2023; 2025 só na comparação "
         "com o mesmo estado.",
@@ -462,7 +468,7 @@ def pagina_ficha() -> tuple[dict, list[dict]]:
     vis.append(container(f"{p}_card_perfil", (16, 114, 344, 50), cartao_texto("Perfil do município"), 11))  # duas linhas: o cluster era cortado
     cartoes = [("gasto", "Gasto por aluno (mediana anual)", "Gasto por aluno"),
                ("prof", "Proficiência média", "Proficiência"),
-               ("efic", "Eficiência (% do esperado)", "Eficiência"),
+               ("efic", "Eficiência (% do esperado)", "vs. esperado"),
                ("pct", "Percentil de eficiência", "Percentil")]
     for i, (nome, m, rot) in enumerate(cartoes):
         vis.append(container(f"{p}_card_{nome}", (368 + i * 158, 80, 150, 84), cartao(m, rot), 12 + i))
@@ -488,7 +494,7 @@ def pagina_ficha() -> tuple[dict, list[dict]]:
     vis.append(container(
         f"{p}_tabela", (16, 476, 760, 208),
         grafico("tableEx", {"Values": [("dim_ano.ANO", "Edição"), ("Proficiência média", "Proficiência"),
-                                       ("Proficiência esperada", "Esperada"), ("Eficiência (% do esperado)", "Eficiência"),
+                                       ("Proficiência esperada", "Esperada"), ("Eficiência (% do esperado)", "vs. esperado"),
                                        ("Eficiência (pontos)", "Pontos"),
                                        ("Percentil de eficiência", "Percentil"), ("Faixa de eficiência", "Faixa"),
                                        ("Marca de salto", "Salto")]},
@@ -500,7 +506,8 @@ def pagina_ficha() -> tuple[dict, list[dict]]:
         ("Linhas", "o município por edição, contra as medianas do cluster, da UF e do Brasil."),
         ("Proficiência", "nota média da rede no Saeb, em pontos."),
         ("Esperada", "média de redes com gasto e contexto parecidos (modelo de regressão)."),
-        ("Eficiência", "(proficiência − esperada) ÷ esperada. Pontos: a diferença em pontos."),
+        ("vs. esperado", "acima (+) ou abaixo (−) da esperada, em %; 0% = igual a ela."),
+        ("Pontos", "a mesma diferença, em pontos do Saeb."),
         ("Percentil", "80 = melhor que 80% das redes da mesma etapa, disciplina e edição."),
         ("Faixa", "o percentil em cinco grupos, de bem abaixo a bem acima."),
         ("Salto", "⚠ = mudou demais desde a edição anterior; não = sem salto."),
@@ -521,7 +528,7 @@ def pagina_pares() -> tuple[dict, list[dict]]:
     vis.append(container(f"{p}_card_regra", (16, 124, 344, 40), cartao_texto("Regra dos pares"), 11))
     cartoes = [("gasto", "Gasto do município de referência", "Gasto por aluno"),
                ("prof", "Proficiência do município de referência", "Proficiência"),
-               ("efic", "Eficiência % do município de referência", "Eficiência"),
+               ("efic", "Eficiência % do município de referência", "vs. esperado"),
                ("pares", "Pares encontrados", "Pares encontrados"),
                ("acima", "Pares que entregam mais", "Pares que entregam mais")]
     for i, (nome, m, rot) in enumerate(cartoes):
@@ -530,7 +537,7 @@ def pagina_pares() -> tuple[dict, list[dict]]:
         f"{p}_tabela", (16, 172, 744, 512),
         grafico("tableEx", {"Values": [("dim_municipio.MUNICIPIO_UF", "Município"),
                                        ("Par: gasto por aluno", "Gasto por aluno"), ("Par: proficiência", "Proficiência"),
-                                       ("Par: eficiência (%)", "Eficiência"),
+                                       ("Par: eficiência (%)", "vs. esperado"),
                                        ("Par: diferença (p.p.)", "Diferença (p.p.)"),
                                        ("Par: percentil", "Percentil"), ("Par: salto", "Salto")]},
                 ordenar="Par: eficiência (%)",
@@ -539,13 +546,13 @@ def pagina_pares() -> tuple[dict, list[dict]]:
     # comparação 1 a 1 (reunião de 2026-11-06): referência × município clicado na tabela ou escolhido em "Comparar com"
     vis.append(container(f"{p}_seg_comparar", (768, 172, 496, 56),
                          segmentacao("cmp_municipio.CMP_MUNICIPIO_UF", "Comparar com (opcional; vazio = par clicado)",
-                                     busca=True, sobre_cartao=True), 30))
+                                     busca=True, sobre_cartao=True, permite_vazio=True), 30))
     vis.append(container(f"{p}_cmp_ref", (768, 236, 244, 44), cartao_texto("Município de referência"), 31))
     vis.append(container(f"{p}_cmp_nome", (1020, 236, 244, 44), cartao_texto("Município comparado"), 32))
     linhas = [("gasto", "Gasto do município de referência", "Comparado: gasto por aluno", "Gasto por aluno"),
               ("prof", "Proficiência do município de referência", "Comparado: proficiência", "Proficiência"),
               ("esp", "Esperada do município de referência", "Comparado: esperada", "Proficiência esperada"),
-              ("efic", "Eficiência % do município de referência", "Comparado: eficiência (%)", "Eficiência (% do esperado)"),
+              ("efic", "Eficiência % do município de referência", "Comparado: eficiência (%)", "vs. esperado"),
               ("pct", "Percentil do município de referência", "Comparado: percentil", "Percentil")]
     for i, (nome, m_ref, m_cmp, rot) in enumerate(linhas):
         y = 284 + i * 60
@@ -553,8 +560,8 @@ def pagina_pares() -> tuple[dict, list[dict]]:
         vis.append(container(f"{p}_cmp_{nome}_c", (1020, y, 244, 56), cartao(m_cmp, rot, 14.0), 34 + 2 * i))
     vis.append(container(f"{p}_cmp_resumo", (768, 584, 496, 100), cartao_texto("Comparação 1 a 1"), 45))
     vis.append(container(f"{p}_rodape", (16, 690, 1248, 24), texto([(
-        "Pares = mesmo cluster e gasto entre 0,8 e 1,25 vez o da referência. ⚠ salto: conferir antes de tomar como exemplo. "
-        "Eficiência descreve associação, não efeito do gasto.", {"fontSize": "9pt", "color": COR_TEXTO_2})]), 50, estilo="nenhum"))
+        "Pares = mesmo cluster (e mesma UF, na comparação no mesmo estado) e gasto entre 0,8 e 1,25 vez o da referência. "
+        "⚠ salto: conferir antes de usar como exemplo. Associação, não efeito do gasto.", {"fontSize": "9pt", "color": COR_TEXTO_2})]), 50, estilo="nenhum"))
     return pagina("tcc_pares", "Pares"), vis
 
 
@@ -733,12 +740,13 @@ def pagina_mapa() -> tuple[dict, list[dict]]:
     # mesma régua no mapa (reunião de 2026-11-06), em % do esperado. O mapa e os cartões seguem um filtro de
     # comparação próprio da página ("modelo_mapa", sem sincronização), com padrão "Mesmo estado"; Henrique pediu
     # de volta a opção nacional (2026-11-09). As medidas "Mapa: ..." leem esse filtro e caem em "mesmo estado" sem ele.
-    # O resumo por UF fica sempre na comparação nacional (medidas "UF: ..."): no mesmo estado, a média de toda UF seria ~0.
+    # O resumo por UF fica sempre na comparação nacional (medidas "UF: ..."): no mesmo estado, a média de cada UF
+    # é zero no período (efeito fixo de UF) e não mostraria diferenças entre estados.
     vis = cabecalho(p, "Mapa da eficiência", "Onde as redes entregam mais ou menos do que o esperado",
                     segs=("uf", "etapa", "disciplina", "edicao", "modelo_mapa"))
     cartoes = [("redes", "Mapa: redes comparadas", "Redes comparadas"),
                ("acima", "Mapa: % acima do esperado", "Acima do esperado"),
-               ("media", "Mapa: eficiência (%)", "Eficiência média"),
+               ("media", "Mapa: eficiência média (cartão)", "Média vs. esperado"),
                ("saltos", "Redes com salto atípico", "Saltos atípicos")]
     for i, (nome, m, rot) in enumerate(cartoes):
         vis.append(container(f"{p}_card_{nome}", (16 + i * 164, 80, 156, 84), cartao(m, rot), 10 + i))
@@ -749,16 +757,16 @@ def pagina_mapa() -> tuple[dict, list[dict]]:
     vis.append(container(
         f"{p}_mapa", (16, 228, 924, 456),
         # local = nome do município (a malha usa "Nome (UF)" como id): a dica do mouse mostra o nome, e não o código
-        mapa_formas(RECURSO_MALHA, "dim_municipio.MUNICIPIO_UF", ("Mapa: eficiência (%)", "Eficiência (% do esperado)"),
+        mapa_formas(RECURSO_MALHA, "dim_municipio.MUNICIPIO_UF", ("Mapa: eficiência (%)", "vs. esperado (%)"),
                     [("Proficiência média", "Proficiência"),
-                     ("Mapa: eficiência (pontos)", "Eficiência (pontos)"),
+                     ("Mapa: eficiência (pontos)", "vs. esperado (pontos)"),
                      ("Gasto das redes avaliadas (mediana)", "Gasto por aluno"),
                      ("Marca de rede parcial", "Rede municipal atende")]),
-        20, titulo="Eficiência em % do esperado, na comparação escolhida no filtro"))
+        20, titulo="% acima (+) ou abaixo (−) do esperado, na comparação escolhida no filtro"))
     vis.append(container(
         f"{p}_tabela_uf", (948, 172, 316, 512),
         grafico("tableEx", {"Values": [("dim_uf.SG_UF", "UF"), ("UF: % acima do esperado", "Acima"),
-                                       ("UF: eficiência (%)", "Eficiência"),
+                                       ("UF: eficiência (%)", "vs. esperado"),
                                        ("UF: redes comparadas", "Redes")]},
                 ordenar="UF: % acima do esperado",
                 objetos={"total": [{"properties": {"totals": literal(False)}}]}),
@@ -983,15 +991,15 @@ def pagina_sobre() -> tuple[dict, list[dict]]:
          "Fundamental (sem Educação Infantil). Agregado pela mediana entre as redes.", corpo),
         ("Proficiência", sub),
         ("Pontos do Saeb, média simples entre as redes, por etapa e disciplina. Não compare etapas nem disciplinas.", corpo),
-        ("Eficiência (pontos)", sub),
-        ("Proficiência observada menos a esperada para redes com o mesmo gasto e contexto (população, alfabetização, "
-         "infraestrutura, tamanho da rede, IDHM Renda e Longevidade da UF). Modelo oficial de 2017 a 2023; o modelo "
-         "de robustez compara dentro da UF e cobre 2025.", corpo),
+        ("Eficiência (vs. esperado)", sub),
+        ("Quanto a nota ficou acima (+) ou abaixo (−) da esperada, em % da esperada: 0% = nota igual à esperada; +5% = 5% "
+         "acima. A esperada é a de redes com o mesmo gasto e contexto (população, alfabetização, infraestrutura, tamanho "
+         "da rede, IDHM Renda e Longevidade da UF). Modelo nacional de 2017 a 2023; o do mesmo estado cobre 2025.", corpo),
         ("Percentil e faixa de eficiência", sub),
         ("Posição entre as redes da mesma etapa, disciplina e edição: 80 = melhor que 80% delas.", corpo),
         ("Clusters e pares", sub),
-        ("7 grupos de municípios com contexto parecido, sem gasto nem nota. Pares = mesmo cluster e gasto entre "
-         "0,8 e 1,25 vez o do município de referência.", corpo),
+        ("7 grupos de municípios com contexto parecido, sem gasto nem nota. Pares = mesmo cluster (e mesma UF, na "
+         "comparação no mesmo estado) e gasto entre 0,8 e 1,25 vez o do município de referência.", corpo),
         ("ρ de Spearman", sub),
         ("Associação entre a ordem das redes no gasto e na nota (−1 a 1), só com 30 redes ou mais.", corpo),
         ("⚠ Salto atípico", sub),

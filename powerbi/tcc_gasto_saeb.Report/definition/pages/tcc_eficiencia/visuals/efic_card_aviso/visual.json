@@ -23,11 +23,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Aviso do modelo"
+                  "Property": "Aviso da eficiência"
                 }
               },
-              "queryRef": "_Medidas.Aviso do modelo",
-              "nativeQueryRef": "Aviso do modelo"
+              "queryRef": "_Medidas.Aviso da eficiência",
+              "nativeQueryRef": "Aviso da eficiência"
             }
           ]
         }

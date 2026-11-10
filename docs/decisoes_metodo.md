@@ -422,8 +422,17 @@ Falar sempre em associação e eficiência relativa.
 - **Ordem de grandeza (AI MT 2023):**
   - **intervalo:** 90% das redes ficam entre −13,8% e +16,1% na comparação nacional, e entre −12,1% e +13,8% no mesmo estado;
   - **exemplos:** Campinas −10,5%; São Paulo −9,3%; Ibateguara +71,1%.
-- **Mapa:** passou a comparar cada rede com as do mesmo estado (a "mesma régua" pedida na reunião). A escala de cor fica saturada em ±12%, que cobre de 88% a 96% das redes. Os cartões do Mapa seguem a mesma comparação. O resumo por UF fica na comparação nacional, porque na comparação dentro do estado a média de toda UF seria ~0.
+- **Mapa:** passou a comparar cada rede com as do mesmo estado (a "mesma régua" pedida na reunião). A escala de cor fica saturada em ±12%, que cobre de 88% a 96% das redes. Os cartões do Mapa seguem a mesma comparação. O resumo por UF fica na comparação nacional, porque na comparação dentro do estado a média de cada UF é zero no período (efeito fixo de UF). Depois, o mapa ganhou a opção nacional, com o mesmo estado como padrão (ver P7).
 - **Exemplo do Ceará (2023):** na comparação nacional, 90% das redes ficam acima do esperado (média de +16,1%); no mesmo estado, 45% (+1,7%).
+- **Rótulo "vs. esperado" e escala centrada em 0% (Henrique, 2026-11-09):**
+  - **Pergunta:** escrito ao lado da palavra "Eficiência", o 0% (rede que entregou exatamente o esperado) podia ser lido como ineficiência total. A alternativa seria a razão proficiência ÷ esperada, com o esperado valendo 100%.
+  - **Por que a razão não foi adotada:**
+    - nos métodos de fronteira (DEA), 100% quer dizer "eficiente", o melhor possível: uma rede mediana pareceria ótima, e 105% pareceria "acima do máximo";
+    - a escala do Saeb não tem zero verdadeiro: "entregou 89,5% do esperado" (Campinas) sugere uma proporção de aprendizagem que não existe.
+  - **Decisão:** manter a distância até o esperado, centrada em 0%, e trocar o rótulo dos valores. Colunas, cartões, eixos e dicas passam de "Eficiência" para "vs. esperado"; os cartões de média, para "Média vs. esperado". O nome do indicador e das páginas continua "eficiência".
+  - **Explicação nos glossários (Henrique pediu menos ambiguidade, 2026-11-09):** "nota acima (+) ou abaixo (−) da esperada, em %; 0% = igual a ela", com a linha "Pontos: a mesma diferença, em pontos do Saeb" à parte. Sobre os dados traz a versão longa, com o exemplo "+5% = 5% acima".
+  - **Sinal do zero:** as medidas passaram a ser arredondadas na precisão exibida (0,1% e 0,1 ponto). Antes, Abadia de Goiás (AI, MT, 2023: −0,007 ponto, −0,003%) aparecia como "−0,0%"; agora aparece como "0,0%".
+  - **No texto do TCC:** explicar por que o painel não usa a escala em que o esperado vale 100%.
 
 ### S11. Saltos atípicos de proficiência ⚠️ (achado de 2026-10-30)
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
@@ -804,6 +813,15 @@ Falar sempre em associação e eficiência relativa.
     - defasagens: o gasto de k anos antes é o gasto real daquele ano, corrigido pelo próprio fator;
     - as 16 colunas de gasto do painel e as 9 citadas nas medidas estão todas em R$ 2025.
     - O que não é dinheiro (notas, eficiência, percentis, contagens) não depende da inflação. No modelo, o gasto entra em log e há efeito de edição, então um fator comum a todas as redes do ano não muda a eficiência.
+  - **Eficiência em "0,0%" e pares de vários estados (Henrique, 2026-11-09):** a consulta direta ao modelo deu os valores certos (Campinas, AI, MT, 2023: −10,5%). Havia três causas:
+    - **Erro de formato em Pares:** a regra de formato em pontos vinha antes da regra em % no gerador, e `Par: eficiência (%)` saía sem o ×100 ("+0,2" em vez de "+20%"). A ordem foi corrigida.
+    - **Média zero por construção:** os resíduos da regressão somam zero no Brasil a cada edição (comparação nacional). Na comparação no mesmo estado, o modelo junta as edições com efeito fixo de UF: a média é zero em cada UF no período, não em cada edição (diferença típica de 1,9 ponto por UF e edição, máx. 14,6), e no Brasil fica em até 0,06%. Correção de uma explicação anterior, que dizia "zero em qualquer UF, edição a edição".
+      - **Decisão:** o cartão "Eficiência média" de Eficiência e Mapa mostra "≈ 0" quando o recorte é o Brasil inteiro (sem UF, cluster nem município), e o aviso ao lado diz o porquê. Com uma UF, mostra o valor (CE: +16,1% nacional; +1,7% no mesmo estado, que compara a edição com a média do estado no período).
+    - **Coincidência:** Abadia de Goiás, que abre selecionada na Ficha e em Pares, tem em 2023 proficiência igual à esperada (223,1): o −0,0% é real.
+  - **Pares na comparação no mesmo estado (Henrique, 2026-11-09):** antes, o filtro só trocava a régua da eficiência, e os pares vinham do cluster no país todo. Como nessa comparação cada rede é medida contra o próprio estado, pares de estados diferentes misturavam réguas.
+    - **Decisão:** na comparação no mesmo estado, os pares são do mesmo cluster **e da mesma UF** (medida `É par`). A regra no cartão, o rodapé, Sobre os dados e a comparação 1 a 1 (que avisa quando o comparado é de outro estado) dizem isso.
+    - **Quantos pares sobram (AI, MT, 2023):** mediana de 78 por rede (eram 401 no país); AF, 60 (eram 282). Sem nenhum par na UF: 0,9% das redes; com menos de 5: 3,7% (AI) e 5,5% (AF). Campinas: 34 pares no país, 18 em SP.
+  - **"Comparar com" podia ficar vazio só no papel:** a segmentação tinha seleção única obrigatória, e o Power BI marcava sempre o primeiro município, então a comparação com o par clicado nunca era usada. Agora ela aceita ficar vazia (opção `permite_vazio` do gerador).
   - **Padrão de glossário (Henrique, 2026-11-09):** o desenho do "Como ler esta ficha" vira o padrão dos quadros explicativos: termo em negrito azul, definição ao lado e uma nota final em itálico. Ele foi aplicado também em Visão geral, Defasagens e no quadro das 27 unidades de Estados (sem título, por ser pequeno). A função `glossario` do gerador monta esses quadros.
  Ele depende de um endereço público, e o repositório é privado. Quando o destino for escolhido, o gerador cria a imagem e a coloca nesse quadro.
 

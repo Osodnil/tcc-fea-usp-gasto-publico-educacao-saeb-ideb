@@ -78,7 +78,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Eficiência (pontos)",
+                    "value": "Eficiência (vs. esperado)",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "9pt",
@@ -90,7 +90,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Proficiência observada menos a esperada para redes com o mesmo gasto e contexto (população, alfabetização, infraestrutura, tamanho da rede, IDHM Renda e Longevidade da UF). Modelo oficial de 2017 a 2023; o modelo de robustez compara dentro da UF e cobre 2025.",
+                    "value": "Quanto a nota ficou acima (+) ou abaixo (−) da esperada, em % da esperada: 0% = nota igual à esperada; +5% = 5% acima. A esperada é a de redes com o mesmo gasto e contexto (população, alfabetização, infraestrutura, tamanho da rede, IDHM Renda e Longevidade da UF). Modelo nacional de 2017 a 2023; o do mesmo estado cobre 2025.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -136,7 +136,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "7 grupos de municípios com contexto parecido, sem gasto nem nota. Pares = mesmo cluster e gasto entre 0,8 e 1,25 vez o do município de referência.",
+                    "value": "7 grupos de municípios com contexto parecido, sem gasto nem nota. Pares = mesmo cluster (e mesma UF, na comparação no mesmo estado) e gasto entre 0,8 e 1,25 vez o do município de referência.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

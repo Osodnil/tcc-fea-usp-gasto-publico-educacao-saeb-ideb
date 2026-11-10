@@ -44,7 +44,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Pontos acima (+) ou abaixo (−) do esperado",
+                    "value": "Em % do esperado: acima (+) ou abaixo (−)",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#cde2fb"

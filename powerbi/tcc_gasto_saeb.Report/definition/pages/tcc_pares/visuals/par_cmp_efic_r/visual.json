@@ -28,7 +28,7 @@
               },
               "queryRef": "_Medidas.Eficiência % do município de referência",
               "nativeQueryRef": "Eficiência % do município de referência",
-              "displayName": "Eficiência (% do esperado)"
+              "displayName": "vs. esperado"
             }
           ]
         }

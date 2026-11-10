@@ -46,7 +46,7 @@
               },
               "queryRef": "_Medidas.Mapa: eficiência (%)",
               "nativeQueryRef": "Mapa: eficiência (%)",
-              "displayName": "Eficiência (% do esperado)"
+              "displayName": "vs. esperado (%)"
             }
           ]
         },
@@ -80,7 +80,7 @@
               },
               "queryRef": "_Medidas.Mapa: eficiência (pontos)",
               "nativeQueryRef": "Mapa: eficiência (pontos)",
-              "displayName": "Eficiência (pontos)"
+              "displayName": "vs. esperado (pontos)"
             },
             {
               "field": {
@@ -367,7 +367,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Eficiência em % do esperado, na comparação escolhida no filtro'"
+                  "Value": "'% acima (+) ou abaixo (−) do esperado, na comparação escolhida no filtro'"
                 }
               }
             },

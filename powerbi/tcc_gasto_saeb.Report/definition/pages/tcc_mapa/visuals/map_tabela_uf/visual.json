@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "map_tabela_uf",
   "position": {
     "x": 948,
     "y": 172,
     "z": 21,
-    "height": 512,
     "width": 316,
+    "height": 512,
     "tabOrder": 21
   },
   "visual": {
@@ -58,7 +58,7 @@
               },
               "queryRef": "_Medidas.UF: eficiência (%)",
               "nativeQueryRef": "UF: eficiência (%)",
-              "displayName": "Eficiência"
+              "displayName": "vs. esperado"
             },
             {
               "field": {
@@ -93,9 +93,11 @@
             },
             "direction": "Descending"
           }
-        ]
+        ],
+        "isDefaultSort": false
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "total": [
         {
@@ -263,7 +265,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

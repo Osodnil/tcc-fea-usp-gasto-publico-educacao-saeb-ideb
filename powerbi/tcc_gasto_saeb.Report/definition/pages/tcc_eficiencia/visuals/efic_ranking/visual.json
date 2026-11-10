@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "efic_ranking",
   "position": {
     "x": 16,
     "y": 412,
     "z": 22,
-    "height": 272,
     "width": 792,
+    "height": 272,
     "tabOrder": 22
   },
   "visual": {
@@ -103,7 +103,7 @@
               },
               "queryRef": "_Medidas.Eficiência (% do esperado)",
               "nativeQueryRef": "Eficiência (% do esperado)",
-              "displayName": "Eficiência"
+              "displayName": "vs. esperado"
             },
             {
               "field": {
@@ -183,9 +183,11 @@
             },
             "direction": "Descending"
           }
-        ]
+        ],
+        "isDefaultSort": false
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "total": [
         {
@@ -353,7 +355,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

@@ -92,9 +92,10 @@ CALCULADAS = {
 
 FORMATOS = [  # (padrão no nome da medida, formatString); vale o primeiro que casar
     (r"^(Gasto (por aluno|das redes|estadual|do município)|Par: gasto)", "R$ #,0"),
-    (r"^(Eficiência \(pontos\)|Eficiência do município|Nota menos|Par: (eficiência|diferença))", "+0.0;-0.0;0.0"),
-    # eficiência em % do esperado (medida principal desde 2026-11-09); tem de vir antes das regras em pontos
+    # eficiência em % do esperado (medida principal desde 2026-11-09); tem de vir antes da regra em pontos, senão
+    # "Par: eficiência (%)" casa com "Par: eficiência" e sai sem o ×100 (a tabela de Pares mostrava +0,2 por +20%)
     (r"^(Eficiência \(% do esperado\)|Eficiência % do|Par: eficiência \(%\)|Comparado: eficiência \(%\))", "+0.0%;-0.0%;0.0%"),
+    (r"^(Eficiência \(pontos\)|Eficiência do município|Nota menos|Par: (eficiência|diferença))", "+0.0;-0.0;0.0"),
     (r"^Par: diferença \(p\.p\.\)", "+0.0;-0.0;0.0"),
     (r"^Mapa: eficiência \(%\)", "+0.0%;-0.0%;0.0%"),
     (r"^Mapa: eficiência \(pontos\)", "+0.0;-0.0;0.0"),

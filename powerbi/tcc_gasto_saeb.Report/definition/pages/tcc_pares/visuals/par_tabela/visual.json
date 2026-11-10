@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "par_tabela",
   "position": {
     "x": 16,
     "y": 172,
     "z": 20,
-    "height": 512,
     "width": 744,
+    "height": 512,
     "tabOrder": 20
   },
   "visual": {
@@ -73,7 +73,7 @@
               },
               "queryRef": "_Medidas.Par: eficiência (%)",
               "nativeQueryRef": "Par: eficiência (%)",
-              "displayName": "Eficiência"
+              "displayName": "vs. esperado"
             },
             {
               "field": {
@@ -138,9 +138,11 @@
             },
             "direction": "Descending"
           }
-        ]
+        ],
+        "isDefaultSort": false
       }
     },
+    "drillFilterOtherVisuals": true,
     "objects": {
       "total": [
         {
@@ -308,7 +310,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

@@ -23,12 +23,12 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Eficiência (% do esperado)"
+                  "Property": "Eficiência média (cartão)"
                 }
               },
-              "queryRef": "_Medidas.Eficiência (% do esperado)",
-              "nativeQueryRef": "Eficiência (% do esperado)",
-              "displayName": "Eficiência média"
+              "queryRef": "_Medidas.Eficiência média (cartão)",
+              "nativeQueryRef": "Eficiência média (cartão)",
+              "displayName": "Média vs. esperado"
             }
           ]
         }

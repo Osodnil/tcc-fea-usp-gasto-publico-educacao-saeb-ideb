@@ -190,11 +190,13 @@ VAR e =
         "Oficial", AVERAGE ( fato_desempenho_municipal[EFIC_PCT] ),
         "Robustez", AVERAGE ( fato_desempenho_municipal[EFIC_PCT_ALT] )
     )
+// Arredondada na precisão exibida (0,1%) desde 2026-11-09: um valor como −0,003% virava "−0,0%" e parecia um resultado.
 RETURN
-    IF ( HASONEVALUE ( dim_disciplina[DISCIPLINA] ) && NOT ISBLANK ( e ), ROUND ( e, 6 ) )
+    IF ( HASONEVALUE ( dim_disciplina[DISCIPLINA] ) && NOT ISBLANK ( e ), ROUND ( e, 3 ) )
 
 // Pontos acima (+) ou abaixo (−) do esperado para o gasto e o contexto. Associação, não efeito causal.
-// Arredondada em 4 casas: a média nacional do resíduo é zero, e sem isso aparecia "-0,0" (−3×10⁻¹³).
+// Arredondada na precisão exibida (0,1 ponto): a média nacional do resíduo é zero, e sem isso aparecia "-0,0" (−3×10⁻¹³);
+// desde 2026-11-09 também some o "−0,0" de redes quase no esperado (ex.: −0,007 ponto).
 Eficiência (pontos) =
 VAR e =
     SWITCH (
@@ -203,7 +205,7 @@ VAR e =
         "Robustez", AVERAGE ( fato_desempenho_municipal[RESIDUO_ALT] )
     )
 RETURN
-    IF ( HASONEVALUE ( dim_disciplina[DISCIPLINA] ) && NOT ISBLANK ( e ), ROUND ( e, 4 ) )
+    IF ( HASONEVALUE ( dim_disciplina[DISCIPLINA] ) && NOT ISBLANK ( e ), ROUND ( e, 1 ) )
 
 Percentil de eficiência =
     IF (
@@ -238,6 +240,34 @@ RETURN
 VAR m = IF ( SELECTEDVALUE ( dim_ano[ANO] ) = 2025, "Robustez", "Oficial" )
 RETURN
     CALCULATE ( [% acima do esperado], REMOVEFILTERS ( dim_modelo ), TREATAS ( { m }, dim_modelo[MODELO] ) )
+
+// Verdadeiro quando o recorte é o Brasil inteiro (sem UF, cluster nem município escolhidos ou clicados).
+// A esperada vem de regressões cujos resíduos somam zero no Brasil a cada edição (comparação nacional) e,
+// na comparação no mesmo estado, em cada UF no período todo (efeito fixo de UF, edições juntas): no Brasil inteiro,
+// a eficiência média é zero por construção nas duas comparações (2026-11-09).
+Recorte do Brasil todo =
+    NOT ISFILTERED ( dim_uf ) && NOT ISFILTERED ( dim_municipio ) && NOT ISFILTERED ( dim_cluster )
+
+// Cartão "Eficiência média" (páginas Eficiência e Mapa): "≈ 0" no Brasil inteiro, em vez de um "+0,0%" sem explicação
+Eficiência média (cartão) =
+VAR e = [Eficiência (% do esperado)]
+RETURN
+    SWITCH (
+        TRUE (),
+        ISBLANK ( e ), "—",
+        [Recorte do Brasil todo], "≈ 0",
+        FORMAT ( e, "+0.0%;-0.0%;0.0%" )
+    )
+
+// Aviso da página Eficiência: o da comparação, mais o porquê do "≈ 0" quando o recorte é o Brasil inteiro
+Aviso da eficiência =
+VAR base = [Aviso do modelo]
+RETURN
+    IF (
+        [Recorte do Brasil todo] && NOT ( [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025 ),
+        base & " No Brasil inteiro, a eficiência média é zero por construção: escolha uma UF.",
+        base
+    )
 
 // Faixas por quintil do percentil (proposta D2, a confirmar)
 Faixa de eficiência =
@@ -295,16 +325,30 @@ RETURN
         dim_municipio[CO_MUNICIPIO] = r
     )
 
-// 1 = mesmo cluster do município de referência, com gasto (L0, na edição filtrada) entre 0,8 e 1,25 vez o dele
+// UF do município de referência (ref_municipio não tem a UF; vem de dim_municipio sem os filtros da página)
+UF do município de referência =
+VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
+RETURN
+    CALCULATE (
+        SELECTEDVALUE ( dim_municipio[SG_UF] ),
+        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
+        dim_municipio[CO_MUNICIPIO] = r
+    )
+
+// 1 = mesmo cluster do município de referência, com gasto (L0, na edição filtrada) entre 0,8 e 1,25 vez o dele.
+// Na comparação no mesmo estado, também a mesma UF (2026-11-09): ali cada rede é medida contra o próprio estado,
+// e pares de estados diferentes misturariam réguas diferentes.
 É par =
 VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
 VAR clusterRef = SELECTEDVALUE ( ref_municipio[REF_CLUSTER] )
 VAR razao = DIVIDE ( AVERAGE ( fato_desempenho_municipal[GASTO_ALUNO_R2025_L0] ), [Gasto do município de referência] )
+VAR mesmaUF = [Modelo] = "Oficial" || SELECTEDVALUE ( dim_municipio[SG_UF] ) = [UF do município de referência]
 RETURN
     IF (
         NOT ISBLANK ( r )
             && SELECTEDVALUE ( dim_municipio[CLUSTER] ) = clusterRef
             && SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) <> r
+            && mesmaUF
             && razao >= 0.8 && razao <= 1.25,
         1, 0
     )
@@ -346,7 +390,11 @@ VAR g = [Gasto do município de referência]
 RETURN
     IF (
         NOT ISBLANK ( g ),
-        "Mesmo cluster, gasto entre " & FORMAT ( 0.8 * g, "R$ #,0" ) & " e " & FORMAT ( 1.25 * g, "R$ #,0" )
+        IF (
+            [Modelo] = "Robustez",
+            "Mesmo cluster e UF, gasto de " & FORMAT ( 0.8 * g, "R$ #,0" ) & " a " & FORMAT ( 1.25 * g, "R$ #,0" ),
+            "Mesmo cluster, gasto entre " & FORMAT ( 0.8 * g, "R$ #,0" ) & " e " & FORMAT ( 1.25 * g, "R$ #,0" )
+        )
     )
 
 Pares encontrados =
@@ -403,7 +451,8 @@ VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVA
 RETURN
     IF (
         ISBLANK ( c ),
-        "Clique num par da tabela ou escolha em “Comparar com”",
+        // curto: o cartão tem uma linha (2026-11-09, o texto longo era cortado)
+        "Clique num par ou escolha acima",
         CALCULATE ( SELECTEDVALUE ( dim_municipio[MUNICIPIO_UF] ), REMOVEFILTERS ( dim_municipio ), dim_municipio[CO_MUNICIPIO] = c )
     )
 
@@ -472,7 +521,12 @@ VAR ec = [Comparado: eficiência (%)]
 VAR pr = [Proficiência do município de referência]
 VAR pc = [Comparado: proficiência]
 VAR dg = DIVIDE ( [Comparado: gasto por aluno], [Gasto do município de referência] ) - 1
-VAR contexto = IF ( clusterRef = clusterCmp, " Mesmo cluster.", " Outro cluster: o contexto é diferente." )
+VAR ufCmp = CALCULATE ( SELECTEDVALUE ( dim_municipio[SG_UF] ), REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), dim_municipio[CO_MUNICIPIO] = c )
+VAR contexto =
+    IF ( clusterRef = clusterCmp, " Mesmo cluster.", " Outro cluster: o contexto é diferente." )
+        // na comparação no mesmo estado, cada rede é medida contra o próprio estado (2026-11-09)
+        & IF ( [Modelo] = "Robustez" && ufCmp <> [UF do município de referência],
+            " Outro estado: na comparação no mesmo estado, as réguas são diferentes." )
 RETURN
     SWITCH (
         TRUE (),
@@ -480,10 +534,10 @@ RETURN
         ISBLANK ( c ), "Clique num par da tabela ou escolha em “Comparar com” para comparar 1 a 1.",
         c = r, "Escolha um município diferente da referência.",
         NOT ISBLANK ( ec ) && NOT ISBLANK ( er ),
-            "O comparado tem eficiência " & FORMAT ( ( ec - er ) * 100, "+0.0;-0.0;0.0" )
-                & " pontos percentuais em relação à referência (" & FORMAT ( ec, "+0.0%;-0.0%;0.0%" ) & " contra "
-                & FORMAT ( er, "+0.0%;-0.0%;0.0%" ) & " do esperado), com gasto por aluno "
-                & FORMAT ( dg, "+0%;-0%;0%" ) & "." & contexto,
+            // rótulo "vs. esperado" desde 2026-11-09: 0% = entregou o esperado, não eficiência nula
+            "Em relação ao esperado, o comparado fica em " & FORMAT ( ec, "+0.0%;-0.0%;0.0%" ) & " e a referência, em "
+                & FORMAT ( er, "+0.0%;-0.0%;0.0%" ) & ": diferença de " & FORMAT ( ( ec - er ) * 100, "+0.0;-0.0;0.0" )
+                & " pontos percentuais, com gasto por aluno " & FORMAT ( dg, "+0%;-0%;0%" ) & "." & contexto,
         NOT ISBLANK ( pc ) && NOT ISBLANK ( pr ),
             "Sem eficiência nesta edição e comparação. Proficiência " & FORMAT ( pc - pr, "+0.0;-0.0;0.0" )
                 & " pontos, gasto por aluno " & FORMAT ( dg, "+0%;-0%;0%" ) & "." & contexto,
@@ -622,19 +676,33 @@ Mapa: % acima do esperado =
 Mapa: redes comparadas =
     CALCULATE ( [Redes com eficiência calculada], REMOVEFILTERS ( dim_modelo ), TREATAS ( { [Mapa: comparação] }, dim_modelo[MODELO] ) )
 
+// Com a explicação do cartão "Eficiência média" (2026-11-09): zero por construção no Brasil inteiro; no mesmo estado,
+// a média de uma UF compara a edição com a média do estado no período (o efeito fixo de UF junta as edições).
 Mapa: aviso da comparação =
+VAR brasil = [Recorte do Brasil todo]
+RETURN
     SWITCH (
         TRUE (),
         [Mapa: comparação] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
             "⚠ A comparação nacional não cobre 2025 (não há IDHM de 2025): escolha “Mesmo estado” no filtro do mapa.",
         [Mapa: comparação] = "Oficial",
             "Nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos. "
-                & "Diferenças entre estados aparecem nas cores.",
-        "Mesmo estado: cada rede é comparada com as redes do seu estado de gasto e contexto parecidos (inclui 2025). "
-            & "Para comparar com o país, escolha “Nacional” no filtro do mapa."
+                & "Diferenças entre estados aparecem nas cores."
+                & IF ( brasil, " No Brasil inteiro, a eficiência média é zero por construção." ),
+        "Mesmo estado: cada rede é comparada com as do seu estado de gasto e contexto parecidos (inclui 2025). "
+            & IF (
+                brasil,
+                "No Brasil inteiro, a eficiência média é zero por construção.",
+                "A média da UF compara esta edição com a do estado no período."
+            )
+            & " Para comparar com o país, escolha “Nacional”."
     )
 
-// Resumo por UF do Mapa: sempre na comparação nacional (no mesmo estado, a média de toda UF seria ~0)
+Mapa: eficiência média (cartão) =
+    CALCULATE ( [Eficiência média (cartão)], REMOVEFILTERS ( dim_modelo ), TREATAS ( { [Mapa: comparação] }, dim_modelo[MODELO] ) )
+
+// Resumo por UF do Mapa: sempre na comparação nacional (no mesmo estado, a média de cada UF é zero no período,
+// pelo efeito fixo de UF, e não mostraria diferenças entre estados)
 UF: % acima do esperado =
     CALCULATE ( [% acima do esperado], REMOVEFILTERS ( dim_modelo ), TREATAS ( { "Oficial" }, dim_modelo[MODELO] ) )
 

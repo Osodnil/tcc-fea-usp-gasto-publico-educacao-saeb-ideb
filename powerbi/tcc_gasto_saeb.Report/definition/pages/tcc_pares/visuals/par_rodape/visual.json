@@ -20,7 +20,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Pares = mesmo cluster e gasto entre 0,8 e 1,25 vez o da referência. ⚠ salto: conferir antes de tomar como exemplo. Eficiência descreve associação, não efeito do gasto.",
+                    "value": "Pares = mesmo cluster (e mesma UF, na comparação no mesmo estado) e gasto entre 0,8 e 1,25 vez o da referência. ⚠ salto: conferir antes de usar como exemplo. Associação, não efeito do gasto.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

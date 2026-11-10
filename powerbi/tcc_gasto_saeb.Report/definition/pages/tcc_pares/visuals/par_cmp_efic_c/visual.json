@@ -28,7 +28,7 @@
               },
               "queryRef": "_Medidas.Comparado: eficiência (%)",
               "nativeQueryRef": "Comparado: eficiência (%)",
-              "displayName": "Eficiência (% do esperado)"
+              "displayName": "vs. esperado"
             }
           ]
         }

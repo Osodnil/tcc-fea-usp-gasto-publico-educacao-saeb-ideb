@@ -40,7 +40,7 @@
                     }
                   },
                   {
-                    "value": "grupo de contexto parecido, sem gasto nem nota (cores da dispersão).",
+                    "value": "grupo de contexto parecido (cores do gráfico).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -108,7 +108,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Eficiência: ",
+                    "value": "vs. esperado: ",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "9pt",
@@ -116,7 +116,26 @@
                     }
                   },
                   {
-                    "value": "(proficiência − esperada) ÷ esperada; +5% = 5% acima. Pontos: a diferença em pontos.",
+                    "value": "nota acima (+) ou abaixo (−) da esperada, em %; 0% = igual a ela.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Pontos: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "a mesma diferença, em pontos do Saeb.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
@@ -184,7 +203,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Gastar mais não garante eficiência: as duas quase não se relacionam (correlação de 0,01).",
+                    "value": "Gastar mais não garante eficiência (correlação de 0,01).",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e",
