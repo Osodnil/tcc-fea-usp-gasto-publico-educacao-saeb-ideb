@@ -973,7 +973,7 @@ Pontos levantados sobre o painel, com diagnóstico nos dados em 2026-11-09 e pla
 | Modelo "dentro da UF" não filtra a UF, "mas tira alguma coisa" | Muda a régua: tira a diferença média entre estados (CE: +33,6 → +4,0) | ✅ Rótulos "Comparação nacional" e "Comparação no próprio estado" e aviso explicativo (etapa 1) |
 | Selecionar um par não o compara com a referência; comparar dois municípios 1 para 1 | Função inexistente | Etapa 4: bloco de comparação na página Pares |
 | Mais gasto não significa mais eficiência | Confirmado: correlação de 0,01 entre eficiência e gasto; coeficiente do gasto não significativo no modelo nacional | ✅ No quadro "Como ler" e na nota de método |
-| IA na FEA | Pergunta para a orientadora | Etapa 5: declaração completa, por etapa do trabalho |
+| IA na FEA | Pergunta para a orientadora | ✅ Etapa 5 preparada (2026-11-10): rascunho em `docs/declaracao_uso_ia.md` e pauta na seção 4.1 do resumo para a orientadora, com as perguntas sobre IA, % do esperado × percentil, 2025, limite de 50% e QR Code |
 | Inflação na Início ou VPL | IPCA já está na base (fator 1,51 para 2017); o VPL não se aplica, porque desconta fluxos futuros por uma taxa de juros, e aqui a questão é poder de compra | ✅ Etapa 3: linha "valor da época" ao lado do gasto em R$ de 2025 na Visão geral (mediana do Brasil: R$ 6.236 da época em 2017 = R$ 9.391 de 2025) |
 | Eficiência em % do esperado; mesma base no mapa | Escala diferente entre etapas (esperado ~220 em AI e ~249 em AF); a "base" do mapa era a régua nacional | ✅ Etapa 3 (A10): % do esperado como medida principal; mapa sempre na comparação com o mesmo estado, com cor saturada em ±12% |
 | O desempenho melhora a cada edição? | AI MT: 218,2 → 222,7 → 211,8 (2021) → 220,2 → 230,1. Redes que melhoraram: 66% (2019), 15% (2021), 80% (2023), 79% (2025) | ✅ Etapa 3: gráfico "Redes que melhoraram" na Visão geral, com a ressalva de que melhorar não prova bom uso do gasto |
@@ -984,7 +984,7 @@ Pontos levantados sobre o painel, com diagnóstico nos dados em 2026-11-09 e pla
 2. **A4 e P3:** lista de testes de sensibilidade; extensão das matrículas para 2015–2016 é opcional.
 3. **D1:** formato do TCC (científico ou consultoria). Afeta o texto, não o dashboard.
 4. **D2:** indicadores formais. Proposta escrita em 2026-10-30 (12 indicadores, seção 4 de `powerbi/especificacao_dashboard.md`), com as faixas de eficiência por quintil; falta confirmar.
-5. **D4:** referências e APA; **D5/IA:** forma de documentar o uso de IA no Método.
+5. **D4:** referências e APA; **D5/IA:** forma de documentar o uso de IA no Método. Rascunho da declaração por etapa do trabalho em `docs/declaracao_uso_ia.md` (2026-11-10), para aprovar com a orientadora.
 6. **A7:** endereço público para o QR Code (Power BI Service com "Publicar na Web", ou o HTML), a verificar na publicação.
 
 ### Dossiê da conta anterior (incorporado em 2026-10-26)

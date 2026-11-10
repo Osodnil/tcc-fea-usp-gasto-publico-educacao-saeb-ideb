@@ -1,14 +1,15 @@
 # Resumo para a reunião com a orientadora
 
-*Versão curta de `decisoes_metodo.md` (os códigos entre colchetes remetem ao registro completo). Atualizado em 2026-11-09, com o dashboard em Power BI concluído.*
+*Versão curta de `decisoes_metodo.md` (os códigos entre colchetes remetem ao registro completo). Atualizado em 2026-11-10, com o dashboard em Power BI concluído e a pauta da próxima reunião (seção 4).*
 
 ## 1. Onde estamos
 
 - **Dados prontos.** Todas as bases foram extraídas, tratadas, validadas e cruzadas em dois painéis (municípios e estados, 2017–2025), com gasto por aluno em reais de 2025, notas do Saeb e controles.
 - **Desenho fechado.** As decisões de método estão tomadas (seção 2).
 - **Clusters e eficiência calculados:** 7 grupos de municípios por contexto e indicador de eficiência por município, etapa e disciplina.
-- **Dashboard oficial construído em Power BI [P7]:** 9 páginas:
-  - Início;
+- **Dashboard oficial construído em Power BI [P7]:** 10 páginas:
+  - Boas-vindas (para que serve e por onde começar);
+  - Visão geral;
   - Eficiência;
   - Ficha do município;
   - Pares;
@@ -68,7 +69,34 @@ Leitura descritiva, de associação, para Anos Iniciais e Matemática, salvo ind
   - **O que muda:** essas redes têm eficiência média bem menor (−13,5 contra +0,4 pontos em AI MT). Por isso ficam marcadas no painel.
 - **Gasto estadual, versões A e B [G4]:** onde a linha do Ensino Superior existe, as duas versões são iguais. A versão B só deixa de fora as UF/anos sem a linha (em 2023, AC, RO, RS e SE). O teste de sensibilidade é, portanto, de amostra.
 
-## 4. Pontos ainda abertos (não bloqueiam o desenvolvimento)
+## 4. Pauta da próxima reunião
+
+### 4.1 Para decidir nesta reunião
+
+As quatro primeiras perguntas vêm da reunião de 06/11 entre os autores; as respostas podem mudar o painel ou o texto.
+
+- **Uso de IA [D5]:** trazemos um rascunho de declaração completa, por etapa do trabalho (`docs/declaracao_uso_ia.md`).
+  - **Perguntas:** o uso descrito é permitido? Onde a declaração deve ficar (Método, nota ou apêndice)? A IA pode ser usada na redação do texto e, se puder, em quê?
+- **Medida principal da eficiência: % do esperado ou percentil [A10]:**
+  - **Hoje:** o painel mostra a eficiência em % do esperado ("vs. esperado": +5% = nota 5% acima da esperada); o percentil aparece na Ficha e na comparação 1 a 1.
+  - **% do esperado:** mostra o tamanho da diferença e põe etapas na mesma escala. Contras: a escala do Saeb não tem zero verdadeiro, e casos extremos pesam (Ibateguara-AL: +71%).
+  - **Percentil:** robusto a extremos e fácil de ler ("melhor que 80% das redes"). Contra: não mostra o tamanho da diferença, e redes muito próximas podem ficar a vários pontos de percentil de distância.
+  - **Nossa proposta:** manter o % como medida principal e o percentil como complemento. Serve?
+- **Edição de 2025 [C1]:**
+  - **Hoje:** como decidido, o modelo nacional, que usa o IDHM, vai até 2023. A eficiência de 2025 só aparece na comparação dentro do estado: ela usa efeito fixo de UF, que absorve o IDHM (que só existe por UF). O painel avisa isso sempre que a edição de 2025 é escolhida.
+  - **Pergunta:** podemos apresentar a eficiência de 2025 por essa comparação, como resultado complementar, ou 2025 deve ficar só nas análises descritivas?
+- **Rede municipal parcial: limite de 50% [A9]:**
+  - **Hoje:** a rede fica marcada quando a prefeitura atende menos de 50% dos alunos públicos da etapa. Em Anos Iniciais (2023), isso acontece em 266 municípios; com limite de 80%, seriam 923. Tirar as redes abaixo de 50% não muda as conclusões.
+  - **Proposta:** manter os 50% na marca e usar 80% como teste de sensibilidade. Serve?
+- **Endereço do QR Code [A7]:**
+  - **Requisito:** o QR precisa abrir sem login, e o repositório é privado.
+  - **Opções:**
+    - publicar o Power BI na web pela conta da USP, se o administrador permitir;
+    - publicar o HTML de conferência no GitHub Pages;
+    - tornar o repositório público.
+  - **Pergunta:** qual você prefere?
+
+### 4.2 Outros pontos abertos (não bloqueiam o desenvolvimento)
 
 - **Saltos atípicos [S11]:** algumas redes, sobretudo no CE e em AL, sobem mais de 100 pontos em poucos anos (por exemplo, Ibateguara-AL, de 195 para 345). Proposta: marcar, sem excluir, a variação entre edições que se afasta mais de 3 desvios-padrão da média (633 de 82 mil resultados), com aviso no dashboard. A regra serve?
 
@@ -84,18 +112,10 @@ Leitura descritiva, de associação, para Anos Iniciais e Matemática, salvo ind
   - gasto médio do biênio.
 
   A lista está suficiente?
-- **Uso de IA [D5]:** como você prefere que seja documentado no Método? A página "Sobre os dados" do painel traz hoje a mesma declaração do README, a ajustar conforme a sua orientação.
 - **Faixa dos pares [P7]:**
-  - **Regra atual:** pares são as redes do mesmo cluster com gasto entre 0,8 e 1,25 vez o do município.
-  - **Problema:** nos clusters grandes, a faixa fica larga demais; Ibateguara-AL, por exemplo, tem 690 pares.
+  - **Regra atual:** pares são as redes do mesmo cluster com gasto entre 0,8 e 1,25 vez o do município. Na comparação dentro do estado, também da mesma UF.
+  - **Problema:** na comparação nacional, nos clusters grandes, a faixa fica larga demais: a mediana é de 401 pares por rede em Anos Iniciais (2023), e Ibateguara-AL tem 690. Dentro do estado, a mediana cai para 78.
   - **Pergunta:** estreitar a faixa ou limitar aos N pares de gasto mais próximo?
-- **Endereço do QR Code [A7]:**
-  - **Requisito:** o QR precisa abrir sem login, e o repositório é privado.
-  - **Opções:**
-    - publicar o Power BI na web pela conta da USP, se o administrador permitir;
-    - publicar o HTML de conferência no GitHub Pages;
-    - tornar o repositório público.
-  - **Pergunta:** qual você prefere?
 
 ## 5. Principais limitações (lista completa na seção 10 do registro)
 
@@ -110,4 +130,4 @@ Leitura descritiva, de associação, para Anos Iniciais e Matemática, salvo ind
 
 ## 6. Uso de IA
 
-O Manual exige informar e discutir previamente o uso de IA. Usamos assistente de IA no desenvolvimento do código de tratamento dos dados e na organização dos registros. Todas as decisões são nossas e verificáveis no código e nos diagnósticos.
+O Manual exige informar e discutir previamente o uso de IA. Usamos um assistente de IA (Claude, da Anthropic) na delimitação da pesquisa, na proposta de escolhas de método, no código de tratamento dos dados e das análises, no painel e na redação dos registros. As decisões são nossas ou suas, e estão datadas e verificáveis no registro, no código e nos diagnósticos. O detalhe por etapa está no rascunho `docs/declaracao_uso_ia.md` (seção 4.1).
