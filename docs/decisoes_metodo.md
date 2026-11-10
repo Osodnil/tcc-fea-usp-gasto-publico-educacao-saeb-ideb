@@ -434,6 +434,45 @@ Falar sempre em associação e eficiência relativa.
   - **Sinal do zero:** as medidas passaram a ser arredondadas na precisão exibida (0,1% e 0,1 ponto). Antes, Abadia de Goiás (AI, MT, 2023: −0,007 ponto, −0,003%) aparecia como "−0,0%"; agora aparece como "0,0%".
   - **No texto do TCC:** explicar por que o painel não usa a escala em que o esperado vale 100%.
 
+### A11. Modelo principal da camada municipal ✅ (implementado e com especificação de referência decidida em 2026-11-10)
+- **Pergunta (perguntas analíticas 1 e 2):** o gasto por aluno se associa à proficiência? E, dentro do mesmo município, aumentos de gasto acompanham melhora da nota?
+- **Especificação (proposta da IA, aceita por Henrique ao aprovar o plano da fase de análise):**
+  - proficiência = b·log(gasto por aluno, R$ de 2025) + controles + efeitos de edição [+ efeito fixo de município]; erros-padrão agrupados por município (A2); gastos extremos mantidos (A5);
+  - por etapa (AI principal, AF complementar), disciplina (MT, LP) e defasagem do gasto (0, 1, 2 e 4 anos);
+  - **MQO agrupado:** com os controles fixos (log da população e alfabetização) e os que variam no tempo (infraestrutura, log das matrículas, IDHM Renda e Longevidade da UF), edições 2017–2023. É a mesma especificação da eficiência (conferido: coeficiente, N e R² iguais aos de `eficiencia_coeficientes.csv`);
+  - **EF de município:** com efeito fixo de município, que absorve os controles fixos no tempo; 2017–2023;
+  - **EF de município, com 2025:** sem o IDHM, que não existe em 2025 (C1); 2017–2025.
+  - **Implementação:** `src/Analise/Modelo_Principal.py`, sem pacotes novos: efeito fixo pela transformação "dentro" (como o `xtreg, fe vce(cluster)` do Stata), sem os municípios com uma só observação. Saídas em `data/interim/diagnosticos/modelo_principal_coeficientes.csv` e `modelo_principal_defasagens_mesma_amostra.csv`.
+- **Resultados (AI, Matemática, gasto do mesmo ano)†:**
+
+  | Especificação | b (EP) | +10% no gasto | N |
+  |---|---|---|---|
+  | MQO agrupado (entre e dentro) | 0,92 (0,72), p = 0,20 | +0,09 ponto | 20.315 |
+  | EF de município, 2017–2023 | 2,48 (0,50), p < 0,001 | +0,24 ponto (0,01 DP) | 20.256 |
+  | EF de município, 2017–2025 | 5,06 (0,47), p < 0,001 | +0,48 ponto (0,02 DP) | 25.591 |
+
+  - **Leitura:** com os controles de contexto, as diferenças de gasto **entre** municípios quase não se associam à nota. **Dentro** do mesmo município, a associação é positiva e estatisticamente clara, mas pequena: dobrar o gasto por aluno se associa a cerca de 1,7 ponto a mais (2017–2023), quando um ano de escola vale cerca de 25 pontos na escala do Saeb. Português e Anos Finais seguem o mesmo padrão (EF, mesmo ano: AI LP 2,23; AF MT 2,23; AF LP 1,65).
+  - **Por que 2025 dobra o coeficiente:** tirar o IDHM muda pouco (2,48 → 2,81, mesma amostra); somar 2025 leva a 5,05. Investigado em 2026-11-10 (`src/Analise/Investigar_2025.py`; saídas `investigar_2025_testes.csv` e `investigar_2025_descricao.csv`)†:
+    - **Primeiras diferenças por biênio (AI MT):** 1,63 (2017→19), 4,28 (2019→21), 0,87 (2021→23, não significativo) e 3,99 (2023→25). O biênio de 2023→25 não é o único alto: o da pandemia também é. A inclinação varia muito entre biênios.
+    - **O que explica 2023→25: mudanças comuns ao estado.** Com efeito de UF, o coeficiente cai pela metade (3,99 → 1,96). Os municípios do Nordeste e do Norte tiveram ao mesmo tempo o gasto que mais subiu (+23% e +19%, contra +7% no Sudeste) e as notas que mais subiram (+12,1 e +13,6 pontos, contra +7,4).
+    - **Não é convergência:** controlar a nota e o gasto de 2023 não reduz o coeficiente (5,38). O gasto subiu muito mais nas redes que gastavam menos (+31% no quintil mais baixo de 2023, −1% no mais alto), mas a nota subiu quase igual em todos os quintis (de +8,8 a +10,8 pontos em MT).
+    - **Compatível com o novo Fundeb, sem prova:** a complementação VAAT vai para redes de menor receita, concentradas no Nordeste e no Norte, o que combina com o padrão acima. Não há no painel dado de quem recebeu VAAT para testar.
+    - **Efeito fixo de município com UF × edição, 2017–2025:** 2,34 (EP 0,43) em MT e 1,98 (0,40) em LP, praticamente iguais aos de 2017–2023 com IDHM (2,48 e 2,23). Com o efeito de UF × edição, a associação dentro do município fica estável, e 2025 deixa de puxar o resultado.
+    - **Consequência para o IDHM:** como o IDHM é da UF e do ano, o efeito de UF × edição o absorve inteiro. Essa especificação dispensa o IDHM e, por isso, cobre 2025 sem violar a decisão C1.
+  - **Decisão (Henrique, 2026-11-10): especificação de referência = efeito fixo de município com efeito de UF × edição, 2017–2025.** Ela compara municípios do mesmo estado na mesma edição, a mesma lógica da comparação "no mesmo estado" da eficiência (A8). A especificação com IDHM, 2017–2023, e o MQO agrupado ficam como comparação. No script, a coluna `REFERENCIA` marca essa especificação.
+  - **Resultados na referência (gasto do mesmo ano)†:**
+
+    | Etapa | Matemática | Português |
+    |---|---|---|
+    | AI | 2,34 (EP 0,43): +10% no gasto → +0,22 ponto | 1,98 (0,40): +0,19 ponto |
+    | AF | 2,73: +0,26 ponto | 2,00: +0,19 ponto |
+
+  - **Defasagens na referência, mesma amostra (2019–2025):** a associação vem do gasto do **ano da prova e do ano anterior**, os dois anos do ciclo bienal do Saeb. O gasto de 2 anos antes não se associa (AI MT: 2,27 no mesmo ano, 2,35 com 1 ano, 0,85 com 2 anos, p = 0,10; AI LP: 1,97, 1,83, 0,47). Na janela 2021–2025, o de 4 anos antes também não (AI MT: 0,10, p = 0,87). AF segue o mesmo padrão.
+  - **Para o texto:** dentro do mesmo município e descontados os choques do estado, a associação é positiva e estável, mas pequena, e concentrada no gasto do próprio ciclo de avaliação. O ρ simples cresce com a defasagem porque o gasto antigo carrega diferenças persistentes entre municípios, que o efeito fixo retira.
+  - **Defasagens na mesma amostra (EF):** em AI, a associação é mais forte com o gasto do **mesmo ano** e não cresce com a defasagem (MT, 2019–2023: 2,16 no mesmo ano; 0,99 com 1 ano; 1,85 com 2 anos. 2021–2025: 3,29; 2,74; 1,07; 0,97 com 4 anos). Em AF, o padrão é menos nítido (MT, 2019–2023: 1,51; 2,25; 2,08). É o contrário do ρ simples, que cresce com a defasagem (P7): lá, o gasto antigo carrega diferenças persistentes entre municípios, que o efeito fixo retira.
+  - **Cuidado na comparação entre defasagens na tabela principal:** as defasagens de 1 e 2 anos só existem a partir de 2019, e a de 4 anos a partir de 2021 (só duas edições com IDHM). Por isso a comparação válida é a da mesma amostra.
+- **Para o texto:** associação, não efeito causal (A1). O efeito fixo de município retira o que é fixo no município, mas não o que muda junto com o gasto (por exemplo, uma troca de gestão ou um programa novo).
+
 ### S11. Saltos atípicos de proficiência ⚠️ (achado de 2026-10-30)
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
 - **Concentração:** as redes de AI com mais de 300 pontos em Matemática estão quase todas no Ceará e em Alagoas (2025: 30 no CE e 10 em AL). A média de AL subiu de 200 (2017) para 238 (2025).

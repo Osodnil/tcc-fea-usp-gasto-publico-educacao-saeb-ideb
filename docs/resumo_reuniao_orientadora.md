@@ -59,6 +59,12 @@ Leitura descritiva, de associação, para Anos Iniciais e Matemática, salvo ind
   - Em 2023, a mediana entre as UFs é de 0,08, contra 0,26 no Brasil, com variação de −0,13 (RN) a +0,32 (RJ).
   - Boa parte da correlação nacional vem das diferenças entre estados, já que os que gastam mais também têm notas maiores.
   - Isso reforça os efeitos fixos de UF [A2] e o modelo de robustez da eficiência [A8].
+- **Modelo principal, com efeito fixo de município [A11]:**
+  - **Entre municípios**, com os controles de contexto, o gasto quase não se associa à nota (0,92 ponto por log do gasto, não significativo).
+  - **Dentro do mesmo município**, a associação é positiva e clara, mas pequena: +10% no gasto por aluno se associa a +0,24 ponto (2017–2023); dobrar o gasto, a cerca de 1,7 ponto, quando um ano de escola vale ~25.
+  - **Especificação de referência (decidida em 2026-11-10):** efeito fixo de município com efeito de UF × edição, 2017–2025: compara municípios do mesmo estado na mesma edição. +10% no gasto → +0,22 ponto em AI Matemática e +0,19 em Português.
+  - **Defasagem:** na mesma amostra, a associação dentro do município vem do gasto do ano da prova e do ano anterior (o ciclo bienal do Saeb). O de 2 e 4 anos antes não se associa, ao contrário do ρ simples, que cresce com a defasagem.
+  - **2025:** incluir 2025 dobra o coeficiente (5,1). A investigação mostrou que isso vem de mudanças comuns a cada estado: de 2023 a 2025, o Nordeste e o Norte tiveram ao mesmo tempo o maior aumento de gasto e o maior ganho de nota (compatível com a complementação VAAT do novo Fundeb, sem prova). Com efeito de UF × edição, o coeficiente com 2025 volta a 2,3, igual ao de 2017–2023. Essa especificação dispensa o IDHM, que é da UF e do ano, e por isso cobre 2025.
 - **A eficiência não é neutra entre os clusters:**
   - O % de redes acima do esperado vai de 40% (Nordeste, municípios pequenos) a 59% (Sul e Sudeste, pequenos).
   - O modelo oficial inclui as variáveis de contexto, mas de forma linear e sem efeito de região.
