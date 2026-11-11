@@ -473,6 +473,24 @@ Falar sempre em associação e eficiência relativa.
   - **Cuidado na comparação entre defasagens na tabela principal:** as defasagens de 1 e 2 anos só existem a partir de 2019, e a de 4 anos a partir de 2021 (só duas edições com IDHM). Por isso a comparação válida é a da mesma amostra.
 - **Para o texto:** associação, não efeito causal (A1). O efeito fixo de município retira o que é fixo no município, mas não o que muda junto com o gasto (por exemplo, uma troca de gestão ou um programa novo).
 
+### A12. Modelo da camada estadual ✅ (2026-11-10)
+- **Pergunta (pergunta analítica 4):** o gasto estadual por aluno se associa à proficiência das redes estaduais (Anos Finais e Ensino Médio)?
+- **Especificação (plano da fase de análise, aprovado por Henrique):** a mesma estrutura de A11, com a UF no lugar do município:
+  - proficiência = b·log(gasto estadual por aluno, versão A, R$ de 2025) + controles + efeitos de edição [+ efeito fixo de UF]; defasagens de 0, 1, 2 e 4 anos;
+  - **MQO agrupado**, 2017–2023 com IDHM; **EF de UF** (referência), 2017–2023 com IDHM; **EF de UF, com 2025**, sem IDHM (cautela com 2025: as matrículas estaduais caem 5,1%, M3);
+  - o efeito de UF × edição, usado na camada municipal, não cabe aqui, porque absorveria toda a variação;
+  - **poucos grupos:** erros-padrão agrupados por UF (27 grupos), com valores-p e intervalos pela t com 26 graus de liberdade;
+  - `src/Analise/Modelo_Estadual.py`; saída `data/interim/diagnosticos/modelo_estadual_coeficientes.csv`. A versão B do gasto fica para os testes de sensibilidade (A4).
+- **Resultados na referência (EF de UF, gasto do mesmo ano, 108 observações)†:**
+
+  | Etapa | Matemática | Português |
+  |---|---|---|
+  | AF | 1,51 (IC 95%: −6,0 a 9,1), p = 0,68 | 1,06 (−6,4 a 8,5), p = 0,78 |
+  | EM | 5,25 (−2,6 a 13,1), p = 0,18 | 2,47 (−5,2 a 10,1), p = 0,51 |
+
+  Nenhuma defasagem nem especificação dá associação distinguível de zero, e os sinais variam.
+- **Leitura:** com 27 UFs, a camada estadual não tem poder para detectar uma associação do tamanho da municipal (2 a 3 pontos por log do gasto): os intervalos vão de cerca de −6 a +9 pontos e incluem tanto zero quanto valores maiores que o municipal. O resultado é "não detectável", e não "ausência de associação". Isso confirma a decisão de tratar a camada estadual como descritiva no painel e reforça a limitação L8 sobre o número de unidades.
+
 ### S11. Saltos atípicos de proficiência ⚠️ (achado de 2026-10-30)
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
 - **Concentração:** as redes de AI com mais de 300 pontos em Matemática estão quase todas no Ceará e em Alagoas (2025: 30 no CE e 10 em AL). A média de AL subiu de 200 (2017) para 238 (2025).
@@ -1076,7 +1094,7 @@ Lista consolidada, conforme o pedido da orientadora de manter anotada toda limit
 - **L5. Pandemia [S5]:** a edição de 2021 tem menos resultados com nota e condições atípicas de aplicação.
 - **L6. Matrículas de 2025 [M3]:** as matrículas estaduais caem cerca de 5% em 2025, e não se sabe se é efeito real ou da mudança de layout do Censo Escolar.
 - **L7. Valores extremos [A5, G11]:** cerca de 0,7% dos municípios com nota têm gasto por aluno implausível (provável erro de registro ou rede muito pequena). Eles ficam na análise, conforme a decisão da orientadora.
-- **L8. Camada estadual [A2]:** são só 27 unidades, o que limita a precisão das estimativas e o uso de clusters.
+- **L8. Camada estadual [A2, A12]:** são só 27 unidades, o que limita a precisão das estimativas e o uso de clusters. No modelo com efeito fixo de UF, os intervalos de 95% do coeficiente do gasto vão de cerca de −6 a +9 pontos por log do gasto: não dá para detectar uma associação do tamanho da municipal.
 - **L9. Defasagens [E2, P2]:** com o gasto desde 2017, a defasagem de 2 anos só existe a partir do Saeb 2019, e a de 4 anos a partir de 2021.
 - **L10. Alfabetização estática [C2]:** vem do Censo 2022 e não varia no tempo. Um município instalado depois de 2022 fica sem esse controle.
 - **L11. Restos a pagar [G7]:** a despesa paga não inclui os restos a pagar inscritos no ano.
