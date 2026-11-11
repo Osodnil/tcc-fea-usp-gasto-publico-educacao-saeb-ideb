@@ -66,6 +66,7 @@ Leitura descritiva, de associação, para Anos Iniciais e Matemática, salvo ind
   - **Defasagem:** na mesma amostra, a associação dentro do município vem do gasto do ano da prova e do ano anterior (o ciclo bienal do Saeb). O de 2 e 4 anos antes não se associa, ao contrário do ρ simples, que cresce com a defasagem.
   - **2025:** incluir 2025 dobra o coeficiente (5,1). A investigação mostrou que isso vem de mudanças comuns a cada estado: de 2023 a 2025, o Nordeste e o Norte tiveram ao mesmo tempo o maior aumento de gasto e o maior ganho de nota (compatível com a complementação VAAT do novo Fundeb, sem prova). Com efeito de UF × edição, o coeficiente com 2025 volta a 2,3, igual ao de 2017–2023. Essa especificação dispensa o IDHM, que é da UF e do ano, e por isso cobre 2025.
 - **Heterogeneidade [A13]:** a associação dentro do município está concentrada nos municípios pequenos (até 50 mil habitantes) e no Nordeste e Norte; nas cidades com mais de 100 mil habitantes, ela é negativa (−2,7), e no Sudeste e Sul não aparece. As dimensões se sobrepõem: os municípios que mais gastam por aluno são, em geral, os menores. A associação negativa nas cidades grandes ainda não tem explicação.
+- **Sensibilidade [A4]:** a associação dentro do município continua positiva e significativa em todos os testes (sem 2021, painel balanceado, sem redes parciais, limite de 80%, sem saltos atípicos, IDHM total ou sem IDHM): de 1,4 a 5,5 pontos por log do gasto. Com o gasto médio do biênio, o coeficiente sobe cerca de 60%. Na camada estadual, nada muda: nenhum coeficiente se distingue de zero.
 - **Camada estadual [A12]:** com efeito fixo de UF, nenhuma associação entre gasto e nota é distinguível de zero, em AF e EM. Com 27 UFs, os intervalos são largos (de cerca de −6 a +9 pontos por log do gasto) e não excluem uma associação do tamanho da municipal. A leitura é "não detectável", e a camada segue descritiva.
 - **A eficiência não é neutra entre os clusters:**
   - O % de redes acima do esperado vai de 40% (Nordeste, municípios pequenos) a 59% (Sul e Sudeste, pequenos).
@@ -119,7 +120,7 @@ As quatro primeiras perguntas vêm da reunião de 06/11 entre os autores; as res
   - painel balanceado;
   - gasto médio do biênio.
 
-  A lista está suficiente?
+  Rodados em 2026-11-11 (seção 3): a conclusão se sustenta em todos. A lista está suficiente?
 - **Faixa dos pares [P7]:**
   - **Regra atual:** pares são as redes do mesmo cluster com gasto entre 0,8 e 1,25 vez o do município. Na comparação dentro do estado, também da mesma UF.
   - **Problema:** na comparação nacional, nos clusters grandes, a faixa fica larga demais: a mediana é de 401 pares por rede em Anos Iniciais (2023), e Ibateguara-AL tem 690. Dentro do estado, a mediana cai para 78.

@@ -325,7 +325,7 @@ Falar sempre em associação e eficiência relativa.
 ### A3. Ausência nunca é zero ✅
 `-` e `ND` nas planilhas viram nulo, nunca 0. As exceções precisam ser justificadas caso a caso (ver G4).
 
-### A4. Testes de sensibilidade previstos 🟡
+### A4. Testes de sensibilidade ✅ (rodados em 2026-11-11; G4b não feito)
 1. Sem 2021 (S5).
 2. Sem 2025 na camada estadual (M3).
 3. IDHM Renda no lugar do IDHM total, e vice-versa (C1b).
@@ -334,6 +334,28 @@ Falar sempre em associação e eficiência relativa.
 6. Gasto médio do biênio (ano do Saeb e ano anterior) no lugar do gasto anual (G12).
 
 *(Revisão de 2026-10-23: saiu o teste "com e sem os gastos extremos", porque a orientadora decidiu não removê-los (A5). Saiu também o teste "IDHM do mesmo ano", porque ele passou a ser a especificação principal (C1).)*
+
+- **Rodados em 2026-11-11 (`src/Analise/Sensibilidade_Modelo.py`; saída `data/interim/diagnosticos/sensibilidade_modelo.csv`)†.** Cada teste muda uma coisa na especificação de referência (A11 na camada municipal, A12 na estadual). Além da lista acima, entraram: o limite de 80% para a rede parcial (proposto na pauta para a orientadora), a exclusão das redes parciais (A9) e a dos saltos atípicos (S11).
+
+  | Teste (camada municipal, gasto do mesmo ano) | AI MT | AI LP | AF MT | AF LP |
+  |---|---|---|---|---|
+  | Referência (2017–2025) | 2,34 | 1,98 | 2,73 | 2,00 |
+  | Sem 2021 | 2,84 | 2,46 | 2,97 | 2,22 |
+  | Painel balanceado (nota nas 5 edições) | 2,51 | 2,06 | 2,99 | 2,52 |
+  | Referência em 2019–2025 | 2,33 | 2,00 | 3,20 | 2,49 |
+  | Gasto médio do biênio (2019–2025) | 3,74 | 3,12 | 5,46 | 4,32 |
+  | Sem redes parciais (< 50%) | 2,42 | 2,16 | 2,96 | 2,21 |
+  | Sem redes abaixo de 80% | 2,66 | 2,31 | 3,68 | 2,85 |
+  | Sem saltos atípicos | 2,11 | 1,99 | 2,34 | 1,97 |
+  | EF de município + edição, IDHM Renda e Longevidade (2017–2023) | 2,47 | 2,23 | 2,23 | 1,65 |
+  | Idem, IDHM total | 1,85 | 1,65 | 1,74 | 1,41 |
+  | Idem, sem IDHM | 2,81 | 2,48 | 2,40 | 1,78 |
+
+  - **Leitura:** todos os coeficientes municipais são positivos e significativos (p ≤ 0,02), entre 1,4 e 5,5. A conclusão de A11 se sustenta: associação dentro do município positiva e pequena.
+  - **Gasto médio do biênio:** o coeficiente sobe cerca de 60% em relação à referência na mesma janela (AI MT: 3,74 contra 2,33). Isso combina com o achado de A11 de que contam o gasto do ano da prova e o do anterior: a média dos dois mede melhor o gasto do ciclo (e tem menos ruído de um ano isolado).
+  - **IDHM total:** reduz o coeficiente (AI MT: 1,85 contra 2,47), como esperado de um controle que contém a dimensão Educação (C1b); a escolha de Renda e Longevidade fica mantida.
+  - **Camada estadual:** com 2025 (sem IDHM) e com a versão B do gasto, nenhum coeficiente se distingue de zero (p ≥ 0,18), como na referência (A12).
+  - **Não feito:** o gasto estadual pela soma das subfunções da educação básica (G4b), que pede as subfunções brutas do SICONFI, fora dos dados processados. A extensão das matrículas para 2015–2016 (P3) segue opcional.
 
 ### A6. Análise de clusters ✅ desenvolver · 🟡 desenho técnico (2026-10-30)
 - **Decisão da orientadora:** incluir uma análise de clusters.
