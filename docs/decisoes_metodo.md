@@ -489,7 +489,7 @@ Falar sempre em associação e eficiência relativa.
     | AI | 2,34 (EP 0,43): +10% no gasto → +0,22 ponto | 1,98 (0,40): +0,19 ponto |
     | AF | 2,73: +0,26 ponto | 2,00: +0,19 ponto |
 
-  - **Defasagens na referência, mesma amostra (2019–2025):** a associação vem do gasto do **ano da prova e do ano anterior**, os dois anos do ciclo bienal do Saeb. O gasto de 2 anos antes não se associa (AI MT: 2,27 no mesmo ano, 2,35 com 1 ano, 0,85 com 2 anos, p = 0,10; AI LP: 1,97, 1,83, 0,47). Na janela 2021–2025, o de 4 anos antes também não (AI MT: 0,10, p = 0,87). AF segue o mesmo padrão.
+  - **Defasagens na referência, mesma amostra (2019–2025):** a associação vem do gasto do **ano da prova e do ano anterior**, os dois anos do ciclo bienal do Saeb. O gasto de 2 anos antes não se associa (AI MT: 2,26 no mesmo ano, 2,35 com 1 ano, 0,85 com 2 anos, p = 0,10; AI LP: 1,97, 1,83, 0,47). Na janela 2021–2025, o de 4 anos antes também não (AI MT: 0,10, p = 0,87). AF segue o mesmo padrão.
   - **Para o texto:** dentro do mesmo município e descontados os choques do estado, a associação é positiva e estável, mas pequena, e concentrada no gasto do próprio ciclo de avaliação. O ρ simples cresce com a defasagem porque o gasto antigo carrega diferenças persistentes entre municípios, que o efeito fixo retira.
   - **Defasagens na mesma amostra (EF):** em AI, a associação é mais forte com o gasto do **mesmo ano** e não cresce com a defasagem (MT, 2019–2023: 2,16 no mesmo ano; 0,99 com 1 ano; 1,85 com 2 anos. 2021–2025: 3,29; 2,74; 1,07; 0,97 com 4 anos). Em AF, o padrão é menos nítido (MT, 2019–2023: 1,51; 2,25; 2,08). É o contrário do ρ simples, que cresce com a defasagem (P7): lá, o gasto antigo carrega diferenças persistentes entre municípios, que o efeito fixo retira.
   - **Cuidado na comparação entre defasagens na tabela principal:** as defasagens de 1 e 2 anos só existem a partir de 2019, e a de 4 anos a partir de 2021 (só duas edições com IDHM). Por isso a comparação válida é a da mesma amostra.
@@ -538,6 +538,15 @@ Falar sempre em associação e eficiência relativa.
   - **A associação negativa nas cidades grandes não foi explicada.** Hipóteses, nenhuma testada: (a) o gasto da subfunção 361 nas cidades grandes mistura itens que não chegam à sala de aula (L1: a fonte diverge sobretudo nas capitais); (b) nessas redes, o gasto por aluno varia mais com a entrada e a saída de alunos do que com o investimento; (c) regressão à média.
   - **Comparações múltiplas:** são 4 dimensões e 2 disciplinas; os testes de igualdade passam com folga, mas os coeficientes de cada grupo não devem ser lidos isoladamente.
 - **Para o texto:** a associação dentro do município está concentrada nos municípios pequenos e no Nordeste e Norte; nas cidades grandes e no Sudeste e Sul, não aparece. Associação, não efeito do gasto.
+
+### A14. Material dos resultados para o texto ✅ (2026-11-11)
+- **O que é:** tabelas e figuras dos modelos (A4, A11, A12, A13) e uma nota de resultados para a redação, que fecham o plano da fase de análise.
+- **Onde:**
+  - `docs/resultados/tabelas.md`: sete tabelas (amostra, ρ de Spearman, modelo principal, defasagens, heterogeneidade, sensibilidade, camada estadual), com coeficiente, erro-padrão agrupado e significância;
+  - `docs/resultados/figuras/`: quatro figuras de coeficientes com intervalo de 95% (entre × dentro, defasagens, heterogeneidade, sensibilidade), em PNG para impressão;
+  - `docs/nota_resultados.md`: o que cada pergunta analítica respondeu, com os números, o que dizer e o que não dizer, e a ordem para reproduzir.
+- **Geração:** `src/Analise/Material_Texto.py`, a partir das saídas dos scripts de análise; as tabelas não devem ser editadas à mão.
+- **Pendentes de interpretação, a levar à orientadora:** a associação negativa nas cidades com mais de 100 mil habitantes (A13) e a hipótese do Fundeb/VAAT para 2023→2025 (A11), nenhuma testada.
 
 ### S11. Saltos atípicos de proficiência ⚠️ (achado de 2026-10-30)
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.

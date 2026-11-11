@@ -20,7 +20,8 @@
   - Sobre os dados.
 
   Os números foram conferidos contra os cálculos em Python. O dashboard HTML continua como ferramenta de conferência.
-- **Próxima etapa:** fechar os pontos abertos (seção 4), publicar o painel para o QR Code e escrever a análise.
+- **Análises concluídas (2026-11-11):** modelo principal com efeito fixo de município, camada estadual, heterogeneidade e testes de sensibilidade (seção 3). Tabelas, figuras e nota de resultados em `docs/resultados/` e `docs/nota_resultados.md`.
+- **Próxima etapa:** fechar os pontos abertos (seção 4), publicar o painel para o QR Code e escrever os resultados.
 
 | | Municípios | Estados |
 |---|---|---|
