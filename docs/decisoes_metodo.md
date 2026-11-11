@@ -491,6 +491,32 @@ Falar sempre em associação e eficiência relativa.
   Nenhuma defasagem nem especificação dá associação distinguível de zero, e os sinais variam.
 - **Leitura:** com 27 UFs, a camada estadual não tem poder para detectar uma associação do tamanho da municipal (2 a 3 pontos por log do gasto): os intervalos vão de cerca de −6 a +9 pontos e incluem tanto zero quanto valores maiores que o municipal. O resultado é "não detectável", e não "ausência de associação". Isso confirma a decisão de tratar a camada estadual como descritiva no painel e reforça a limitação L8 sobre o número de unidades.
 
+### A13. Heterogeneidade da associação dentro do município ✅ implementado · 🟡 interpretação (2026-11-11)
+- **Pergunta (pergunta analítica 5):** a associação gasto × proficiência dentro do município muda por porte, região, cluster ou nível de gasto?
+- **Método (plano da fase de análise, aprovado por Henrique):**
+  - especificação de referência de A11 (efeito fixo de município e UF × edição, 2017–2025, gasto do mesmo ano), com uma inclinação do log do gasto por grupo e teste de Wald de igualdade entre as inclinações;
+  - **dimensões**, todas fixas no município:
+    - porte (faixas do painel, com as duas maiores juntas, porque têm poucas redes);
+    - região;
+    - cluster;
+    - faixa de gasto: quintil do gasto médio de 2017–2025, acrescentada para a pergunta "gastar mais vale mais para quem gasta pouco?";
+  - `src/Analise/Heterogeneidade.py`; saída `data/interim/diagnosticos/heterogeneidade_coeficientes.csv`.
+- **Resultados (AI, Matemática; Português segue o mesmo padrão)†:** a igualdade das inclinações é rejeitada nas quatro dimensões (p ≤ 0,02).
+
+  | Dimensão | Onde a associação é maior | Onde é nula ou negativa |
+  |---|---|---|
+  | Porte | até 50 mil habitantes: 2,4 a 3,0 | 50 a 100 mil: −0,5 (não signif.); mais de 100 mil: **−2,65** (p = 0,01) |
+  | Região | Nordeste 4,3; Norte 3,6; Centro-Oeste 1,8 | Sudeste 1,1 e Sul 0,9 (não signif.) |
+  | Cluster | 1 e 2 (Nordeste, pequenos e médios): 4,3 e 5,0 | 5 (Nordeste e Norte, grandes): −0,1; 7 (Sudeste, médios): **−3,2** (p < 0,001) |
+  | Faixa de gasto médio | Q4 e Q5: 4,0 e 3,7 | Q1 (quem gasta menos): −1,1 (não signif.) |
+
+- **Sem 2025 (2017–2023, efeito de UF × edição):** mesmo desenho, mais fraco. Porte: 1,4 a 2,1 até 50 mil e cerca de −1,0 acima (não signif.). Faixa de gasto: −1,5 em Q1 e 2,3 a 2,8 em Q4–Q5.
+- **Cuidados de leitura:**
+  - **As dimensões se sobrepõem:** o quintil de maior gasto por aluno é dominado por municípios de até 5 mil habitantes (614 dos 1.063 municípios de Q5), e os clusters seguem a região e o porte. O padrão por faixa de gasto pode ser, em boa parte, o do porte. Não há evidência de "retornos maiores para quem gasta pouco"; se algo, o contrário.
+  - **A associação negativa nas cidades grandes não foi explicada.** Hipóteses, nenhuma testada: (a) o gasto da subfunção 361 nas cidades grandes mistura itens que não chegam à sala de aula (L1: a fonte diverge sobretudo nas capitais); (b) nessas redes, o gasto por aluno varia mais com a entrada e a saída de alunos do que com o investimento; (c) regressão à média.
+  - **Comparações múltiplas:** são 4 dimensões e 2 disciplinas; os testes de igualdade passam com folga, mas os coeficientes de cada grupo não devem ser lidos isoladamente.
+- **Para o texto:** a associação dentro do município está concentrada nos municípios pequenos e no Nordeste e Norte; nas cidades grandes e no Sudeste e Sul, não aparece. Associação, não efeito do gasto.
+
 ### S11. Saltos atípicos de proficiência ⚠️ (achado de 2026-10-30)
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
 - **Concentração:** as redes de AI com mais de 300 pontos em Matemática estão quase todas no Ceará e em Alagoas (2025: 30 no CE e 10 em AL). A média de AL subiu de 200 (2017) para 238 (2025).
