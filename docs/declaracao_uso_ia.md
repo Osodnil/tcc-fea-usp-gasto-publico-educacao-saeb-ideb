@@ -20,6 +20,7 @@
 | **Análises** | Escreveu e rodou os scripts de correlação, regressão da nota esperada, clusters e testes de sensibilidade, e relatou os resultados | Conferiram os números nas saídas dos scripts e no painel. A interpretação dos resultados no texto é dos autores |
 | **Painel em Power BI** | Escreveu os geradores do modelo e das páginas, as medidas em DAX e os textos explicativos das páginas | Definiram o conteúdo, o público, o desenho e o que entra em cada página. Conferiram os valores no Power BI e pediram as correções |
 | **Registro e documentação** | Redigiu o registro de decisões, a nota de método, o resumo para as reuniões e o README, a partir das decisões tomadas | Revisaram e corrigiram os registros |
+| **Revisão bibliográfica** | Buscou referências do tema e conferiu os dados bibliográficos e os resumos (`docs/levantamento_bibliografico.md`); não leu os textos completos nem escreveu a revisão | Leem os trabalhos, decidem o que citar e escrevem a revisão |
 | **Texto do TCC** | [Ainda não usada. Definir com a orientadora se pode ser usada e em quê: revisão de linguagem, estrutura, conferência de coerência entre texto e resultados.] | Escrevem o texto |
 
 ## 3. O que a IA não fez
