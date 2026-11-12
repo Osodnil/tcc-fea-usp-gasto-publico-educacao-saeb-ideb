@@ -1036,7 +1036,7 @@ def pagina_sobre() -> tuple[dict, list[dict]]:
          "projeto (docs/decisoes_metodo.md).", corpo),
         ("Parte do código e da documentação foi desenvolvida com apoio de um assistente de IA (Claude, da Anthropic). "
          "As decisões de método são dos autores.", corpo),
-        # A7: o QR Code precisa de um endereço público (o repositório é privado); até lá, só o aviso
+        # A7: falta escolher o destino do QR Code (o repositório está público desde 2026-11); até lá, só o aviso
         ("Acesso: o QR Code entra aqui quando o endereço público do painel for definido.", corpo),
     ]), 13))
     # inflação explicada uma vez, aqui (2026-11-09): quanto vale R$ 1 de cada ano em R$ de 2025

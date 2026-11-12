@@ -562,7 +562,12 @@ Falar sempre em associação e eficiência relativa.
 
 ### A7. Forma simples de acessar o projeto 🟡 (pedido da orientadora, 2026-10-23)
 - **Decisão da orientadora:** ao final, oferecer um acesso simples ao projeto, como um QR Code.
-- **Requisito:** o QR Code precisa apontar para um endereço que a pessoa consiga abrir sem login. Hoje o repositório no GitHub é privado.
+- **Requisito:** o QR Code precisa apontar para um endereço que a pessoa consiga abrir sem login.
+- **Repositório público (Henrique, 2026-11-11):** o repositório no GitHub está público, para que a dupla o acesse. Os registros anteriores o tratavam como privado. Consequências:
+  - o QR Code já pode apontar para o próprio repositório, ou para uma página do GitHub Pages com o HTML de conferência, sem depender do Power BI Service;
+  - tudo o que está versionado fica visível a qualquer pessoa: código, painéis de dados (todos de bases públicas e agregadas), registros de decisão, pauta para a orientadora e o rascunho da declaração de uso de IA; o caminho da pasta de Henrique aparece no parâmetro `PastaDados` do modelo;
+  - a descrição do repositório no GitHub ainda fala do ENEM e precisa ser atualizada lá;
+  - alternativa, se a exposição incomodar: repositório privado com o Guilherme como colaborador.
 - **Opções:** publicar o dashboard como página na web (link do claude.ai, GitHub Pages com o repositório público, ou Power BI publicado) e gerar o QR Code por script a partir desse link.
 - **Quando:** na etapa final, depois do dashboard definitivo.
 
@@ -1038,7 +1043,7 @@ Falar sempre em associação e eficiência relativa.
   - o `__pycache__` saiu do índice;
   - `.claude/` (configuração local) entrou no `.gitignore`.
 - **Pendente:** os brutos continuam só na máquina do Henrique (T2). O README documenta a organização esperada em `data/raw/`.
-- **Pacote de exportação (2026-10-23):** o repositório no GitHub é privado, e os painéis em Parquet e os documentos em Markdown não abrem bem para quem não programa. Por isso, `src/Exportacao/Gerar_Pacote_Exportacao.py` gera um ZIP com:
+- **Pacote de exportação (2026-10-23):** na época o repositório no GitHub era privado (hoje é público, ver A7), e os painéis em Parquet e os documentos em Markdown não abrem bem para quem não programa. Por isso, `src/Exportacao/Gerar_Pacote_Exportacao.py` gera um ZIP com:
   - o dashboard;
   - os documentos em HTML;
   - os painéis em Excel, com a aba "Dicionário", e em CSV;

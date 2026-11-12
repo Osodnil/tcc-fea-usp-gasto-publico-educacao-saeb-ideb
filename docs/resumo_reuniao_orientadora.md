@@ -99,11 +99,11 @@ As quatro primeiras perguntas vêm da reunião de 06/11 entre os autores; as res
   - **Hoje:** a rede fica marcada quando a prefeitura atende menos de 50% dos alunos públicos da etapa. Em Anos Iniciais (2023), isso acontece em 266 municípios; com limite de 80%, seriam 923. Tirar as redes abaixo de 50% não muda as conclusões.
   - **Proposta:** manter os 50% na marca e usar 80% como teste de sensibilidade. Serve?
 - **Endereço do QR Code [A7]:**
-  - **Requisito:** o QR precisa abrir sem login, e o repositório é privado.
+  - **Requisito:** o QR precisa abrir sem login. O repositório no GitHub já está público.
   - **Opções:**
     - publicar o Power BI na web pela conta da USP, se o administrador permitir;
     - publicar o HTML de conferência no GitHub Pages;
-    - tornar o repositório público.
+    - apontar para o próprio repositório.
   - **Pergunta:** qual você prefere?
 
 ### 4.2 Outros pontos abertos (não bloqueiam o desenvolvimento)
