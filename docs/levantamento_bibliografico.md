@@ -47,7 +47,7 @@
 | Referência | O que diz (pelo resumo) | Ligação |
 |---|---|---|
 | Lautharte, I., Oliveira, V. H., & Loureiro, A. (2021). *Incentives for mayors to improve learning: Evidence from state reforms in Ceará, Brazil* (Policy Research Working Paper 9509). World Bank. https://doi.org/10.1596/1813-9450-9509 | A repartição do ICMS do Ceará por resultado educacional elevou as notas do 9º ano em 0,15 desvio-padrão; o efeito dobra com assistência técnica aos municípios. | Explicação documentada para o CE aparecer muito acima do esperado na comparação nacional, e contexto para os saltos atípicos (S11). |
-| Loureiro, A., & Cruz, L. (2020). *Achieving world-class education in adverse socioeconomic conditions: The case of Sobral in Brazil*. World Bank. | Descreve o caso de Sobral. Autores e título a conferir no repositório do Banco Mundial. | Sobral é um dos exemplos da nota de método. |
+| Loureiro, A., & Cruz, L. (2020). *Achieving world-class education in adverse socioeconomic conditions: The case of Sobral in Brazil*. World Bank. https://doi.org/10.1596/34150 | Descreve as reformas de Sobral, que foi da posição 1.366 no índice nacional, em 2005, ao primeiro lugar doze anos depois. | Sobral é um dos exemplos da nota de método. |
 
 ## 6. Medidas de desempenho (Saeb e IDEB)
 
@@ -65,13 +65,46 @@
 | Um manual de dados em painel (por exemplo, Wooldridge, *Econometric analysis of cross section and panel data*). Não conferido neste levantamento. | Efeito fixo e a diferença entre variação "entre" e "dentro" (A11). |
 | Uma referência de análise de clusters (k-médias e silhueta). Não conferida. | Clusters de contexto (A6). |
 
-## 8. O que falta buscar
+## 8. Segunda rodada de busca (2026-11-11)
 
-- **Estudos de gasto × IDEB com defasagem:** o dossiê antigo dizia que a literatura acha efeito defasado de cerca de quatro anos, sem citar os trabalhos. É preciso localizá-los, porque o nosso resultado é o oposto (A11).
-- **Saltos de desempenho em Alagoas** e a discussão sobre participação e incentivos no Saeb (S11).
-- **Rede municipal × estadual** na oferta do Fundamental (municipalização), para a limitação L19.
-- **Avaliações ex post do novo Fundeb (VAAT)**, se já existirem.
-- **Dashboards e uso de evidências por gestores de educação**, se o formato do TCC pedir essa literatura (D1).
+Temas que faltavam na primeira rodada. Vale o mesmo aviso: conferidos os registros e os resumos, não os textos.
+
+### 8.1 Efeito defasado do gasto (o ponto que contradiz o nosso resultado)
+
+| Referência | O que diz (pelo resumo) | Ligação |
+|---|---|---|
+| Alves, P. J. H., & Frio, G. S. (2022). Uma análise dos resultados educacionais dos municípios brasileiros. *Planejamento e Políticas Públicas*, (61). https://doi.org/10.38116/ppp61art10 | Painel de municípios (2011, 2013, 2015 e 2017), IDEB de anos iniciais e finais, fronteira estocástica: o gasto **defasado em quatro anos** se associa positivamente ao IDEB. | É a origem provável da frase do dossiê antigo. O método é outro: fronteira estocástica, sem efeito fixo de município. No nosso modelo com efeito fixo, o gasto de 4 anos antes não se associa (A11). A diferença de método é o que discutir. |
+| Crozatti, J., & Machado, G. S. (2022). O gasto orçamentário e o desempenho escolar dos municípios paulistas: relações entre o elemento de despesa e o Ideb do ensino fundamental de 2008 a 2017. *Planejamento e Políticas Públicas*, (61). https://doi.org/10.38116/ppp61art5 | Correlação entre categorias de despesa e o IDEB nos municípios paulistas. Ano e DOI pelo registro; conferir. | Olha a **composição** do gasto, que o nosso trabalho não separa (limitação). |
+| Estudos estaduais localizados só como resultado de busca: Pernambuco (ENAP; painel de 2008 a 2019 com efeito fixo, efeito positivo do gasto por aluno) e Paraíba (UFPB; o gasto nem sempre se traduz em IDEB). | — | Identificar autores e conferir antes de usar. |
+
+### 8.2 Fundeb: equidade e novo Fundeb (VAAT)
+
+| Referência | O que diz (pelo resumo) | Ligação |
+|---|---|---|
+| Hirata, G., Melo, L., & Oliveira, J. B. (2022). O Fundeb e a questão da equidade. *Revista Brasileira de Economia, 76*(2). https://doi.org/10.5935/0034-7140.20220009 | Simulações contrafactuais: o Fundeb reduz muito a desigualdade de gasto por aluno entre municípios, mas muda pouco os indicadores de qualidade. | Próximo do nosso achado: mais gasto, pouca diferença na nota. |
+| Silva Júnior, J. A., Miranda, R. L. P., & Coelho, R. P. S. (2025). Nem bom como dizem, nem ruim como pensam: o Fundeb e a desigualdade educacional regional brasileira. *FINEDUCA – Revista de Financiamento da Educação, 15*. https://doi.org/10.22491/2236-5907135670 | Painel de 2008 a 2019 (Censo Escolar, SIOPE e Siconfi), regressões linear e quantílica: o Fundeb não aprofunda nem reduz a desigualdade educacional regional; o gasto por aluno é o fator positivo mais consistente. | Usa as mesmas fontes de gasto que nós; bom para comparar método e resultado. |
+| Avaliações do novo Fundeb: estudo do Ipea com simulações de 2023 (ganho de 8% a 15% no valor por aluno nos municípios de menor renda) e estudo técnico da Consultoria de Orçamento da Câmara (2025) sobre o VAAT. | Só notas e registros; os documentos não foram abertos. | Apoiam a hipótese de 2023→2025 (A11). **Não foi encontrada avaliação com dados observados que isole o efeito do VAAT.** |
+| Gordon, N., & Vegas, E. (2005). Education finance equalization, spending, teacher quality, and student outcomes: The case of Brazil's FUNDEF. In E. Vegas (Ed.), *Incentives to improve teaching: Lessons from Latin America* (pp. 151–186). World Bank. | Citado por terceiros: antes do Fundef, Sul, Sudeste e Centro-Oeste gastavam cerca do dobro por aluno. | Localizado (capítulo de livro); a página final aparece como 182 e 186. |
+
+### 8.3 Alagoas: ICMS educacional e avanço das notas (S11)
+
+| Referência | O que diz | Ligação |
+|---|---|---|
+| Artigo "A distribuição de recursos do ICMS municipal em Alagoas por critérios educacionais: indicadores de qualidade na educação", *FINEDUCA* (https://seer.ufrgs.br/index.php/fineduca/article/view/136708). Autores e ano a conferir na página. | O índice que reparte o ICMS (IQEAL) usa o IDEB dos anos iniciais e a sua variação em dois anos; o artigo descreve o modelo como de competição entre municípios. | Contexto documentado para os saltos de Alagoas em Anos Iniciais: há um incentivo financeiro ligado exatamente ao indicador. |
+| Artigo "O Programa Escola 10 no contexto da educação alagoana" (autores e periódico a conferir). | Estuda a implementação do programa estadual. | Idem. |
+| Costa, A. G., Vidal, E. M., Soares, E. A., & Santos, A. L. F. (2024), *Revista Educação e Cultura Contemporânea, 21*. Título a conferir. | ICMS vinculado a indicadores educacionais em cinco estados do Nordeste. | Mostra que o desenho do Ceará se espalhou; ajuda a ler a heterogeneidade regional (A13). |
+
+**Cuidado:** a busca não encontrou nenhum trabalho que aponte irregularidade nos resultados de Alagoas. O que a literatura sustenta é a existência do incentivo, e não que as notas sejam artificiais. No texto, manter a formulação de S11: os casos ficam marcados e não são interpretados sem checagem.
+
+### 8.4 Municipalização (L19)
+
+- A busca achou só trabalhos de repositório e de congresso, com resultados mistos: efeito nulo nos anos iniciais e positivo nos finais em um deles; pior desempenho depois da transferência em outro. Também apareceu um estudo de Soares e Alves sobre efeitos de escolas e municípios com a Prova Brasil de 2005.
+- Nenhum foi conferido a ponto de entrar na lista. Para a limitação L19, pode bastar descrever a divisão de responsabilidades com a LDB e os próprios dados do Censo Escolar.
+
+### 8.5 Uso de dados por gestores de educação
+
+- Achados só estudos de caso (dissertações e anais sobre painéis em secretarias), um capítulo do Ipea que aponta a escassez de trabalhos sobre decisão baseada em evidências nas escolas, e publicações do Instituto Unibanco.
+- Essa literatura só é necessária se o TCC precisar justificar o painel como produto (depende do formato, D1). Nenhum item foi conferido.
 
 ## 9. Pendências de conferência
 
@@ -79,7 +112,10 @@
 - Faria, Jannuzzi e Silva (2008): as páginas aparecem como 155–177 e 155–180.
 - Jackson e Mackevicius: o ano aparece como 2023 e 2024 (o volume 16, nº 1, é de janeiro de 2024).
 - Diaz (2012): o resumo não foi obtido (a página do SciELO falhou).
-- Gordon e Vegas (2005), sobre o Fundef: só aparece citado por terceiros; não localizado.
+- Gordon e Vegas (2005): página final 182 ou 186.
+- Loureiro e Cruz (2020), caso de Sobral: relatório do Banco Mundial confirmado (https://doi.org/10.1596/34150); a ordem dos autores difere entre o catálogo (Loureiro, Cruz) e a capa (Cruz, Loureiro).
+- Alves e Frio (2022) e Crozatti e Machado (2022): páginas não obtidas.
+- Os três trabalhos sobre Alagoas e o ICMS: autores, ano ou título incompletos.
 
 ## Fontes consultadas
 
@@ -98,3 +134,11 @@
 - SciELO: Soares e Xavier (2013) — https://scielo.br/pdf/es/v34n124/13.pdf
 - SciELO: Alves e Soares (2013) — https://www.scielo.br/j/ep/a/PkVXrTbnCJDktQxLZNK7dDj
 - Journal of Human Resources: Cameron e Miller (2015) — https://jhr.uwpress.org/content/50/2/317
+- Ipea, PPP: Alves e Frio (2022) — https://www.ipea.gov.br/ppp/index.php/PPP/article/view/1465
+- Ipea, PPP: Crozatti e Machado (2022) — https://ipea.gov.br/ppp/index.php/PPP/article/download/1333/640/6254
+- SciELO: Hirata, Melo e Oliveira (2022) — https://www.scielo.br/j/rbe/a/85pG3GQwFc39m5d5GYXwzmq/?format=html&lang=pt
+- FINEDUCA: Silva Júnior, Miranda e Coelho (2025) — https://seer.ufrgs.br/index.php/fineduca/article/view/135670
+- FINEDUCA: ICMS em Alagoas — https://seer.ufrgs.br/index.php/fineduca/article/view/136708
+- Ipea: nota sobre o novo Fundeb — https://www.ipea.gov.br/portal/categorias/45-todas-as-noticias/noticias/16368-novo-fundeb-amplia-progressividade-e-reduz-desigualdades-no-financiamento-da-educacao-basica
+- Câmara dos Deputados: estudo técnico sobre o novo Fundeb (2025) — https://www2.camara.leg.br/orcamento-da-uniao/estudos/2025/et-29_2025-avaliacao-novo-fundeb_st-1378_2025
+- Banco Mundial: caso de Sobral — https://openknowledge.worldbank.org/entities/publication/c7c6c980-0772-53c6-98dd-98384dc44fc0
