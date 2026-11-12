@@ -71,7 +71,8 @@ As duas versões ordenam as redes de forma parecida (correlação de 0,89 entre 
 
 **Gastar mais não garante eficiência.**
 - No modelo nacional, o gasto quase não muda a nota esperada (coeficiente de +0,92, não significativo).
-- A eficiência é praticamente independente do gasto: a correlação entre as duas é de 0,01.
+- Por isso, a nota esperada é, na prática, a esperada para o **contexto**: o gasto entra no modelo, mas pesa pouco. (Uma versão anterior desta nota citava a correlação de 0,01 entre eficiência e gasto como achado; ela é zero por construção, porque o resíduo de uma regressão que inclui o gasto não se correlaciona com ele.)
+- Dentro do mesmo município, a associação existe e é pequena: +10% no gasto acompanha cerca de +0,2 ponto [A11].
 - Campinas é o exemplo extremo: um dos maiores gastos por aluno do país, com eficiência no 9º percentil.
 
 Tudo isso é associação, não efeito causal [A1].

@@ -291,7 +291,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Gasto por aluno × eficiência: há redes acima e abaixo do esperado em todo nível de gasto'"
+                  "Value": "'Gasto por aluno × resultado em relação ao esperado (cada ponto é uma rede)'"
                 }
               }
             },

@@ -320,6 +320,36 @@ def atualizar_medidas(arquivo: Path, medidas: list[dict], nomes: list[str]) -> l
     return trocadas
 
 
+def remover_medidas(arquivo: Path, nomes: list[str]) -> list[str]:
+    """Tira do _Medidas.tmdl as medidas nomeadas (com a descrição colada acima). Só para medidas que saíram de
+    medidas.dax e que nenhum visual usa (revisão geral de 2026-11-11)."""
+    linhas = arquivo.read_text(encoding="utf-8").split("\n")
+    saida, tiradas, i = [], [], 0
+    while i < len(linhas):
+        j = i
+        while j < len(linhas) and linhas[j].startswith("\t///"):
+            j += 1
+        cab = re.match(r"^\tmeasure (.+?) =", linhas[j]) if j < len(linhas) else None
+        if not cab:
+            saida += linhas[i:j + 1]
+            i = j + 1
+            continue
+        k = j + 1
+        while k < len(linhas) and not re.match(r"^\t[^\t]", linhas[k]):
+            k += 1
+        nome_m = cab.group(1).strip("'").replace("''", "'")
+        if nome_m in nomes:
+            tiradas.append(nome_m)
+        else:
+            saida += linhas[i:k]
+        i = k
+    faltam = [n for n in nomes if n not in tiradas]
+    if faltam:
+        sys.exit(f"[ERRO] Medidas que não estão no modelo: {', '.join(faltam)}")
+    arquivo.write_text("\n".join(saida), encoding="utf-8")
+    return tiradas
+
+
 def tabela_calculada(t: str, dax: str, colunas: dict, medidas: list[dict]) -> str:
     linhas = [f"table {nome(t)}", f"\tlineageTag: {tag('t', t)}", ""]
     for m in medidas:
@@ -391,6 +421,8 @@ if __name__ == "__main__":
                     help="só acrescenta ao modelo existente as medidas novas de medidas.dax (feche o Power BI antes)")
     ap.add_argument("--atualizar-medidas", nargs="+", metavar="MEDIDA",
                     help="troca no modelo existente só estas medidas pela versão de medidas.dax (feche o Power BI antes)")
+    ap.add_argument("--remover-medidas", nargs="+", metavar="MEDIDA",
+                    help="tira do modelo as medidas nomeadas, que já devem ter saído de medidas.dax")
     ap.add_argument("--formatar-colunas", action="store_true",
                     help="só aplica FORMATOS_COLUNA às colunas do modelo existente (feche o Power BI antes)")
     ap.add_argument("--adicionar-tabelas", action="store_true",
@@ -400,6 +432,14 @@ if __name__ == "__main__":
     args = ap.parse_args()
     if args.pasta:
         MODELO = args.pasta.resolve()
+
+    if args.remover_medidas:
+        ainda = [n for n in args.remover_medidas if n in {m["nome"] for m in ler_medidas()}]
+        if ainda:
+            sys.exit(f"[ERRO] Ainda estão em medidas.dax: {', '.join(ainda)}")
+        tiradas = remover_medidas(MODELO / "definition" / "tables" / "_Medidas.tmdl", args.remover_medidas)
+        print(f"[OK] Medidas removidas: {', '.join(tiradas)}")
+        sys.exit(0)
 
     if args.recriar_tabelas:
         # mesmas lineageTags (determinísticas): relações, medidas e visuais continuam apontando para as colunas

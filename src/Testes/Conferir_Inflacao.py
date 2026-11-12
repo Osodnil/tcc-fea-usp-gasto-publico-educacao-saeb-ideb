@@ -83,7 +83,7 @@ dax = (BASE / "powerbi" / "medidas.dax").read_text(encoding="utf-8")
 refs = set(re.findall(r"\[(GASTO[^\]]*)\]", dax))
 fora = sorted(r for r in refs if "R2025" not in r and "EXTREMO" not in r and "VS_CLUSTER" not in r)
 conferir("Medidas de gasto", not fora, f"colunas de gasto citadas nas medidas: {len(refs)}; fora de R$ 2025: {fora or 'nenhuma'}")
-print("[INFO] A única medida que mostra valor da época é 'Gasto por aluno da época', que divide o R$ 2025 pelo fator do IPCA.")
+print("[INFO] Nenhuma medida mostra valor da época: a inflação é explicada só em Sobre os dados (medida 'Fator do IPCA').")
 
 # 5. o que não é dinheiro não passa pelo IPCA
 print("[INFO] Proficiência, IDEB, nota N, eficiência (pontos e %), percentis, contagens e percentuais não são valores em "

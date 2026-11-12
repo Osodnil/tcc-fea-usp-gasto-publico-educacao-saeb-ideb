@@ -15,10 +15,6 @@ table _Medidas
 		displayFolder: 0 Parâmetros
 		lineageTag: 4fd01478-23d5-5999-8ec4-cfc74e9eb9c5
 
-	measure 'Aviso de seleção' = IF ( NOT [Seleção comparável], "Escolha uma etapa e uma disciplina para ver as notas." )
-		displayFolder: 0 Parâmetros
-		lineageTag: dc57aa39-d6ae-569d-83d6-1f97cab418e0
-
 	/// Todas as redes com gasto no ano (inclusive as que não têm nota no Saeb)
 	measure 'Gasto por aluno (mediana anual)' = MEDIAN ( fato_gasto_municipal[GASTO_ALUNO_R2025] )
 		formatString: R$ #,0
@@ -54,12 +50,6 @@ table _Medidas
 		formatString: R$ #,0
 		displayFolder: 1 Gasto
 		lineageTag: 0dc84816-057b-514b-a006-979b42b75bf1
-
-	/// Teste de sensibilidade G4 (desconta o Ensino Superior só onde a linha 12.364 existe)
-	measure 'Gasto estadual por aluno (mediana, versão B)' = MEDIAN ( fato_gasto_estadual[GASTO_ALUNO_B_R2025] )
-		formatString: R$ #,0
-		displayFolder: 1 Gasto
-		lineageTag: 700fa0fe-977b-53b3-a2d7-40185acd24de
 
 	measure 'Redes com gasto extremo' = CALCULATE ( DISTINCTCOUNT ( fato_gasto_municipal[CO_MUNICIPIO] ), fato_gasto_municipal[GASTO_EXTREMO] = TRUE () )
 		formatString: #,0
@@ -316,14 +306,6 @@ table _Medidas
 		displayFolder: 6 Qualidade dos dados
 		lineageTag: aec0668b-4312-5aa2-a987-994d4c54624b
 
-	measure 'Aviso de salto atípico' =
-			IF (
-			    CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () ) > 0,
-			    "⚠ Variação atípica em relação à edição anterior (mais de 3 desvios-padrão). Conferir antes de interpretar."
-			)
-		displayFolder: 6 Qualidade dos dados
-		lineageTag: e467ef34-a785-5d0d-8d45-2d786ab79b6d
-
 	/// ρ de Spearman entre o gasto da defasagem escolhida e a proficiência, entre as redes do recorte
 	/// (o mesmo indicador da aba "Defasagens" do HTML). No RANKX, valores empatados recebem o mesmo posto (o menor);
 	/// se o HTML tratar empates de outro jeito, a 3ª casa decimal pode diferir. Mínimo de 30 redes.
@@ -385,19 +367,6 @@ table _Medidas
 		displayFolder: 7 Associação por defasagem
 		lineageTag: 4f9e8367-7f21-50d9-8385-878a54c14768
 
-	/// Versão curta, para colunas de tabela (o texto acompanha o ícone: a cor nunca é a única pista).
-	/// Revisto em 2026-11-09: a coluna vazia parecia defeito. Agora diz "não" quando houve comparação e não houve salto,
-	/// e "sem edição anterior" quando não há com o que comparar (2017, ou a rede não tinha nota na edição anterior).
-	/// Só responde onde há nota, para não criar linhas novas nas tabelas.
-	measure 'Marca de salto' =
-			VAR comNota = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), NOT ISBLANK ( fato_desempenho_municipal[PROFICIENCIA] ) )
-			VAR comparadas = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), NOT ISBLANK ( fato_desempenho_municipal[VARIACAO_EDICAO_ANTERIOR] ) )
-			VAR saltos = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () )
-			RETURN
-			    SWITCH ( TRUE (), saltos > 0, "⚠ salto", comparadas > 0, "não", comNota > 0, "sem edição anterior" )
-		displayFolder: 6 Qualidade dos dados
-		lineageTag: f9c8c3d7-c6da-4e1a-a0b4-b7c2a87dae17
-
 	/// Cartões de texto da ficha (o modelo desestimula agregações implícitas, então o texto vem de medidas)
 	measure 'Município selecionado' = SELECTEDVALUE ( dim_municipio[MUNICIPIO_UF], "Escolha um município no filtro acima" )
 		displayFolder: 8 Ficha do município
@@ -429,18 +398,6 @@ table _Medidas
 		formatString: 0.0
 		displayFolder: 5 Pares e cluster
 		lineageTag: b64caf7f-132b-5104-aa96-8ca3952ad933
-
-	measure 'Eficiência do município de referência' =
-			VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
-			RETURN
-			    CALCULATE (
-			        [Eficiência (pontos)],
-			        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
-			        dim_municipio[CO_MUNICIPIO] = r
-			    )
-		formatString: +0.0;-0.0;0.0
-		displayFolder: 5 Pares e cluster
-		lineageTag: ae6615b3-4a55-54b3-aaea-2e646e25605f
 
 	/// Texto com a regra dos pares, já com os valores do município escolhido
 	measure 'Regra dos pares' =
@@ -503,25 +460,6 @@ table _Medidas
 		formatString: 0.0
 		displayFolder: 5 Pares e cluster
 		lineageTag: cceb11f2-5870-5708-843e-64e0205dd814
-
-	measure 'Par: eficiência' = IF ( [É par] = 1, [Eficiência (pontos)] )
-		formatString: +0.0;-0.0;0.0
-		displayFolder: 5 Pares e cluster
-		lineageTag: 0dbc3874-4d3e-5b74-987d-5acf52203681
-
-	measure 'Par: diferença para a referência' = IF ( [É par] = 1, [Eficiência (pontos)] - [Eficiência do município de referência] )
-		formatString: +0.0;-0.0;0.0
-		displayFolder: 5 Pares e cluster
-		lineageTag: dba9f575-c4c8-52a5-8b37-56dfb7cca811
-
-	measure 'Par: percentil' = IF ( [É par] = 1, [Percentil de eficiência] )
-		formatString: 0
-		displayFolder: 5 Pares e cluster
-		lineageTag: 3f272731-1f36-5e33-896e-697c248ec977
-
-	measure 'Par: salto' = IF ( [É par] = 1, [Marca de salto] )
-		displayFolder: 5 Pares e cluster
-		lineageTag: ee1af3b7-6187-502b-adf7-7baeadfd219f
 
 	/// Referência nacional para as séries da página Início (ignora UF, município e cluster)
 	measure 'Gasto por aluno do Brasil (mediana anual)' =
@@ -715,16 +653,6 @@ table _Medidas
 		displayFolder: 5 Pares e cluster
 		lineageTag: 1b250eca-1432-5c09-b7d4-e84c5af6d6f6
 
-	measure 'Comparado: eficiência' =
-			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
-			RETURN
-			    IF ( NOT ISBLANK ( c ),
-			        CALCULATE ( [Eficiência (pontos)],
-			            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = c ) )
-		formatString: +0.0;-0.0;0.0
-		displayFolder: 5 Pares e cluster
-		lineageTag: 4ccf2a9b-3910-5e44-b94e-6fec8b8cc324
-
 	measure 'Comparado: percentil' =
 			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
 			RETURN
@@ -807,13 +735,6 @@ table _Medidas
 		displayFolder: 6 Qualidade dos dados
 		lineageTag: 607b57ea-8e9c-5d6a-ba5c-ff7e03c6d47c
 
-	/// Valor da época, sem a correção pelo IPCA (pedido da reunião de 2026-11-06: mostrar o efeito da inflação).
-	/// A mediana real dividida pelo fator do ano é a mediana nominal (o fator é o mesmo para todas as redes do ano).
-	measure 'Gasto por aluno da época (mediana anual)' = DIVIDE ( [Gasto por aluno (mediana anual)], SELECTEDVALUE ( dim_ano[FATOR_IPCA] ) )
-		formatString: R$ #,0
-		displayFolder: 1 Gasto
-		lineageTag: 0740fad3-1673-5985-9c50-724f167815e6
-
 	/// Tendência (reunião de 2026-11-06: "o desempenho está melhorando a cada edição?"): entre as redes com nota nesta e
 	/// na edição anterior, a parcela que subiu. Melhora não prova bom uso do gasto (associação).
 	measure '% de redes que melhoraram' =
@@ -861,11 +782,6 @@ table _Medidas
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: 5 Pares e cluster
 		lineageTag: 9890c03f-c88e-53bb-b781-b9b5582a220c
-
-	measure 'Par: diferença (p.p.)' = IF ( [É par] = 1, ( [Eficiência (% do esperado)] - [Eficiência % do município de referência] ) * 100 )
-		formatString: +0.0;-0.0;0.0
-		displayFolder: 5 Pares e cluster
-		lineageTag: 760111b8-5799-5df3-acaa-7c61a8b0caf3
 
 	measure 'Comparado: eficiência (%)' =
 			VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )

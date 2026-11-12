@@ -1,6 +1,6 @@
 # Especificação do dashboard oficial (Power BI)
 
-*Versão 1, 2026-10-30. Base: decisões E3, E4, S9, S11, C1, C1b, G4, A5, A6, A8 e A7 de `docs/decisoes_metodo.md`. O HTML em `relatorios/` continua como ferramenta de conferência; o produto entregue é o projeto `.pbip` desta pasta.*
+*Versão 2, 2026-11-11 (a versão 1 era de 2026-10-30; as seções 4 e 5 foram reescritas na revisão geral, para descrever o painel como ele ficou). Base: decisões E3, E4, S9, S11, C1, C1b, G4, A5, A6, A8 e A7 de `docs/decisoes_metodo.md`. O HTML em `relatorios/` continua como ferramenta de conferência; o produto entregue é o projeto `.pbip` desta pasta.*
 
 ## 1. Para quem e para quê
 
@@ -16,14 +16,15 @@
 
 | Arquivo | Conteúdo |
 |---|---|
-| `src/Visualizacao/Preparar_PowerBI.py` | Monta as 12 tabelas do modelo em `data/processed/powerbi/` (roda no `run_pipeline.py`) |
+| `src/Visualizacao/Preparar_PowerBI.py` | Monta as 13 tabelas do modelo em `data/processed/powerbi/` (roda no `run_pipeline.py`) |
 | `powerbi/carregar_dados.pq` | Consulta M de carregamento e o parâmetro `PastaDados` |
 | `powerbi/medidas.dax` | Todas as medidas, por pasta |
 | `powerbi/tema_tcc.json` | Tema (mesma paleta do HTML de conferência) |
 | `powerbi/roteiro_construcao.md` | Passo a passo da construção, com os valores de conferência |
-| `data/processed/malha_municipios.topojson` | Malha para o visual "Mapa de formas" (chave `CD_MUN` = `CO_MUNICIPIO`) |
+| `data/processed/malha_municipios.topojson` | Malha para o visual "Mapa de formas" (id de cada área = "Nome (UF)"; `CD_MUN` nas propriedades) |
 | `src/Visualizacao/Gerar_Modelo_PowerBI.py` | Escreve o modelo semântico (TMDL) no projeto, uma vez |
-| `powerbi/tcc_gasto_saeb.pbip` | O dashboard, como projeto do Power BI (a criar) |
+| `src/Visualizacao/Gerar_Relatorio_PowerBI.py` | Grava e valida as 10 páginas (formato PBIR) |
+| `powerbi/tcc_gasto_saeb.pbip` | O dashboard, como projeto do Power BI |
 
 ## 3. Modelo de dados (estrela)
 
@@ -53,6 +54,8 @@
 | `fato_gasto_municipal` | município × ano | 50.113 | gasto anual 2017–2025 |
 | `fato_desempenho_estadual` | UF × etapa × disciplina × edição | 540 | camada estadual (AF e EM), gasto versões A e B |
 | `fato_gasto_estadual` | UF × ano | 243 | |
+| `fato_oferta_municipal` | município × etapa × ano | 100.278 | matrículas municipais e estaduais, parcela da rede municipal e situação (com nota, sem rede, sem nota divulgada); decisão A9 |
+| `ref_municipio`, `cmp_municipio` | município | 5.571 | tabelas calculadas, sem relacionamento: município de referência e município comparado da página Pares |
 
 **Relacionamentos** (todos 1:\*, filtro em direção única, da dimensão para o fato):
 
@@ -76,7 +79,7 @@
 | I4 | Nota padronizada N (secundária) | 10·(S − limite inferior)/(limite superior − limite inferior), média de MT e LP | 0 a 10 | componente de aprendizado do IDEB | satura nos limites de 1997 (S10) |
 | I5 | IDEB | N × indicador de rendimento (Inep) | 0 a 10 | referência oficial | mistura aprendizado e fluxo |
 | I6 | Proficiência esperada | previsão do modelo de MQO: log do gasto, população, alfabetização, infraestrutura, tamanho da rede, IDHM Renda e Longevidade da UF, edição | pontos | o que redes com o mesmo gasto e contexto tiraram, em média | modelo oficial só 2017–2023 (C1) |
-| I7 | **Eficiência** | proficiência observada − proficiência esperada (resíduo) | pontos | +10 = 10 pontos acima do que redes com gasto e contexto parecidos alcançaram | associação, não efeito do gasto; ruído de rede pequena; ver saltos (I10) |
+| I7 | **Eficiência ("vs. esperado")** | (proficiência observada − esperada) ÷ esperada (A10); em pontos como referência | % do esperado | +5% = nota 5% acima da esperada; 0% = igual à esperada | associação, não efeito do gasto; no modelo nacional o gasto pesa pouco na esperada (revisão geral, item 2.1); a escala do Saeb não tem zero verdadeiro; ver saltos (I10) |
 | I8 | Percentil de eficiência | posição do resíduo entre as redes da mesma etapa, disciplina e edição | 0 a 100 | 80 = melhor que 80% das redes | faixas por quintil (proposta): bem abaixo, abaixo, próximo, acima, bem acima do esperado |
 | I9 | Posição no cluster | nota − mediana do cluster; gasto ÷ mediana do cluster | pontos; razão | comparação descritiva com redes de contexto parecido (A6) | não controla o gasto; é descritiva |
 | I10 | Salto atípico | variação desde a edição anterior afastada mais de 3 desvios-padrão da média das variações | marca (sim/não) | resultado que mudou demais em dois anos | marca, não exclui (A5); regra em S11, a confirmar |
@@ -85,56 +88,25 @@
 
 ## 5. Páginas
 
-Filtros fixos no topo de todas as páginas, numa linha: **UF**, **Etapa** (seleção única), **Disciplina** (seleção única, padrão Matemática), **Edição**. Os filtros são sincronizados entre as páginas.
+O registro detalhado de cada página está em P7 de `docs/decisoes_metodo.md`. As páginas são gravadas por `src/Visualizacao/Gerar_Relatorio_PowerBI.py`.
 
-1. **Início.** Cartões: gasto por aluno (mediana anual), proficiência média, % acima do esperado, cobertura do Saeb. Linha: proficiência média por edição (Brasil e UF selecionada). Texto curto com as três perguntas do painel e onde cada uma é respondida. Botão "Ver meu município" (abre a ficha).
-2. **Mapa.** Mapa de formas com a malha municipal (`CO_MUNICIPIO` no campo Local), cores por um parâmetro de campo: eficiência (escala divergente vermelho–cinza–azul, centro 0), proficiência ou gasto (escala sequencial azul). Zoom automático ao filtrar a UF. Ao lado, tabela das redes do recorte.
-3. **Eficiência.** Seletor de modelo (Oficial / Robustez).
-   - **Dispersão** gasto por aluno (eixo logarítmico) × eficiência, uma bolha por rede, cor por cluster e linha em zero. Mostra que há redes acima e abaixo do esperado em qualquer nível de gasto.
-   - **Barras** com a % de redes acima do esperado por UF, com linha em 50%.
-   - **Ranking** com nome, cluster, gasto, proficiência, esperada, eficiência, percentil e marca de salto atípico.
-   - **Aviso fixo:** "Associação, não efeito causal. A edição de 2025 só tem o modelo de robustez."
-   - **Revisão de 2026-10-30:** a dispersão esperada × observada e o histograma do percentil foram trocados. O Power BI não desenha a diagonal y = x, e o percentil é uniforme por construção, então o histograma sairia plano.
-4. **Ficha do município** (página de detalhamento, aberta com clique direito em qualquer município). Cartões: cluster, porte, gasto, faixa de eficiência. Linhas por edição: proficiência da rede × mediana do cluster × mediana da UF × mediana do Brasil; gasto anual 2017–2025. Tabela de eficiência por etapa, disciplina e edição. Aviso de salto atípico quando houver.
-5. **Pares.** O usuário escolhe o município de referência numa segmentação própria (tabela `ref_municipio`, sem relacionamento). A página lista as redes do mesmo cluster com gasto entre 0,8 e 1,25 vez o dele, ordenadas pela eficiência (medida `É par`). É a lista "com quem conversar".
-6. **Defasagens.** Barras do ρ de Spearman por defasagem (mesmo ano, 1, 2 e 4 anos antes), por edição. Nota sobre a cobertura: L2 só a partir de 2019, L4 a partir de 2021.
-7. **Contexto e clusters.** Perfil dos 7 grupos (tabela de `dim_cluster`), proficiência e gasto medianos por grupo e por porte, dispersão gasto × proficiência colorida por cluster.
-8. **Estados.** Camada estadual: 27 UFs, Anos Finais e Ensino Médio, gasto versão A, linha por edição e dispersão gasto × proficiência. Seletor de versão B como sensibilidade. Aviso: 27 unidades, leitura descritiva.
-9. **Sobre os dados.** Fontes, indicadores (tabela da seção 4), limitações principais (seção 10 do registro), data de atualização, autores, QR Code (A7).
+- **Filtros:** ficam numa faixa azul no topo, e cada página mostra só os que mudam algum visual dela. UF, Etapa, Disciplina, Edição e Comparação da eficiência são sincronizados entre as páginas. São próprios de uma página: Município (Ficha), Município de referência e Comparar com (Pares), Comparação do mapa (Mapa), Gasto de quando (Defasagens) e Etapa da rede estadual (Estados).
+- **Comparações:** "Nacional (até 2023)", com IDHM, e "Mesmo estado (até 2025)", com efeito fixo de UF (A8).
 
-### 5.1 Como as páginas ficaram (construção de 2026-10-30 a 2026-11-09)
+| # | Página | O que mostra |
+|---|---|---|
+| 1 | **Boas-vindas** | para que serve, como usar e três perguntas que levam às páginas (Defasagens, Ficha, Pares) |
+| 2 | **Visão geral** | cartões (gasto, proficiência, % acima do esperado, cobertura); proficiência por edição; redes que melhoraram desde a edição anterior; gasto do recorte × Brasil |
+| 3 | **Eficiência** | cartões; dispersão gasto × resultado em relação ao esperado, por cluster; % acima do esperado por UF; ranking (município, gasto, proficiência, esperada, vs. esperado, atenção) |
+| 4 | **Ficha do município** | cartões; proficiência por edição contra cluster, UF e Brasil; gasto por ano; situação da rede; tabela por edição |
+| 5 | **Pares** | redes do mesmo cluster com gasto entre 0,8 e 1,25 vez o da referência (e da mesma UF, na comparação no mesmo estado); comparação 1 a 1 com um par clicado ou escolhido |
+| 6 | **Mapa** | eficiência por município numa UF (o visual desenha até ~1.500 áreas), na comparação escolhida, com cor saturada em ±12%; resumo por UF na comparação nacional |
+| 7 | **Defasagens** | ρ de Spearman por edição e defasagem, em colunas e em mapa de calor |
+| 8 | **Contexto e clusters** | perfil dos 7 clusters; composição de cada cluster por região; gasto e proficiência por porte |
+| 9 | **Estados** | 27 UFs, AF e EM, gasto na versão A: dispersão, séries por região e tabela; leitura descritiva |
+| 10 | **Sobre os dados** | fontes, indicadores, limitações, inflação (fator do IPCA), autoria e espaço do QR Code (A7) |
 
-As páginas são gravadas por `src/Visualizacao/Gerar_Relatorio_PowerBI.py`, e o registro detalhado de cada uma está em P7 de `docs/decisoes_metodo.md`.
-
-- **Ordem no relatório:**
-  1. Início;
-  2. Eficiência;
-  3. Ficha do município;
-  4. Pares;
-  5. Mapa;
-  6. Defasagens;
-  7. Contexto e clusters;
-  8. Estados;
-  9. Sobre os dados.
-- **Filtros:** ficam numa faixa azul no topo. Cada página mostra só os filtros que usa.
-  - **Sincronizados entre as páginas:** UF, Etapa, Disciplina, Edição e Modelo.
-  - **Próprios de uma página, sem sincronização:**
-    - Município, na Ficha;
-    - Município de referência, em Pares;
-    - Gasto de quando (defasagem), em Defasagens;
-    - Etapa da rede estadual (AF e EM), em Estados.
-- **Diferenças em relação ao plano acima:**
-  - **Início:** o botão "Ver meu município" foi trocado por um navegador de páginas. No Desktop, ele responde com Ctrl + clique.
-  - **Mapa:**
-    - só mostra a eficiência, sem parâmetro de campo, com a escala saturada em ±30 pontos;
-    - o Mapa de formas desenha no máximo ~1.500 áreas, por isso o mapa pede uma UF;
-    - ao lado, em vez da tabela das redes, há um resumo por UF.
-  - **Defasagens:**
-    - o gráfico de colunas e a matriz mostram todas as edições e defasagens ao mesmo tempo;
-    - cartões, frase de leitura do ρ e dispersão seguem a edição e a defasagem escolhidas;
-    - a cobertura correta é: 2017 só com o mesmo ano, 1 e 2 anos antes a partir de 2019, e 4 anos antes a partir de 2021.
-  - **Estados:** não há seletor de versão B. Onde a linha 12.364 existe, A e B são iguais (G4). A versão B aparece como segunda linha no gráfico de gasto e num cartão, e a tabela marca as UFs que ela deixaria de fora.
-  - **Sobre os dados:** o QR Code é um espaço reservado até haver endereço público (A7).
+**O que o painel não traz:** os modelos com efeito fixo, a heterogeneidade e os testes de sensibilidade (A4, A11 a A13) estão em `docs/nota_resultados.md` e `docs/resultados/`. O painel é descritivo.
 
 ## 6. Regras visuais
 
@@ -142,7 +114,7 @@ As páginas são gravadas por `src/Visualizacao/Gerar_Relatorio_PowerBI.py`, e o
 - Eficiência: escala divergente com centro cinza em 0 (vermelho = abaixo, azul = acima). Gasto e proficiência: escala sequencial de um só azul.
 - Nada de dois eixos verticais no mesmo gráfico; gasto e nota em gráficos lado a lado.
 - Valores e rótulos em tinta neutra; a cor marca só a série. Legenda sempre que houver duas séries ou mais.
-- Formatos: gasto `R$ #.##0`; proficiência `0,0`; eficiência `+0,0;−0,0;0`; percentuais `0%`; ρ `0,00`.
+- Formatos: gasto `R$ #.##0`; proficiência `0,0`; eficiência `+0,0%;−0,0%;0,0%` (em pontos: `+0,0;−0,0;0,0`); percentuais `0%`; ρ `0,00`.
 - Toda página com indicador de eficiência mostra o aviso de associação; toda página com 2025 mostra o aviso do IDHM.
 
 ## 7. Riscos técnicos e alternativas

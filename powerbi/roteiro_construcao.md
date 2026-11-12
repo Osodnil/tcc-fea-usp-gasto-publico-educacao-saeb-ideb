@@ -1,5 +1,7 @@
 # Roteiro de construção do dashboard (projeto `.pbip`)
 
+> **Histórico (revisão de 2026-11-11):** este roteiro guiou a criação do projeto em 2026-10-30. Hoje o modelo e as 10 páginas são gravados pelos geradores em `src/Visualizacao/`; para o estado atual, veja `especificacao_dashboard.md` e P7 em `docs/decisoes_metodo.md`.
+
 *Passo a passo para montar o dashboard descrito em `especificacao_dashboard.md`. Siga as fases em ordem: cada uma termina com uma conferência, e só vale avançar quando ela passar. Os nomes dos menus seguem o Power BI Desktop em português.*
 
 *O modelo de dados (tabelas, parâmetro, relações, ordenações e medidas) é gerado por script, `src/Visualizacao/Gerar_Modelo_PowerBI.py`. O relatório (páginas e visuais) é feito no Power BI. O caminho manual (`carregar_dados.pq` e `medidas.dax` colados à mão) fica como plano B, no fim deste roteiro.*

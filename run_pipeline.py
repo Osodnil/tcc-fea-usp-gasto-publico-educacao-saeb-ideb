@@ -3,6 +3,7 @@
 Uso (a partir de qualquer pasta):
     python run_pipeline.py                     # tratamento, painéis e dashboard (lê data/interim)
     python run_pipeline.py --com-extracao      # tudo, incluindo extração (precisa de data/raw e internet)
+    python run_pipeline.py --com-analise       # também os modelos, os testes e o material do texto (alguns minutos)
     python run_pipeline.py --a-partir-de Montar_Paineis
     python run_pipeline.py --listar            # só mostra a ordem
 """
@@ -40,6 +41,15 @@ TRATAMENTO = [
     "Visualizacao/Preparar_PowerBI.py",
     "Visualizacao/Gerar_Dashboard_HTML.py",
 ]
+# Modelos da fase de análise (decisões A4, A11 a A14): leem os painéis e as tabelas do Power BI; só com --com-analise
+ANALISE = [
+    "Analise/Modelo_Principal.py",
+    "Analise/Investigar_2025.py",
+    "Analise/Modelo_Estadual.py",
+    "Analise/Heterogeneidade.py",
+    "Analise/Sensibilidade_Modelo.py",  # depende de Preparar_PowerBI (parcela municipal e saltos)
+    "Analise/Material_Texto.py",        # tabelas e figuras de docs/resultados
+]
 # A malha simplificada (data/processed/malha_municipios.json) é versionada; só é refeita com
 # --com-extracao, porque lê o shapefile bruto do IBGE. Roda depois da dimensão de municípios.
 MALHA = "Visualizacao/Gerar_Malha.py"
@@ -58,11 +68,12 @@ BRUTOS = [
 def main() -> int:
     p = argparse.ArgumentParser(description="Executa o pipeline do TCC.")
     p.add_argument("--com-extracao", action="store_true", help="inclui a extração (lenta; usa APIs e data/raw)")
+    p.add_argument("--com-analise", action="store_true", help="inclui os modelos e o material do texto")
     p.add_argument("--a-partir-de", metavar="NOME", help="começa no script cujo nome contém NOME")
     p.add_argument("--listar", action="store_true", help="mostra a ordem e sai")
     args = p.parse_args()
 
-    etapas = (EXTRACAO if args.com_extracao else []) + TRATAMENTO
+    etapas = (EXTRACAO if args.com_extracao else []) + TRATAMENTO + (ANALISE if args.com_analise else [])
     if args.com_extracao:
         etapas.insert(etapas.index("Visualizacao/Gerar_Dashboard_HTML.py"), MALHA)
     if args.a_partir_de:

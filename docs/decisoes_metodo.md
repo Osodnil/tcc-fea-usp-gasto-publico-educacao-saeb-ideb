@@ -470,7 +470,7 @@ Falar sempre em associação e eficiência relativa.
   | Especificação | b (EP) | +10% no gasto | N |
   |---|---|---|---|
   | MQO agrupado (entre e dentro) | 0,92 (0,72), p = 0,20 | +0,09 ponto | 20.315 |
-  | EF de município, 2017–2023 | 2,48 (0,50), p < 0,001 | +0,24 ponto (0,01 DP) | 20.256 |
+  | EF de município, 2017–2023 | 2,47 (0,50), p < 0,001 | +0,24 ponto (0,01 DP) | 20.256 |
   | EF de município, 2017–2025 | 5,06 (0,47), p < 0,001 | +0,48 ponto (0,02 DP) | 25.591 |
 
   - **Leitura:** com os controles de contexto, as diferenças de gasto **entre** municípios quase não se associam à nota. **Dentro** do mesmo município, a associação é positiva e estatisticamente clara, mas pequena: dobrar o gasto por aluno se associa a cerca de 1,7 ponto a mais (2017–2023), quando um ano de escola vale cerca de 25 pontos na escala do Saeb. Português e Anos Finais seguem o mesmo padrão (EF, mesmo ano: AI LP 2,23; AF MT 2,23; AF LP 1,65).
@@ -954,8 +954,14 @@ Falar sempre em associação e eficiência relativa.
       - **Revertido (Henrique, 2026-11-10):** a matriz é o resultado central da página, e a dispersão parecia a de Eficiência. A matriz voltou no lugar da dispersão como **mapa de calor do ρ**: só o ρ, sem o número de redes (que está no cartão), com cor numa escala fixa de 0 a 0,5 para comparar edições e defasagens. O gráfico de colunas passou a ocupar a largura toda.
       - **Formato da cor:** regra `FillRule` com `linearGradient2` e valores mínimo e máximo explícitos, gerada pelo script e aceita pelo Desktop na primeira tentativa.
       - **Proporção (Henrique, 2026-11-10):** em 10 pt a matriz ocupava metade do bloco. Passou a 12 pt (células e cabeçalhos: `values`, `columnHeaders` e `rowHeaders` com `fontSize`), e o bloco dela e o do glossário ficaram com a mesma largura (620 px).
+  - **Revisão geral (Henrique, 2026-11-11; relatório em `docs/revisao_geral.md`):** ajustes que não dependiam da orientadora.
+    - **Frase retirada:** "Gastar mais não garante eficiência (correlação de 0,01)" saiu do glossário da página Eficiência e da nota de método. O resíduo de uma regressão que inclui o log do gasto não se correlaciona com ele: o 0,01 é zero por construção, e não um achado. No lugar entrou o resultado de A11 (dentro do mesmo município, +10% no gasto acompanha +0,2 ponto). O título da dispersão passou a "Gasto por aluno × resultado em relação ao esperado".
+    - **Defasagens:** o glossário não diz mais que "o aluno acumula anos de escola"; a linha "Gasto antigo" explica que o ρ maior com gasto de anos antes reflete diferenças duradouras entre municípios (A11).
+    - **Sobre os dados:** "modelo oficial" virou "comparação nacional", como no resto do painel.
+    - **Medidas:** 12 que sobraram das revisões saíram do modelo e de `medidas.dax` (opção nova `--remover-medidas` do gerador), de 97 para 85. Ficam 5 indicadores formais sem visual, à espera de D2.
+    - **Pipeline:** opção `--com-analise` no `run_pipeline.py`.
+    - **A decidir com a orientadora:** a régua principal (A8 × A11), o nome do indicador de eficiência (no modelo nacional, o gasto quase não muda a nota esperada: 0,92, p = 0,20) e se os modelos entram no painel.
   - **Padrão de glossário (Henrique, 2026-11-09):** o desenho do "Como ler esta ficha" vira o padrão dos quadros explicativos: termo em negrito azul, definição ao lado e uma nota final em itálico. Ele foi aplicado também em Visão geral, Defasagens e no quadro das 27 unidades de Estados (sem título, por ser pequeno). A função `glossario` do gerador monta esses quadros.
- Ele depende de um endereço público, e o repositório é privado. Quando o destino for escolhido, o gerador cria a imagem e a coloca nesse quadro.
 
   - **Valores de conferência (AF, MT, 2023):**
     - 27 UFs, proficiência média de 247,5 (EM: 263,3);
@@ -1095,11 +1101,12 @@ Pontos levantados sobre o painel, com diagnóstico nos dados em 2026-11-09 e pla
 ### Pendências restantes (nenhuma bloqueia o desenvolvimento)
 0. **S11 (2026-10-30):** confirmar a regra proposta para marcar os saltos atípicos (mais de 3 desvios-padrão da variação média; 633 linhas marcadas, nenhuma excluída). (A8 foi decidido: versão nacional.)
 1. **S8 e S4:** as propostas (não imputar notas, controlar o porte, painel balanceado; Anos Finais como complementar) seguem como padrão de trabalho, sem objeção registrada.
-2. **A4 e P3:** lista de testes de sensibilidade; extensão das matrículas para 2015–2016 é opcional.
+2. **A4 e P3:** testes de sensibilidade rodados em 2026-11-11 (falta só o G4b, que pede dados brutos); a extensão das matrículas para 2015–2016 é opcional.
 3. **D1:** formato do TCC (científico ou consultoria). Afeta o texto, não o dashboard.
 4. **D2:** indicadores formais. Proposta escrita em 2026-10-30 (12 indicadores, seção 4 de `powerbi/especificacao_dashboard.md`), com as faixas de eficiência por quintil; falta confirmar.
 5. **D4:** referências e APA; **D5/IA:** forma de documentar o uso de IA no Método. Rascunho da declaração por etapa do trabalho em `docs/declaracao_uso_ia.md` (2026-11-10), para aprovar com a orientadora.
 6. **A7:** endereço público para o QR Code (Power BI Service com "Publicar na Web", ou o HTML), a verificar na publicação.
+7. **Revisão geral de 2026-11-11 (`docs/revisao_geral.md`):** a decidir com a orientadora: qual é a régua principal (nacional, A8, ou mesmo estado, usada em A11), o nome do indicador de eficiência (que quase não depende do gasto) e se os resultados dos modelos entram no painel. Também faltam a revisão bibliográfica e o registro das respostas da orientadora na reunião já feita.
 
 ### Dossiê da conta anterior (incorporado em 2026-10-26)
 O dossiê das conversas anteriores (arquivos 01 a 05, guardados em `docs/historico/`) foi comparado com o estado atual. Os achados de dados entraram nos itens G4, G5, M2, S8 e E2 e nas limitações L13 e L14. Abaixo ficam as pendências que só apareciam no dossiê.

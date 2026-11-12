@@ -146,7 +146,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Pontos, percentil e a série de cada rede estão na Ficha do município. Gastar mais não garante eficiência (correlação de 0,01).",
+                    "value": "Pontos, percentil e a série de cada rede estão na Ficha. Dentro do mesmo município, +10% no gasto acompanha só +0,2 ponto na nota.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e",

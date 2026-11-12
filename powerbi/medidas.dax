@@ -14,9 +14,6 @@ Modelo = SELECTEDVALUE ( dim_modelo[MODELO], "Oficial" )
 Seleção comparável =
     HASONEVALUE ( dim_disciplina[DISCIPLINA] ) && HASONEVALUE ( dim_etapa[ETAPA] )
 
-Aviso de seleção =
-    IF ( NOT [Seleção comparável], "Escolha uma etapa e uma disciplina para ver as notas." )
-
 // ───────────────────────── Pasta: 1 Gasto ─────────────────────────
 
 // Todas as redes com gasto no ano (inclusive as que não têm nota no Saeb)
@@ -52,20 +49,11 @@ Gasto por aluno do Brasil (mediana anual) =
         REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster )
     )
 
-// Valor da época, sem a correção pelo IPCA (pedido da reunião de 2026-11-06: mostrar o efeito da inflação).
-// A mediana real dividida pelo fator do ano é a mediana nominal (o fator é o mesmo para todas as redes do ano).
-Gasto por aluno da época (mediana anual) =
-    DIVIDE ( [Gasto por aluno (mediana anual)], SELECTEDVALUE ( dim_ano[FATOR_IPCA] ) )
-
 // Quanto vale R$ 1 de cada ano em R$ de 2025 (gráfico de Sobre os dados, 2026-11-09)
 Fator do IPCA = SELECTEDVALUE ( dim_ano[FATOR_IPCA] )
 
 Gasto estadual por aluno (mediana, versão A) =
     MEDIAN ( fato_gasto_estadual[GASTO_ALUNO_A_R2025] )
-
-// Teste de sensibilidade G4 (desconta o Ensino Superior só onde a linha 12.364 existe)
-Gasto estadual por aluno (mediana, versão B) =
-    MEDIAN ( fato_gasto_estadual[GASTO_ALUNO_B_R2025] )
 
 Redes com gasto extremo =
     CALCULATE ( DISTINCTCOUNT ( fato_gasto_municipal[CO_MUNICIPIO] ), fato_gasto_municipal[GASTO_EXTREMO] = TRUE () )
@@ -366,15 +354,6 @@ RETURN
         dim_municipio[CO_MUNICIPIO] = r
     )
 
-Eficiência do município de referência =
-VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
-RETURN
-    CALCULATE (
-        [Eficiência (pontos)],
-        REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ),
-        dim_municipio[CO_MUNICIPIO] = r
-    )
-
 Eficiência % do município de referência =
 VAR r = SELECTEDVALUE ( ref_municipio[REF_CO_MUNICIPIO] )
 RETURN
@@ -432,17 +411,8 @@ Par: gasto por aluno = IF ( [É par] = 1, [Gasto das redes avaliadas (mediana)] 
 
 Par: proficiência = IF ( [É par] = 1, [Proficiência média] )
 
-Par: eficiência = IF ( [É par] = 1, [Eficiência (pontos)] )
-
-Par: diferença para a referência = IF ( [É par] = 1, [Eficiência (pontos)] - [Eficiência do município de referência] )
-
-Par: percentil = IF ( [É par] = 1, [Percentil de eficiência] )
-
 // Em % do esperado (medida principal desde 2026-11-09); a diferença fica em pontos percentuais
 Par: eficiência (%) = IF ( [É par] = 1, [Eficiência (% do esperado)] )
-
-Par: diferença (p.p.) =
-    IF ( [É par] = 1, ( [Eficiência (% do esperado)] - [Eficiência % do município de referência] ) * 100 )
 
 // Comparação 1 a 1 (reunião de 2026-11-06). O segundo município vem do filtro "Comparar com" (tabela cmp_municipio,
 // sem relação) ou, se ele estiver vazio, do par clicado na tabela (que filtra dim_municipio).
@@ -475,13 +445,6 @@ VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVA
 RETURN
     IF ( NOT ISBLANK ( c ),
         CALCULATE ( [Proficiência esperada],
-            REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = c ) )
-
-Comparado: eficiência =
-VAR c = COALESCE ( SELECTEDVALUE ( cmp_municipio[CMP_CO_MUNICIPIO] ), SELECTEDVALUE ( dim_municipio[CO_MUNICIPIO] ) )
-RETURN
-    IF ( NOT ISBLANK ( c ),
-        CALCULATE ( [Eficiência (pontos)],
             REMOVEFILTERS ( dim_municipio ), REMOVEFILTERS ( dim_uf ), REMOVEFILTERS ( dim_cluster ), dim_municipio[CO_MUNICIPIO] = c ) )
 
 Comparado: eficiência (%) =
@@ -544,31 +507,12 @@ RETURN
         "Um dos dois municípios não tem nota nesta etapa e edição (veja o motivo na Ficha)."
     )
 
-Par: salto = IF ( [É par] = 1, [Marca de salto] )
-
 // ───────────────────────── Pasta: 6 Qualidade dos dados ─────────────────────────
 
 Redes com salto atípico =
     CALCULATE (
         DISTINCTCOUNT ( fato_desempenho_municipal[CO_MUNICIPIO] ),
         fato_desempenho_municipal[SALTO_ATIPICO] = TRUE ()
-    )
-
-// Versão curta, para colunas de tabela (o texto acompanha o ícone: a cor nunca é a única pista).
-// Revisto em 2026-11-09: a coluna vazia parecia defeito. Agora diz "não" quando houve comparação e não houve salto,
-// e "sem edição anterior" quando não há com o que comparar (2017, ou a rede não tinha nota na edição anterior).
-// Só responde onde há nota, para não criar linhas novas nas tabelas.
-Marca de salto =
-VAR comNota = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), NOT ISBLANK ( fato_desempenho_municipal[PROFICIENCIA] ) )
-VAR comparadas = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), NOT ISBLANK ( fato_desempenho_municipal[VARIACAO_EDICAO_ANTERIOR] ) )
-VAR saltos = CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () )
-RETURN
-    SWITCH ( TRUE (), saltos > 0, "⚠ salto", comparadas > 0, "não", comNota > 0, "sem edição anterior" )
-
-Aviso de salto atípico =
-    IF (
-        CALCULATE ( COUNTROWS ( fato_desempenho_municipal ), fato_desempenho_municipal[SALTO_ATIPICO] = TRUE () ) > 0,
-        "⚠ Variação atípica em relação à edição anterior (mais de 3 desvios-padrão). Conferir antes de interpretar."
     )
 
 // G4: UF/anos sem a linha 12.364 (Ensino Superior). A versão A não desconta nada; a versão B deixa o par UF/ano vazio.

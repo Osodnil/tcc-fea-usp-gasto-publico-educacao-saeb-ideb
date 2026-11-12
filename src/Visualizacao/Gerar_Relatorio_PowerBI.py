@@ -417,7 +417,7 @@ def pagina_eficiencia() -> tuple[dict, list[dict]]:
                 objetos={"categoryAxis": [{"properties": {"logAxisScale": literal(True)}}],
                          "legend": [{"properties": {"show": literal(True), "position": literal("Right"), "fontSize": literal(8.0)}}],  # rótulo curto do cluster (o completo era cortado)
                          **linha_constante("y1AxisReferenceLine", 0)}),
-        20, titulo="Gasto por aluno × eficiência: há redes acima e abaixo do esperado em todo nível de gasto"))
+        20, titulo="Gasto por aluno × resultado em relação ao esperado (cada ponto é uma rede)"))
     vis.append(container(
         f"{p}_barras_uf", (788, 172, 476, 232),
         grafico("clusteredBarChart", {"Category": [("dim_uf.SG_UF", "UF")], "Y": [("% acima do esperado", "Acima do esperado")]},
@@ -447,8 +447,10 @@ def pagina_eficiencia() -> tuple[dict, list[dict]]:
         ("vs. esperado", "nota acima (+) ou abaixo (−) da esperada, em %; 0% = igual a ela."),
         ("Atenção", "⚠ salto: o resultado mudou demais desde a edição anterior; ⚠ rede parcial: a rede "
                     "municipal tem menos de 50% dos alunos públicos da etapa. Conferir antes de usar como exemplo."),
-    ], "Pontos, percentil e a série de cada rede estão na Ficha do município. Gastar mais não garante "
-       "eficiência (correlação de 0,01)."), 23))
+    # revisão geral de 2026-11-11: saiu "correlação de 0,01 entre gasto e eficiência", que é zero por construção
+    # (o resíduo de uma regressão que inclui o gasto não se correlaciona com ele); entra o achado do modelo (A11)
+    ], "Pontos, percentil e a série de cada rede estão na Ficha. Dentro do mesmo município, +10% no gasto "
+       "acompanha só +0,2 ponto na nota."), 23))
     vis.append(container(f"{p}_rodape", (16, 690, 1248, 24), texto([(
         "Eficiência: associação, não efeito do gasto. A comparação nacional cobre 2017 a 2023; 2025 só na comparação "
         "com o mesmo estado.",
@@ -826,7 +828,9 @@ def pagina_defasagens() -> tuple[dict, list[dict]]:
     vis.append(container(f"{p}_como_ler", (644, 412, 620, 272), glossario([
         ("ρ de Spearman", "de −1 a 1; compara a ordem das redes no gasto com a ordem na nota. 0 = sem relação. "
                           "Só com 30 redes ou mais."),
-        ("Gasto de quando", "do ano da prova ou de 1, 2 ou 4 anos antes (o aluno acumula anos de escola)."),
+        ("Gasto de quando", "do ano da prova ou de 1, 2 ou 4 anos antes."),
+        ("Gasto antigo", "o ρ maior com gasto de anos antes reflete diferenças duradouras entre municípios, "
+                         "não um efeito que demora."),
         ("Cor", "mais escura = ρ maior, na mesma escala (0 a 0,5) em todas as células."),
         ("Vazio", "sem gasto daquele ano: a série começa em 2017, e 4 anos antes só existe a partir de 2021."),
         ("Brasil × UF", "no Brasil, parte da associação vem das diferenças entre estados; dentro de uma UF, "
@@ -1017,7 +1021,7 @@ def pagina_sobre() -> tuple[dict, list[dict]]:
         ("• Associação, não causalidade: o painel não mostra efeito do gasto sobre a nota.", corpo),
         ("• A eficiência é um resíduo: também capta gestão, contexto familiar e qualidade do registro.", corpo),
         ("• Só entram redes com nota divulgada; as pequenas, que gastam mais por aluno, ficam sub-representadas.", corpo),
-        ("• O IDHM só existe por UF e termina em 2024: a edição de 2025 não tem o modelo oficial.", corpo),
+        ("• O IDHM só existe por UF e termina em 2024: a edição de 2025 não tem a comparação nacional.", corpo),
         ("• O gasto municipal cobre todo o Fundamental: Anos Iniciais e Finais usam o mesmo valor.", corpo),
         ("• Gasto da série começa em 2017: defasagens de 2 e 4 anos só a partir de 2019 e 2021.", corpo),
         ("• 2021 foi aplicado na pandemia, com menos redes e condições atípicas.", corpo),

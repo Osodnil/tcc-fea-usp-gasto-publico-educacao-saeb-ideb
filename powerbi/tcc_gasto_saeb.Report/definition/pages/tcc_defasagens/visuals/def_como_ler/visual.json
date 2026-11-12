@@ -59,7 +59,26 @@
                     }
                   },
                   {
-                    "value": "do ano da prova ou de 1, 2 ou 4 anos antes (o aluno acumula anos de escola).",
+                    "value": "do ano da prova ou de 1, 2 ou 4 anos antes.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#52514e"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Gasto antigo: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "9pt",
+                      "color": "#0d366b"
+                    }
+                  },
+                  {
+                    "value": "o ρ maior com gasto de anos antes reflete diferenças duradouras entre municípios, não um efeito que demora.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

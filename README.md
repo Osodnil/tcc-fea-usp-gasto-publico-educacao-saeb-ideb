@@ -1,10 +1,10 @@
 # Gasto público em educação e desempenho no Saeb
 
-Trabalho de Conclusão de Curso em Administração (FEA/USP, EAD 600/601), no formato de consultoria. Autores: Henrique Lindoso e Guilherme.
+Trabalho de Conclusão de Curso em Administração (FEA/USP, EAD 600/601). O formato ainda será confirmado com a orientadora; pelo Manual, o enquadramento mais natural é método científico, estudo quantitativo (D1 no registro). Autores: Henrique Lindoso e Guilherme.
 
 **Pergunta central:** o gasto público por aluno em educação, deflacionado, se associa ao desempenho no Saeb/IDEB? Com que defasagem? Quais municípios e estados entregam mais ou menos do que o esperado, dado o gasto e o contexto?
 
-**Usuário-alvo:** gestor de secretaria de educação.
+**Usuário-alvo:** agente de secretaria de educação ou analista da educação pública (E4).
 
 **Fluxo:** Dados → ETL → Análise → Indicadores → Insights → Dashboard → Avaliação.
 
@@ -23,7 +23,7 @@ A análise tem duas camadas, que nunca são misturadas:
 
 - **Janela:** 2017–2025, com as edições bienais do Saeb (2017, 2019, 2021, 2023 e 2025).
 - **Valores:** reais de 2025, corrigidos pelo IPCA médio anual.
-- **Decisões:** todas as decisões de método, com os problemas encontrados em cada base, estão em [`docs/decisoes_metodo.md`](docs/decisoes_metodo.md). A versão curta para as reuniões está em [`docs/resumo_reuniao_orientadora.md`](docs/resumo_reuniao_orientadora.md). A explicação da proficiência, da nota esperada, da eficiência e dos clusters, com exemplos, está em [`docs/nota_metodo_eficiencia.md`](docs/nota_metodo_eficiencia.md).
+- **Decisões:** todas as decisões de método, com os problemas encontrados em cada base, estão em [`docs/decisoes_metodo.md`](docs/decisoes_metodo.md). A versão curta para as reuniões está em [`docs/resumo_reuniao_orientadora.md`](docs/resumo_reuniao_orientadora.md). A explicação da proficiência, da nota esperada, da eficiência e dos clusters, com exemplos, está em [`docs/nota_metodo_eficiencia.md`](docs/nota_metodo_eficiencia.md). Os resultados dos modelos estão em [`docs/nota_resultados.md`](docs/nota_resultados.md), com as tabelas e figuras em `docs/resultados/`. A revisão geral de 11/11/2026 está em [`docs/revisao_geral.md`](docs/revisao_geral.md).
 
 ## Estrutura do repositório
 
@@ -33,13 +33,15 @@ data/
   interim/      saídas intermediárias em Parquet (fora do Git)
     diagnosticos/   saídas de testes e conferências
   processed/    painéis finais (versionados)
-docs/           registro de decisões e resumo para a orientadora
+docs/           registro de decisões, resumo para a orientadora, notas de método e de resultados
+  resultados/   tabelas e figuras dos modelos (geradas por src/Analise/Material_Texto.py)
   historico/    dossiê das conversas anteriores ao repositório (desatualizado; só registro)
 relatorios/     dashboard HTML de conferência (versionado)
 src/
   Extract/      extração de cada fonte → data/interim
   Transform/    tratamento de cada base e montagem dos painéis
-  Visualizacao/ gerador do dashboard HTML
+  Analise/      clusters, eficiência, modelos, heterogeneidade, sensibilidade e material do texto
+  Visualizacao/ dashboard HTML, tabelas e geradores do projeto Power BI (modelo e páginas)
   Exportacao/   gerador do pacote ZIP para envio (dashboard, documentos em HTML, dados em Excel e código)
   Testes/       scripts de reconhecimento e diagnóstico (não fazem parte do pipeline)
   Legado/       scripts da fase ENEM e do IDEB antigo, substituídos (não rodar)
@@ -99,6 +101,7 @@ Sem argumentos, ele faz o tratamento, os painéis e o dashboard a partir de `dat
 | Opção | O que faz |
 |---|---|
 | `--com-extracao` | Inclui a extração. Precisa dos brutos em `data/raw` e de internet; leva vários minutos. O script confere os brutos antes de começar. |
+| `--com-analise` | Inclui os modelos da fase de análise e o material do texto (alguns minutos). |
 | `--a-partir-de Montar_Paineis` | Retoma a partir de um script. |
 | `--listar` | Só mostra a ordem. |
 
@@ -140,7 +143,18 @@ Para rodar um script isolado, chame-o diretamente, por exemplo `python src/Trans
 | `Visualizacao/Preparar_PowerBI.py` | `data/processed/powerbi/` (modelo em estrela do dashboard oficial) |
 | `Visualizacao/Gerar_Dashboard_HTML.py` | `relatorios/dashboard_conferencia.html` |
 
-O modelo do dashboard em Power BI é criado uma única vez por `src/Visualizacao/Gerar_Modelo_PowerBI.py`, dentro do projeto `powerbi/tcc_gasto_saeb.pbip`. As 9 páginas são gravadas por `src/Visualizacao/Gerar_Relatorio_PowerBI.py`, que as valida contra os esquemas oficiais do formato PBIR. Feche o Power BI antes de rodar qualquer um dos dois. O passo a passo está em `powerbi/roteiro_construcao.md`.
+**4. Modelos e material do texto** (só com `--com-analise`; saídas em `data/interim/diagnosticos/` e `docs/resultados/`)
+
+| Script | O que faz |
+|---|---|
+| `Analise/Modelo_Principal.py` | gasto × proficiência com efeito fixo de município (A11) |
+| `Analise/Investigar_2025.py` | por que 2025 dobrava o coeficiente (A11) |
+| `Analise/Modelo_Estadual.py` | camada estadual, com efeito fixo de UF (A12) |
+| `Analise/Heterogeneidade.py` | por porte, região, cluster e faixa de gasto (A13) |
+| `Analise/Sensibilidade_Modelo.py` | testes de sensibilidade (A4) |
+| `Analise/Material_Texto.py` | tabelas e figuras (A14) |
+
+O modelo do dashboard em Power BI é criado uma única vez por `src/Visualizacao/Gerar_Modelo_PowerBI.py`, dentro do projeto `powerbi/tcc_gasto_saeb.pbip`. As 10 páginas são gravadas por `src/Visualizacao/Gerar_Relatorio_PowerBI.py`, que as valida contra os esquemas oficiais do formato PBIR. Feche o Power BI antes de rodar qualquer um dos dois. O passo a passo está em `powerbi/roteiro_construcao.md`.
 
 Use o Python do Anaconda (`%USERPROFILE%\anaconda3\python.exe`); na máquina de desenvolvimento, o `python` do terminal aponta para outra instalação (ver T6 no registro).
 
@@ -162,8 +176,8 @@ Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os doc
 - **`painel_estadual.parquet`:** uma linha por UF × etapa (AF/EM) × edição. Traz o gasto por aluno nas versões A e B (tratamento da ausência da subfunção 12.364), com as mesmas defasagens, e os controles por UF.
 - **Tabelas de apoio** (`dim_municipio`, `dim_uf`, `gasto_municipal_anual`, `gasto_estadual_anual`): dimensões com porte e faixa de alfabetização, e gasto por aluno de todos os anos de 2017 a 2025. São a base comum do dashboard e do Power BI.
 - **Clusters e eficiência:** `cluster_municipio` (grupo de contexto de cada município), `cluster_resumo` (perfil dos 7 grupos) e `eficiencia_municipal` (proficiência observada × esperada para o gasto e o contexto, por município, etapa, disciplina e edição; versão oficial nacional com IDHM, 2017–2023, e versão de robustez dentro da UF).
-- **`powerbi/`:** as 12 tabelas do modelo em estrela que o `.pbix` lê (8 dimensões e 4 fatos). A especificação do dashboard, as medidas DAX, a consulta de carregamento e o tema estão na pasta `powerbi/` da raiz.
-- **`malha_municipios.json` e `malha_municipios.topojson`:** contornos dos municípios (Malha Municipal do IBGE 2025) simplificados, com cerca de 0,7 MB (caminhos SVG, para o HTML) e 1,5 MB (TopoJSON, para o "Mapa de formas" do Power BI, chave `CD_MUN`). São gerados por `src/Visualizacao/Gerar_Malha.py` a partir do shapefile bruto (`data/raw/Malha Municipal/`) e só são refeitos com `run_pipeline.py --com-extracao`.
+- **`powerbi/`:** as 13 tabelas do modelo em estrela que o projeto `.pbip` lê (8 dimensões e 5 fatos, incluindo a oferta por rede, `fato_oferta_municipal`). A especificação do dashboard, as medidas DAX, a consulta de carregamento e o tema estão na pasta `powerbi/` da raiz.
+- **`malha_municipios.json` e `malha_municipios.topojson`:** contornos dos municípios (Malha Municipal do IBGE 2025) simplificados, com cerca de 0,7 MB (caminhos SVG, para o HTML) e 1,5 MB (TopoJSON, para o "Mapa de formas" do Power BI; o id de cada área é "Nome (UF)", e o código `CD_MUN` fica nas propriedades). São gerados por `src/Visualizacao/Gerar_Malha.py` a partir do shapefile bruto (`data/raw/Malha Municipal/`) e só são refeitos com `run_pipeline.py --com-extracao`.
 - **`dashboard_conferencia.html`:** ferramenta de análise numa página única, que abre offline em qualquer navegador. Tem seis abas:
   - **Visão geral:** dispersão gasto × nota, evolução, ranking por UF, cobertura e tabela.
   - **Defasagens:** gasto de 0, 1, 2 e 4 anos antes × nota, com a correlação de Spearman.
@@ -182,12 +196,14 @@ Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os doc
 - ✅ Dashboard HTML ampliado como ferramenta de análise (6 abas, incluindo mapa).
 - ✅ Clusters por contexto (7 grupos) e indicador de eficiência municipal (versão oficial nacional, com IDHM).
 - ✅ Modelo de dados e especificação do dashboard oficial em Power BI (`powerbi/`).
-- ✅ Dashboard oficial em Power BI com 9 páginas (Início, Eficiência, Ficha do município, Pares, Mapa, Defasagens, Contexto e clusters, Estados, Sobre os dados), com os números conferidos contra o Python (P7).
-- ⏳ Testes de sensibilidade e acesso simples ao projeto (QR Code: falta definir o endereço público).
-- 🟡 Abertos (seção 9 de `docs/decisoes_metodo.md`): regra dos saltos atípicos, indicadores formais, formato do TCC, lista de sensibilidade, largura da faixa dos pares e forma de documentar o uso de IA.
+- ✅ Dashboard oficial em Power BI com 10 páginas (Boas-vindas, Visão geral, Eficiência, Ficha do município, Pares, Mapa, Defasagens, Contexto e clusters, Estados, Sobre os dados), com os números conferidos contra o Python (P7).
+- ✅ Fase de análise (10 e 11/11/2026): modelo principal com efeito fixo de município, camada estadual, heterogeneidade, testes de sensibilidade e material para o texto (A4, A11 a A14).
+- ✅ Revisão geral (11/11/2026): `docs/revisao_geral.md`.
+- ⏳ Acesso simples ao projeto (QR Code: falta definir o endereço público), revisão bibliográfica e redação.
+- 🟡 Abertos, a decidir com a orientadora (seção 9 do registro e `docs/revisao_geral.md`): uso de IA, formato do TCC, régua principal e nome do indicador de eficiência, regra dos saltos atípicos, indicadores formais, largura da faixa dos pares e avaliação com usuários.
 
 As limitações do trabalho estão consolidadas na seção 10 de `docs/decisoes_metodo.md`.
 
 ## Uso de IA
 
-Parte do código e da documentação foi desenvolvida com apoio de um assistente de IA (Claude, da Anthropic). Conforme o Manual de TCC, esse uso deve ser informado e discutido previamente com a orientadora e documentado na seção de Método. As decisões de método são dos autores e estão registradas em `docs/decisoes_metodo.md`.
+Parte do código, das análises e da documentação foi desenvolvida com apoio de um assistente de IA (Claude, da Anthropic). Conforme o Manual de TCC, esse uso deve ser informado e discutido previamente com a orientadora e documentado na seção de Método. O rascunho da declaração, por etapa do trabalho, está em [`docs/declaracao_uso_ia.md`](docs/declaracao_uso_ia.md) e aguarda a aprovação dela. As decisões de método são dos autores e estão registradas em `docs/decisoes_metodo.md`.
