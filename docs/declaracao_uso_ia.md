@@ -21,7 +21,7 @@
 | **Painel em Power BI** | Escreveu os geradores do modelo e das páginas, as medidas em DAX e os textos explicativos das páginas | Definiram o conteúdo, o público, o desenho e o que entra em cada página. Conferiram os valores no Power BI e pediram as correções |
 | **Registro e documentação** | Redigiu o registro de decisões, a nota de método, o resumo para as reuniões e o README, a partir das decisões tomadas | Revisaram e corrigiram os registros |
 | **Revisão bibliográfica** | Buscou referências do tema e conferiu os dados bibliográficos e os resumos (`docs/levantamento_bibliografico.md`); não leu os textos completos nem escreveu a revisão | Leem os trabalhos, decidem o que citar e escrevem a revisão |
-| **Texto do TCC** | [Ainda não usada. Definir com a orientadora se pode ser usada e em quê: revisão de linguagem, estrutura, conferência de coerência entre texto e resultados.] | Escrevem o texto |
+| **Texto do TCC** | Montou uma cópia do rascunho com texto técnico dos capítulos 4 e 5, tabelas, figuras e notas de divergência, tudo marcado como rascunho a reescrever (2026-11-12). Em 2026-11-13, escolheu três estudos de caso por regras objetivas e montou o material factual do estudo de casos e da validação por cenários, também como rascunho. Não escreveu revisão de literatura, discussão nem conclusões. [Definir com a orientadora se esse uso é aceito e o que mais pode ser feito. Definir com a orientadora se pode ser usada e em quê: revisão de linguagem, estrutura, conferência de coerência entre texto e resultados.] | Escrevem o texto |
 
 ## 3. O que a IA não fez
 

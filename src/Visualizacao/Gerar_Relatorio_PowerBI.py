@@ -893,7 +893,8 @@ def pagina_contexto() -> tuple[dict, list[dict]]:
     vis.append(container(f"{p}_nota", (16, 646, 1248, 40), texto([(
         "Clusters: k-médias com população, alfabetização, IDHM Renda e Longevidade da UF e infraestrutura das escolas, sem "
         "gasto nem nota. A separação entre os grupos é fraca (silhueta ≈ 0,23): são uma partição útil para formar pares, não "
-        "tipos naturais, e saem ligados à região porque o IDHM só existe por UF (gráfico de regiões).",
+        "tipos naturais, e saem ligados à região porque o IDHM só existe por UF (gráfico de regiões). O nome traz a região da "
+        "maioria dos municípios do grupo.",
         {"fontSize": "9pt", "color": COR_TEXTO_2})]), 29, estilo="nenhum"))
     vis.append(rodape_fontes(p, 30))
     return pagina("tcc_contexto", "Contexto e clusters"), vis

@@ -80,7 +80,7 @@
 | Faixa de gasto médio | Q4 | 4,01*** (0,73) | 3,40*** (0,66) | 1.072 |
 | Faixa de gasto médio | Q5 | 3,71*** (0,80) | 3,24*** (0,73) | 1.018 |
 
-*Coeficiente do log do gasto por aluno (erro-padrão agrupado entre parênteses). \*\*\* p < 0,01; \*\* p < 0,05; \* p < 0,10. Associação, não efeito causal.* *Especificação de referência com uma inclinação por grupo. A igualdade das inclinações é rejeitada nas quatro dimensões (p ≤ 0,02). Cluster: 1 Nordeste pequenos, 2 Nordeste médios, 3 Sudeste pequenos, 4 Centro-Oeste pequenos, 5 Nordeste e Norte grandes, 6 Sul e Sudeste pequenos, 7 Sudeste médios. Faixa de gasto: quintil do gasto médio de 2017–2025.*
+*Coeficiente do log do gasto por aluno (erro-padrão agrupado entre parênteses). \*\*\* p < 0,01; \*\* p < 0,05; \* p < 0,10. Associação, não efeito causal.* *Especificação de referência com uma inclinação por grupo. A igualdade das inclinações é rejeitada nas quatro dimensões (p ≤ 0,02). Clusters: 1 = Predomínio do Nordeste · pequenos · alfabetização mais baixa; 2 = Predomínio do Nordeste · médios · alfabetização mais baixa; 3 = Predomínio do Sudeste · pequenos · alfabetização intermediária; 4 = Predomínio do Centro-Oeste · pequenos · alfabetização intermediária; 5 = Predomínio do Nordeste e do Norte · grandes · alfabetização intermediária; 6 = Predomínio do Sul e do Sudeste · pequenos · alfabetização mais alta; 7 = Predomínio do Sudeste · médios · alfabetização mais alta. O k-médias não usa a região: ela só nomeia o grupo pela maioria dos municípios. Faixa de gasto: quintil do gasto médio de 2017–2025.*
 
 ### Tabela 6. Testes de sensibilidade (camada municipal, gasto do mesmo ano)
 

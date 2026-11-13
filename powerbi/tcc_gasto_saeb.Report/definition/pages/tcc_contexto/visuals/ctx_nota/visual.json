@@ -20,7 +20,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Clusters: k-médias com população, alfabetização, IDHM Renda e Longevidade da UF e infraestrutura das escolas, sem gasto nem nota. A separação entre os grupos é fraca (silhueta ≈ 0,23): são uma partição útil para formar pares, não tipos naturais, e saem ligados à região porque o IDHM só existe por UF (gráfico de regiões).",
+                    "value": "Clusters: k-médias com população, alfabetização, IDHM Renda e Longevidade da UF e infraestrutura das escolas, sem gasto nem nota. A separação entre os grupos é fraca (silhueta ≈ 0,23): são uma partição útil para formar pares, não tipos naturais, e saem ligados à região porque o IDHM só existe por UF (gráfico de regiões). O nome traz a região da maioria dos municípios do grupo.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

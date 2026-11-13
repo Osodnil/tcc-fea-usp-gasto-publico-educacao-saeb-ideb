@@ -48,7 +48,7 @@
 - **Resultado** (Tabela 5; Figura 3, AI Matemática): as inclinações não são iguais entre os grupos (p ≤ 0,02 nas quatro dimensões).
   - **Porte:** 2,4 a 3,0 nos municípios de até 50 mil habitantes; −0,5 (não significativo) de 50 a 100 mil; **−2,65** acima de 100 mil.
   - **Região:** Nordeste 4,3 e Norte 3,6; Sudeste 1,1 e Sul 0,9, não significativos.
-  - **Cluster:** maior nos clusters do Nordeste (4,3 e 5,0); negativo no 7, Sudeste médios (−3,2).
+  - **Cluster:** maior nos clusters de maioria nordestina (1 e 2: 4,3 e 5,0); negativo no 7, de maioria do Sudeste e municípios médios (−3,2). O nome de cada cluster traz a região da maioria dos municípios, e não de todos.
   - **Faixa de gasto médio:** maior entre os que gastam mais (Q4–Q5: cerca de 4); nulo entre os que gastam menos (Q1).
 - **Cuidados:**
   - as dimensões se sobrepõem: os municípios que mais gastam por aluno são, em geral, os menores (614 dos 1.063 do quintil mais alto têm até 5 mil habitantes);

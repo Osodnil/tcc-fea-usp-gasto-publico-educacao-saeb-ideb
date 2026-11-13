@@ -127,6 +127,12 @@ ORDEM_GRUPOS = {"Porte": ["Até 5 mil", "5 a 10 mil", "10 a 20 mil", "20 a 50 mi
                 "Faixa de gasto médio": ["Q1", "Q2", "Q3", "Q4", "Q5"]}
 
 
+def rotulos_cluster() -> dict[str, str]:
+    """Rótulo de cada cluster, lido da tabela do painel (Analise_Clusters.py gera; "Predomínio do …" desde 2026-11-12)."""
+    c = pl.read_parquet(M.PROCESSED_DIR / "powerbi" / "dim_cluster.parquet").sort("CLUSTER")
+    return {str(r["CLUSTER"]): r["CLUSTER_ROTULO"] for r in c.iter_rows(named=True)}
+
+
 def t5_heterogeneidade(het: pl.DataFrame) -> str:
     d = het.filter(pl.col("ETAPA") == "AI")
     linhas = []
@@ -141,9 +147,10 @@ def t5_heterogeneidade(het: pl.DataFrame) -> str:
     return ("### Tabela 5. Heterogeneidade da associação dentro do município (AI)\n\n"
             + tabela_md(["Dimensão", "Grupo", "Matemática", "Português", "Municípios"], linhas)
             + "\n\n" + NOTA_EST + " *Especificação de referência com uma inclinação por grupo. A igualdade das "
-              "inclinações é rejeitada nas quatro dimensões (p ≤ 0,02). Cluster: 1 Nordeste pequenos, 2 Nordeste "
-              "médios, 3 Sudeste pequenos, 4 Centro-Oeste pequenos, 5 Nordeste e Norte grandes, 6 Sul e Sudeste "
-              "pequenos, 7 Sudeste médios. Faixa de gasto: quintil do gasto médio de 2017–2025.*")
+              "inclinações é rejeitada nas quatro dimensões (p ≤ 0,02). Clusters: " + "; ".join(
+                f"{n} = {r}" for n, r in rotulos_cluster().items())
+            + ". O k-médias não usa a região: ela só nomeia o grupo pela maioria dos municípios. Faixa de gasto: "
+              "quintil do gasto médio de 2017–2025.*")
 
 
 def t6_sensibilidade(sens: pl.DataFrame) -> str:
@@ -262,8 +269,9 @@ def f2_defasagens(comp: pl.DataFrame) -> None:
 def f3_heterogeneidade(het: pl.DataFrame) -> None:
     d = het.filter((pl.col("ETAPA") == "AI") & (pl.col("DISCIPLINA") == "MT"))
     ordem = ORDEM_GRUPOS
-    nomes_cluster = {"1": "1 Nordeste peq.", "2": "2 Nordeste méd.", "3": "3 Sudeste peq.", "4": "4 Centro-Oeste peq.",
-                     "5": "5 NE e N grandes", "6": "6 Sul e SE peq.", "7": "7 Sudeste méd."}
+    # rótulo curto do eixo: número, região predominante e porte (o painel usa o mesmo, CLUSTER_CURTO)
+    curto = pl.read_parquet(M.PROCESSED_DIR / "powerbi" / "dim_municipio.parquet").select("CLUSTER", "CLUSTER_CURTO").unique()
+    nomes_cluster = {str(r["CLUSTER"]): r["CLUSTER_CURTO"] for r in curto.drop_nulls("CLUSTER").iter_rows(named=True)}
     fig, eixos = plt.subplots(2, 2, figsize=(9, 6.2), sharex=True)
     for ax, (dim, grupos) in zip(eixos.flat, ordem.items()):
         rs = [d.filter((pl.col("DIMENSAO") == dim) & (pl.col("GRUPO") == g)).row(0, named=True) for g in grupos]

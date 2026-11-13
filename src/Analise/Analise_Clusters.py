@@ -70,8 +70,14 @@ def rotular(resumo: pl.DataFrame, alfab_municipios: pl.Series) -> pl.DataFrame:
     def porte(p: float) -> str:
         return "pequenos" if p < 10_000 else "médios" if p < 50_000 else "grandes"
     t1, t2 = alfab_municipios.quantile(1 / 3), alfab_municipios.quantile(2 / 3)
-    # região: a predominante, ou as duas principais quando a primeira tem menos de 60% dos municípios
-    regiao = lambda r: r["REGIAO_PREDOMINANTE"] if r["PARCELA_REGIAO_PREDOMINANTE"] >= 0.6 else r["DUAS_REGIOES"]
+    # região: a predominante, ou as duas principais quando a primeira tem menos de 60% dos municípios.
+    # "Predomínio do/de": o k-médias não usa a região, que só nomeia o grupo depois; um cluster "do Nordeste" tem
+    # municípios de outras regiões (cluster 2: 78% do Nordeste). Pedido de Henrique, 2026-11-12.
+    def regiao(r: dict) -> str:
+        if r["PARCELA_REGIAO_PREDOMINANTE"] >= 0.6:
+            return f"Predomínio do {r['REGIAO_PREDOMINANTE']}"
+        a, b = r["DUAS_REGIOES"].split(" e ")
+        return f"Predomínio do {a} e do {b}"
     rot = [f"{regiao(r)} · {porte(r['POP_MEDIANA'])} · alfabetização "
            f"{'mais baixa' if r['ALFAB_MEDIA'] <= t1 else 'intermediária' if r['ALFAB_MEDIA'] <= t2 else 'mais alta'}"
            for r in resumo.iter_rows(named=True)]

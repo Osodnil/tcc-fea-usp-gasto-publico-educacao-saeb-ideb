@@ -112,6 +112,8 @@ As quatro primeiras perguntas vêm da reunião de 06/11 entre os autores; as res
 
 - **Formato do TCC [D1]:** pelo Manual de 2025, o enquadramento mais natural é **método científico (estudo quantitativo)**: a pergunta é de descoberta, e não há uma organização-cliente para um plano de consultoria. Confirmar. Muda a estrutura do texto, não o dashboard.
 - **Avaliação com usuários:** o Manual prevê TCLE (e possivelmente comitê de ética) para pesquisa com pessoas. Como fazer a avaliação com gestores?
+  - **O que já existe (2026-11-13, A17):** sem usuários, a seção de validação do capítulo 5 percorre as três perguntas do painel com três estudos de caso escolhidos por regra (Timon-MA, São Paulo-SP e Coruripe-AL) e reúne a conferência técnica dos números. **Pergunta:** isso basta como "validação conceitual", ou a seção deve mudar de nome?
+  - **Achado dos casos:** das 53 redes no 1% superior de 2023, 13 são de Alagoas e 16 têm salto atípico, o que reforça a pergunta sobre os saltos (S11).
 - **Indicadores formais [D2]:** 12 indicadores propostos, com nome, fórmula, unidade e interpretação (seção 4 da especificação do dashboard), incluindo faixas de eficiência por quintil (de "bem abaixo" a "bem acima do esperado"). Confirmar.
 - **Testes de sensibilidade [A4]:**
   - sem 2021;

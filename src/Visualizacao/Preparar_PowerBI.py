@@ -52,10 +52,13 @@ def dimensoes(uf: pl.DataFrame) -> dict[str, pl.DataFrame]:
         .with_columns(
             (pl.col("NO_MUNICIPIO") + " (" + pl.col("SG_UF") + ")").alias("MUNICIPIO_UF"),
             pl.col("CLUSTER_ROTULO").fill_null("Sem cluster"),
-            # rótulo curto para legendas (o completo era cortado nas dispersões, 2026-11-09): número, região e porte
+            # rótulo curto para legendas (o completo era cortado nas dispersões, 2026-11-09): número, região e porte.
+            # "Predomínio do Nordeste" vira "maioria Nordeste" (2026-11-12): com o nome completo, a legenda da página
+            # Eficiência e o eixo do gráfico de regiões cortavam os grupos 4, 5 e 6.
             pl.when(pl.col("CLUSTER").is_null()).then(pl.lit("Sem cluster"))
             .otherwise(pl.col("CLUSTER").cast(pl.Utf8) + " · "
-                       + pl.col("CLUSTER_ROTULO").str.split(" · ").list.slice(0, 2).list.join(" · "))
+                       + pl.col("CLUSTER_ROTULO").str.split(" · ").list.slice(0, 2).list.join(" · ")
+                       .str.replace("Predomínio do ", "maioria ").str.replace(" e do ", " e "))
             .alias("CLUSTER_CURTO"),
         )
         .select("CO_MUNICIPIO", "NO_MUNICIPIO", "MUNICIPIO_UF", "SG_UF", "NM_UF", "NM_REGIAO", "POPULACAO_TOTAL_CENSO",
