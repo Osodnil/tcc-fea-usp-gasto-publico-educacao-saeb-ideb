@@ -13,8 +13,8 @@ mesmo ano), AI e AF, MT e LP. Cada teste muda uma coisa:
   UF × edição absorve o IDHM): Renda e Longevidade (a escolha) × IDHM total × sem IDHM.
 
 Camada estadual: referência de A12 (efeito fixo de UF, 2017-2023, versão A do gasto): com 2025 (M3) e versão B do
-gasto (G4). O gasto estadual pela soma das subfunções da educação básica (G4b) não entra: pede as subfunções brutas
-do SICONFI, que não estão nos dados processados.
+gasto (G4) e gasto pela soma das subfunções da educação básica (G4b: 122, 361, 362, 365, 366, 367 e 368, lidas do
+SICONFI intermediário), que tira da função 12 o que o Anexo I-E não detalha em subfunção.
 
 Associação, não causalidade (A1). Saída: data/interim/diagnosticos/sensibilidade_modelo.csv.
 """
@@ -79,14 +79,35 @@ def testes_municipais(p: pl.DataFrame, etapa: str, disc: str, nota: str) -> list
             for nome, dd, op in casos]
 
 
+SUBF_BASICA = ["122", "361", "362", "365", "366", "367", "368"]  # G4b: sem 363 (profissional) e 364 (superior)
+
+
+def razao_subfuncoes() -> pl.DataFrame:
+    """Razão, por UF e ano, entre a soma das subfunções da educação básica e a versão A (função 12 − 12.364, com a
+    12.364 ausente = zero), ambas pagas e nominais. Multiplicada pelo gasto por aluno da versão A, dá o gasto por aluno
+    pela soma das subfunções com o mesmo denominador (matrículas da educação básica estadual) e o mesmo deflator."""
+    d = pl.read_parquet(M.BASE_DIR / "data" / "interim" / "siconfi_estados_funcao12.parquet").filter(
+        pl.col("COLUNA") == "Despesas Pagas")
+    return (d.group_by("UF", "ANO")
+            .agg(pl.col("VALOR").filter(pl.col("SUBF").is_null()).first().alias("F12"),
+                 pl.col("VALOR").filter(pl.col("SUBF") == "364").sum().alias("S364"),
+                 pl.col("VALOR").filter(pl.col("SUBF").is_in(SUBF_BASICA)).sum().alias("SOMA"))
+            .select(pl.col("UF").alias("SG_UF"), pl.col("ANO").cast(pl.Int32),
+                    (pl.col("SOMA") / (pl.col("F12") - pl.col("S364"))).alias("RAZAO_SUBF")))
+
+
 def testes_estaduais(etapa: str, disc: str, nota: str) -> list[dict]:
     d = E.base().filter(pl.col("ETAPA") == etapa)
     versao_b = d.with_columns(
         pl.when(pl.col("GASTO_ALUNO_B_R2025_L0") > 0).then(pl.col("GASTO_ALUNO_B_R2025_L0").log()).alias("LOG_GASTO_L0"))
+    subf = (d.with_columns(pl.col("ANO").cast(pl.Int32)).join(razao_subfuncoes(), on=["SG_UF", "ANO"], how="left")
+            .with_columns((pl.col("GASTO_ALUNO_A_R2025_L0") * pl.col("RAZAO_SUBF")).alias("G"))
+            .with_columns(pl.when(pl.col("G") > 0).then(pl.col("G").log()).alias("LOG_GASTO_L0")))
     ref = E.ESPECIFICACOES[E.REFERENCIA]
     casos = [("Referência (EF de UF, 2017–2023, versão A)", d, ref),
              ("Com 2025, sem IDHM", d, E.ESPECIFICACOES["EF de UF, com 2025"]),
-             ("Versão B do gasto", versao_b, ref)]
+             ("Versão B do gasto", versao_b, ref),
+             ("Soma das subfunções da educação básica", subf, ref)]
     return [{"CAMADA": "Estadual", "ETAPA": etapa, "DISCIPLINA": disc, "TESTE": nome, **gasto(E.estimar(dd, nota, 0, op))}
             for nome, dd, op in casos]
 

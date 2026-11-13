@@ -108,5 +108,6 @@
 | EF de UF, 2017–2023 (referência) | 1,51 (3,67)<br>IC: −6,0 a 9,1 | 1,06 (3,61)<br>IC: −6,4 a 8,5 | 5,25 (3,82)<br>IC: −2,6 a 13,1 | 2,47 (3,71)<br>IC: −5,2 a 10,1 |
 | EF de UF, 2017–2025, sem IDHM | 0,38 (4,44)<br>IC: −8,8 a 9,5 | 0,28 (3,73)<br>IC: −7,4 a 7,9 | 6,35 (4,77)<br>IC: −3,5 a 16,2 | 3,63 (4,01)<br>IC: −4,6 a 11,9 |
 | Versão B do gasto (referência) | 0,86 (3,51) | 0,73 (3,52) | 5,22 (3,95) | 2,66 (3,89) |
+| Soma das subfunções da educação básica (referência) | 1,78 (4,23) | −0,32 (4,21) | 5,74 (4,10) | 1,09 (4,05) |
 
-*Coeficiente do log do gasto por aluno (erro-padrão agrupado entre parênteses). \*\*\* p < 0,01; \*\* p < 0,05; \* p < 0,10. Associação, não efeito causal.* *27 UFs (23 na versão B). Erros agrupados por UF; valores-p e intervalos de 95% pela t com 26 graus de liberdade.*
+*Coeficiente do log do gasto por aluno (erro-padrão agrupado entre parênteses). \*\*\* p < 0,01; \*\* p < 0,05; \* p < 0,10. Associação, não efeito causal.* *27 UFs (23 na versão B). Soma das subfunções: 122, 361, 362, 365, 366, 367 e 368, sem o que a função 12 não detalha em subfunção. Erros agrupados por UF; valores-p e intervalos de 95% pela t com 26 graus de liberdade.*

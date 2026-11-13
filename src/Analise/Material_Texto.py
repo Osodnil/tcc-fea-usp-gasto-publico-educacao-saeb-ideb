@@ -183,15 +183,19 @@ def t7_estadual(est: pl.DataFrame, sens: pl.DataFrame) -> str:
                 r = g.filter((pl.col("ESPECIFICACAO") == e) & (pl.col("ETAPA") == etapa) & (pl.col("DISCIPLINA") == disc)).row(0, named=True)
                 cel.append(f"{coef_ep(r['COEF'], r['EP'], r['P'])}<br>IC: {br(r['IC95_INF'], 1)} a {br(r['IC95_SUP'], 1)}")
         linhas.append(cel)
-    cel = ["Versão B do gasto (referência)"]
-    for etapa in ["AF", "EM"]:
-        for disc in ["MT", "LP"]:
-            r = vb.filter((pl.col("ETAPA") == etapa) & (pl.col("DISCIPLINA") == disc)).row(0, named=True)
-            cel.append(coef_ep(r["COEF"], r["EP"], r["P"]))
-    linhas.append(cel)
+    for teste, rot in [("Versão B do gasto", "Versão B do gasto (referência)"),
+                       ("Soma das subfunções da educação básica", "Soma das subfunções da educação básica (referência)")]:
+        vb = sens.filter((pl.col("CAMADA") == "Estadual") & (pl.col("TESTE") == teste))
+        cel = [rot]
+        for etapa in ["AF", "EM"]:
+            for disc in ["MT", "LP"]:
+                r = vb.filter((pl.col("ETAPA") == etapa) & (pl.col("DISCIPLINA") == disc)).row(0, named=True)
+                cel.append(coef_ep(r["COEF"], r["EP"], r["P"]))
+        linhas.append(cel)
     return ("### Tabela 7. Camada estadual: gasto estadual por aluno e proficiência das redes estaduais\n\n"
             + tabela_md(["Especificação", "AF Matemática", "AF Português", "EM Matemática", "EM Português"], linhas)
-            + "\n\n" + NOTA_EST + " *27 UFs (23 na versão B). Erros agrupados por UF; valores-p e intervalos de 95% "
+            + "\n\n" + NOTA_EST + " *27 UFs (23 na versão B). Soma das subfunções: 122, 361, 362, 365, 366, 367 e 368, "
+              "sem o que a função 12 não detalha em subfunção. Erros agrupados por UF; valores-p e intervalos de 95% "
               "pela t com 26 graus de liberdade.*")
 
 

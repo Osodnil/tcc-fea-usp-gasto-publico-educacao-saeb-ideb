@@ -120,6 +120,7 @@ As quatro primeiras perguntas vêm da reunião de 06/11 entre os autores; as res
   - sem 2025 na camada estadual;
   - IDHM Renda × IDHM total;
   - versão B do gasto estadual;
+  - gasto estadual pela soma das subfunções da educação básica (feito em 2026-11-13);
   - painel balanceado;
   - gasto médio do biênio.
 

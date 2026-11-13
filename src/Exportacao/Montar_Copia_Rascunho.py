@@ -183,6 +183,14 @@ for e, rot in [("MQO agrupado", "MQO agrupado, 2017–2023"), ("EF de UF", "EF d
             r = linha(ge, ESPECIFICACAO=e, ETAPA=et, DISCIPLINA=di)
             cel.append(f"{ce(r['COEF'], r['EP'], r['P'])}\nIC 95%: {br(r['IC95_INF'], 1)} a {br(r['IC95_SUP'], 1)}")
     t_est.append(cel)
+for t, rot in [("Versão B do gasto", "Versão B do gasto (EF de UF, 2017–2023)"),
+               ("Soma das subfunções da educação básica", "Soma das subfunções da educação básica (EF de UF, 2017–2023)")]:
+    cel = [rot]
+    for et in ["AF", "EM"]:
+        for di in ["MT", "LP"]:
+            r = linha(sens, CAMADA="Estadual", TESTE=t, ETAPA=et, DISCIPLINA=di)
+            cel.append(f"{ce(r['COEF'], r['EP'], r['P'])}\nIC 95%: {br(r['IC95_INF'], 1)} a {br(r['IC95_SUP'], 1)}")
+    t_est.append(cel)
 
 t_clu = [[f"{r['CLUSTER']} · {r['CLUSTER_ROTULO']}", br(r["MUNICIPIOS"], 0), br(r["POP_MEDIANA"], 0),
           br(100 * r["ALFAB_MEDIA"], 1) + "%", br(r["IDHM_RENDA_MEDIO"], 3), br(r["INFRA_MEDIA"], 2),
@@ -416,13 +424,13 @@ CAP5_MODELOS = [
           "elaborado pelos autores."),
     titulo(3, "Camada estadual"),
     corpo("Na camada estadual, o mesmo modelo foi estimado com a UF no lugar do município (Tabela 7). Nenhum coeficiente se "
-          "distingue de zero, nos Anos Finais e no Ensino Médio, em nenhuma especificação nem com a versão B do gasto. Com 27 "
+          "distingue de zero, nos Anos Finais e no Ensino Médio, em nenhuma especificação, nem com a versão B do gasto, nem com o gasto medido pela soma das subfunções da educação básica, que deixa de fora o que a função 12 não detalha em subfunção. Com 27 "
           "unidades, a estimativa é imprecisa: os intervalos de 95% vão de cerca de −6 a +9 pontos por log do gasto e "
           "incluem tanto zero quanto valores maiores que o da camada municipal. A leitura correta é que a associação não é "
           "detectável com 27 unidades, e não que ela não exista."),
     legenda("Tabela 7 – Camada estadual: gasto estadual por aluno e proficiência das redes estaduais"),
     tabela(["Especificação", "AF Matemática", "AF Português", "EM Matemática", "EM Português"], t_est, [2475, 1650, 1650, 1650, 1650]),
-    fonte(NOTA_COEF + " 27 UFs. Erros agrupados por UF; valores-p e intervalos pela distribuição t com 26 graus de "
+    fonte(NOTA_COEF + " 27 UFs (23 na versão B, que deixa de fora as UFs e anos sem a linha do Ensino Superior). Soma das subfunções: 122, 361, 362, 365, 366, 367 e 368. Erros agrupados por UF; valores-p e intervalos pela distribuição t com 26 graus de "
           "liberdade."),
 ]
 

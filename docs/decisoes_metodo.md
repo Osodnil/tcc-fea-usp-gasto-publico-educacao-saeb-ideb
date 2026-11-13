@@ -115,11 +115,16 @@ A validação de 2026-10-21 concluiu que os Extracts estão completos para a per
 - **Como as versões diferem na prática (conferido em 2026-11-09):** onde a linha 12.364 existe, A e B são iguais. A versão B só deixa vazios os pares UF/ano sem a linha (em 2023, AC, RO, RS e SE). Logo, a sensibilidade à versão B é uma sensibilidade à **amostra**, e não ao valor do gasto de cada UF.
 - **Limitação que permanece (L2):** no RS de 2018 a 2023, se o Ensino Superior estiver lançado em outra subfunção, o gasto da educação básica fica superestimado nesses anos. A conferência no DCA do RS continua recomendada, mas não bloqueia nada.
 
-### G4b. Total da função 12 maior que a soma das subfunções listadas ⚠️ (achado de 2026-10-22)
+### G4b. Total da função 12 maior que a soma das subfunções listadas ⚠️ limitação · ✅ testado (achado de 2026-10-22; teste em 2026-11-13)
 - **Evidência:** no SICONFI, a soma das subfunções publicadas (12.122, 12.361, …, 12.999) fica abaixo do total "12 - Educação" em vários pares UF/ano. A razão vai de 0,61 a 1,00, com mediana de 0,994; no AC, por exemplo, fica entre 0,67 e 0,75†.
 - **Leitura provável:** a função 12 inclui despesas em subfunções de outras funções, como previdência de inativos, que o Anexo I-E não detalha dentro da função 12. Isso não foi verificado.
 - **Efeito:** o gasto estadual usado (total da função 12 menos 12.364) pode incluir gastos que não chegam à sala de aula, com peso diferente entre os estados.
 - **Encaminhamento:** registrar como limitação. Se houver tempo, testar a variante "soma das subfunções da educação básica" (361 + 362 + 365 + 366 + 367 + 368 + 122) como sensibilidade.
+- **Teste feito (Henrique, 2026-11-13):** as subfunções já estavam em `data/interim/siconfi_estados_funcao12.parquet`; não foi preciso voltar aos brutos.
+  - **Como:** `Sensibilidade_Modelo.py` multiplica o gasto por aluno da versão A pela razão, por UF e ano, entre a soma das subfunções (122, 361, 362, 365, 366, 367 e 368, pagas) e a versão A. O denominador (matrículas da educação básica estadual) e o deflator ficam os mesmos.
+  - **Quanto muda o gasto (2017–2025):** a soma fica em 96% da versão A na mediana. SP fica entre 60% e 66% em todos os anos; AC, entre 70% e 75%. GO e AL oscilam de cerca de 60% a quase 100% conforme o ano. Como o efeito fixo de UF compara cada UF com ela mesma, é essa oscilação que poderia mudar o resultado.
+  - **Resultado (EF de UF, 2017–2023):** AF MT 1,78 (EP 4,23; p = 0,68), AF LP −0,32 (p = 0,94), EM MT 5,74 (p = 0,17), EM LP 1,09 (p = 0,79). Nenhum se distingue de zero, como nas versões A e B. A conclusão da camada estadual (não detectável com 27 UFs) se mantém.
+  - **Fora do teste:** a 363 (Ensino Profissional), por não ser etapa avaliada pelo Saeb; e o que a função 12 tem fora das subfunções, que segue sem verificação (provavelmente inativos).
 
 ### G5. Subfunção 361 do SIOPE: rótulos que começam com "361" ✅ (revisada em 2026-10-26)
 - **Problema:** o rótulo muda ao longo do tempo†. Até 2023 ele é "361 - Ensino Fundamental"; em 2024 e 2025, só "361". Também há linhas "TOTAL …" (de 2017 a 2023), que somariam o mesmo gasto duas vezes, e rótulos fora do padrão. São 117 rótulos distintos de subfunção, segundo o dossiê; um exemplo é "SubFunção 361 - Fonte 01 - Aplic. 110", com uma linha em Louveira-SP 2017 e R$ 146 mil.
@@ -325,7 +330,7 @@ Falar sempre em associação e eficiência relativa.
 ### A3. Ausência nunca é zero ✅
 `-` e `ND` nas planilhas viram nulo, nunca 0. As exceções precisam ser justificadas caso a caso (ver G4).
 
-### A4. Testes de sensibilidade ✅ (rodados em 2026-11-11; G4b não feito)
+### A4. Testes de sensibilidade ✅ (rodados em 2026-11-11; G4b em 2026-11-13)
 1. Sem 2021 (S5).
 2. Sem 2025 na camada estadual (M3).
 3. IDHM Renda no lugar do IDHM total, e vice-versa (C1b).
@@ -355,7 +360,7 @@ Falar sempre em associação e eficiência relativa.
   - **Gasto médio do biênio:** o coeficiente sobe cerca de 60% em relação à referência na mesma janela (AI MT: 3,74 contra 2,33). Isso combina com o achado de A11 de que contam o gasto do ano da prova e o do anterior: a média dos dois mede melhor o gasto do ciclo (e tem menos ruído de um ano isolado).
   - **IDHM total:** reduz o coeficiente (AI MT: 1,85 contra 2,47), como esperado de um controle que contém a dimensão Educação (C1b); a escolha de Renda e Longevidade fica mantida.
   - **Camada estadual:** com 2025 (sem IDHM) e com a versão B do gasto, nenhum coeficiente se distingue de zero (p ≥ 0,18), como na referência (A12).
-  - **Não feito:** o gasto estadual pela soma das subfunções da educação básica (G4b), que pede as subfunções brutas do SICONFI, fora dos dados processados. A extensão das matrículas para 2015–2016 (P3) segue opcional.
+  - **Feito em 2026-11-13:** o gasto estadual pela soma das subfunções da educação básica (G4b); também não se distingue de zero. Antes estava como "não feito" por pedir as subfunções brutas do SICONFI, mas elas já estavam no arquivo intermediário. A extensão das matrículas para 2015–2016 (P3) segue opcional.
 
 ### A6. Análise de clusters ✅ desenvolver · 🟡 desenho técnico (2026-10-30)
 - **Decisão da orientadora:** incluir uma análise de clusters.
@@ -1141,7 +1146,7 @@ Pontos levantados sobre o painel, com diagnóstico nos dados em 2026-11-09 e pla
 ### Pendências restantes (nenhuma bloqueia o desenvolvimento)
 0. **S11 (2026-10-30):** confirmar a regra proposta para marcar os saltos atípicos (mais de 3 desvios-padrão da variação média; 633 linhas marcadas, nenhuma excluída). (A8 foi decidido: versão nacional.)
 1. **S8 e S4:** as propostas (não imputar notas, controlar o porte, painel balanceado; Anos Finais como complementar) seguem como padrão de trabalho, sem objeção registrada.
-2. **A4 e P3:** testes de sensibilidade rodados em 2026-11-11 (falta só o G4b, que pede dados brutos); a extensão das matrículas para 2015–2016 é opcional.
+2. **A4 e P3:** testes de sensibilidade rodados em 2026-11-11, e o G4b em 2026-11-13; a extensão das matrículas para 2015–2016 é opcional.
 3. **D1:** formato do TCC (científico ou consultoria). Afeta o texto, não o dashboard.
 4. **D2:** indicadores formais. Proposta escrita em 2026-10-30 (12 indicadores, seção 4 de `powerbi/especificacao_dashboard.md`), com as faixas de eficiência por quintil; falta confirmar.
 5. **D4:** referências e APA; **D5/IA:** forma de documentar o uso de IA no Método. Rascunho da declaração por etapa do trabalho em `docs/declaracao_uso_ia.md` (2026-11-10), para aprovar com a orientadora.
@@ -1188,7 +1193,7 @@ O dossiê das conversas anteriores (arquivos 01 a 05, guardados em `docs/histori
 Lista consolidada, conforme o pedido da orientadora de manter anotada toda limitação. Cada item remete à decisão que o originou.
 
 - **L1. Fonte do gasto [G1–G3]:** o nível do gasto depende da fonte. O SIOPE e o SICONFI divergem para o mesmo ente, sobretudo nas capitais. Cada camada usa uma única fonte.
-- **L2. Composição do gasto estadual [G4, G4b]:** a linha do Ensino Superior falta para alguns estados e anos e, nesses casos, nada é descontado (versão A). Se no RS (2018–2023) o Ensino Superior estiver em outra subfunção, o gasto da educação básica fica superestimado. Além disso, o total da função 12 inclui despesas fora das subfunções detalhadas (provavelmente inativos).
+- **L2. Composição do gasto estadual [G4, G4b]:** a linha do Ensino Superior falta para alguns estados e anos e, nesses casos, nada é descontado (versão A). Se no RS (2018–2023) o Ensino Superior estiver em outra subfunção, o gasto da educação básica fica superestimado. Além disso, o total da função 12 inclui despesas fora das subfunções detalhadas (provavelmente inativos); com o gasto pela soma das subfunções, o resultado estadual não muda (G4b).
 - **L3. Seleção da amostra [S4, S8]:** só entram as redes com nota divulgada pelo Inep. As redes pequenas, que gastam mais por aluno, ficam sub-representadas, sobretudo em Anos Finais e em 2021.
 - **L4. IDHM [C1, C1b]:** o IDHM só existe por UF, não por município, e a série termina em 2024. Por isso, a edição de 2025 não tem esse controle. Para evitar circularidade com o desempenho, a análise usa só as dimensões Renda e Longevidade, e deixa de fora a Educação e o índice total.
 - **L15. Medida de desempenho [S9, S10]:** a análise usa a proficiência média da rede (Matemática e Português, em pontos), e não o desempenho de cada aluno. A nota padronizada N, usada só como medida secundária, satura nos limites fixados em 1997 e não é comparável entre etapas.

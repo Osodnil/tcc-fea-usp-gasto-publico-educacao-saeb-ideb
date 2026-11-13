@@ -39,7 +39,7 @@
 
 ## 4. E nas redes estaduais? (pergunta 4)
 
-- **Resultado** (Tabela 7): com efeito fixo de UF, nenhum coeficiente se distingue de zero, em AF e EM, em nenhuma especificação nem com a versão B do gasto.
+- **Resultado** (Tabela 7): com efeito fixo de UF, nenhum coeficiente se distingue de zero, em AF e EM, em nenhuma especificação, nem com a versão B do gasto, nem com o gasto pela soma das subfunções da educação básica (G4b).
 - **Leitura correta:** "não detectável", e não "ausência de associação". Com 27 UFs, os intervalos de 95% vão de cerca de −6 a +9 pontos e incluem tanto zero quanto valores maiores que o municipal.
 - **Para o texto:** a camada estadual fica descritiva, como no painel; o número de unidades é uma limitação (L8).
 
@@ -60,7 +60,7 @@
 - **Testes** (Tabela 6; Figura 4): sem 2021 (pandemia), painel balanceado, sem redes parciais (abaixo de 50% e de 80%), sem saltos atípicos, gasto médio do biênio e variantes do IDHM.
 - **Resultado:** todos os coeficientes municipais ficam positivos e significativos, entre 1,4 e 5,5 pontos por log do gasto.
 - **IDHM total no lugar de Renda e Longevidade:** reduz o coeficiente, como se espera de um controle que contém a dimensão Educação. Isso sustenta a decisão C1b.
-- **Não feito:** o gasto estadual pela soma das subfunções (G4b), que pede dados brutos do SICONFI.
+- **Camada estadual:** o gasto pela soma das subfunções da educação básica (G4b), feito em 2026-11-13, também não se distingue de zero (p de 0,17 a 0,94).
 
 ## O que não dizer
 
