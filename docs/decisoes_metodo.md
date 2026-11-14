@@ -478,7 +478,8 @@ Falar sempre em associação e eficiência relativa.
   | EF de município, 2017–2023 | 2,47 (0,50), p < 0,001 | +0,24 ponto (0,01 DP) | 20.256 |
   | EF de município, 2017–2025 | 5,06 (0,47), p < 0,001 | +0,48 ponto (0,02 DP) | 25.591 |
 
-  - **Leitura:** com os controles de contexto, as diferenças de gasto **entre** municípios quase não se associam à nota. **Dentro** do mesmo município, a associação é positiva e estatisticamente clara, mas pequena: dobrar o gasto por aluno se associa a cerca de 1,7 ponto a mais (2017–2023), quando um ano de escola vale cerca de 25 pontos na escala do Saeb. Português e Anos Finais seguem o mesmo padrão (EF, mesmo ano: AI LP 2,23; AF MT 2,23; AF LP 1,65).
+  - **Leitura:** com os controles de contexto, as diferenças de gasto **entre** municípios quase não se associam à nota. **Dentro** do mesmo município, a associação é positiva e estatisticamente clara, mas pequena: dobrar o gasto por aluno se associa a cerca de 1,7 ponto a mais (2017–2023), menos de 7% do desvio-padrão da proficiência entre as redes (24,2 pontos em AI Matemática).
+  - **Correção (2026-11-13):** esta linha dizia "quando um ano de escola vale cerca de 25 pontos na escala do Saeb". Na busca da fonte para o texto, não se achou equivalência oficial entre pontos e anos de escola: a escala vai de 0 a 500, com faixas de interpretação de 25 pontos, e o desvio-padrão entre as redes é de 24,2 pontos; o "25" deve ter vindo de um desses números. Os dados do próprio painel indicam bem menos por ano: em 2023, a média das redes municipais em Matemática vai de 220,2 (5º ano) a 249,3 (9º ano), 29 pontos em quatro anos, ainda que com redes diferentes nas duas etapas. A comparação passou a ser com o desvio-padrão, calculado nos dados. Português e Anos Finais seguem o mesmo padrão (EF, mesmo ano: AI LP 2,23; AF MT 2,23; AF LP 1,65).
   - **Por que 2025 dobra o coeficiente:** tirar o IDHM muda pouco (2,48 → 2,81, mesma amostra); somar 2025 leva a 5,05. Investigado em 2026-11-10 (`src/Analise/Investigar_2025.py`; saídas `investigar_2025_testes.csv` e `investigar_2025_descricao.csv`)†:
     - **Primeiras diferenças por biênio (AI MT):** 1,63 (2017→19), 4,28 (2019→21), 0,87 (2021→23, não significativo) e 3,99 (2023→25). O biênio de 2023→25 não é o único alto: o da pandemia também é. A inclinação varia muito entre biênios.
     - **O que explica 2023→25: mudanças comuns ao estado.** Com efeito de UF, o coeficiente cai pela metade (3,99 → 1,96). Os municípios do Nordeste e do Norte tiveram ao mesmo tempo o gasto que mais subiu (em média, cerca de +26% e +21%, contra +8% no Sudeste; em log, 0,23, 0,19 e 0,07; corrigido em 2026-11-12, quando os valores em log tinham sido escritos como percentuais) e as notas que mais subiram (+12,1 e +13,6 pontos, contra +7,4).
@@ -587,6 +588,18 @@ Falar sempre em associação e eficiência relativa.
 - **Validação:** não houve teste com usuários (limitação). A seção traz (i) cenários de uso: as três perguntas da Boas-vindas percorridas com os casos (Quadro 6), e (ii) a conferência técnica já registrada (números do painel contra o Python, com os dois erros achados e corrigidos; esquemas do PBIR; inflação; reprodutibilidade; sensibilidade).
 - **Na cópia do rascunho:** as notas "em pausa" viraram notas com a divisão de trabalho; entraram as Tabelas 8 e 9, o Quadro 6 e uma nota no aviso do capítulo 6. Tudo marcado como rascunho técnico.
 - **Telas dos casos (2026-11-13):** capturadas no Power BI (Ficha de Timon, São Paulo e Coruripe; Pares de Timon comparado com Pacajus), Figuras 16 a 19 da cópia, em `docs/resultados/telas/caso_*.png`. Os números batem com o Python; o texto passou a arredondar meio para cima, como o painel (Coruripe: 336,5, e não 336,4). Para as capturas, as segmentações de município foram pré-selecionadas por um gerador temporário, e as páginas foram restauradas depois (sem mudança no projeto). **Pendente:** a interpretação gerencial fica com o Guilherme, e o nome "validação conceitual" depende da orientadora.
+
+### A18. Partes do Henrique no rascunho: o que faltava e não dependia da orientadora ✅ base factual (Henrique, 2026-11-13)
+- **Pedido:** preparar o material de tudo o que faltava nas partes do Henrique (capítulo 4, método e gráficos dos clusters, item de perspectivas futuras) e não dependia de decisão da orientadora.
+- **O que entrou na cópia (`Montar_Copia_Rascunho.py`):**
+  - **abertura do capítulo 4**, no lugar da nota "capítulo reservado"; os marcadores "[A ser detalhado por Henrique]" foram trocados pelo conteúdo das seções 4.1 a 4.3;
+  - **5.1 clusters:** por que as cinco variáveis (contexto, sem gasto nem nota; população em log; IDHM sem Educação; padronização), o método (k-médias, 50 inícios, semente fixa) e a escolha de k = 7, com duas figuras novas geradas por `Material_Texto.py`: silhueta e inércia por k (`fig5_escolha_k.png`) e perfil dos grupos em desvios-padrão com a composição por região (`fig6_perfil_clusters.png`);
+  - **citações:** fonte do Quadro 3 com as bases oficiais e MacQueen (1967) e Rousseeuw (1987) no método; lista das referências em APA na seção Referências, marcada para conferir (datas, acesso e autoria do Radar IDHM);
+  - **perspectivas futuras:** base factual das funcionalidades deixadas de fora, com o motivo de cada uma, e das melhorias de automação;
+  - **Apêndice A, "Dicionário de dados do painel":** tabelas do modelo (Quadro A.1) e principais indicadores (Quadro A.2);
+  - **forma:** títulos novos com a numeração automática do rascunho (5.2 Associação; 5.3 Estudo de casos; 5.4 Validação), Quadro 5 sem palavras quebradas e figuras numeradas de 1 a 21.
+- **Erro corrigido no caminho:** a frase "um ano de escola vale cerca de 25 pontos no Saeb" não tem fonte (ver a correção em A11). Foi trocada pela comparação com o desvio-padrão entre as redes, calculado nos dados.
+- **Continua pendente:** a reescrita do texto pelos autores (o uso de IA foi permitido, mas o texto final é deles) e os itens que dependem da orientadora (D1, D2, S11, P7, VAAR e simulação, publicação do painel e QR Code).
 
 ### S11. Saltos atípicos de proficiência ⚠️ (achado de 2026-10-30)
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
@@ -1185,6 +1198,10 @@ O dossiê das conversas anteriores (arquivos 01 a 05, guardados em `docs/histori
   - o que a IA não fez: não definiu sozinha a pergunta de pesquisa nem as decisões de escopo, e os resultados foram conferidos pelos autores com as saídas reais dos scripts;
   - onde o uso aparece no TCC (Método ou nota metodológica), conforme a orientadora aprovar;
   - qualquer redação de trechos do TCC com apoio de IA precisa ser alinhada antes com a orientadora.
+- **Decisão da orientadora (informada por Henrique em 2026-11-13) ✅:** o uso de IA é **permitido e incentivado**, desde que os autores conheçam todas as etapas do desenvolvimento e todas as informações necessárias para a apresentação final.
+  - **Consequência prática:** o material produzido com IA (código, análises, rascunhos técnicos do texto) pode ser usado, e a responsabilidade dos autores passa a ser dominar cada etapa: saber explicar de onde vem cada número, cada decisão e cada limitação.
+  - **Continua valendo:** declarar o uso no TCC (`docs/declaracao_uso_ia.md`); decisões de método são dos autores ou da orientadora; o texto final é revisado e assumido pelos autores.
+  - **Em aberto:** onde a declaração fica no TCC (Método, nota metodológica ou apêndice) e se é preciso anexar exemplos de interações.
 
 ---
 

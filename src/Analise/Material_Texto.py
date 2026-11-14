@@ -5,7 +5,8 @@ Heterogeneidade.py, Sensibilidade_Modelo.py) e o painel municipal, e grava em do
 - tabelas.md: sete tabelas em Markdown (amostra, ρ de Spearman, modelo principal, defasagens, heterogeneidade,
   sensibilidade, camada estadual), com números no formato brasileiro;
 - figuras/fig1_entre_dentro.png, fig2_defasagens.png, fig3_heterogeneidade.png, fig4_sensibilidade.png:
-  coeficientes do log do gasto com intervalo de 95%.
+  coeficientes do log do gasto com intervalo de 95%;
+- figuras/fig5_escolha_k.png e fig6_perfil_clusters.png: escolha do número de clusters e perfil de cada um (A6).
 
 Leitura sempre de associação, não de efeito causal (A1). Paleta: dois primeiros tons da paleta de referência do
 painel (azul e laranja), texto em tinta neutra, linha do zero em cinza.
@@ -300,6 +301,82 @@ def f4_sensibilidade(sens: pl.DataFrame) -> None:
     salvar(fig, "fig4_sensibilidade.png", ROTULO_X + "; AI, Matemática (tracejado: referência)")
 
 
+def f5_escolha_k() -> None:
+    """Escolha do número de clusters: silhueta e inércia por k (diagnóstico de Analise_Clusters.py)."""
+    d = pl.read_csv(DIAG / "clusters_escolha_k.csv").sort("K")
+    k, sil, ine = d["K"].to_numpy(), d["SILHUETA"].to_numpy(), d["INERCIA"].to_numpy()
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(9, 3.4))
+    for ax, y, tit, fmt in [(a1, sil, "Silhueta (maior = grupos mais separados)", lambda v: br(v, 2)),
+                            (a2, ine / 1000, "Inércia, em milhares (menor = mais compactos)", lambda v: br(v, 0))]:
+        ax.plot(k, y, "-o", color=AZUL, markersize=6, markeredgecolor="white", markeredgewidth=1.2, linewidth=2)
+        i7 = int(np.where(k == 7)[0][0])
+        ax.plot(k[i7], y[i7], "o", color=LARANJA, markersize=10, markeredgecolor="white", markeredgewidth=1.5, zorder=3)
+        ax.annotate("k = 7 (escolhido)", (k[i7], y[i7]), xytext=(6, 8), textcoords="offset points", fontsize=8,
+                    color=LARANJA)
+        for lado in ["top", "right", "left"]:
+            ax.spines[lado].set_visible(False)
+        ax.spines["bottom"].set_color(GRADE)
+        ax.tick_params(colors=TINTA_2, labelsize=9, length=0)
+        ax.grid(axis="y", color=GRADE, linewidth=0.6)
+        ax.set_axisbelow(True)
+        ax.set_xticks(k)
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _, f=fmt: f(v)))
+        ax.set_title(tit, fontsize=10, color=TINTA, loc="left", fontweight="bold")
+    salvar(fig, "fig5_escolha_k.png", "Número de clusters (k)")
+
+
+def f6_perfil_clusters() -> None:
+    """Perfil dos clusters: média de cada variável de contexto, em desvios-padrão da média dos municípios, e a
+    composição por região."""
+    m = pl.read_parquet(M.PROCESSED_DIR / "cluster_municipio.parquet").drop_nulls("CLUSTER")
+    vars_ = {"LOG_POP": "População\n(log)", "TAXA_ALFABETIZACAO_15MAIS": "Alfabeti-\nzação", "IDHM_RENDA": "IDHM\nRenda (UF)",
+             "IDHM_LONGEVIDADE": "IDHM\nLongev. (UF)", "INFRA": "Infraes-\ntrutura"}
+    z = m.with_columns([((pl.col(c) - pl.col(c).mean()) / pl.col(c).std()).alias(c) for c in vars_])
+    perfil = z.group_by("CLUSTER").agg([pl.col(c).mean() for c in vars_]).sort("CLUSTER")
+    curto = pl.read_parquet(M.PROCESSED_DIR / "powerbi" / "dim_municipio.parquet").select("CLUSTER", "CLUSTER_CURTO").unique()
+    nomes = {r["CLUSTER"]: r["CLUSTER_CURTO"] for r in curto.drop_nulls("CLUSTER").iter_rows(named=True)}
+    rot = [nomes[c] for c in perfil["CLUSTER"]]
+    M_ = perfil.select(list(vars_)).to_numpy()
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(10.5, 4.4), gridspec_kw={"width_ratios": [1.35, 1]})
+    im = a1.imshow(M_, cmap="RdBu", vmin=-2, vmax=2, aspect="auto")
+    for i in range(M_.shape[0]):
+        for j in range(M_.shape[1]):
+            a1.text(j, i, br(M_[i, j], 1), ha="center", va="center", fontsize=8,
+                    color="white" if abs(M_[i, j]) > 1.2 else TINTA)
+    a1.set_xticks(range(len(vars_)), list(vars_.values()), fontsize=8, color=TINTA_2)
+    a1.set_yticks(range(len(rot)), rot, fontsize=8, color=TINTA_2)
+    a1.tick_params(length=0)
+    for s in a1.spines.values():
+        s.set_visible(False)
+    a1.set_title("Média do cluster, em desvios-padrão", fontsize=10, color=TINTA, loc="left", fontweight="bold")
+    fig.colorbar(im, ax=a1, fraction=0.04, pad=0.02).ax.tick_params(labelsize=7, colors=TINTA_2)
+    # composição por região (barras empilhadas, em % dos municípios do cluster)
+    regioes = ["Norte", "Nordeste", "Centro-Oeste", "Sudeste", "Sul"]
+    cores = ["#1b9e77", LARANJA, "#7570b3", AZUL, "#a6761d"]
+    comp = (m.group_by("CLUSTER", "NM_REGIAO").len().with_columns((pl.col("len") / pl.col("len").sum().over("CLUSTER")).alias("p")))
+    base = np.zeros(len(rot))
+    ys = np.arange(len(rot))
+    for reg, cor in zip(regioes, cores):
+        v = np.array([comp.filter((pl.col("CLUSTER") == c) & (pl.col("NM_REGIAO") == reg))["p"].sum()
+                      for c in perfil["CLUSTER"]])
+        a2.barh(ys, v * 100, left=base * 100, color=cor, label=reg, height=0.7)
+        base += v
+    a2.invert_yaxis()
+    a2.set_yticks(ys, [""] * len(ys))
+    a2.set_xlim(0, 100)
+    a2.tick_params(colors=TINTA_2, labelsize=8, length=0)
+    for lado in ["top", "right", "left"]:
+        a2.spines[lado].set_visible(False)
+    a2.spines["bottom"].set_color(GRADE)
+    a2.set_title("Municípios por região (%)", fontsize=10, color=TINTA, loc="left", fontweight="bold")
+    a2.legend(frameon=False, fontsize=7.5, ncol=5, loc="upper center", bbox_to_anchor=(0.5, -0.08), labelcolor=TINTA_2,
+              handlelength=1, columnspacing=0.8)
+    fig.patch.set_facecolor("white")
+    fig.tight_layout()
+    fig.savefig(FIG / "fig6_perfil_clusters.png", dpi=200, facecolor="white")
+    plt.close(fig)
+
+
 def main() -> None:
     FIG.mkdir(parents=True, exist_ok=True)
     p = M.base()
@@ -319,7 +396,9 @@ def main() -> None:
     f2_defasagens(comp)
     f3_heterogeneidade(het)
     f4_sensibilidade(sens)
-    print(f"[OK] tabelas.md e 4 figuras em {SAIDA.relative_to(M.BASE_DIR)}")
+    f5_escolha_k()
+    f6_perfil_clusters()
+    print(f"[OK] tabelas.md e 6 figuras em {SAIDA.relative_to(M.BASE_DIR)}")
 
 
 if __name__ == "__main__":

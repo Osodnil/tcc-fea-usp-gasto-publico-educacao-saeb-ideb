@@ -62,7 +62,7 @@ Leitura descritiva, de associação, para Anos Iniciais e Matemática, salvo ind
   - Isso reforça os efeitos fixos de UF [A2] e o modelo de robustez da eficiência [A8].
 - **Modelo principal, com efeito fixo de município [A11]:**
   - **Entre municípios**, com os controles de contexto, o gasto quase não se associa à nota (0,92 ponto por log do gasto, não significativo).
-  - **Dentro do mesmo município**, a associação é positiva e clara, mas pequena: +10% no gasto por aluno se associa a +0,24 ponto (2017–2023); dobrar o gasto, a cerca de 1,7 ponto, quando um ano de escola vale ~25.
+  - **Dentro do mesmo município**, a associação é positiva e clara, mas pequena: +10% no gasto por aluno se associa a +0,24 ponto (2017–2023); dobrar o gasto, a cerca de 1,7 ponto, menos de 7% do desvio-padrão da nota entre as redes (24 pontos).
   - **Especificação de referência (decidida em 2026-11-10):** efeito fixo de município com efeito de UF × edição, 2017–2025: compara municípios do mesmo estado na mesma edição. +10% no gasto → +0,22 ponto em AI Matemática e +0,19 em Português.
   - **Defasagem:** na mesma amostra, a associação dentro do município vem do gasto do ano da prova e do ano anterior (o ciclo bienal do Saeb). O de 2 e 4 anos antes não se associa, ao contrário do ρ simples, que cresce com a defasagem.
   - **2025:** incluir 2025 dobra o coeficiente (5,1). A investigação mostrou que isso vem de mudanças comuns a cada estado: de 2023 a 2025, o Nordeste e o Norte tiveram ao mesmo tempo o maior aumento de gasto e o maior ganho de nota (compatível com a complementação VAAT do novo Fundeb, sem prova). Com efeito de UF × edição, o coeficiente com 2025 volta a 2,3, igual ao de 2017–2023. Essa especificação dispensa o IDHM, que é da UF e do ano, e por isso cobre 2025.
@@ -144,3 +144,5 @@ As quatro primeiras perguntas vêm da reunião de 06/11 entre os autores; as res
 ## 6. Uso de IA
 
 O Manual exige informar e discutir previamente o uso de IA. Usamos um assistente de IA (Claude, da Anthropic) na delimitação da pesquisa, na proposta de escolhas de método, no código de tratamento dos dados e das análises, no painel e na redação dos registros. As decisões são nossas ou suas, e estão datadas e verificáveis no registro, no código e nos diagnósticos. O detalhe por etapa está no rascunho `docs/declaracao_uso_ia.md` (seção 4.1).
+
+**Resposta (2026-11-13):** uso permitido e incentivado, desde que os autores conheçam todas as etapas do desenvolvimento e todas as informações necessárias para a apresentação final. Ficam para confirmar: onde a declaração entra no TCC e se é preciso anexar exemplos de interações.

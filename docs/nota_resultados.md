@@ -5,7 +5,7 @@
 ## Resumo em cinco frases
 
 1. Entre os municípios, os que gastam mais por aluno têm notas um pouco maiores, mas essa associação simples vem caindo (ρ de 0,46 em 2017 para 0,16 em 2025) e some quando se controla o contexto.
-2. Dentro do mesmo município, comparado com outros do mesmo estado na mesma edição, a associação é positiva, estável e **pequena**: +10% no gasto por aluno acompanha cerca de +0,2 ponto no Saeb, e dobrar o gasto, cerca de 1,6 ponto, quando um ano de escola vale perto de 25.
+2. Dentro do mesmo município, comparado com outros do mesmo estado na mesma edição, a associação é positiva, estável e **pequena**: +10% no gasto por aluno acompanha cerca de +0,2 ponto no Saeb, e dobrar o gasto, cerca de 1,6 ponto, menos de 7% do desvio-padrão da nota entre as redes (24 pontos).
 3. Essa associação vem do gasto do ano da prova e do ano anterior, e não do gasto de 2 ou 4 anos antes.
 4. Ela se concentra nos municípios pequenos e no Nordeste e Norte; nas cidades com mais de 100 mil habitantes e no Sudeste e Sul, não aparece.
 5. Na camada estadual, com 27 UFs, não é possível detectar associação: os intervalos são largos demais.
@@ -27,7 +27,7 @@
   | Anos Finais | 2,73*** | 2,00*** |
 
   Em AI Matemática: +10% no gasto por aluno → +0,22 ponto; dobrar o gasto → +1,6 ponto.
-- **Tamanho:** é pequeno. A escala do Saeb avança cerca de 25 pontos por ano de escolaridade, então dobrar o gasto se associa a algo como 6% de um ano de escola.
+- **Tamanho:** é pequeno. Dobrar o gasto se associa a 1,6 ponto, menos de 7% do desvio-padrão da proficiência entre as redes municipais (24,2 pontos em AI Matemática, 2017–2023). Para comparação, a média das redes municipais em Matemática vai de 220,2 pontos no 5º ano a 249,3 no 9º (2023). **Correção (2026-11-13):** versões anteriores diziam que "um ano de escola vale cerca de 25 pontos"; não há equivalência oficial que sustente isso (A11).
 - **Por que a referência inclui o efeito de UF × edição:** sem ele, incluir 2025 dobrava o coeficiente. A investigação mostrou que, de 2023 a 2025, o Nordeste e o Norte tiveram ao mesmo tempo o maior aumento de gasto e o maior ganho de nota. Isso é compatível com a complementação VAAT do novo Fundeb, mas não foi testado (o painel não tem quem recebeu VAAT). O efeito de UF × edição retira esses movimentos comuns ao estado, e o coeficiente fica estável (2,3 com ou sem 2025). Ele também absorve o IDHM, que é da UF e do ano.
 - **Para o texto:** "dentro do mesmo município, e descontados os movimentos comuns ao estado, aumentos de gasto acompanham notas um pouco maiores; a associação é estatisticamente clara, mas pequena".
 

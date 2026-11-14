@@ -48,7 +48,12 @@ def nota(texto: str) -> str:
 
 
 def titulo(nivel: int, texto: str) -> str:
-    return f'<w:p><w:pPr><w:pStyle w:val="Heading{nivel}"/></w:pPr>' + run(texto, negrito=True) + "</w:p>"
+    """Título de seção com a mesma numeração automática dos títulos do rascunho (lista 3: nível 1 = 5.2, nível 2 = 5.2.1)."""
+    rec = {2: (1, 362, 360, 140, 280), 3: (2, 542, 540, 120, 240)}[nivel]
+    return (f'<w:p><w:pPr><w:pStyle w:val="Heading{nivel}"/><w:keepNext w:val="1"/><w:numPr><w:ilvl w:val="{rec[0]}"/>'
+            f'<w:numId w:val="3"/></w:numPr><w:tabs><w:tab w:val="left" w:leader="none" w:pos="{rec[1]}"/></w:tabs>'
+            f'<w:spacing w:after="{rec[3]}" w:before="{rec[4]}" w:lineRule="auto"/><w:ind w:left="{rec[1]}" '
+            f'w:hanging="{rec[2]}"/></w:pPr>' + run(texto, negrito=True) + "</w:p>")
 
 
 def legenda(texto: str) -> str:
@@ -199,7 +204,8 @@ t_clu = [[f"{r['CLUSTER']} · {r['CLUSTER_ROTULO']}", br(r["MUNICIPIOS"], 0), br
 # ───────────────────────── conteúdo ─────────────────────────
 AVISO = ("[RASCUNHO TÉCNICO – vale para todo este capítulo. Texto montado em 2026-11-12, com apoio de IA, a partir dos "
          "registros do projeto. Serve de base factual: os autores devem reescrever com as próprias palavras, conferir os "
-         "números e acrescentar as citações. O uso de IA precisa ser aprovado pela orientadora (Manual, item 2.3).]")
+         "números e acrescentar as citações. Uso de IA permitido pela orientadora, desde que os autores conheçam todas as "
+         "etapas e informações do projeto (Manual, item 2.3).]")
 TELAS = [  # (arquivo, legenda) das capturas do painel, na ordem das páginas
     ("01_boas_vindas", "Página Boas-vindas: para que serve o painel, como usar e as perguntas de entrada"),
     ("02_visao_geral", "Página Visão geral: gasto, proficiência, cobertura do Saeb e redes que melhoraram"),
@@ -212,10 +218,22 @@ TELAS = [  # (arquivo, legenda) das capturas do painel, na ordem das páginas
     ("09_estados", "Página Estados: redes estaduais das 27 UFs"),
     ("10_sobre", "Página Sobre os dados: fontes, indicadores, limitações e correção pela inflação"),
 ]
-F_FLUXO, F_TELA0, F_AN = 1, 2, 2 + len(TELAS)   # numeração: fluxo, telas e figuras da análise
+F_FLUXO, F_TELA0, F_CLU = 1, 2, 2 + len(TELAS)   # numeração: fluxo, telas, clusters (2 figuras) e análise
+F_AN = F_CLU + 2
+REPO = "https://github.com/Osodnil/tcc-fea-usp-gasto-publico-educacao-saeb-ideb"
+
+CAP4_ABERTURA = [
+    nota(AVISO),
+    corpo("Este capítulo descreve o produto analítico construído no trabalho. A seção 4.1 apresenta as fontes e a "
+          "arquitetura dos dados, da extração nas bases públicas aos painéis de dados; a seção 4.2, as regras de "
+          "tratamento; e a seção 4.3, o protótipo do painel em Power BI e o indicador que ele usa. O produto tem duas "
+          "partes: os painéis de dados, montados em Python a partir de oito bases públicas, e o painel interativo, "
+          "organizado em torno de três perguntas de quem gere uma rede de ensino. O código, os dados tratados e o registro "
+          f"datado de cada decisão de método estão em repositório público ({REPO}), o que permite refazer cada número a "
+          "partir das fontes."),
+]
 
 CAP4_1 = [
-    nota(AVISO),
     corpo("O produto analítico parte de bases públicas de oito origens, reunidas no Quadro 3. A extração, o tratamento e a "
           "integração foram feitos em Python, com a biblioteca Polars, em scripts versionados no repositório do projeto. Um "
           "comando único executa todas as etapas na ordem certa, do dado bruto às tabelas lidas pelo painel, o que permite "
@@ -233,7 +251,8 @@ CAP4_1 = [
         ["IPCA", "IBGE/SIDRA, tabela 1737", "2017–2025", "Correção dos valores para reais de 2025"],
         ["Malha Municipal 2025", "IBGE", "2025", "Contornos dos municípios para o mapa"],
     ], [1300, 2300, 1500, 3975]),
-    fonte("Fonte: elaborado pelos autores."),
+    fonte("Fonte: elaborado pelos autores, com base em FNDE (2026), Secretaria do Tesouro Nacional (2026), Inep (2026a, "
+          "2026b), IBGE (2023, 2024, 2026a, 2026b) e PNUD et al. (2026)."),
     corpo("A análise tem duas camadas, que não se misturam, porque o gasto e o desempenho precisam ser da mesma rede. Na "
           "camada municipal, a unidade é a rede municipal de cada município: o gasto é a despesa paga no Ensino Fundamental "
           "dividida pelas matrículas do Ensino Fundamental da rede municipal, e o desempenho é a proficiência no Saeb dos "
@@ -319,16 +338,47 @@ CAP4_3 = [
 
 CAP5_CLUSTER = [
     nota(AVISO + " A interpretação e a discussão com a literatura ficam com os autores; aqui estão o método e os números."),
-    corpo("Para comparar redes em condições parecidas, os municípios foram agrupados pelo contexto, sem usar o gasto nem a "
-          "nota. O agrupamento usou o método das k-médias com cinco variáveis padronizadas: população, taxa de "
-          "alfabetização, IDHM Renda e IDHM Longevidade da UF e infraestrutura das escolas. Foram formados sete grupos, com "
-          "5.568 municípios; três municípios ficaram de fora por falta de alguma variável. O Quadro 5 traz o perfil de cada "
-          "grupo."),
+    corpo("Para comparar redes em condições parecidas, os municípios foram agrupados pelo contexto em que a rede municipal "
+          "atua, e não pelo gasto nem pela nota. Se o agrupamento usasse essas variáveis, a comparação dentro do grupo "
+          "deixaria de mostrar quem gasta mais, ou entrega mais, do que redes parecidas. Foram usadas cinco variáveis: o "
+          "logaritmo da população e a taxa de alfabetização das pessoas de 15 anos ou mais, ambas do Censo Demográfico "
+          "2022; o IDHM Renda e o IDHM Longevidade da UF, na média de 2017 a 2023; e um índice de infraestrutura das escolas "
+          "da rede municipal, a média, de 2017 a 2025, das proporções de escolas com oito itens. A população entra em "
+          "logaritmo porque sua distribuição é muito assimétrica: sem isso, as poucas cidades muito grandes dominariam o "
+          "agrupamento. A dimensão Educação do IDHM ficou de fora, porque mede escolaridade, que é parte do próprio "
+          "resultado que se quer comparar. As cinco variáveis foram padronizadas (média zero e desvio-padrão um), para que "
+          "nenhuma pese mais por causa da unidade de medida."),
+    corpo("O agrupamento usou o método das k-médias (MacQueen, 1967), que divide os municípios em k grupos de modo a "
+          "minimizar a distância de cada município ao centro do seu grupo. O algoritmo foi rodado com 50 pontos de partida "
+          "diferentes e semente fixa, o que torna o resultado reprodutível. Entraram 5.568 municípios; ficaram de fora "
+          "Fernando de Noronha, Boa Esperança do Norte e Brasília, por falta de alguma variável. Um único agrupamento vale "
+          "para todo o período e para as duas etapas."),
+    corpo(f"O número de grupos foi escolhido comparando os valores de k de 3 a 10 por dois critérios (Figura {F_CLU}). O "
+          "primeiro é o coeficiente de silhueta (Rousseeuw, 1987), que vai de −1 a 1 e mede o quanto cada município está "
+          "mais próximo do próprio grupo do que do grupo vizinho. O segundo é a inércia, a soma das distâncias de cada "
+          "município ao centro do seu grupo. A silhueta é maior com três grupos (0,32) e fica perto de 0,23 de cinco a dez "
+          "grupos; a inércia cai de forma contínua, sem um ponto de inflexão claro. Com três grupos, o menor teria 1.053 "
+          "municípios, o que é largo demais para formar pares de comparação. Entre os valores de silhueta parecida, foi "
+          "escolhido k = 7: a silhueta é praticamente igual à de seis grupos (0,233 contra 0,229), e o sétimo grupo separa "
+          "os municípios grandes do Norte e do Nordeste (população mediana de 101,7 mil), que de outro modo ficariam com "
+          "municípios muito menores."),
+    figura("rIdClu1", 70, 16.0, 6.04, "Figura escolha de k"),
+    fonte(f"Figura {F_CLU} – Escolha do número de clusters: silhueta e inércia para k de 3 a 10. Fonte: elaborado pelos "
+          "autores."),
+    corpo(f"O Quadro 5 e a Figura {F_CLU + 1} mostram o perfil de cada grupo. Os grupos 1 e 2 reúnem municípios com "
+          "alfabetização e IDHM Renda abaixo da média, quase todos do Nordeste e do Norte; os grupos 6 e 7, os de "
+          "alfabetização, IDHM e infraestrutura mais altos, quase todos do Sul e do Sudeste. O grupo 5 se distingue pelo "
+          "porte: a média do logaritmo da população fica 1,9 desvio-padrão acima da dos municípios. O nome de cada grupo "
+          "traz a região da maioria dos municípios, o porte e a faixa de alfabetização; nenhum grupo é formado por uma "
+          "região só."),
     legenda("Quadro 5 – Perfil dos sete clusters de contexto"),
-    tabela(["Cluster", "Municípios", "População mediana", "Alfabetização", "IDHM Renda", "Infraestrutura", "Região principal"],
-           t_clu, [2675, 950, 1100, 1100, 900, 1050, 1300]),
+    tabela(["Cluster", "Municí-\npios", "População\nmediana", "Alfabeti-\nzação", "IDHM\nRenda", "Infraes-\ntrutura",
+            "Região\nprincipal"], t_clu, [2875, 900, 1100, 1050, 800, 1000, 1350]),
     fonte("Fonte: elaborado pelos autores. Infraestrutura: média das proporções de escolas com oito itens (biblioteca, "
           "laboratórios, internet, banheiro, água potável, energia e quadra)."),
+    figura("rIdClu2", 71, 16.0, 6.70, "Figura perfil dos clusters"),
+    fonte(f"Figura {F_CLU + 1} – Perfil dos clusters: média de cada variável de contexto, em desvios-padrão da média dos "
+          "municípios, e composição por região. Fonte: elaborado pelos autores."),
     corpo("A separação entre os grupos é fraca (coeficiente de silhueta de cerca de 0,23): eles são uma partição útil para "
           "formar pares de comparação, e não tipos naturalmente distintos. Os grupos também acompanham a região, porque o "
           "IDHM só existe por UF. No painel, os pares de uma rede são as redes do mesmo cluster com gasto por aluno entre "
@@ -373,8 +423,10 @@ CAP5_MODELOS = [
           "ponto por log do gasto nos Anos Iniciais, em Matemática, e não se distingue de zero. Dentro do mesmo município, a "
           "associação é positiva e estatisticamente significativa nas duas etapas e nas duas disciplinas. Na especificação "
           "de referência, um aumento de 10% no gasto por aluno acompanha um aumento de cerca de 0,22 ponto em Matemática nos "
-          "Anos Iniciais; dobrar o gasto acompanha cerca de 1,6 ponto. Como referência de escala, um ano de escolaridade "
-          "corresponde a cerca de 25 pontos no Saeb. [CITAR a fonte dessa equivalência.]"),
+          "Anos Iniciais; dobrar o gasto acompanha cerca de 1,6 ponto. Para dar a escala: o desvio-padrão da proficiência "
+          "entre as redes municipais é de 24,2 pontos (Anos Iniciais, Matemática, 2017–2023), de modo que dobrar o gasto "
+          "se associa a menos de 7% de um desvio-padrão. Para comparação, a média das redes municipais em Matemática vai "
+          "de 220,2 pontos no 5º ano a 249,3 pontos no 9º ano (2023)."),
     corpo("A especificação de referência foi escolhida depois de uma investigação sobre a edição de 2025. Sem o efeito de UF "
           "e edição, incluir 2025 dobrava o coeficiente. Verificou-se que, de 2023 a 2025, as redes do Nordeste e do Norte "
           "tiveram ao mesmo tempo o maior aumento médio de gasto por aluno (cerca de 26% e 21%, contra 8% no Sudeste) e o maior ganho de nota. Com o "
@@ -634,6 +686,112 @@ CAP5_VALIDACAO = [
          if len(TELAS_CASO) == 4 else "Os números dos três casos foram calculados em Python; falta conferi-los no painel."),
 ]
 
+FUTURO = [nota(
+    "[Base factual para este item (Henrique): funcionalidades deixadas de fora desta versão e o motivo de cada uma. "
+    "(a) Simulação de cenários de gasto: não foi feita porque a associação entre gasto e nota dentro do município é "
+    "pequena e não é causal, e um simulador sugeriria um efeito que o trabalho não mede. (b) Monitoramento das "
+    "condicionalidades e dos indicadores do VAAR: pede os dados de habilitação das redes, que não foram integrados. "
+    "(c) Identificação das redes que recebem a complementação VAAT, que permitiria testar a hipótese levantada para "
+    "2023–2025. (d) Gasto separado por etapa: o SIOPE informa a subfunção 361 para todo o Ensino Fundamental, sem separar "
+    "Anos Iniciais e Finais, e a Educação Infantil ficou fora. (e) Regra de pares mais estreita, combinando gasto e porte, "
+    "e revisão da regra dos saltos atípicos, ambas em discussão com a orientadora. (f) Publicação do painel na web, com "
+    "acesso por QR Code. Escolher quais entram e redigir como alíneas.]")]
+AUTOMACAO = [nota(
+    "[Base factual para este item: hoje, um comando único (run_pipeline.py) refaz o tratamento e os painéis de dados a "
+    "partir das bases baixadas. A extração tem scripts próprios, disparados à mão, e três bases são baixadas manualmente "
+    "(IDHM do Atlas Brasil, alfabetização do Censo 2022 e malha municipal). O painel em Power BI lê os arquivos de uma "
+    "pasta local e é atualizado pelo botão Atualizar. Melhorias possíveis: agendar a extração e o tratamento; publicar o "
+    "painel no serviço do Power BI, com atualização programada; e trocar a pasta local por um armazenamento "
+    "compartilhado, o que dispensaria ajustar o caminho dos dados em cada computador.]")]
+REFERENCIAS = [nota(
+    "[Referências citadas nos capítulos 4 e 5 da cópia, em APA 7, a incluir na lista em ordem alfabética. CONFERIR os "
+    "dados de cada uma, as datas de acesso e a autoria do Radar IDHM (os parceiros variam entre as edições) antes da "
+    "versão final.]"),
+    *[item(r) for r in [
+        "Fundo Nacional de Desenvolvimento da Educação. (2026). SIOPE: Sistema de Informações sobre Orçamentos Públicos "
+        "em Educação – dados abertos [Conjunto de dados]. https://www.fnde.gov.br/olinda-ide/servico/DADOS_ABERTOS_SIOPE/versao/v1/odata/",
+        "Instituto Brasileiro de Geografia e Estatística. (2023). Censo Demográfico 2022: população e domicílios – "
+        "primeiros resultados. IBGE.",
+        "Instituto Brasileiro de Geografia e Estatística. (2024). Censo Demográfico 2022: alfabetização – resultados do "
+        "universo. IBGE.",
+        "Instituto Brasileiro de Geografia e Estatística. (2026a). Índice Nacional de Preços ao Consumidor Amplo (IPCA): "
+        "tabela 1737 [Conjunto de dados]. SIDRA. https://sidra.ibge.gov.br/tabela/1737",
+        "Instituto Brasileiro de Geografia e Estatística. (2026b). Malha municipal 2025 [Conjunto de dados]. IBGE.",
+        "Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira. (2026a). Censo Escolar da Educação "
+        "Básica: microdados 2015–2025 [Conjunto de dados]. Inep.",
+        "Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira. (2026b). Índice de Desenvolvimento da "
+        "Educação Básica (Ideb) 2025: resultados por município e rede [Conjunto de dados]. Inep.",
+        "MacQueen, J. (1967). Some methods for classification and analysis of multivariate observations. In L. M. Le Cam "
+        "& J. Neyman (Eds.), Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability "
+        "(Vol. 1, pp. 281–297). University of California Press.",
+        "Programa das Nações Unidas para o Desenvolvimento, Fundação João Pinheiro, & Instituto de Pesquisa Econômica "
+        "Aplicada. (2026). Radar IDHM: Atlas do Desenvolvimento Humano no Brasil [Conjunto de dados]. "
+        "http://www.atlasbrasil.org.br",
+        "Rousseeuw, P. J. (1987). Silhouettes: A graphical aid to the interpretation and validation of cluster analysis. "
+        "Journal of Computational and Applied Mathematics, 20, 53–65. https://doi.org/10.1016/0377-0427(87)90125-7",
+        "Secretaria do Tesouro Nacional. (2026). Siconfi: Declaração de Contas Anuais (DCA), Anexo I-E [Conjunto de "
+        "dados]. https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca",
+    ]]]
+
+APENDICE = [
+    nota(AVISO.replace("vale para todo este capítulo", "vale para este apêndice")),
+    corpo("O modelo de dados do painel segue o formato estrela: tabelas de dimensões, que descrevem municípios, UFs, anos, "
+          "etapas, disciplinas e clusters, ligadas a tabelas de fatos, que guardam os valores. O Quadro A.1 lista as "
+          "tabelas, e o Quadro A.2, os principais indicadores. O dicionário completo das colunas acompanha o pacote de "
+          f"exportação do projeto (planilha, aba Dicionário), e o código está em {REPO}."),
+    legenda("Quadro A.1 – Tabelas do modelo de dados do painel"),
+    tabela(["Tabela", "Conteúdo", "Linhas"], [
+        ["dim_ano", "Anos de 2017 a 2025, com a marca das edições do Saeb e o fator de correção pelo IPCA", "9"],
+        ["dim_cluster", "Os sete clusters de contexto e o perfil de cada um", "7"],
+        ["dim_defasagem", "Defasagem do gasto: mesmo ano e 1, 2 e 4 anos antes", "4"],
+        ["dim_disciplina", "Matemática e Língua Portuguesa", "2"],
+        ["dim_etapa", "Anos Iniciais, Anos Finais e Ensino Médio", "3"],
+        ["dim_modelo", "As duas comparações do indicador: nacional e com o mesmo estado", "2"],
+        ["dim_municipio", "Municípios, com UF, região, população, alfabetização, porte e cluster", "5.571"],
+        ["dim_uf", "Unidades da Federação", "27"],
+        ["fato_desempenho_municipal", "Por município, etapa, disciplina e edição: proficiência, gasto por aluno (do ano e "
+         "defasado), controles, proficiência esperada, resíduo, percentil e alertas", "93.630"],
+        ["fato_desempenho_estadual", "O mesmo por UF, para a rede estadual (Anos Finais e Ensino Médio), com as versões A "
+         "e B do gasto", "540"],
+        ["fato_gasto_municipal", "Gasto anual da rede municipal na subfunção 361, matrículas e gasto por aluno, 2017–2025",
+         "50.113"],
+        ["fato_gasto_estadual", "Gasto anual da rede estadual (versões A e B) e matrículas, 2017–2025", "243"],
+        ["fato_oferta_municipal", "Matrículas das redes municipal e estadual por etapa, parcela da rede municipal e "
+         "situação da nota", "100.278"],
+        ["ref_municipio e cmp_municipio", "Listas de municípios calculadas no Power BI, para escolher a referência e o "
+         "município comparado na página Pares", "—"],
+        ["_Medidas", "As 85 medidas em DAX usadas pelos visuais", "—"],
+    ], [2575, 5500, 1000]),
+    fonte("Fonte: elaborado pelos autores."),
+    legenda("Quadro A.2 – Principais indicadores do painel"),
+    tabela(["Indicador", "Definição", "Unidade"], [
+        ["Gasto por aluno", "Despesa paga da rede municipal na subfunção 361 (Ensino Fundamental), dividida pelas "
+         "matrículas do Ensino Fundamental da rede municipal; na camada estadual, função 12 menos a subfunção 364, "
+         "dividida pelas matrículas da educação básica da rede estadual", "R$ de 2025"],
+        ["Proficiência", "Média da rede no Saeb, por etapa e disciplina", "Pontos"],
+        ["Proficiência esperada", "Valor previsto por regressão com o gasto por aluno (em logaritmo) e o contexto da rede",
+         "Pontos"],
+        ["vs. esperado", "Diferença entre a proficiência e a esperada, em percentual da esperada", "%"],
+        ["Percentil", "Posição da rede entre as da mesma etapa, disciplina e edição, pelo resultado em relação ao esperado",
+         "0 a 100"],
+        ["Faixa", "O percentil em cinco grupos, de bem abaixo a bem acima do esperado", "Categoria"],
+        ["Pares", "Redes do mesmo cluster com gasto por aluno entre 0,8 e 1,25 vez o da rede de referência", "Contagem"],
+        ["Atenção", "Alerta de salto atípico (variação entre edições mais de três desvios-padrão fora da média) ou de rede "
+         "parcial (a rede municipal atende menos de 50% dos alunos públicos da etapa)", "Marca"],
+        ["Cobertura do Saeb", "Parcela das redes municipais com nota divulgada pelo Inep", "%"],
+        ["ρ de Spearman", "Correlação de postos entre o gasto por aluno e a proficiência, por edição e defasagem", "−1 a 1"],
+    ], [1900, 5875, 1300]),
+    fonte("Fonte: elaborado pelos autores."),
+]
+
+SUBSTITUICOES = [  # (trecho do parágrafo do rascunho, blocos que o substituem)
+    ("[CAPÍTULO RESERVADO. Redação sob responsabilidade de Henrique Lindoso", CAP4_ABERTURA),
+    ("[A ser detalhado por Henrique Lindoso: ingestão, limpeza", CAP4_1),
+    ("[A ser detalhado por Henrique Lindoso.]", CAP4_2),
+    ("[A ser detalhado por Henrique Lindoso: telas interativas", CAP4_3),
+    ("[INSERIR os apêndices (documentos elaborados pelos autores", APENDICE),
+]
+
 PAUSAS = [  # (trecho do parágrafo de pausa do rascunho, texto novo da nota)
     ("[CAPÍTULO EM PAUSA até a finalização do dashboard",
      "[Pausa retirada na cópia de 2026-11-13: o painel está concluído e as quatro seções deste capítulo têm material "
@@ -646,9 +804,9 @@ PAUSAS = [  # (trecho do parágrafo de pausa do rascunho, texto novo da nota)
 ]
 
 INSERCOES = [  # (trecho que identifica o parágrafo do rascunho, blocos a inserir depois dele)
-    ("[A ser detalhado por Henrique Lindoso: ingestão, limpeza", CAP4_1),
-    ("[A ser detalhado por Henrique Lindoso.]", CAP4_2),
-    ("[A ser detalhado por Henrique Lindoso: telas interativas", CAP4_3),
+    ("[INSERIR funcionalidades do dashboard deliberadamente deixadas de fora", FUTURO),
+    ("[INSERIR melhorias de automação e atualização periódica de dados", AUTOMACAO),
+    ("[NORMA DE REFERÊNCIAS:", REFERENCIAS),
     ("[Metodologia e gráficos por Henrique Lindoso; interpretação por Guilherme Menezes.]", CAP5_CLUSTER + CAP5_MODELOS),
     ("[Análise gerencial por Guilherme Menezes.]", CAP5_CASOS),
     ("[Análise por Guilherme Menezes.]", CAP5_VALIDACAO),
@@ -736,6 +894,16 @@ def achar_fim(xml: str, trecho: str) -> int:
     return achado
 
 
+for trecho, blocos in SUBSTITUICOES:  # troca o parágrafo-marcador do rascunho pelo conteúdo
+    fim = achar_fim(x, trecho)
+    ini = max(x.rfind("<w:p>", 0, fim), x.rfind("<w:p ", 0, fim))
+    x = x[:ini] + "".join(blocos) + x[fim:]
+assert x.count("[INSERIR TÍTULO DO APÊNDICE]") >= 1, "título do apêndice não encontrado num trecho só"
+x = x.replace("[INSERIR TÍTULO DO APÊNDICE]", "DICIONÁRIO DE DADOS DO PAINEL")
+# o marcador tinha realce amarelo: tira o realce só dos trechos (runs) com o título novo
+x = re.sub(r"<w:r[ >](?:(?!</w:r>).)*?DICIONÁRIO DE DADOS DO PAINEL(?:(?!</w:r>).)*?</w:r>",
+           lambda m: re.sub(r"<w:highlight [^>]*/>", "", m.group(0)), x, flags=re.S)
+
 for trecho, novo in PAUSAS:  # troca o parágrafo de pausa inteiro por uma nota com o texto novo
     fim = achar_fim(x, trecho)
     ini = max(x.rfind("<w:p>", 0, fim), x.rfind("<w:p ", 0, fim))
@@ -757,6 +925,7 @@ r = rels.read_text(encoding="utf-8")
 figs = {"rIdFig1": "fig1_entre_dentro.png", "rIdFig2": "fig2_defasagens.png", "rIdFig3": "fig3_heterogeneidade.png",
         "rIdFig4": "fig4_sensibilidade.png"}
 figs["rIdFluxo"] = "fig0_fluxo_dados.png"
+figs["rIdClu1"], figs["rIdClu2"] = "fig5_escolha_k.png", "fig6_perfil_clusters.png"
 novos = ""
 for k, (arq, _) in enumerate(TELAS_CASO):
     shutil.copy(TELAS_DIR / f"{arq}.png", PASTA / "word" / "media" / f"tela_{arq}.png")
