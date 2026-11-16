@@ -64,19 +64,7 @@ cultureInfo pt-BR
 			          "ConceptualProperty": "Eficiência (pontos)"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Pontos": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "table_medidas.redes_com_eficiência_calculada": {
 			      "Definition": {
@@ -271,19 +259,7 @@ cultureInfo pt-BR
 			          "ConceptualProperty": "Marca de salto"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Salto": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "dim_municipio.municipio_uf": {
 			      "Definition": {
@@ -522,16 +498,6 @@ cultureInfo pt-BR
 			      "Terms": [
 			        {
 			          "Redes com nota no Saeb": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "Redes com nota": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -828,19 +794,7 @@ cultureInfo pt-BR
 			          "ConceptualProperty": "Par: percentil"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Percentil": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "table_medidas.par_salto": {
 			      "Definition": {
@@ -849,19 +803,7 @@ cultureInfo pt-BR
 			          "ConceptualProperty": "Par: salto"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Salto": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "ref_municipio.ref_municipio_uf": {
 			      "Definition": {
@@ -904,16 +846,6 @@ cultureInfo pt-BR
 			      "Terms": [
 			        {
 			          "Redes na correlação": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "Redes": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1130,19 +1062,7 @@ cultureInfo pt-BR
 			          "ConceptualProperty": "IDHM_LONGEVIDADE_MEDIO"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "IDHM Longev.": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "dim_cluster.infra_media": {
 			      "Definition": {
@@ -1172,19 +1092,7 @@ cultureInfo pt-BR
 			          "ConceptualProperty": "REGIAO_PREDOMINANTE"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Região principal": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "dim_cluster.parcela_regiao_predominante": {
 			      "Definition": {
@@ -1193,19 +1101,7 @@ cultureInfo pt-BR
 			          "ConceptualProperty": "PARCELA_REGIAO_PREDOMINANTE"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "% na região": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "table_medidas.comparado_eficiência": {
 			      "Definition": {
@@ -1559,16 +1455,6 @@ cultureInfo pt-BR
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Rede atende": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
 			          "Rede municipal atende": {
 			            "State": "Suggested",
 			            "Source": {
@@ -1619,16 +1505,6 @@ cultureInfo pt-BR
 			            },
 			            "Weight": 0.9
 			          }
-			        },
-			        {
-			          "Acima do esperado": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -1663,7 +1539,7 @@ cultureInfo pt-BR
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Eficiência média": {
+			          "vs. esperado (%)": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1673,17 +1549,7 @@ cultureInfo pt-BR
 			          }
 			        },
 			        {
-			          "Eficiência (% do esperado)": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "Eficiência": {
+			          "vs. esperado": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1704,17 +1570,7 @@ cultureInfo pt-BR
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Eficiência": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "Eficiência (% do esperado)": {
+			          "vs. esperado": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1735,7 +1591,7 @@ cultureInfo pt-BR
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Eficiência (% do esperado)": {
+			          "vs. esperado": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1756,7 +1612,7 @@ cultureInfo pt-BR
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Eficiência": {
+			          "vs. esperado": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1774,19 +1630,7 @@ cultureInfo pt-BR
 			          "ConceptualProperty": "Par: diferença (p.p.)"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Diferença (p.p.)": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "table_medidas.mapa__acima_do_esperado": {
 			      "Definition": {
@@ -1819,17 +1663,7 @@ cultureInfo pt-BR
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Eficiência média": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "Eficiência (% do esperado)": {
+			          "vs. esperado (%)": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1871,7 +1705,7 @@ cultureInfo pt-BR
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Eficiência (pontos)": {
+			          "vs. esperado (pontos)": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1913,7 +1747,7 @@ cultureInfo pt-BR
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Eficiência": {
+			          "vs. esperado": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1956,6 +1790,132 @@ cultureInfo pt-BR
 			      "Terms": [
 			        {
 			          "R$ de 2025": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_medidas.eficiência_média_cartão": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Medidas",
+			          "ConceptualProperty": "Eficiência média (cartão)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Média vs. esperado": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_medidas.atenção": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Medidas",
+			          "ConceptualProperty": "Atenção"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Atenção": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_medidas.par_atenção": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Medidas",
+			          "ConceptualProperty": "Par: atenção"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Atenção": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_medidas.mapa_eficiência_média_cartão": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Medidas",
+			          "ConceptualProperty": "Mapa: eficiência média (cartão)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Média vs. esperado": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_medidas.municípios_do_cluster_brasil": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Medidas",
+			          "ConceptualProperty": "Municípios do cluster (Brasil)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Municípios": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_municipio.nm_regiao": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_municipio",
+			          "ConceptualProperty": "NM_REGIAO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Região": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",

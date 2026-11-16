@@ -87,20 +87,27 @@ def ajustar(df: pl.DataFrame, nota: str, op: dict) -> tuple[pl.DataFrame, list[d
 
 
 def saltos(df: pl.DataFrame, nota: str) -> pl.DataFrame:
-    """Marca (não exclui) variação atípica de proficiência em relação à edição anterior (decisão S11, proposta).
+    """Marca (não exclui) variação atípica de proficiência em relação à última edição com nota (decisão S11).
 
-    Atípica = a variação entre duas edições consecutivas (2 anos) se afasta mais de 3 desvios-padrão
-    da média das variações da mesma etapa e disciplina, para cima ou para baixo.
+    Atípica = a variação em relação à última edição com nota se afasta mais de 3 desvios-padrão da média das
+    variações da mesma etapa e disciplina com o mesmo intervalo, para cima ou para baixo. Intervalos testados:
+    2 anos (edições seguidas) e 4 anos (quando falta a nota da edição do meio), cada um com a própria média e o
+    próprio desvio, porque em 4 anos a nota varia naturalmente mais (extensão de 2026-11-16, A19). Intervalos
+    maiores (6 anos ou mais) são raros e ficam sem teste.
+    VARIACAO_EDICAO_ANTERIOR continua só para edições seguidas (é a "variação desde a edição anterior" do painel).
     """
     d = (df.drop_nulls(nota).sort("CO_MUNICIPIO", "ANO")
          .with_columns((pl.col(nota) - pl.col(nota).shift(1).over("CO_MUNICIPIO")).alias("VARIACAO"),
                        (pl.col("ANO") - pl.col("ANO").shift(1).over("CO_MUNICIPIO")).alias("INTERVALO")))
-    v = d.filter(pl.col("INTERVALO") == 2)["VARIACAO"]
-    m, dp = v.mean(), v.std()
+    marca = pl.lit(False)
+    for intervalo in (4, 2):
+        v = d.filter(pl.col("INTERVALO") == intervalo)["VARIACAO"]
+        m, dp = v.mean(), v.std()
+        marca = pl.when(pl.col("INTERVALO") == intervalo).then((pl.col("VARIACAO") - m).abs() > 3 * dp).otherwise(marca)
     return d.select(
         "CO_MUNICIPIO", "ETAPA", "ANO",
         pl.when(pl.col("INTERVALO") == 2).then(pl.col("VARIACAO")).alias("VARIACAO_EDICAO_ANTERIOR"),
-        pl.when(pl.col("INTERVALO") == 2).then((pl.col("VARIACAO") - m).abs() > 3 * dp).otherwise(False).alias("SALTO_ATIPICO"),
+        marca.alias("SALTO_ATIPICO"),
     )
 
 
@@ -166,7 +173,7 @@ if __name__ == "__main__":
                                             pl.col("RESIDUO_ALT").is_not_null().sum().alias("alternativo")).sort("ETAPA", "ANO"))
     s = efic.filter(pl.col("SALTO_ATIPICO"))
     print(f"[INFO] Saltos atípicos marcados: {s.height} linhas ({s.height / efic.height:.1%}); "
-          f"altas: {(s['VARIACAO_EDICAO_ANTERIOR'] > 0).sum()}, quedas: {(s['VARIACAO_EDICAO_ANTERIOR'] < 0).sum()}")
+          f"entre edições seguidas, altas: {(s['VARIACAO_EDICAO_ANTERIOR'] > 0).sum()}, quedas: {(s['VARIACAO_EDICAO_ANTERIOR'] < 0).sum()}")
     # persistência: o mesmo município tende a ficar acima/abaixo do esperado entre edições?
     w = (efic.filter((pl.col("ETAPA") == "AI") & (pl.col("DISCIPLINA") == "MT"))
          .pivot(on="ANO", index="CO_MUNICIPIO", values="RESIDUO_ALT"))

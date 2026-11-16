@@ -108,12 +108,12 @@ As quatro primeiras perguntas vêm da reunião de 06/11 entre os autores; as res
 
 ### 4.2 Outros pontos abertos (não bloqueiam o desenvolvimento)
 
-- **Saltos atípicos [S11]:** algumas redes, sobretudo no CE e em AL, sobem mais de 100 pontos em poucos anos (por exemplo, Ibateguara-AL, de 195 para 345). Proposta: marcar, sem excluir, a variação entre edições que se afasta mais de 3 desvios-padrão da média (633 de 82 mil resultados), com aviso no dashboard. A regra serve?
+- **Saltos atípicos [S11]:** algumas redes, sobretudo no CE e em AL, sobem mais de 100 pontos em poucos anos (por exemplo, Ibateguara-AL, de 195 para 345). Proposta: marcar, sem excluir, a variação em relação à última edição com nota que se afasta mais de 3 desvios-padrão da média (647 de 82 mil resultados), com aviso no dashboard. A regra serve? **Extensão feita em 2026-11-16 (A19):** antes, quando faltava a nota de uma edição, a variação de quatro anos não era testada; agora é, com limite próprio (em 4 anos a nota varia mais). Entraram 14 marcas; os resultados praticamente não mudam.
 
 - **Formato do TCC [D1]:** pelo Manual de 2025, o enquadramento mais natural é **método científico (estudo quantitativo)**: a pergunta é de descoberta, e não há uma organização-cliente para um plano de consultoria. Confirmar. Muda a estrutura do texto, não o dashboard.
 - **Avaliação com usuários:** o Manual prevê TCLE (e possivelmente comitê de ética) para pesquisa com pessoas. Como fazer a avaliação com gestores?
   - **O que já existe (2026-11-13, A17):** sem usuários, a seção de validação do capítulo 5 percorre as três perguntas do painel com três estudos de caso escolhidos por regra (Timon-MA, São Paulo-SP e Coruripe-AL) e reúne a conferência técnica dos números. **Pergunta:** isso basta como "validação conceitual", ou a seção deve mudar de nome?
-  - **Achado dos casos:** das 53 redes no 1% superior de 2023, 13 são de Alagoas e 16 têm salto atípico, o que reforça a pergunta sobre os saltos (S11).
+  - **Achado dos casos:** das 53 redes no 1% superior de 2023, 13 são de Alagoas e 17 têm salto atípico, o que reforça a pergunta sobre os saltos (S11).
 - **Indicadores formais [D2]:** 12 indicadores propostos, com nome, fórmula, unidade e interpretação (seção 4 da especificação do dashboard), incluindo faixas de eficiência por quintil (de "bem abaixo" a "bem acima do esperado"). Confirmar.
 - **Testes de sensibilidade [A4]:**
   - sem 2021;

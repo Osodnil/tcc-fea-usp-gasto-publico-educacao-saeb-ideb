@@ -445,7 +445,7 @@ def pagina_eficiencia() -> tuple[dict, list[dict]]:
         ("Proficiência", "nota média da rede no Saeb, em pontos."),
         ("Esperada", "média de redes com gasto e contexto parecidos (regressão)."),
         ("vs. esperado", "nota acima (+) ou abaixo (−) da esperada, em %; 0% = igual a ela."),
-        ("Atenção", "⚠ salto: o resultado mudou demais desde a edição anterior; ⚠ rede parcial: a rede "
+        ("Atenção", "⚠ salto: o resultado mudou demais desde a última edição com nota; ⚠ rede parcial: a rede "
                     "municipal tem menos de 50% dos alunos públicos da etapa. Conferir antes de usar como exemplo."),
     # revisão geral de 2026-11-11: saiu "correlação de 0,01 entre gasto e eficiência", que é zero por construção
     # (o resíduo de uma regressão que inclui o gasto não se correlaciona com ele); entra o achado do modelo (A11)
@@ -508,7 +508,7 @@ def pagina_ficha() -> tuple[dict, list[dict]]:
         ("vs. esperado", "acima (+) ou abaixo (−) da esperada, em %; 0% = igual a ela."),
         ("Percentil", "80 = melhor que 80% das redes da mesma etapa, disciplina e edição."),
         ("Faixa", "o percentil em cinco grupos, de bem abaixo a bem acima."),
-        ("Atenção", "⚠ salto: mudou demais desde a edição anterior; ⚠ rede parcial: menos de 50% dos alunos."),
+        ("Atenção", "⚠ salto: mudou demais desde a última edição com nota; ⚠ rede parcial: menos de 50% dos alunos."),
         ("2025", "eficiência só na comparação com o mesmo estado (sem IDHM de 2025)."),
     ], "O filtro de edição muda só os cartões. Associação, não efeito do gasto.", "Como ler esta ficha"), 23))
     vis.append(rodape_fontes(p, 30))
@@ -1013,7 +1013,8 @@ def pagina_sobre() -> tuple[dict, list[dict]]:
         ("ρ de Spearman", sub),
         ("Associação entre a ordem das redes no gasto e na nota (−1 a 1), só com 30 redes ou mais.", corpo),
         ("⚠ Salto atípico", sub),
-        ("Variação desde a edição anterior a mais de 3 desvios-padrão da média: conferir antes de interpretar.", corpo),
+        ("Variação desde a última edição com nota (2 ou 4 anos antes) a mais de 3 desvios-padrão da média das variações "
+         "com o mesmo intervalo: conferir antes de interpretar.", corpo),
         ("Cobertura do Saeb", sub),
         ("Redes com nota ÷ municípios do recorte.", corpo),
     ]), 11))

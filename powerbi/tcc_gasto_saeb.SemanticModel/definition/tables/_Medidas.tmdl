@@ -877,18 +877,6 @@ table _Medidas
 		displayFolder: 4 Eficiência
 		lineageTag: 23d30242-5eaa-5382-8ee9-bfc9104f88d9
 
-	column Coluna
-		dataType: int64
-		isHidden
-		lineageTag: 84eace48-46db-5e7a-9764-9593ffb2d3bb
-		summarizeBy: none
-		isNameInferred
-		sourceColumn: [Coluna]
-
-	partition _Medidas = calculated
-		mode: import
-		source = ROW ( "Coluna", 0 )
-
 	/// Verdadeiro quando o recorte é o Brasil inteiro (sem UF, cluster nem município escolhidos ou clicados).
 	/// A esperada vem de regressões cujos resíduos somam zero no Brasil a cada edição (comparação nacional) e,
 	/// na comparação no mesmo estado, em cada UF no período todo (efeito fixo de UF, edições juntas): no Brasil inteiro,
@@ -969,3 +957,16 @@ table _Medidas
 		formatString: #,0
 		displayFolder: 6 Qualidade dos dados
 		lineageTag: ce204652-4b9f-5264-8f57-6af2ee71a4c1
+
+	column Coluna
+		dataType: int64
+		isHidden
+		lineageTag: 84eace48-46db-5e7a-9764-9593ffb2d3bb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Coluna]
+
+	partition _Medidas = calculated
+		mode: import
+		source = ROW ( "Coluna", 0 )
+

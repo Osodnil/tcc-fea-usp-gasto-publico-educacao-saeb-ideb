@@ -182,7 +182,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Variação desde a edição anterior a mais de 3 desvios-padrão da média: conferir antes de interpretar.",
+                    "value": "Variação desde a última edição com nota (2 ou 4 anos antes) a mais de 3 desvios-padrão da média das variações com o mesmo intervalo: conferir antes de interpretar.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

@@ -154,7 +154,7 @@
                     }
                   },
                   {
-                    "value": "⚠ salto: mudou demais desde a edição anterior; ⚠ rede parcial: menos de 50% dos alunos.",
+                    "value": "⚠ salto: mudou demais desde a última edição com nota; ⚠ rede parcial: menos de 50% dos alunos.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"

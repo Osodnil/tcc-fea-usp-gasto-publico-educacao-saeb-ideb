@@ -287,9 +287,11 @@ CAP4_2 = [
          "Iniciais (0,7%)."),
     item("No gasto estadual, quando a linha do Ensino Superior não existe para a UF e o ano, nada é descontado (versão A). A "
          "versão que deixa esses casos de fora (versão B) é usada como teste de sensibilidade."),
-    item("Saltos atípicos de proficiência são marcados, e não excluídos: é atípica a variação entre duas edições "
-         "consecutivas que se afasta mais de três desvios-padrão da média das variações da mesma etapa e disciplina. São 633 "
-         "resultados marcados, cerca de 0,8% do total."),
+    item("Saltos atípicos de proficiência são marcados, e não excluídos: é atípica a variação em relação à última "
+         "edição com nota que se afasta mais de três desvios-padrão da média das variações da mesma etapa e disciplina. As "
+         "variações de dois anos (edições seguidas) e de quatro anos (quando falta a nota da edição do meio) têm cada uma a "
+         "própria média e o próprio desvio, porque em quatro anos a nota varia naturalmente mais. São 647 resultados "
+         "marcados, cerca de 0,8% do total."),
     item("Redes municipais parciais são marcadas: aquelas em que a prefeitura atende menos de 50% dos alunos públicos da "
          "etapa, e o restante está na rede estadual. Em 2023, eram 2,7% das redes com nota nos Anos Iniciais e 16% nos Anos "
          "Finais."),
@@ -511,7 +513,8 @@ def mun(k: str) -> str:
     return C[k]["MUNICIPIO"]
 
 
-T_CASOS = 8  # as Tabelas 1 a 7 estão na seção de associação
+T_CEBA = 8   # as Tabelas 1 a 7 estão na seção de associação
+T_CASOS = 9
 TELAS_CASO = [  # (arquivo em docs/resultados/telas, legenda); entram só se a captura existir
     ("caso_a_ficha", f"Página Ficha do município com {mun('A')}"),
     ("caso_a_pares", f"Página Pares com {mun('A')} como referência"),
@@ -520,7 +523,8 @@ TELAS_CASO = [  # (arquivo em docs/resultados/telas, legenda); entram só se a c
 ]
 TELAS_DIR = Path(sys.argv[3])
 TELAS_CASO = [t for t in TELAS_CASO if (TELAS_DIR / f"{t[0]}.png").exists()]
-F_CASO = F_AN + 4
+F_CEBA = F_AN + 4
+F_CASO = F_AN + 5
 
 
 def fig_caso(arq: str) -> list[str]:
@@ -561,6 +565,88 @@ t_serie = [[r["MUNICIPIO"], str(r["ANO"]), reais(r["GASTO_ALUNO_R2025_L0"]), br(
 
 def s(k: str, ano: int, col: str) -> float:
     return cserie.filter((pl.col("CASO") == k) & (pl.col("ANO") == ano))[col][0]
+
+# ───────────────────────── Ceará × Bahia (src/Analise/Comparacao_CE_BA.py; decisão A19) ─────────────────────────
+cb = pl.read_csv(D / "comparacao_ce_ba.csv")
+
+
+def cbv(corte: str, uf: str, col: str, **f) -> float:
+    d = cb.filter((pl.col("CORTE") == corte) & (pl.col("SG_UF") == uf))
+    for k, v in f.items():
+        d = d.filter(pl.col(k) == v)
+    assert d.height == 1, (corte, uf, f, d.height)
+    return d[col][0]
+
+
+def et(uf: str, etapa: str, disc: str, col: str) -> float:
+    return cbv("2023 por etapa", uf, col, ETAPA=etapa, DISCIPLINA=disc)
+
+
+def pc(x: float) -> str:
+    return br(100 * x, 0) + "%"
+
+
+t_ceba = [
+    ["Redes municipais com nota (AI, 2023)", *[f"{int(et(u, 'AI', 'MT', 'REDES'))}" for u in ("CE", "BA")]],
+    ["Gasto mediano por aluno (AI, 2023)", *[reais(et(u, "AI", "MT", "GASTO_MEDIANO")) for u in ("CE", "BA")]],
+    *[[f"Proficiência média: {ETQ}", *[br(et(u, e, dd, "PROFICIENCIA_MEDIA"), 1) for u in ("CE", "BA")]]
+      for ETQ, e, dd in [("AI Matemática", "AI", "MT"), ("AI Português", "AI", "LP"), ("AF Matemática", "AF", "MT"),
+                         ("AF Português", "AF", "LP")]],
+    ["Redes acima do esperado (AI Matemática)", *[pc(et(u, "AI", "MT", "PARC_ACIMA")) for u in ("CE", "BA")]],
+    ["Redes acima do esperado no cluster 1 (AI Matemática)",
+     *[pc(cbv("AI MT 2023 por cluster", u, "PARC_ACIMA", CLUSTER=1)) for u in ("CE", "BA")]],
+    ["Redes acima do esperado sem as de salto atípico (AI Matemática)",
+     *[pc(cbv("AI MT 2023 sem saltos", u, "PARC_ACIMA")) for u in ("CE", "BA")]],
+    ["Redes com salto atípico (AI Matemática)", *[f"{int(et(u, 'AI', 'MT', 'SALTOS'))}" for u in ("CE", "BA")]],
+    ["Alfabetização média dos municípios (Censo 2022)", "79,5%", "82,0%"],
+    ["IDHM Renda da UF (2023)", "0,674", "0,673"],
+    ["Ensino Médio estadual: proficiência em Matemática", "265,6", "251,0"],
+    ["Ensino Médio estadual: gasto por aluno", "R$ 15.966", "R$ 16.988"],
+]
+dce = et("CE", "AI", "MT", "PROFICIENCIA_MEDIA") - et("BA", "AI", "MT", "PROFICIENCIA_MEDIA")
+
+CAP5_CEBA = [
+    titulo(2, "Mesmo gasto, resultados diferentes: Ceará e Bahia"),
+    nota("[Análise proposta por Guilherme Menezes, com os números preparados por Henrique Lindoso (2026-11-16). A "
+         "interpretação fica com os autores.]"),
+    corpo("Comparar redes com gasto parecido é o uso central do painel. O contraste mais forte aparece entre dois estados "
+          "do Nordeste. Em 2023, o gasto mediano por aluno das redes municipais foi praticamente o mesmo no Ceará "
+          f"({reais(et('CE', 'AI', 'MT', 'GASTO_MEDIANO'))}) e na Bahia ({reais(et('BA', 'AI', 'MT', 'GASTO_MEDIANO'))}), "
+          "mas a proficiência média em Matemática nos Anos Iniciais foi de "
+          f"{br(et('CE', 'AI', 'MT', 'PROFICIENCIA_MEDIA'), 1)} pontos no Ceará e de "
+          f"{br(et('BA', 'AI', 'MT', 'PROFICIENCIA_MEDIA'), 1)} na Bahia: {br(dce, 0)} pontos de diferença, mais que o "
+          "desvio-padrão entre as redes do país (25,0 pontos). No Ceará, "
+          f"{pc(et('CE', 'AI', 'MT', 'PARC_ACIMA'))} das redes ficaram acima do esperado para o seu gasto e contexto; na "
+          f"Bahia, {pc(et('BA', 'AI', 'MT', 'PARC_ACIMA'))} (Tabela {T_CEBA})."),
+    corpo("A diferença não se limita a uma etapa ou disciplina: aparece nos Anos Iniciais e nos Anos Finais, em Matemática "
+          f"e em Português, e em todas as edições de 2017 a 2025 (Figura {F_CEBA}). Também não se explica pelo contexto "
+          "medido no trabalho: o Ceará tem alfabetização média um pouco menor que a da Bahia (79,5% contra 82,0%) e o mesmo "
+          "IDHM Renda (0,674 e 0,673). Dentro do mesmo cluster, a diferença se mantém: no cluster 1, de municípios pequenos "
+          f"com alfabetização mais baixa, {pc(cbv('AI MT 2023 por cluster', 'CE', 'PARC_ACIMA', CLUSTER=1))} das redes do "
+          f"Ceará e {pc(cbv('AI MT 2023 por cluster', 'BA', 'PARC_ACIMA', CLUSTER=1))} das da Bahia ficaram acima do "
+          "esperado. Sem as redes com salto atípico, o resultado é o mesmo."),
+    legenda(f"Tabela {T_CEBA} – Redes municipais do Ceará e da Bahia em 2023"),
+    tabela(["", "Ceará", "Bahia"], t_ceba, [5075, 2000, 2000]),
+    fonte("Fonte: elaborado pelos autores, com dados do SIOPE, do Censo Escolar, do Saeb, do IBGE e do Radar IDHM. Acima "
+          "do esperado: na comparação nacional. Cluster 1: municípios pequenos, de maioria nordestina e alfabetização mais "
+          "baixa."),
+    figura("rIdCeba", 72, 16.0, 6.40, "Figura Ceará e Bahia"),
+    fonte(f"Figura {F_CEBA} – Ceará e Bahia: proficiência média das redes municipais por edição, e gasto e proficiência "
+          "de cada rede em 2023 (Anos Iniciais, Matemática). Uma rede da Bahia, com gasto marcado como extremo (R$ 1.206 "
+          "por aluno), fica fora da escala. Fonte: elaborado pelos autores."),
+    corpo("Na camada estadual, a comparação só faz sentido no Ensino Médio. Nos Anos Finais, a rede estadual do Ceará "
+          "atende só 2% dos alunos públicos da etapa (13% na Bahia), e a nota estadual retrata um grupo pequeno. No Ensino "
+          "Médio, a direção é a mesma, com diferença menor: 265,6 pontos em Matemática no Ceará e 251,0 na Bahia, com "
+          "gasto estadual por aluno de R$ 15.966 e R$ 16.988."),
+    corpo("Três cuidados valem para essa leitura. A comparação é de associação: mostra que o gasto, sozinho, não explica a "
+          "diferença, mas não diz o que a explica. O Ceará distribui parte do ICMS aos municípios segundo resultados "
+          "educacionais e presta assistência técnica às redes, e a literatura associa essas políticas a ganhos de nota "
+          "(Lautharte, Oliveira & Loureiro, 2021); ligar o resultado a elas cabe à discussão. Em segundo lugar, o Ceará "
+          f"concentra mais saltos atípicos ({int(et('CE', 'AI', 'MT', 'SALTOS'))} das "
+          f"{int(et('CE', 'AI', 'MT', 'REDES'))} redes em 2023, contra {int(et('BA', 'AI', 'MT', 'SALTOS'))} das "
+          f"{int(et('BA', 'AI', 'MT', 'REDES'))} na Bahia), embora tirá-los não mude a comparação. Por fim, a diferença é "
+          "entre médias: há redes da Bahia acima de muitas do Ceará, e a página Pares permite localizá-las."),
+]
 
 
 CAP5_CASOS = [
@@ -623,7 +709,7 @@ CAP5_CASOS = [
     corpo(f"Dos {C['C']['PARES']} pares, só {C['C']['PARES_ACIMA']} entregam mais, ambos de Alagoas: "
           f"{C['C']['MELHOR_PAR']} ({pct(C['C']['MELHOR_PAR_VS'])}, também com salto) e {C['C']['MELHOR_PAR_SEM_SALTO']}. "
           "O padrão não é isolado: das 53 redes no 1% superior do país em 2023, 13 são de Alagoas, que tem 1,9% das redes "
-          "com cálculo (100 de 5.240), e 16 têm salto atípico. Nesses casos, o alerta do painel sugere conferir o resultado "
+          "com cálculo (100 de 5.240), e 17 têm salto atípico. Nesses casos, o alerta do painel sugere conferir o resultado "
           "antes de tomar a rede como referência; a marca indica uma variação fora do padrão, e não um erro."),
     nota("[Para os autores: o levantamento bibliográfico (docs/levantamento_bibliografico.md, seção 8) registrou que "
          "Alagoas distribui parte do ICMS aos municípios segundo indicadores de qualidade da educação. É contexto a "
@@ -721,6 +807,9 @@ REFERENCIAS = [nota(
         "Básica: microdados 2015–2025 [Conjunto de dados]. Inep.",
         "Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira. (2026b). Índice de Desenvolvimento da "
         "Educação Básica (Ideb) 2025: resultados por município e rede [Conjunto de dados]. Inep.",
+        "Lautharte, I., Oliveira, V. H., & Loureiro, A. (2021). Incentives for mayors to improve learning: Evidence from "
+        "state reforms in Ceará, Brazil (Policy Research Working Paper No. 9509). World Bank. "
+        "https://doi.org/10.1596/1813-9450-9509",
         "MacQueen, J. (1967). Some methods for classification and analysis of multivariate observations. In L. M. Le Cam "
         "& J. Neyman (Eds.), Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability "
         "(Vol. 1, pp. 281–297). University of California Press.",
@@ -807,7 +896,7 @@ INSERCOES = [  # (trecho que identifica o parágrafo do rascunho, blocos a inser
     ("[INSERIR funcionalidades do dashboard deliberadamente deixadas de fora", FUTURO),
     ("[INSERIR melhorias de automação e atualização periódica de dados", AUTOMACAO),
     ("[NORMA DE REFERÊNCIAS:", REFERENCIAS),
-    ("[Metodologia e gráficos por Henrique Lindoso; interpretação por Guilherme Menezes.]", CAP5_CLUSTER + CAP5_MODELOS),
+    ("[Metodologia e gráficos por Henrique Lindoso; interpretação por Guilherme Menezes.]", CAP5_CLUSTER + CAP5_MODELOS + CAP5_CEBA),
     ("[Análise gerencial por Guilherme Menezes.]", CAP5_CASOS),
     ("[Análise por Guilherme Menezes.]", CAP5_VALIDACAO),
     ("AVISO. Como o Capítulo 5 está em pausa", [nota(
@@ -926,6 +1015,7 @@ figs = {"rIdFig1": "fig1_entre_dentro.png", "rIdFig2": "fig2_defasagens.png", "r
         "rIdFig4": "fig4_sensibilidade.png"}
 figs["rIdFluxo"] = "fig0_fluxo_dados.png"
 figs["rIdClu1"], figs["rIdClu2"] = "fig5_escolha_k.png", "fig6_perfil_clusters.png"
+figs["rIdCeba"] = "fig7_ce_ba.png"
 novos = ""
 for k, (arq, _) in enumerate(TELAS_CASO):
     shutil.copy(TELAS_DIR / f"{arq}.png", PASTA / "word" / "media" / f"tela_{arq}.png")

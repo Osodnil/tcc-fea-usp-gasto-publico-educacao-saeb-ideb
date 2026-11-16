@@ -135,7 +135,7 @@
                     }
                   },
                   {
-                    "value": "⚠ salto: o resultado mudou demais desde a edição anterior; ⚠ rede parcial: a rede municipal tem menos de 50% dos alunos públicos da etapa. Conferir antes de usar como exemplo.",
+                    "value": "⚠ salto: o resultado mudou demais desde a última edição com nota; ⚠ rede parcial: a rede municipal tem menos de 50% dos alunos públicos da etapa. Conferir antes de usar como exemplo.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#52514e"
