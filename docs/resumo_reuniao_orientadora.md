@@ -46,6 +46,12 @@
 | Eficiência no painel [A10] | Em % do esperado ((nota − esperada) ÷ esperada), para pôr etapas e disciplinas na mesma escala; pontos e percentil ficam como referência. Os valores aparecem como "vs. esperado", com 0% = entregou o esperado. A escala em que o esperado vale 100% não foi usada, porque em DEA 100% quer dizer "eficiente" e porque a escala do Saeb não tem zero verdadeiro. O mapa abre na comparação no mesmo estado, com opção nacional. Na comparação no mesmo estado, os pares (página Pares) também são da mesma UF, para não misturar réguas. No Brasil inteiro, a eficiência média é zero por construção, e o painel diz isso |
 | Rede municipal parcial [A9] | Manter na análise e marcar no painel; a sensibilidade sem essas redes não muda as conclusões |
 | Acesso [A7] | QR Code ao final, apontando para o dashboard publicado |
+| Formato [D1, A21] | Método científico, estudo quantitativo: não há organização-cliente para consultoria. O Capítulo 3 (Diagnóstico) sai, e os capítulos passam a Introdução, Revisão bibliográfica, Método, Resultados e discussão, e Conclusões |
+| Nome do indicador [D2, A21] | **Desempenho em relação ao esperado** (no painel, "vs. esperado"): diferença entre a proficiência da rede e a esperada para redes com o mesmo gasto e contexto, em % da esperada. Não se chama "eficiência" porque o gasto quase não altera a esperada no modelo nacional. A página do painel passou a se chamar Desempenho |
+| Saltos e pares [S11, P7, A21] | Regra dos saltos estendida confirmada (647 marcas, sem exclusão); faixa dos pares mantida em 0,8 a 1,25 vez o gasto, no mesmo cluster |
+| Referências e formatação [D4, A21] | Referências em APA (obrigatória pelo Manual a partir de 2026) e formatação pela ABNT (diretrizes da USP); lista final e ajustes na cópia, pendências em `docs/revisao_formatacao.md` |
+| Extensão do texto [A22] | Nenhuma análise sai. Saem as figuras que repetiam tabelas, e telas, clusters, duas tabelas e as fichas dos casos vão para o Apêndice B. O Método e os Resultados caem de 28 para 21 páginas, abrindo espaço para a revisão bibliográfica e a discussão |
+| Publicação e QR Code [A7] | Etapa final, depois do texto e do painel fechados |
 | Pacote educabR [A20] | Sugestão da orientadora. Vai citado no texto como forma de automatizar o download das bases do Inep, sem trocar a extração: ele cobre as notas e o Censo Escolar, mas não os dados de gasto (SIOPE e SICONFI), e o projeto é todo em Python |
 | Registro [seção 10] | Toda decisão e limitação anotada |
 
@@ -111,7 +117,7 @@ As quatro primeiras perguntas vêm da reunião de 06/11 entre os autores; as res
 
 - **Saltos atípicos [S11]:** algumas redes, sobretudo no CE e em AL, sobem mais de 100 pontos em poucos anos (por exemplo, Ibateguara-AL, de 195 para 345). Proposta: marcar, sem excluir, a variação em relação à última edição com nota que se afasta mais de 3 desvios-padrão da média (647 de 82 mil resultados), com aviso no dashboard. A regra serve? **Extensão feita em 2026-11-16 (A19):** antes, quando faltava a nota de uma edição, a variação de quatro anos não era testada; agora é, com limite próprio (em 4 anos a nota varia mais). Entraram 14 marcas; os resultados praticamente não mudam.
 
-- **Formato do TCC [D1]:** pelo Manual de 2025, o enquadramento mais natural é **método científico (estudo quantitativo)**: a pergunta é de descoberta, e não há uma organização-cliente para um plano de consultoria. Confirmar. Muda a estrutura do texto, não o dashboard.
+- **Formato do TCC [D1]:** ✅ decidido pelos autores em 2026-11-17 (A21): método científico, estudo quantitativo. Levamos para a orientadora confirmar.
 - **Avaliação com usuários:** o Manual prevê TCLE (e possivelmente comitê de ética) para pesquisa com pessoas. Como fazer a avaliação com gestores?
   - **O que já existe (2026-11-13, A17):** sem usuários, a seção de validação do capítulo 5 percorre as três perguntas do painel com três estudos de caso escolhidos por regra (Timon-MA, São Paulo-SP e Coruripe-AL) e reúne a conferência técnica dos números. **Pergunta:** isso basta como "validação conceitual", ou a seção deve mudar de nome?
   - **Achado dos casos:** das 53 redes no 1% superior de 2023, 13 são de Alagoas e 17 têm salto atípico, o que reforça a pergunta sobre os saltos (S11).

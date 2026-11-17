@@ -167,7 +167,7 @@
             "tooltip": {
               "expr": {
                 "Literal": {
-                  "Value": "'A eficiência de cada município, numa UF escolhida.'"
+                  "Value": "'O desempenho vs. esperado de cada município, numa UF escolhida.'"
                 }
               }
             }

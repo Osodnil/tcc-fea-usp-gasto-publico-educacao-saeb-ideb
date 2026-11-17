@@ -232,7 +232,7 @@ RETURN
 // Verdadeiro quando o recorte é o Brasil inteiro (sem UF, cluster nem município escolhidos ou clicados).
 // A esperada vem de regressões cujos resíduos somam zero no Brasil a cada edição (comparação nacional) e,
 // na comparação no mesmo estado, em cada UF no período todo (efeito fixo de UF, edições juntas): no Brasil inteiro,
-// a eficiência média é zero por construção nas duas comparações (2026-11-09).
+// a média vs. esperado é zero por construção nas duas comparações (2026-11-09).
 Recorte do Brasil todo =
     NOT ISFILTERED ( dim_uf ) && NOT ISFILTERED ( dim_municipio ) && NOT ISFILTERED ( dim_cluster )
 
@@ -253,7 +253,7 @@ VAR base = [Aviso do modelo]
 RETURN
     IF (
         [Recorte do Brasil todo] && NOT ( [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025 ),
-        base & " No Brasil inteiro, a eficiência média é zero por construção: escolha uma UF.",
+        base & " No Brasil inteiro, a média vs. esperado é zero por construção: escolha uma UF.",
         base
     )
 
@@ -284,9 +284,9 @@ Aviso do modelo =
                 & "“Mesmo estado (até 2025)” no filtro de comparação.",
         [Modelo] = "Oficial",
             "Nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos "
-                & "(inclui o IDHM da UF). Diferenças entre estados aparecem na eficiência.",
+                & "(inclui o IDHM da UF). Diferenças entre estados aparecem no resultado vs. esperado.",
         "Mesmo estado: cada rede é comparada com as do mesmo estado de gasto e contexto parecidos. "
-            & "Não filtra a UF: tira da eficiência a diferença média entre estados."
+            & "Não filtra a UF: tira do resultado vs. esperado a diferença média entre estados."
     )
 
 // ───────────────────────── Pasta: 5 Pares e cluster ─────────────────────────
@@ -502,7 +502,7 @@ RETURN
                 & FORMAT ( er, "+0.0%;-0.0%;0.0%" ) & ": diferença de " & FORMAT ( ( ec - er ) * 100, "+0.0;-0.0;0.0" )
                 & " pontos percentuais, com gasto por aluno " & FORMAT ( dg, "+0%;-0%;0%" ) & "." & contexto,
         NOT ISBLANK ( pc ) && NOT ISBLANK ( pr ),
-            "Sem eficiência nesta edição e comparação. Proficiência " & FORMAT ( pc - pr, "+0.0;-0.0;0.0" )
+            "Sem nota esperada nesta edição e comparação. Proficiência " & FORMAT ( pc - pr, "+0.0;-0.0;0.0" )
                 & " pontos, gasto por aluno " & FORMAT ( dg, "+0%;-0%;0%" ) & "." & contexto,
         "Um dos dois municípios não tem nota nesta etapa e edição (veja o motivo na Ficha)."
     )
@@ -606,10 +606,10 @@ RETURN
         ISBLANK ( [Eficiência (pontos)] ) && [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
             "Com nota. A comparação nacional não cobre 2025 (não há IDHM de 2025); escolha “Mesmo estado” no filtro de comparação.",
         ISBLANK ( [Eficiência (pontos)] ) && HASONEVALUE ( dim_disciplina[DISCIPLINA] ),
-            "Com nota, mas sem eficiência: falta o gasto ou outra variável do modelo neste ano.",
+            "Com nota, mas sem nota esperada: falta o gasto ou outra variável do modelo neste ano.",
         part < 0.5,
             "⚠ Rede parcial: a rede municipal atende só " & FORMAT ( part, "0%" ) & " dos alunos das escolas públicas "
-                & "nesta etapa; o restante está na rede estadual. A eficiência é a da rede municipal, não a da cidade.",
+                & "nesta etapa; o restante está na rede estadual. O resultado é o da rede municipal, não o da cidade.",
         "Com nota. A rede municipal atende " & FORMAT ( part, "0%" ) & " dos alunos das escolas públicas nesta etapa."
     )
 
@@ -658,11 +658,11 @@ RETURN
         [Mapa: comparação] = "Oficial",
             "Nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos. "
                 & "Diferenças entre estados aparecem nas cores."
-                & IF ( brasil, " No Brasil inteiro, a eficiência média é zero por construção." ),
+                & IF ( brasil, " No Brasil inteiro, a média vs. esperado é zero por construção." ),
         "Mesmo estado: cada rede é comparada com as do seu estado de gasto e contexto parecidos (inclui 2025). "
             & IF (
                 brasil,
-                "No Brasil inteiro, a eficiência média é zero por construção.",
+                "No Brasil inteiro, a média vs. esperado é zero por construção.",
                 "A média da UF compara esta edição com a do estado no período."
             )
             & " Para comparar com o país, escolha “Nacional”."
@@ -688,7 +688,7 @@ Aviso do mapa =
         [Municípios no recorte] > 1500,
         "⚠ Escolha uma UF no filtro acima: o mapa mostra até ~1.500 municípios por vez (o Brasil tem 5.571).",
         // desde 2026-11-09: % do esperado, sempre na comparação com o mesmo estado (a mesma régua dentro da UF)
-        "Cores: eficiência em % do esperado, na comparação "
+        "Cores: desempenho vs. esperado, em %, na comparação "
             & IF ( [Mapa: comparação] = "Oficial", "nacional", "com o mesmo estado" ) & ". Vermelho = abaixo · "
             & "cinza = próximo · azul = acima (cor máxima a partir de ±12%). Sem nota: " & FORMAT ( [Municípios sem rede municipal na etapa], "#,0" )
             & " sem rede municipal na etapa e " & FORMAT ( [Municípios sem nota divulgada], "#,0" )

@@ -29,7 +29,7 @@
               "queryRef": "dim_modelo.ROTULO_MODELO",
               "nativeQueryRef": "ROTULO_MODELO",
               "active": true,
-              "displayName": "Comparação da eficiência"
+              "displayName": "Comparação do esperado"
             }
           ]
         }

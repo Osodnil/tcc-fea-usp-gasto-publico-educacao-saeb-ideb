@@ -239,18 +239,18 @@ table _Medidas
 	/// Sempre diz qual comparação está em uso (um cartão vazio mostraria "(Em branco)").
 	/// Revisto na reunião de 2026-11-06: o modelo do próprio estado não filtra a UF, muda a régua; e 2025 precisa de aviso claro.
 	measure 'Aviso do modelo' =
-			SWITCH (
-			    TRUE (),
-			    [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
-			        // aspas dentro de texto DAX se escrevem dobradas; a versão com \" quebrou a medida (2026-11-09)
-			        "⚠ A comparação nacional não cobre 2025: não existe IDHM de 2025. Para ver 2025, escolha "
-			            & "“Mesmo estado (até 2025)” no filtro de comparação.",
-			    [Modelo] = "Oficial",
-			        "Nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos "
-			            & "(inclui o IDHM da UF). Diferenças entre estados aparecem na eficiência.",
-			    "Mesmo estado: cada rede é comparada com as do mesmo estado de gasto e contexto parecidos. "
-			        & "Não filtra a UF: tira da eficiência a diferença média entre estados."
-			)
+			    SWITCH (
+			        TRUE (),
+			        [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
+			            // aspas dentro de texto DAX se escrevem dobradas; a versão com \" quebrou a medida (2026-11-09)
+			            "⚠ A comparação nacional não cobre 2025: não existe IDHM de 2025. Para ver 2025, escolha "
+			                & "“Mesmo estado (até 2025)” no filtro de comparação.",
+			        [Modelo] = "Oficial",
+			            "Nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos "
+			                & "(inclui o IDHM da UF). Diferenças entre estados aparecem no resultado vs. esperado.",
+			        "Mesmo estado: cada rede é comparada com as do mesmo estado de gasto e contexto parecidos. "
+			            & "Não filtra a UF: tira do resultado vs. esperado a diferença média entre estados."
+			    )
 		displayFolder: 4 Eficiência
 		lineageTag: 46469a65-6960-5bef-973b-813e34fdbfd6
 
@@ -486,16 +486,16 @@ table _Medidas
 
 	/// O Mapa de formas desenha no máximo ~1.500 áreas por vez; o Brasil tem 5.571 municípios (decisão de 2026-11-05)
 	measure 'Aviso do mapa' =
-			IF (
-			    [Municípios no recorte] > 1500,
-			    "⚠ Escolha uma UF no filtro acima: o mapa mostra até ~1.500 municípios por vez (o Brasil tem 5.571).",
-			    // desde 2026-11-09: % do esperado, sempre na comparação com o mesmo estado (a mesma régua dentro da UF)
-			    "Cores: eficiência em % do esperado, na comparação "
-			        & IF ( [Mapa: comparação] = "Oficial", "nacional", "com o mesmo estado" ) & ". Vermelho = abaixo · "
-			        & "cinza = próximo · azul = acima (cor máxima a partir de ±12%). Sem nota: " & FORMAT ( [Municípios sem rede municipal na etapa], "#,0" )
-			        & " sem rede municipal na etapa e " & FORMAT ( [Municípios sem nota divulgada], "#,0" )
-			        & " sem nota divulgada (motivo na Ficha)."
-			)
+			    IF (
+			        [Municípios no recorte] > 1500,
+			        "⚠ Escolha uma UF no filtro acima: o mapa mostra até ~1.500 municípios por vez (o Brasil tem 5.571).",
+			        // desde 2026-11-09: % do esperado, sempre na comparação com o mesmo estado (a mesma régua dentro da UF)
+			        "Cores: desempenho vs. esperado, em %, na comparação "
+			            & IF ( [Mapa: comparação] = "Oficial", "nacional", "com o mesmo estado" ) & ". Vermelho = abaixo · "
+			            & "cinza = próximo · azul = acima (cor máxima a partir de ±12%). Sem nota: " & FORMAT ( [Municípios sem rede municipal na etapa], "#,0" )
+			            & " sem rede municipal na etapa e " & FORMAT ( [Municípios sem nota divulgada], "#,0" )
+			            & " sem nota divulgada (motivo na Ficha)."
+			    )
 		displayFolder: 9 Mapa
 		lineageTag: 3c5a1540-e341-5c15-b728-8d7c1645ad1c
 
@@ -600,10 +600,10 @@ table _Medidas
 			        ISBLANK ( [Eficiência (pontos)] ) && [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025,
 			            "Com nota. A comparação nacional não cobre 2025 (não há IDHM de 2025); escolha “Mesmo estado” no filtro de comparação.",
 			        ISBLANK ( [Eficiência (pontos)] ) && HASONEVALUE ( dim_disciplina[DISCIPLINA] ),
-			            "Com nota, mas sem eficiência: falta o gasto ou outra variável do modelo neste ano.",
+			            "Com nota, mas sem nota esperada: falta o gasto ou outra variável do modelo neste ano.",
 			        part < 0.5,
 			            "⚠ Rede parcial: a rede municipal atende só " & FORMAT ( part, "0%" ) & " dos alunos das escolas públicas "
-			                & "nesta etapa; o restante está na rede estadual. A eficiência é a da rede municipal, não a da cidade.",
+			                & "nesta etapa; o restante está na rede estadual. O resultado é o da rede municipal, não o da cidade.",
 			        "Com nota. A rede municipal atende " & FORMAT ( part, "0%" ) & " dos alunos das escolas públicas nesta etapa."
 			    )
 		displayFolder: 6 Qualidade dos dados
@@ -710,7 +710,7 @@ table _Medidas
 			                & FORMAT ( er, "+0.0%;-0.0%;0.0%" ) & ": diferença de " & FORMAT ( ( ec - er ) * 100, "+0.0;-0.0;0.0" )
 			                & " pontos percentuais, com gasto por aluno " & FORMAT ( dg, "+0%;-0%;0%" ) & "." & contexto,
 			        NOT ISBLANK ( pc ) && NOT ISBLANK ( pr ),
-			            "Sem eficiência nesta edição e comparação. Proficiência " & FORMAT ( pc - pr, "+0.0;-0.0;0.0" )
+			            "Sem nota esperada nesta edição e comparação. Proficiência " & FORMAT ( pc - pr, "+0.0;-0.0;0.0" )
 			                & " pontos, gasto por aluno " & FORMAT ( dg, "+0%;-0%;0%" ) & "." & contexto,
 			        "Um dos dois municípios não tem nota nesta etapa e edição (veja o motivo na Ficha)."
 			    )
@@ -825,11 +825,11 @@ table _Medidas
 			        [Mapa: comparação] = "Oficial",
 			            "Nacional: cada rede é comparada com redes de todo o país de gasto e contexto parecidos. "
 			                & "Diferenças entre estados aparecem nas cores."
-			                & IF ( brasil, " No Brasil inteiro, a eficiência média é zero por construção." ),
+			                & IF ( brasil, " No Brasil inteiro, a média vs. esperado é zero por construção." ),
 			        "Mesmo estado: cada rede é comparada com as do seu estado de gasto e contexto parecidos (inclui 2025). "
 			            & IF (
 			                brasil,
-			                "No Brasil inteiro, a eficiência média é zero por construção.",
+			                "No Brasil inteiro, a média vs. esperado é zero por construção.",
 			                "A média da UF compara esta edição com a do estado no período."
 			            )
 			            & " Para comparar com o país, escolha “Nacional”."
@@ -904,7 +904,7 @@ table _Medidas
 			RETURN
 			    IF (
 			        [Recorte do Brasil todo] && NOT ( [Modelo] = "Oficial" && SELECTEDVALUE ( dim_ano[ANO] ) = 2025 ),
-			        base & " No Brasil inteiro, a eficiência média é zero por construção: escolha uma UF.",
+			        base & " No Brasil inteiro, a média vs. esperado é zero por construção: escolha uma UF.",
 			        base
 			    )
 		displayFolder: 4 Eficiência

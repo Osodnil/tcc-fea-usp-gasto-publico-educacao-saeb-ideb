@@ -78,7 +78,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Eficiência (vs. esperado)",
+                    "value": "Desempenho vs. esperado",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "9pt",
@@ -101,7 +101,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Percentil e faixa de eficiência",
+                    "value": "Percentil e faixa",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "9pt",

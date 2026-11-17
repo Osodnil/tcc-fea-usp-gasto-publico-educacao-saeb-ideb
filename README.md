@@ -8,7 +8,7 @@ Trabalho de Conclusão de Curso em Administração (FEA/USP, EAD 600/601). O for
 
 **Fluxo:** Dados → ETL → Análise → Indicadores → Insights → Dashboard → Avaliação.
 
-> Os resultados são de **associação e eficiência relativa**, não de causalidade.
+> Os resultados são de **associação e desempenho em relação ao esperado**, não de causalidade.
 
 ## Desenho
 
@@ -196,11 +196,12 @@ Ele cria `exportacao/TCC_Gasto_Saeb_<data>.zip` (~13 MB) com o dashboard, os doc
 - ✅ Dashboard HTML ampliado como ferramenta de análise (6 abas, incluindo mapa).
 - ✅ Clusters por contexto (7 grupos) e indicador de eficiência municipal (versão oficial nacional, com IDHM).
 - ✅ Modelo de dados e especificação do dashboard oficial em Power BI (`powerbi/`).
-- ✅ Dashboard oficial em Power BI com 10 páginas (Boas-vindas, Visão geral, Eficiência, Ficha do município, Pares, Mapa, Defasagens, Contexto e clusters, Estados, Sobre os dados), com os números conferidos contra o Python (P7).
+- ✅ Dashboard oficial em Power BI com 10 páginas (Boas-vindas, Visão geral, Desempenho, Ficha do município, Pares, Mapa, Defasagens, Contexto e clusters, Estados, Sobre os dados), com os números conferidos contra o Python (P7).
 - ✅ Fase de análise (10 e 11/11/2026): modelo principal com efeito fixo de município, camada estadual, heterogeneidade, testes de sensibilidade e material para o texto (A4, A11 a A14).
 - ✅ Revisão geral (11/11/2026): `docs/revisao_geral.md`.
 - ⏳ Acesso simples ao projeto (QR Code: falta definir o endereço público), revisão bibliográfica e redação.
-- 🟡 Abertos, a decidir com a orientadora (seção 9 do registro e `docs/revisao_geral.md`): uso de IA, formato do TCC, régua principal e nome do indicador de eficiência, regra dos saltos atípicos, indicadores formais, largura da faixa dos pares e avaliação com usuários.
+- ✅ Fechados em 2026-11-17 (A21): formato do TCC (método científico), nome do indicador (desempenho em relação ao esperado), regra dos saltos, faixa dos pares, trabalhos futuros, referências em APA e formatação ABNT da cópia.
+- 🟡 Abertos: confirmação da orientadora, indicadores formais, publicação do painel com QR Code (etapa final) e reescrita do texto pelos autores.
 
 As limitações do trabalho estão consolidadas na seção 10 de `docs/decisoes_metodo.md`.
 

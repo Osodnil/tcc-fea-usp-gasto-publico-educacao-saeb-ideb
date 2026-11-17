@@ -20,7 +20,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "PAINEL DE EFICIÊNCIA EDUCACIONAL",
+                    "value": "PAINEL DE GASTO E DESEMPENHO EDUCACIONAL",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "8pt",
@@ -44,7 +44,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Redes parecidas, ordenadas pela eficiência",
+                    "value": "Redes parecidas, ordenadas pelo resultado",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#cde2fb"

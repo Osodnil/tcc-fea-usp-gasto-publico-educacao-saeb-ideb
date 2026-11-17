@@ -167,7 +167,7 @@
             "tooltip": {
               "expr": {
                 "Literal": {
-                  "Value": "'Nota da rede contra a de redes com gasto e contexto parecidos. Também na Eficiência (ranking) e no Mapa. Abre a página Ficha do município.'"
+                  "Value": "'Nota da rede contra a de redes com gasto e contexto parecidos. Também na página Desempenho (ranking) e no Mapa. Abre a página Ficha do município.'"
                 }
               }
             }

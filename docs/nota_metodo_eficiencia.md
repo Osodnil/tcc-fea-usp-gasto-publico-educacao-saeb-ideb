@@ -1,5 +1,7 @@
 # Nota de método: proficiência, nota esperada, eficiência e clusters
 
+> **Nome do indicador (2026-11-17, A21):** o que esta nota chama de "eficiência" passou a se chamar **desempenho em relação ao esperado** (no painel, "vs. esperado"; a página Eficiência virou Desempenho). O cálculo não mudou.
+
 *Para o Henrique e o Guilherme, em resposta às dúvidas da reunião de 2026-11-06. Escrita em 2026-11-09. Os códigos entre colchetes remetem a `docs/decisoes_metodo.md`. Os números são de Anos Iniciais (5º ano), Matemática, edição de 2023, salvo indicação.*
 
 ## 1. Proficiência: o que o painel chama de "nota"

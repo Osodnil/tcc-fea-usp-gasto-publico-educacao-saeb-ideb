@@ -624,7 +624,49 @@ Falar sempre em associação e eficiência relativa.
 - **Alternativa não escolhida:** conferir alguns números (Ideb, matrículas) contra o educabR como validação extra. Custo: instalar o R e algumas horas de trabalho. Pode ser feita depois, se a orientadora pedir.
 - **Na cópia do rascunho:** citado na base factual de "Automação" como melhoria possível (automatizar o download das bases do Inep), e incluído nas referências como Bissoli (2026). A mesma base factual foi corrigida: antes dizia que só três bases eram baixadas à mão, mas são cinco (Ideb, Censo Escolar, IDHM, alfabetização do Censo 2022 e malha municipal).
 
-### S11. Saltos atípicos de proficiência ⚠️ (achado de 2026-10-30)
+### A21. Fechamento dos pontos abertos: formato, indicador, saltos, pares, trabalhos futuros, referências e formatação ✅ (Henrique, 2026-11-17)
+- **Formato (D1): método científico, estudo quantitativo.** Motivo: a pergunta é de descoberta, e não há uma organização-cliente, que o Manual exige para consultoria. Nova estrutura: 1 Introdução; 2 Revisão bibliográfica; 3 Método (o atual Capítulo 4); 4 Resultados e discussão (o atual 5); 5 Conclusões, limitações e sugestões de pesquisa futura (o atual 6). O Capítulo 3 do rascunho (Diagnóstico) sai: 3.1 e 3.2 vão para a Introdução, e 3.3 (Oportunidade de consultoria) é retirado. Na cópia, os títulos já foram trocados, e há notas onde o texto do Guilherme precisa mudar (título do trabalho, resumo, objetivos, Capítulo 3).
+- **Nome e definição do indicador (D2, revisão geral 2.1): "desempenho em relação ao esperado"** (no painel, "vs. esperado"). **Definição:** diferença entre a proficiência média da rede no Saeb e a proficiência esperada para redes com o mesmo gasto por aluno e o mesmo contexto, em % da esperada. **Por que não "eficiência":** no modelo nacional, o gasto quase não altera a esperada (0,92 ponto por log do gasto, p = 0,20), e em DEA "eficiência" quer dizer resultado por insumo, com 100% como o máximo.
+  - **No painel:** a página Eficiência passou a se chamar **Desempenho**, e o painel, "Painel de gasto e desempenho educacional". Mudaram os títulos, glossários, avisos, o filtro "Comparação do esperado" e sete textos de medidas (25 visuais e uma página, regenerados numa cópia e conferidos contra os esquemas oficiais). Os **nomes internos** das medidas, colunas e páginas (`Eficiência (% do esperado)`, `EFIC_PCT`, `tcc_eficiencia`) continuam os mesmos, para não quebrar o modelo.
+  - **Conferido na tela (2026-11-17):** o painel abriu com os textos novos, e as 14 telas do texto (10 páginas e 4 dos casos) foram capturadas de novo; os números dos casos batem com o texto.
+- **Saltos atípicos (S11): regra estendida confirmada** pelos autores. Mais de 3 desvios-padrão da média das variações com o mesmo intervalo (2 ou 4 anos), marca sem exclusão, 647 resultados.
+- **Faixa dos pares (P7, revisão): mantida** em 0,8 a 1,25 vez o gasto, no mesmo cluster (e na mesma UF, na comparação no mesmo estado). Motivos: a lista já vem ordenada pelo resultado vs. esperado, e o gestor lê o topo; a comparação no mesmo estado já reduz a lista (mediana de 78 pares); mudar a regra agora mudaria os números dos estudos de caso. A lista longa nos clusters grandes fica como limitação, e limitar aos pares de gasto mais próximo, como trabalho futuro.
+- **Trabalhos futuros (6.4):** a base factual separa o que ficou de fora nesta versão (simulação de cenários, VAAR, gasto por etapa e Educação Infantil, avaliação com usuários) das extensões sugeridas (VAAT, gasto do biênio na nota esperada, 2025 com o IDHM, comparação com uma medida de fronteira, incentivos estaduais e pares mais estreitos).
+- **Publicação do painel e QR Code (A7): etapa final** desta versão, depois que o texto e o painel estiverem fechados. Não é trabalho futuro.
+- **Referências (D4):** lista final única na cópia, em APA 7, com as 31 obras citadas (as 19 do rascunho e as dos capítulos 4 e 5), DOIs acrescentados e o Inep (2026) do rascunho renomeado para Inep (2026b). As candidatas do levantamento bibliográfico entram só quando forem citadas.
+  - **Norma:** o Manual de TCC torna a APA obrigatória para citações e referências a partir de 2026, e a formatação do documento segue as diretrizes da USP, que adotam a ABNT (NBR 14724). Por isso, o pedido de "normas ABNT" vale para a formatação, e a APA, para as referências.
+  - **Citação corrigida:** "(Lautharte, Oliveira & Loureiro, 2021)" passou a "(Lautharte et al., 2021)", como pede a APA para três ou mais autores.
+- **Formatação ABNT na cópia:**
+  - margens de 3 cm (superior e esquerda) e 2 cm (inferior e direita) em todas as seções; no rascunho, as páginas pré-textuais tinham margem inferior de 0,5 cm e direita de 1,75 cm;
+  - número da página automático no canto superior direito (no rascunho, era um "10" digitado);
+  - legenda das figuras acima da imagem, com a fonte abaixo;
+  - idioma do documento em português do Brasil (estava pt-PT);
+  - cinco parágrafos do corpo passaram a espaçamento de 1,5 e texto justificado.
+  - **Lista do que falta fazer à mão:** `docs/revisao_formatacao.md`.
+
+### A22. Texto enxugado e auditoria ABNT da cópia ✅ (Henrique, 2026-11-17)
+- **Pergunta:** com mais de 60 páginas, o trabalho não ficou extenso demais?
+- **Diagnóstico:** o número de páginas enganava. Cerca de 5 mil palavras eram notas amarelas, que saem na versão final, e a Introdução, a Revisão e as Conclusões ainda vão crescer. O problema real era o **desequilíbrio**: 28 páginas de Método e Resultados contra uma Revisão que deve ter 8 a 10, quando a rubrica da FEA pesa a fundamentação teórica e a discussão. Boa parte dessas 28 páginas era repetição: figuras com os mesmos números das tabelas e 14 telas do painel.
+- **Decisão: tirar a repetição, não as análises.** As quatro análises continuam, porque cada uma responde a uma parte da pergunta.
+  - **Excluídas:** três figuras que repetiam tabelas (coeficientes das três especificações, defasagem e testes de sensibilidade). Os arquivos `fig1`, `fig2` e `fig4` continuam em `docs/resultados/figuras/`.
+  - **No Apêndice B (novo):**
+    - sete das dez telas do painel; no texto ficam Desempenho, Ficha do município e Pares;
+    - as duas figuras dos clusters (escolha de k e perfil); o Quadro 5 fica no texto;
+    - a tabela da heterogeneidade; a figura fica no texto;
+    - a tabela da camada estadual; o parágrafo fica no texto;
+    - as fichas dos três casos; no texto fica a tela de Pares de Timon.
+  - **Resumida:** a conferência técnica da seção 5.5, que era uma lista de seis itens e virou um parágrafo.
+  - **Renumeração:** no texto, as Figuras 1 a 7 e as Tabelas 1 a 8; no apêndice, as Figuras B.1 a B.12 e as Tabelas B.1 e B.2.
+- **Resultado:** o Método passou de 10 para 7 páginas, e os Resultados, de 18 para 14. O corpo do texto ficou com 37 páginas, contra 44, e o total segue em cerca de 62, porque o apêndice cresceu.
+- **Auditoria ABNT e correções na cópia:**
+  - a capa e a folha de rosto tinham ganhado uma página a mais com a margem de 2 cm; saíram linhas em branco;
+  - as Tabelas 3 a 7 (numeração antiga) não tinham "Fonte:";
+  - as tabelas passaram ao padrão do IBGE: abertas nas laterais e sem grade interna;
+  - o título de cada figura ficava sozinho no pé da página; título e imagem agora estão no mesmo parágrafo.
+  - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
+  - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
+
+### S11. Saltos atípicos de proficiência ✅ regra confirmada em 2026-11-17 (A21) (achado de 2026-10-30)
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
 - **Concentração:** as redes de AI com mais de 300 pontos em Matemática estão quase todas no Ceará e em Alagoas (2025: 30 no CE e 10 em AL). A média de AL subiu de 200 (2017) para 238 (2025).
 - **Leitura:** pode ser melhoria real, artefato de participação ou distorção ligada a incentivos. Por exemplo, a distribuição do ICMS educacional pelo IDEB em alguns estados é citada nesse debate. **Nenhuma dessas hipóteses foi verificada aqui.**
@@ -1180,19 +1222,19 @@ Pontos levantados sobre o painel, com diagnóstico nos dados em 2026-11-09 e pla
 | O desempenho melhora a cada edição? | AI MT: 218,2 → 222,7 → 211,8 (2021) → 220,2 → 230,1. Redes que melhoraram: 66% (2019), 15% (2021), 80% (2023), 79% (2025) | ✅ Etapa 3: gráfico "Redes que melhoraram" na Visão geral, com a ressalva de que melhorar não prova bom uso do gasto |
 
 ### Pendências restantes (nenhuma bloqueia o desenvolvimento)
-0. **S11 (2026-10-30):** confirmar a regra proposta para marcar os saltos atípicos (mais de 3 desvios-padrão da variação média; 647 linhas marcadas desde a extensão a intervalos de 4 anos, nenhuma excluída). (A8 foi decidido: versão nacional.)
+0. **S11:** ✅ regra confirmada pelos autores em 2026-11-17 (A21). (A8 foi decidido: versão nacional.)
 1. **S8 e S4:** as propostas (não imputar notas, controlar o porte, painel balanceado; Anos Finais como complementar) seguem como padrão de trabalho, sem objeção registrada.
 2. **A4 e P3:** testes de sensibilidade rodados em 2026-11-11, e o G4b em 2026-11-13; a extensão das matrículas para 2015–2016 é opcional.
-3. **D1:** formato do TCC (científico ou consultoria). Afeta o texto, não o dashboard.
-4. **D2:** indicadores formais. Proposta escrita em 2026-10-30 (12 indicadores, seção 4 de `powerbi/especificacao_dashboard.md`), com as faixas de eficiência por quintil; falta confirmar.
-5. **D4:** referências e APA; **D5/IA:** forma de documentar o uso de IA no Método. Rascunho da declaração por etapa do trabalho em `docs/declaracao_uso_ia.md` (2026-11-10), para aprovar com a orientadora.
-6. **A7:** endereço público para o QR Code (Power BI Service com "Publicar na Web", ou o HTML), a verificar na publicação.
+3. **D1:** ✅ método científico, estudo quantitativo (A21, 2026-11-17).
+4. **D2:** ✅ nome e definição do indicador fechados em A21 (desempenho em relação ao esperado); indicadores formais: Proposta escrita em 2026-10-30 (12 indicadores, seção 4 de `powerbi/especificacao_dashboard.md`), com as faixas de eficiência por quintil; falta confirmar.
+5. **D4:** ✅ lista final em APA na cópia (A21); conferir datas de acesso; **D5/IA:** forma de documentar o uso de IA no Método. Rascunho da declaração por etapa do trabalho em `docs/declaracao_uso_ia.md` (2026-11-10), para aprovar com a orientadora.
+6. **A7:** endereço público para o QR Code (Power BI Service com "Publicar na Web", ou o HTML): etapa final, depois do texto e do painel fechados (A21).
 7. **Revisão geral de 2026-11-11 (`docs/revisao_geral.md`):** a decidir com a orientadora: qual é a régua principal (nacional, A8, ou mesmo estado, usada em A11), o nome do indicador de eficiência (que quase não depende do gasto) e se os resultados dos modelos entram no painel. Também faltam a revisão bibliográfica e o registro das respostas da orientadora na reunião já feita.
 
 ### Dossiê da conta anterior (incorporado em 2026-10-26)
 O dossiê das conversas anteriores (arquivos 01 a 05, guardados em `docs/historico/`) foi comparado com o estado atual. Os achados de dados entraram nos itens G4, G5, M2, S8 e E2 e nas limitações L13 e L14. Abaixo ficam as pendências que só apareciam no dossiê.
 
-- **D1. Formato do TCC 🟡 (Manual lido em 2026-10-30):** o projeto vem sendo chamado de consultoria, mas pelo Manual o enquadramento mais natural é **método científico, estudo quantitativo**. A decisão é da dupla com a orientadora. O que o Manual de TCC ADM 2025 (Depto. de Administração, FEA/USP, atualizado em abril de 2025) diz:
+- **D1. Formato do TCC ✅ método científico (decidido em 2026-11-17, A21; Manual lido em 2026-10-30):** o projeto vem sendo chamado de consultoria, mas pelo Manual o enquadramento mais natural é **método científico, estudo quantitativo**. A decisão é da dupla com a orientadora. O que o Manual de TCC ADM 2025 (Depto. de Administração, FEA/USP, atualizado em abril de 2025) diz:
   - **Formatos (4.2):**
     - **Método científico, com estudos quantitativos** (longitudinais, multivariados, levantamentos populacionais): o objetivo é "de descobrimento" e busca diminuir uma lacuna de conhecimento, não alterar a realidade. É o caso de "o gasto se associa ao desempenho? com que defasagem?".
     - **Consultoria:** é um plano para uma organização (objetivo gerencial, que altera a realidade administrativa, com diagnóstico da empresa e plano de ação) ou um relato técnico de uma situação-problema numa organização específica. Exige acesso a uma organização. Hoje não temos uma organização-cliente; o produto serve a qualquer secretaria.
@@ -1214,7 +1256,7 @@ O dossiê das conversas anteriores (arquivos 01 a 05, guardados em `docs/histori
   - **indicadores formais:** nome, fórmula, unidade, variáveis e interpretação de cada um (por exemplo, gasto por aluno real, nota padronizada N, resíduo de eficiência);
   - **unidade de análise e chaves de integração:** já definidas (município na camada municipal, UF na estadual; chave de 7 dígitos, UF, rede e ano). Falta só escrevê-las no formato pedido.
 - **D3. Usuário-alvo ✅ (2026-10-30):** decidido em E4: agente de secretaria de educação ou analista da educação pública, de qualquer estado ou município.
-- **D4. Referências 🟡:** vários itens da bibliografia do documento original (por exemplo, Benjamin e Kim 2018, Dehghan et al. 2020 e Franco et al. 2015) nunca foram verificados. Confirmar a existência de cada um antes de citar. O formato APA é obrigatório a partir de 2026. A série de Leonardo Sales no Medium sobre o ENEM entra como literatura cinzenta.
+- **D4. Referências ✅ lista final em APA na cópia (2026-11-17, A21):** vários itens da bibliografia do documento original (por exemplo, Benjamin e Kim 2018, Dehghan et al. 2020 e Franco et al. 2015) nunca foram verificados. Confirmar a existência de cada um antes de citar. O formato APA é obrigatório a partir de 2026. A série de Leonardo Sales no Medium sobre o ENEM entra como literatura cinzenta.
   - **Levantamento de 2026-11-11 (`docs/levantamento_bibliografico.md`):** 17 referências do tema atual localizadas e com os dados bibliográficos conferidos, em sete eixos (gasto × desempenho no Brasil e no exterior, Fundef/Fundeb, eficiência com DEA, incentivos no Ceará, Saeb/IDEB e método), cada uma ligada a um resultado do trabalho. Só os registros e os resumos foram conferidos: falta ler os textos. A bibliografia da fase do ENEM não trata do tema e não deve ser usada. O levantamento foi feito com apoio de IA, uso a aprovar com a orientadora (D5). Segunda rodada no mesmo dia: localizado o estudo do efeito defasado de quatro anos (Alves e Frio, 2022, fronteira estocástica sem efeito fixo de município, o que explica a diferença para A11), dois trabalhos sobre a equidade do Fundeb e o contexto do ICMS educacional de Alagoas (o incentivo existe; nenhum trabalho aponta irregularidade nas notas). Municipalização e uso de dados por gestores ficaram sem referência conferida.
 - **D5. Roteiro para o registro do uso de IA:**
   - quais ferramentas foram usadas e para quê: apoio na escrita do código de extração e tratamento, revisão de achados e estruturação de documentos;
