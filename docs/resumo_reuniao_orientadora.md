@@ -46,6 +46,7 @@
 | Eficiência no painel [A10] | Em % do esperado ((nota − esperada) ÷ esperada), para pôr etapas e disciplinas na mesma escala; pontos e percentil ficam como referência. Os valores aparecem como "vs. esperado", com 0% = entregou o esperado. A escala em que o esperado vale 100% não foi usada, porque em DEA 100% quer dizer "eficiente" e porque a escala do Saeb não tem zero verdadeiro. O mapa abre na comparação no mesmo estado, com opção nacional. Na comparação no mesmo estado, os pares (página Pares) também são da mesma UF, para não misturar réguas. No Brasil inteiro, a eficiência média é zero por construção, e o painel diz isso |
 | Rede municipal parcial [A9] | Manter na análise e marcar no painel; a sensibilidade sem essas redes não muda as conclusões |
 | Acesso [A7] | QR Code ao final, apontando para o dashboard publicado |
+| Pacote educabR [A20] | Sugestão da orientadora. Vai citado no texto como forma de automatizar o download das bases do Inep, sem trocar a extração: ele cobre as notas e o Censo Escolar, mas não os dados de gasto (SIOPE e SICONFI), e o projeto é todo em Python |
 | Registro [seção 10] | Toda decisão e limitação anotada |
 
 ## 3. Primeiros achados (para discutir)

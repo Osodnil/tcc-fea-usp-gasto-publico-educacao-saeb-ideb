@@ -784,9 +784,13 @@ FUTURO = [nota(
     "acesso por QR Code. Escolher quais entram e redigir como alíneas.]")]
 AUTOMACAO = [nota(
     "[Base factual para este item: hoje, um comando único (run_pipeline.py) refaz o tratamento e os painéis de dados a "
-    "partir das bases baixadas. A extração tem scripts próprios, disparados à mão, e três bases são baixadas manualmente "
-    "(IDHM do Atlas Brasil, alfabetização do Censo 2022 e malha municipal). O painel em Power BI lê os arquivos de uma "
-    "pasta local e é atualizado pelo botão Atualizar. Melhorias possíveis: agendar a extração e o tratamento; publicar o "
+    "partir das bases baixadas. A extração tem scripts próprios, disparados à mão. O SIOPE, o SICONFI e o IPCA vêm "
+    "direto das APIs oficiais, e as demais bases são baixadas manualmente: as planilhas do Ideb e os microdados do Censo "
+    "Escolar, do Inep; o IDHM, do Atlas Brasil; e a alfabetização do Censo 2022 e a malha municipal, do IBGE. O painel em "
+    "Power BI lê os arquivos de uma pasta local e é atualizado pelo botão Atualizar. Melhorias possíveis: automatizar o "
+    "download das bases do Inep, por exemplo com o pacote educabR, para a linguagem R (Bissoli, 2026), que baixa e "
+    "organiza o Censo Escolar, o Saeb e o Ideb, mas não os dados de gasto do SIOPE e do SICONFI; agendar a extração e o "
+    "tratamento; publicar o "
     "painel no serviço do Power BI, com atualização programada; e trocar a pasta local por um armazenamento "
     "compartilhado, o que dispensaria ajustar o caminho dos dados em cada computador.]")]
 REFERENCIAS = [nota(
@@ -794,6 +798,8 @@ REFERENCIAS = [nota(
     "dados de cada uma, as datas de acesso e a autoria do Radar IDHM (os parceiros variam entre as edições) antes da "
     "versão final.]"),
     *[item(r) for r in [
+        "Bissoli, S. S. P. (2026). educabR: Download and process Brazilian education data from INEP (Versão 2.0.0) "
+        "[Pacote de software R]. CRAN. https://doi.org/10.32614/CRAN.package.educabR",
         "Fundo Nacional de Desenvolvimento da Educação. (2026). SIOPE: Sistema de Informações sobre Orçamentos Públicos "
         "em Educação – dados abertos [Conjunto de dados]. https://www.fnde.gov.br/olinda-ide/servico/DADOS_ABERTOS_SIOPE/versao/v1/odata/",
         "Instituto Brasileiro de Geografia e Estatística. (2023). Censo Demográfico 2022: população e domicílios – "
