@@ -41,6 +41,6 @@
 ## 5. Perguntas para a orientadora
 
 1. O uso descrito acima é permitido para o TCC? **Respondida (2026-11-13): sim, e incentivado, desde que os autores conheçam todas as etapas do desenvolvimento e todas as informações necessárias para a apresentação final.**
-2. Onde a declaração deve ficar: no Método, numa nota metodológica ou num apêndice?
+2. Onde a declaração deve ficar: no Método, numa nota metodológica ou num apêndice? **Proposta dos autores (2026-11-17, A23): na seção 3.4 do Método, e em cada parágrafo que descreve uma etapa feita com IA ("com o auxílio da IA, ..."). Ver a cópia do rascunho.**
 3. A IA pode ser usada na redação do texto? Se puder, em quê? **Respondida (2026-11-13): sim, com a mesma condição.**
 4. Basta este nível de detalhe, ou é preciso anexar algo (por exemplo, exemplos de interações)?

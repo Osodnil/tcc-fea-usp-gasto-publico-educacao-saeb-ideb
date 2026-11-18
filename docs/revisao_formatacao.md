@@ -39,8 +39,10 @@
 7b. [ ] **Lista de abreviaturas e siglas:** é opcional na ABNT, mas o texto usa muitas (SIOPE, SICONFI, Saeb, Ideb, IDHM, MDE, VAAF, VAAT, VAAR, Inep, FNDE, IBGE, IPCA, MQO, EF, UF). Recomendado incluir, depois das listas de ilustrações.
 7c. [ ] **Palavras-chave:** tirar "Eficiência do gasto" e pôr, por exemplo, "Desempenho educacional" (D2).
 
+7d. [ ] **Sumário digitado:** ainda lista o antigo Capítulo 3 (Diagnóstico) e o item 2.2; some ao gerar o sumário automático.
+
 ### 3.2 Texto
-7. [ ] **Capítulo 3 (Diagnóstico):** levar 3.1 e 3.2 para a Introdução e retirar 3.3, conforme a nota da cópia. Depois disso, as remissões "Capítulo 4" e "Capítulo 6" passam a "Capítulo 3" e "Capítulo 5".
+7. [x] **Capítulo 3 (Diagnóstico):** remanejado na cópia em 2026-11-17 (A23), com as remissões já ajustadas. Falta o Guilherme revisar a redação.
 8. [ ] **Objetivos e item 2.1.4:** alinhar ao que foi feito. Não há simulação de cenários nem monitoramento do VAAR, e o indicador é o desempenho em relação ao esperado.
 9. [ ] **Citações longas:** a APA usa citação em bloco a partir de 40 palavras, e a ABNT, a partir de três linhas. Como a citação segue a APA, usar 40 palavras, com o leiaute da ABNT: recuo de 4 cm, fonte 10, espaço simples e sem aspas.
 10. [ ] **Notas amarelas e marcas:** retirar todas as notas, "[INSERIR]", "[CONFERIR]" e "RASCUNHO TÉCNICO" antes da entrega.
@@ -61,7 +63,7 @@
 
 ## 4. Lista de referências
 
-- **Composição:** a lista final da cópia tem 31 obras. São as 19 do rascunho (com o Ideb do Inep fundido ao item já existente) e as citadas nos capítulos 4 e 5: as bases de dados, o pacote educabR, Lautharte et al. (2021), MacQueen (1967) e Rousseeuw (1987).
+- **Composição:** a lista final da cópia tem 44 obras: as do rascunho, as dos capítulos 3 e 4, a ferramenta de IA (Anthropic, 2026) e as 12 do levantamento citadas na revisão bibliográfica (A24). A ordem alfabética é aplicada pelo script. São as 19 do rascunho (com o Ideb do Inep fundido ao item já existente) e as citadas nos capítulos 4 e 5: as bases de dados, o pacote educabR, Lautharte et al. (2021), MacQueen (1967) e Rousseeuw (1987).
 - **DOIs acrescentados:** Cairney (2016), Hanushek (1997), Jackson et al. (2016), Janssen et al. (2012) e Sackett et al. (1996).
 - **Ainda a conferir:**
   - a ementa da Lei nº 14.276/2021;

@@ -7,6 +7,7 @@ texto técnico dos capítulos 4 e 5, quadros, tabelas e figuras, e notas de ATEN
 feito. Não escreve revisão de literatura, discussão nem conclusões.
 """
 import shutil
+import unicodedata
 import sys
 import zipfile
 from pathlib import Path
@@ -232,9 +233,10 @@ REPO = "https://github.com/Osodnil/tcc-fea-usp-gasto-publico-educacao-saeb-ideb"
 
 CAP4_ABERTURA = [
     nota(AVISO),
-    corpo("Este capítulo descreve o método do trabalho, um estudo quantitativo com dados públicos. A seção 4.1 apresenta as "
-          "fontes e a arquitetura dos dados, da extração nas bases públicas aos painéis de dados; a seção 4.2, as regras de "
-          "tratamento; e a seção 4.3, o painel em Power BI e o indicador que ele usa. O instrumento construído tem duas "
+    corpo("Este capítulo descreve o método do trabalho, um estudo quantitativo com dados públicos. A seção 3.1 apresenta as "
+          "fontes e a arquitetura dos dados, da extração nas bases públicas aos painéis de dados; a seção 3.2, as regras de "
+          "tratamento; a seção 3.3, o painel em Power BI e o indicador que ele usa; e a seção 3.4, o uso de inteligência "
+          "artificial no trabalho. O instrumento construído tem duas "
           "partes: os painéis de dados, montados em Python a partir de oito bases públicas, e o painel interativo, "
           "organizado em torno de três perguntas de quem gere uma rede de ensino. O código, os dados tratados e o registro "
           f"datado de cada decisão de método estão em repositório público ({REPO}), o que permite refazer cada número a "
@@ -242,13 +244,15 @@ CAP4_ABERTURA = [
 ]
 
 CAP4_1 = [
-    corpo("O produto analítico parte de bases públicas de oito origens, reunidas no Quadro 3. A extração, o tratamento e a "
-          "integração foram feitos em Python, com a biblioteca Polars, em scripts versionados no repositório do projeto. Um "
+    corpo("O trabalho parte de bases públicas de oito origens, reunidas no Quadro 2. Com o auxílio de inteligência "
+          "artificial generativa (seção 3.4), foram desenvolvidos em Python, com a biblioteca Polars, os scripts de extração, "
+          "tratamento e integração dessas bases, versionados no repositório do projeto; as regras de tratamento foram "
+          "definidas pelos autores, e as saídas de cada etapa foram conferidas. Um "
           "comando único executa todas as etapas na ordem certa, do dado bruto às tabelas lidas pelo painel, o que permite "
           "refazer todo o processo a partir das fontes. A Figura 1 resume esse fluxo."),
     figura("rIdFluxo", 50, 16.0, 7.64, "Figura fluxo"),
     fonte(f"Figura {F_FLUXO} – Fluxo de dados do projeto, das fontes públicas ao painel. Fonte: elaborado pelos autores."),
-    legenda("Quadro 3 – Fontes de dados, origem e uso no trabalho"),
+    legenda("Quadro 2 – Fontes de dados, origem e uso no trabalho"),
     tabela(["Base", "Origem", "Período", "Uso"], [
         ["SIOPE", "FNDE, API de dados abertos", "2017–2025", "Gasto municipal: despesa paga na subfunção 361 (Ensino Fundamental)"],
         ["SICONFI", "Tesouro Nacional, DCA Anexo I-E", "2014–2025", "Gasto estadual: função 12 (Educação) menos a subfunção 364 (Ensino Superior)"],
@@ -303,14 +307,23 @@ CAP4_2 = [
     item("Redes municipais parciais são marcadas: aquelas em que a prefeitura atende menos de 50% dos alunos públicos da "
          "etapa, e o restante está na rede estadual. Em 2023, eram 2,7% das redes com nota nos Anos Iniciais e 16% nos Anos "
          "Finais."),
-    corpo("A lista completa das limitações que decorrem dessas regras está no Capítulo 6."),
+    corpo("A lista completa das limitações que decorrem dessas regras está no Capítulo 5."),
 ]
 
 CAP4_3 = [
-    corpo("O protótipo foi construído no Power BI, como projeto versionável (formato .pbip), e tem dez páginas, descritas no "
-          "Quadro 4. Os filtros ficam numa faixa no topo, e cada página mostra só os filtros que alteram o seu conteúdo. A "
+    # remanejado do antigo Capítulo 3 (Diagnóstico), item 3.3 e perfis de 3.2 (decisão D1, A23)
+    corpo("O painel usa uma ferramenta de Business Intelligence porque ela transforma bases volumosas e heterogêneas em "
+          "indicadores com filtros e comparações, sem exigir do usuário o domínio técnico dos microdados (Davenport & "
+          "Harris, 2007; Few, 2006). O público-alvo são analistas e técnicos de secretarias de educação, que cruzam dados e "
+          "apoiam pareceres e o planejamento orçamentário, e gestores que precisam comparar a própria rede com redes "
+          "parecidas. Esses perfis são premissas de projeto definidas pelos autores, e não resultado de levantamento com "
+          "usuários."),
+    corpo("Com o auxílio da IA, foram desenvolvidos os scripts que geram o modelo de dados, as medidas e as páginas do "
+          "painel; o conteúdo, o público e o desenho de cada página foram definidos pelos autores. "
+          "O protótipo foi construído no Power BI, como projeto versionável (formato .pbip), e tem dez páginas, descritas no "
+          "Quadro 3. Os filtros ficam numa faixa no topo, e cada página mostra só os filtros que alteram o seu conteúdo. A "
           "escolha de UF, etapa, disciplina e edição vale para todas as páginas."),
-    legenda("Quadro 4 – Páginas do painel e pergunta que cada uma responde"),
+    legenda("Quadro 3 – Páginas do painel e pergunta que cada uma responde"),
     tabela(["Página", "O que mostra", "Pergunta do gestor"], [
         ["Boas-vindas", "Para que serve, como usar e três perguntas que levam às páginas", "Por onde começo?"],
         ["Visão geral", "Gasto, proficiência, cobertura do Saeb e redes que melhoraram desde a edição anterior", "Como está o conjunto das redes?"],
@@ -347,11 +360,32 @@ CAP4_3 = [
         figura(f"rIdTela{IDX_TELA[arq]}", 60 + IDX_TELA[arq], 16.0, 9.0, f"Tela {IDX_TELA[arq] + 1}"),
         fonte(f"Figura {F_TELA0 + k} – {LEG_TELA[arq]}. Fonte: painel elaborado pelos autores."))],
     nota("[Decisões de 2026-11-17 (registro D1, D2 e A21): o indicador passou a se chamar desempenho em relação ao esperado, "
-         "e o item 2.1.4 (eficiência alocativa) deve ser ajustado a essa definição; a regra dos saltos atípicos e a dos "
-         "pares foram confirmadas pelos autores. Ainda pendente: o painel não tem simulação de cenários nem monitoramento "
-         "do VAAR, que ainda aparecem no resumo, nos objetivos e no Capítulo 3, e passam a trabalhos futuros (6.4). As "
-         "telas do painel foram capturadas de novo em 2026-11-17, já com o nome novo. O "
-         "endereço público do painel e o QR Code ficam para a etapa final.]"),
+         "e o item 2.1.4 foi reescrito com essa definição. Simulação de cenários e monitoramento do "
+         "VAAR passaram a trabalhos futuros (5.4); falta tirá-los do resumo. O endereço público do painel e o QR Code ficam "
+         "para a etapa final.]"),
+    titulo(2, "Uso de inteligência artificial"),
+    corpo("O trabalho usou inteligência artificial (IA) generativa com autorização da orientadora, como prevê o Manual de "
+          "TCC (Departamento de Administração FEA/USP, 2025). A ferramenta foi o Claude, modelo de linguagem da Anthropic "
+          "(Anthropic, 2026), usado em conversas e, a partir de outubro de 2026, pelo Claude Code, que lê e escreve arquivos "
+          "no repositório do projeto e executa os scripts. Ao longo do texto, cada etapa feita com o auxílio da IA é indicada "
+          "no próprio parágrafo. As etapas foram as seguintes."),
+    item("Coleta e tratamento dos dados: com o auxílio da IA, foram desenvolvidos os scripts em Python que extraem, tratam e "
+         "integram as bases públicas. As regras de tratamento, como o que entra na análise e como tratar valores ausentes e "
+         "extremos, foram definidas pelos autores, que executaram os scripts e conferiram as saídas."),
+    item("Análises: com o auxílio da IA, foram escritos os scripts dos modelos de regressão, do agrupamento por contexto e "
+         "dos testes de sensibilidade. A especificação de cada modelo foi decidida pelos autores, e os resultados foram conferidos "
+         "nas saídas dos scripts e no painel."),
+    item("Painel: com o auxílio da IA, foram desenvolvidos os scripts que geram o modelo de dados, as medidas e as páginas "
+         "do painel em Power BI. O conteúdo, o público e o desenho de cada página foram definidos pelos autores."),
+    item("Levantamento bibliográfico: com o auxílio da IA, foi feito um levantamento inicial de referências, com a "
+         "conferência dos dados bibliográficos de cada uma. A leitura das obras, a escolha do que citar e a redação da revisão "
+         "couberam aos autores."),
+    item("Redação: com o auxílio da IA, foram redigidas versões iniciais das seções técnicas, e o texto foi reorganizado no "
+         "formato de método científico. Os autores revisaram e reescreveram essas versões."),
+    corpo("A IA não tomou decisões de pesquisa: a pergunta, o recorte e cada escolha de método foram decididos pelos autores ou "
+          "pela orientadora e estão registrados, com data, no repositório do projeto. A IA também não produziu dados: todos "
+          "os números vêm de bases públicas e podem ser refeitos a partir dos scripts. Os erros encontrados na conferência, "
+          "inclusive os cometidos pela IA, estão documentados no mesmo registro."),
 ]
 
 CAP5_CLUSTER = [
@@ -366,7 +400,8 @@ CAP5_CLUSTER = [
           "agrupamento. A dimensão Educação do IDHM ficou de fora, porque mede escolaridade, que é parte do próprio "
           "resultado que se quer comparar. As cinco variáveis foram padronizadas (média zero e desvio-padrão um), para que "
           "nenhuma pese mais por causa da unidade de medida."),
-    corpo("O agrupamento usou o método das k-médias (MacQueen, 1967), que divide os municípios em k grupos de modo a "
+    corpo("O script do agrupamento foi desenvolvido com o auxílio da IA; a escolha das variáveis e do número de grupos coube "
+          "aos autores. O agrupamento usou o método das k-médias (MacQueen, 1967), que divide os municípios em k grupos de modo a "
           "minimizar a distância de cada município ao centro do seu grupo. O algoritmo foi rodado com 50 pontos de partida "
           "diferentes e semente fixa, o que torna o resultado reprodutível. Entraram 5.568 municípios; ficaram de fora "
           "Fernando de Noronha, Boa Esperança do Norte e Brasília, por falta de alguma variável. Um único agrupamento vale "
@@ -380,13 +415,13 @@ CAP5_CLUSTER = [
           "escolhido k = 7: a silhueta é praticamente igual à de seis grupos (0,233 contra 0,229), e o sétimo grupo separa "
           "os municípios grandes do Norte e do Nordeste (população mediana de 101,7 mil), que de outro modo ficariam com "
           "municípios muito menores."),
-    corpo(f"O Quadro 5 mostra o perfil de cada grupo; a Figura B.9, no Apêndice B, mostra o mesmo perfil em desvios-padrão e a composição por região. Os grupos 1 e 2 reúnem municípios com "
+    corpo(f"O Quadro 4 mostra o perfil de cada grupo; a Figura B.9, no Apêndice B, mostra o mesmo perfil em desvios-padrão e a composição por região. Os grupos 1 e 2 reúnem municípios com "
           "alfabetização e IDHM Renda abaixo da média, quase todos do Nordeste e do Norte; os grupos 6 e 7, os de "
           "alfabetização, IDHM e infraestrutura mais altos, quase todos do Sul e do Sudeste. O grupo 5 se distingue pelo "
           "porte: a média do logaritmo da população fica 1,9 desvio-padrão acima da dos municípios. O nome de cada grupo "
           "traz a região da maioria dos municípios, o porte e a faixa de alfabetização; nenhum grupo é formado por uma "
           "região só."),
-    legenda("Quadro 5 – Perfil dos sete clusters de contexto"),
+    legenda("Quadro 4 – Perfil dos sete clusters de contexto"),
     tabela(["Cluster", "Municí-\npios", "População\nmediana", "Alfabeti-\nzação", "IDHM\nRenda", "Infraes-\ntrutura",
             "Região\nprincipal"], t_clu, [2875, 900, 1100, 1050, 800, 1000, 1350]),
     fonte("Fonte: elaborado pelos autores. Infraestrutura: média das proporções de escolas com oito itens (biblioteca, "
@@ -423,7 +458,8 @@ CAP5_MODELOS = [
           "edição, em três especificações (Tabela 3). A primeira compara os municípios entre si. A segunda inclui "
           "um efeito fixo de município, isto é, compara cada município com ele mesmo ao longo do tempo. A terceira, adotada "
           "como referência, acrescenta um efeito de UF e edição, de modo que a comparação é feita entre municípios do mesmo "
-          "estado na mesma edição. Os erros-padrão são agrupados por município."),
+          "estado na mesma edição. Os erros-padrão são agrupados por município. Os modelos foram estimados em Python, em "
+          "scripts desenvolvidos com o auxílio da IA a partir das especificações definidas pelos autores."),
     legenda("Tabela 3 – Gasto do mesmo ano e proficiência: três especificações"),
     tabela(["Especificação", *CAB4], t_modelo, [2475, 1650, 1650, 1650, 1650]),
     fonte(FONTE_MUN + NOTA_COEF + " EF: efeito fixo. Controles: infraestrutura e log das matrículas; no MQO, também log da população e "
@@ -610,7 +646,8 @@ CAP5_CEBA = [
           f"{br(et('BA', 'AI', 'MT', 'PROFICIENCIA_MEDIA'), 1)} na Bahia: {br(dce, 0)} pontos de diferença, mais que o "
           "desvio-padrão entre as redes do país (25,0 pontos). No Ceará, "
           f"{pc(et('CE', 'AI', 'MT', 'PARC_ACIMA'))} das redes ficaram acima do esperado para o seu gasto e contexto; na "
-          f"Bahia, {pc(et('BA', 'AI', 'MT', 'PARC_ACIMA'))} (Tabela {T_CEBA})."),
+          f"Bahia, {pc(et('BA', 'AI', 'MT', 'PARC_ACIMA'))} (Tabela {T_CEBA}). Os números desta seção foram calculados com o auxílio da IA, "
+          "a partir dos mesmos painéis de dados."),
     corpo("A diferença não se limita a uma etapa ou disciplina: aparece nos Anos Iniciais e nos Anos Finais, em Matemática "
           f"e em Português, e em todas as edições de 2017 a 2025 (Figura {F_CEBA}). Também não se explica pelo contexto "
           "medido no trabalho: o Ceará tem alfabetização média um pouco menor que a da Bahia (79,5% contra 82,0%) e o mesmo "
@@ -645,7 +682,7 @@ CAP5_CEBA = [
 CAP5_CASOS = [
     nota(AVISO + " A análise gerencial dos casos fica com os autores; aqui estão a escolha e os números."),
     corpo("Esta seção mostra como o painel apoia a comparação entre redes, com três casos. Os casos foram escolhidos por "
-          "regras objetivas, aplicadas ao recorte padrão do painel (Anos Iniciais, Matemática, edição de 2023, comparação "
+          "regras objetivas, propostas com o auxílio da IA e aprovadas pelos autores, aplicadas ao recorte padrão do painel (Anos Iniciais, Matemática, edição de 2023, comparação "
           "nacional), para ilustrar três situações de leitura: uma rede acima do esperado sem alerta, uma rede abaixo do "
           "esperado com alerta de rede parcial e uma rede acima do esperado com alerta de salto atípico. Eles ilustram o "
           "uso do painel e não formam uma amostra representativa. Os pares de cada rede são as redes do mesmo cluster "
@@ -718,7 +755,7 @@ CAP5_CASOS = [
           "os pares. O resultado sozinho levaria a conclusões apressadas: tomar Coruripe como modelo sem olhar o salto, ou "
           "comparar São Paulo com cidades pequenas sem considerar que a rede municipal atende menos da metade dos alunos. "
           "Os casos também ilustram por que o indicador se chama desempenho em relação ao esperado, e não eficiência (Capítulo "
-          "4): na comparação nacional, o gasto quase não altera a proficiência esperada, de modo que o indicador mostra a "
+          "3): na comparação nacional, o gasto quase não altera a proficiência esperada, de modo que o indicador mostra a "
           "distância até redes de gasto e contexto parecidos, e não o rendimento de cada real gasto."),
 ]
 
@@ -726,8 +763,8 @@ CAP5_VALIDACAO = [
     nota(AVISO + " Cabe aos autores e à orientadora decidir se esta seção mantém o nome de validação conceitual."),
     corpo("A ferramenta não foi testada com usuários, o que fica registrado como limitação. A validação feita tem duas "
           "partes: cenários de uso, em que cada uma das três perguntas de entrada do painel é percorrida com os casos da "
-          "seção anterior, e a conferência técnica dos números. O Quadro 6 resume os cenários."),
-    legenda("Quadro 6 – Cenários de uso: as perguntas de entrada do painel percorridas com dados reais"),
+          "seção anterior, e a conferência técnica dos números. O Quadro 5 resume os cenários."),
+    legenda("Quadro 5 – Cenários de uso: as perguntas de entrada do painel percorridas com dados reais"),
     tabela(["Pergunta de entrada", "Página", "O que o painel responde (Anos Iniciais, Matemática, 2023)", "Coerência com a análise"], [
         ["Gastar mais se associa a aprender mais?", "Defasagens",
          "Correlação de 0,26 no Brasil com o gasto do mesmo ano, e mediana de 0,08 entre as UFs",
@@ -744,7 +781,8 @@ CAP5_VALIDACAO = [
          "nos clusters grandes, a faixa de gasto inclui boa parte do grupo"],
     ], [1900, 1300, 3175, 2700]),
     fonte("Fonte: elaborado pelos autores."),
-    corpo("A conferência técnica comparou os números do painel com os cálculos feitos em Python no recorte padrão "
+    corpo("A conferência técnica, feita com o auxílio da IA, comparou os números do painel com os cálculos feitos em "
+          "Python no recorte padrão "
           "(Brasil, Anos Iniciais, Matemática, 2023): bateram o gasto mediano por aluno (R$ 13.721), a proficiência média "
           "(220,2 pontos), a parcela de redes acima do esperado (46,3%), o número de redes com nota (5.243) e a cobertura do "
           "Saeb (94,1%), além das correlações da página Defasagens e dos números dos três casos. A conferência encontrou e "
@@ -763,7 +801,7 @@ FUTURO = [nota(
     "integrados; (c) gasto separado por etapa e Educação Infantil: o SIOPE informa a subfunção 361 para todo o Ensino "
     "Fundamental, sem separar Anos Iniciais e Finais; (d) avaliação com usuários: entrevistar gestores exige termo de "
     "consentimento e, possivelmente, comitê de ética (Manual de TCC), e a validação ficou nos cenários de uso da seção "
-    "5.5. EXTENSÕES SUGERIDAS: (e) identificar as redes que recebem a complementação VAAT, para testar a hipótese "
+    "4.5. EXTENSÕES SUGERIDAS: (e) identificar as redes que recebem a complementação VAAT, para testar a hipótese "
     "levantada para 2023–2025; (f) usar o gasto médio do biênio na nota esperada, que no modelo acompanha melhor o ciclo "
     "do Saeb (coeficiente cerca de 60% maior); (g) estender a comparação nacional a 2025 quando o IDHM desse ano for "
     "publicado; (h) comparar o indicador com uma medida de fronteira, como a análise envoltória de dados ou a fronteira "
@@ -782,6 +820,12 @@ AUTOMACAO = [nota(
     "tratamento; publicar o "
     "painel no serviço do Power BI, com atualização programada; e trocar a pasta local por um armazenamento "
     "compartilhado, o que dispensaria ajustar o caminho dos dados em cada computador.]")]
+def ordem_apa(r: str) -> str:
+    """Ordem alfabética da APA: sem acentos e sem itálico; "&" não conta (Jackson, Johnson vem antes de Jackson & M.)."""
+    s = unicodedata.normalize("NFKD", r.replace("*", "").replace("& ", "")).encode("ascii", "ignore").decode().lower()
+    return s
+
+
 def ref(texto: str) -> str:
     """Referência em APA: recuo deslocado de 1,25 cm, espaço simples e uma linha em branco depois; *trecho* em itálico."""
     partes = texto.split("*")
@@ -794,12 +838,43 @@ def ref(texto: str) -> str:
 # em ordem alfabética. Entra só o que é citado no texto; as candidatas do levantamento bibliográfico entram quando forem
 # citadas. Substitui a nota de norma e a lista antiga do rascunho (ver montagem).
 REFERENCIAS = [nota(
-    "[Lista final de referências, montada em 2026-11-17: une as do rascunho e as dos capítulos 4 e 5, em APA 7 (o Manual "
+    "[Lista final de referências, montada em 2026-11-17: une as do rascunho e as dos capítulos 3 e 4, em APA 7 (o Manual "
     "de TCC torna a APA obrigatória a partir de 2026; a formatação do trabalho segue a ABNT). Entram só as obras citadas. "
-    "Ao citar uma obra do levantamento bibliográfico (docs/levantamento_bibliografico.md), acrescentá-la aqui. Mudanças "
+    "Desde 2026-11-17, inclui as obras citadas na revisão bibliográfica (2.1.4 e 2.2). Mudanças "
     "em relação ao rascunho: DOIs acrescentados; o Inep (2026) do rascunho passa a Inep (2026b), e as citações no texto "
     "devem ser ajustadas. CONFERIR as datas de acesso e os itens marcados antes da versão final.]"),
-    *[ref(r) for r in [
+    *[ref(r) for r in sorted([
+        "Alves, M. T. G., & Soares, J. F. (2013). Contexto escolar e indicadores educacionais: Condições desiguais para a "
+        "efetivação de uma política de avaliação educacional. *Educação e Pesquisa, 39*(1), 177–194. "
+        "https://doi.org/10.1590/S1517-97022013000100012",
+        "Alves, P. J. H., & Frio, G. S. (2022). Uma análise dos resultados educacionais dos municípios brasileiros. "
+        "*Planejamento e Políticas Públicas*, (61). https://doi.org/10.38116/ppp61art10",
+        "Cruz, G. F., & Rocha, R. (2018). Efeitos do FUNDEF/B sobre frequência escolar, fluxo escolar e trabalho infantil: "
+        "Uma análise com base nos Censos de 2000 e 2010. *Estudos Econômicos, 48*(1), 39–75. "
+        "https://doi.org/10.1590/0101-4161481239gcr",
+        "Faria, F. P., Jannuzzi, P. M., & Silva, S. J. (2008). Eficiência dos gastos municipais em saúde e educação: Uma "
+        "investigação através da análise envoltória no estado do Rio de Janeiro. *Revista de Administração Pública, 42*(1), "
+        "155–177. https://doi.org/10.1590/S0034-76122008000100008",
+        "Hanushek, E. A. (2003). The failure of input-based schooling policies. *The Economic Journal, 113*(485), F64–F98. "
+        "https://doi.org/10.1111/1468-0297.00099",
+        "Hirata, G., Melo, L., & Oliveira, J. B. (2022). O Fundeb e a questão da equidade. *Revista Brasileira de Economia, "
+        "76*(2). https://doi.org/10.5935/0034-7140.20220009",
+        "Jackson, C. K., & Mackevicius, C. L. (2024). What impacts can we expect from school spending policy? Evidence from "
+        "evaluations in the United States. *American Economic Journal: Applied Economics, 16*(1), 412–446. "
+        "https://doi.org/10.1257/app.20220279",
+        "Menezes-Filho, N., & Amaral, L. F. L. E. (2009). *A relação entre gastos educacionais e desempenho escolar* "
+        "(Insper Working Paper). Insper. https://ideas.repec.org/p/aap/wpaper/064.html [CONFERIR o número do texto]",
+        "Menezes-Filho, N., & Pazello, E. (2007). Do teachers' wages matter for proficiency? Evidence from a funding reform "
+        "in Brazil. *Economics of Education Review, 26*(6), 660–672. https://doi.org/10.1016/j.econedurev.2007.08.003",
+        "Oliveira, V. E., Menezes Filho, N. A., & Komatsu, B. K. (2022). A relação entre a qualidade da gestão municipal e o "
+        "desempenho educacional no Brasil. *Economia Aplicada, 26*(1), 81–100. https://doi.org/10.11606/1980-5330/ea148736",
+        "Silva Júnior, J. A., Miranda, R. L. P., & Coelho, R. P. S. (2025). Nem bom como dizem, nem ruim como pensam: O "
+        "Fundeb e a desigualdade educacional regional brasileira. *FINEDUCA – Revista de Financiamento da Educação, 15*. "
+        "https://doi.org/10.22491/2236-5907135670",
+        "Soares, J. F., & Xavier, F. P. (2013). Pressupostos educacionais e estatísticos do Ideb. *Educação & Sociedade, "
+        "34*(124), 903–923. https://www.scielo.br/pdf/es/v34n124/13.pdf",
+        "Anthropic. (2026). *Claude* [Modelo de linguagem de grande escala, usado por meio do aplicativo e do Claude "
+        "Code]. https://claude.ai",
         "Bissoli, S. S. P. (2026). *educabR: Download and process Brazilian education data from INEP* (Versão 2.0.0) "
         "[Pacote de software R]. CRAN. https://doi.org/10.32614/CRAN.package.educabR",
         "Brasil. (1988). *Constituição da República Federativa do Brasil de 1988*. Presidência da República.",
@@ -864,7 +939,7 @@ REFERENCIAS = [nota(
         "medicine: What it is and what it isn’t. *BMJ, 312*(7023), 71–72. https://doi.org/10.1136/bmj.312.7023.71",
         "Secretaria do Tesouro Nacional. (2026). *Siconfi: Declaração de Contas Anuais (DCA), Anexo I-E* [Conjunto de "
         "dados]. https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca",
-    ]]]
+    ], key=ordem_apa)]]
 
 APENDICE = [
     nota(AVISO.replace("vale para todo este capítulo", "vale para este apêndice")),
@@ -978,44 +1053,8 @@ INSERCOES = [  # (trecho que identifica o parágrafo do rascunho, blocos a inser
     ("[Análise gerencial por Guilherme Menezes.]", CAP5_CASOS),
     ("[Análise por Guilherme Menezes.]", CAP5_VALIDACAO),
     ("AVISO. Como o Capítulo 5 está em pausa", [nota(
-        "[ATENÇÃO: na cópia de 2026-11-13, o Capítulo 5 saiu da pausa e tem material técnico em todas as seções. Este aviso "
+        "[ATENÇÃO: na cópia de 2026-11-13, o capítulo de resultados (hoje Capítulo 4) saiu da pausa e tem material técnico em todas as seções. Este aviso "
         "pode sair quando as lacunas abaixo forem preenchidas pelos autores.]")]),
-    ("[DEFINIR o conceito operacional de “eficiência do gasto”", [nota(
-        "[Definição decidida em 2026-11-17 (D2): o indicador do trabalho é o desempenho em relação ao esperado, a diferença "
-        "entre a proficiência média da rede no Saeb e a proficiência esperada para redes com o mesmo gasto por aluno e o "
-        "mesmo contexto, em % da esperada (ver 4.3). O trabalho não mede eficiência no sentido estrito: no modelo nacional, o "
-        "gasto quase não altera a esperada, e o indicador não é uma medida de fronteira, como a análise envoltória de dados, "
-        "em que 100% significa eficiente. Este item pode apresentar o conceito de eficiência alocativa como pano de fundo e "
-        "explicar por que o trabalho usa uma medida de desempenho ajustada ao gasto e ao contexto.]")]),
-    ("AVISO – SEÇÃO PENDENTE DE PESQUISA BIBLIOGRÁFICA ADICIONAL", [nota(
-        "[Levantamento disponível em docs/levantamento_bibliografico.md (2026-11-11), com registros e resumos conferidos, "
-        "mas textos NÃO lidos. Bloco A: Menezes-Filho e Amaral (2009); Diaz (2012); Monteiro (2015); Oliveira, Menezes Filho "
-        "e Komatsu (2022); Alves e Frio (2022); Hanushek (2003); Jackson, Johnson e Persico (2016); Jackson e Mackevicius "
-        "(2024). Bloco B: Menezes-Filho e Pazello (2007); Cruz e Rocha (2018); Hirata, Melo e Oliveira (2022); Silva Júnior, "
-        "Miranda e Coelho (2025); Lautharte, Oliveira e Loureiro (2021). Blocos C e D: nenhuma referência conferida. Este "
-        "rascunho cita Hanushek (1997); o levantamento localizou Hanushek (2003): conferir qual será usado.]")]),
-    ("[INSERIR parágrafo explicando por que o ENEM e o PISA foram descartados", [nota(
-        "[Base factual, do histórico do projeto: o ENEM é de adesão voluntária e inclui escolas privadas; nos microdados "
-        "públicos, só de 15,6% a 27,4% dos inscritos têm escola e município identificados, e o código da escola não é "
-        "divulgado. O PISA é amostral e só dá resultado nacional e por grandes regiões. O Saeb é censitário nas escolas "
-        "públicas e sai por município e rede. Faltam as referências que sustentem essas afirmações.]")]),
-    ("demonstrar, por simulação de cenários decisórios com dados reais", [nota(
-        "[ATENÇÃO – divergência com o que foi feito: o painel não tem simulação de cenários decisórios. O que existe são as "
-        "análises do Capítulo 5 (associação entre gasto e desempenho, heterogeneidade e sensibilidade) e a comparação entre "
-        "redes. Ajustar este objetivo, o resumo e o Capítulo 5.]")]),
-    ("Fonte: elaborado pelos autores [CONFERIR e citar a documentação oficial de cada base", [nota(
-        "[ATENÇÃO – divergências do Quadro 1 com o que foi feito: (i) nenhuma base chamada SINCOP foi usada: retirar a "
-        "linha; (ii) o indicador socioeconômico usado é o IDHM por UF, nas dimensões Renda e Longevidade (Atlas Brasil / "
-        "Radar IDHM, de PNUD, FJP e IBGE), e não o IDH municipal nem o PIB per capita; do IBGE vêm a população e a "
-        "alfabetização (Censo 2022) e o IPCA; (iii) faltam no quadro o IPCA e a Malha Municipal. O Quadro 3, no Capítulo 4, "
-        "traz a lista completa.]")]),
-    ("[INSERIR: levantamento dos indicadores e condicionalidades do VAAR", [nota(
-        "[ATENÇÃO – divergência com o que foi feito: o painel não monitora as condicionalidades nem os indicadores do VAAR. "
-        "Retirar a promessa deste capítulo, do item 1.5 e do Capítulo 6, ou tratá-la como trabalho futuro.]")]),
-    ("O escopo é a educação básica pública, da educação infantil ao ensino médio", [nota(
-        "[ATENÇÃO – divergência com o que foi feito: o trabalho cobre o Ensino Fundamental das redes municipais (Anos "
-        "Iniciais e Finais) e os Anos Finais e o Ensino Médio das redes estaduais. A Educação Infantil está fora: o gasto "
-        "municipal usado é só o da subfunção 361 (Ensino Fundamental).]")]),
     ("Ausência do IDH 2025.", [nota(
         "[Base factual: foi usado o IDHM por UF (dimensões Renda e Longevidade), do mesmo ano de cada edição do Saeb. A "
         "série termina em 2024, e por isso a edição de 2025 não tem esse controle. O índice só existe por UF, e não por "
@@ -1042,7 +1081,7 @@ INSERCOES = [  # (trecho que identifica o parágrafo do rascunho, blocos a inser
         "[Números do projeto que podem servir aqui (redes municipais, Anos Iniciais, Matemática): o gasto mediano por aluno "
         "foi de R$ 9.202 (2017) a R$ 15.859 (2025), em reais de 2025; a proficiência média foi de 218,2 (2017) a 230,1 "
         "(2025), com queda para 211,8 em 2021. De 2023 a 2025, o gasto por aluno subiu, em média, cerca de 26% no Nordeste e 8% no Sudeste. Ver "
-        "a Tabela 1, no Capítulo 5.]")]),
+        "a Tabela 1, no Capítulo 4.]")]),
 ]
 
 # ───────────────────────── montagem ─────────────────────────
@@ -1134,10 +1173,334 @@ TITULOS_D1 = [  # (título do rascunho, título no formato de método científic
     ("Aplicação prática por análise de cluster", "Agrupamento dos municípios por contexto"),
     ("Protótipo do dashboard de Business Intelligence", "Painel de Business Intelligence"),
     ("Perspectivas futuras e trabalhos futuros", "Sugestões de pesquisa futura"),
+    ("Eficiência alocativa", "Eficiência do gasto e desempenho em relação ao esperado"),
 ]
 for antigo, novo in TITULOS_D1:
     x, n = re.subn(r"(<w:t(?: [^>]*)?>)" + re.escape(antigo) + r"(</w:t>)", lambda m: m.group(1) + novo + m.group(2), x)
     assert n >= 1, f"título não encontrado: {antigo}"
+
+
+# ───────────────────────── revisão bibliográfica (A24, 2026-11-17) ─────────────────────────
+NOTA_REVISAO = nota(
+    "[REVISÃO BIBLIOGRÁFICA escrita com o auxílio da IA em 2026-11-17 (registro A24), a partir do levantamento em "
+    "docs/levantamento_bibliografico.md. Os achados de cada obra foram resumidos a partir dos resumos e registros "
+    "conferidos; antes da versão final, os autores devem ler os textos e confirmar cada paráfrase, como diz a seção 3.4. "
+    "Os dispositivos legais de 2.1 foram conferidos no texto da Lei nº 14.113/2020 e da EC nº 108/2020.]")
+REV_214 = [
+    corpo("Em sentido econômico, eficiência é a relação entre os resultados obtidos e os recursos empregados: uma unidade "
+          "é eficiente quando não consegue obter mais resultado com os mesmos recursos, ou o mesmo resultado com menos. Na "
+          "educação, os estudos de eficiência do gasto municipal costumam usar métodos de fronteira, como a análise "
+          "envoltória de dados, que comparam cada município com os de melhor desempenho para o mesmo insumo e atribuem 100% "
+          "aos que estão na fronteira (Faria et al., 2008)."),
+    corpo("Este trabalho usa um conceito mais restrito, o desempenho em relação ao esperado: a diferença entre a "
+          "proficiência de uma rede e a proficiência esperada para redes com o mesmo gasto por aluno e o mesmo contexto, "
+          "estimada por regressão. A ideia se aproxima da defesa de indicadores que levam em conta o contexto escolar, já "
+          "que o perfil dos alunos e as condições das escolas se associam ao Ideb e não podem ser ignorados na sua leitura "
+          "(Alves & Soares, 2013). O indicador não mede eficiência no sentido estrito, porque o gasto pesa pouco na "
+          "proficiência esperada (Capítulo 3), e não permite afirmar que o gasto cause o resultado: ele aponta redes que se "
+          "afastam do padrão de redes comparáveis, cujos motivos precisam ser investigados."),
+]
+REV_22 = [
+    NOTA_REVISAO,
+    corpo("Esta seção reúne a literatura com que os resultados do trabalho dialogam, em quatro frentes: a relação entre "
+          "gasto e desempenho escolar, os efeitos dos fundos de financiamento da educação básica, as medidas de desempenho "
+          "e o papel do contexto, e as políticas de incentivo a resultados. A última parte resume a lacuna em que o "
+          "trabalho se posiciona."),
+    titulo(3, "Gasto e desempenho escolar"),
+    corpo("A relação entre recursos e resultados escolares é um dos debates mais antigos da economia da educação. Revisões "
+          "da evidência norte-americana e internacional concluíram que políticas baseadas apenas no aumento de insumos, "
+          "como mais recursos por aluno ou turmas menores, têm efeitos pequenos e pouco consistentes sobre o desempenho, e "
+          "que os incentivos e a forma de uso dos recursos importam mais (Hanushek, 1997, 2003)."),
+    corpo("Estudos mais recentes, que aproveitam mudanças nas regras de financiamento como fonte de variação do gasto "
+          "externa às decisões das redes, encontraram efeitos positivos. Nos Estados Unidos, aumentos do gasto por aluno "
+          "decorrentes de reformas do financiamento escolar elevaram a escolaridade e os salários futuros, sobretudo de "
+          "crianças de baixa renda (Jackson et al., 2016). Uma meta-análise de 31 avaliações estimou que US$ 1.000 a mais "
+          "por aluno, durante quatro anos, elevam as notas em cerca de 0,03 desvio-padrão, com efeitos maiores para "
+          "populações mais pobres (Jackson & Mackevicius, 2024)."),
+    corpo("No Brasil, a evidência entre municípios aponta associação pequena. Com dados do gasto municipal no Ensino "
+          "Fundamental e das notas da Prova Brasil, Menezes-Filho e Amaral (2009) encontraram efeito muito pequeno e, na "
+          "maioria das especificações, não significativo, presente apenas entre os municípios de notas mais altas. Oliveira "
+          "et al. (2022) mostraram que indicadores de qualidade da gestão municipal se associam às notas mesmo depois de "
+          "controlar o gasto e as características fixas de cada município, o que sugere que a gestão explica parte das "
+          "diferenças que o gasto não explica. Já Alves e Frio (2022), com um painel de municípios de 2011 a 2017 e um "
+          "modelo de fronteira estocástica, encontraram associação positiva entre o Ideb e o gasto por aluno de quatro anos "
+          "antes."),
+    corpo("Esses estudos ajudam a ler os resultados do Capítulo 4. A associação entre municípios é quase nula quando se "
+          "controla o contexto, mas aparece, pequena, quando cada município é comparado com ele mesmo ao longo do tempo. A "
+          "diferença em relação a Alves e Frio (2022) quanto ao gasto defasado decorre, ao menos em parte, do método: o "
+          "modelo deste trabalho compara cada município com ele mesmo, o que o modelo de fronteira daquele estudo não faz."),
+    titulo(3, "Financiamento e equidade: Fundef e Fundeb"),
+    corpo("O Fundef, antecessor do Fundeb, elevou o salário relativo dos professores da rede pública, com efeito positivo "
+          "sobre a proficiência dos alunos (Menezes-Filho & Pazello, 2007), e aumentou a frequência escolar e reduziu a "
+          "distorção idade-série, sobretudo entre as crianças de nível socioeconômico mais baixo (Cruz & Rocha, 2018). Os "
+          "efeitos sobre o fluxo escolar não aparecem numa medida de proficiência como a usada neste trabalho."),
+    corpo("Quanto ao Fundeb, simulações contrafactuais indicam que o fundo reduz muito a desigualdade de gasto por aluno "
+          "entre municípios, mas muda pouco os indicadores de qualidade (Hirata et al., 2022). Com dados de 2008 a 2019 do "
+          "Censo Escolar, do SIOPE e do Siconfi, as mesmas fontes de gasto deste trabalho, Silva Júnior et al. (2025) "
+          "concluíram que o Fundeb não aprofundou nem reduziu a desigualdade educacional entre as regiões, e que o gasto por "
+          "aluno foi o fator positivo mais consistente. O Novo Fundeb, com a complementação-VAAT, passou a dirigir "
+          "recursos às redes de menor capacidade de financiamento. Não foi localizada avaliação com dados observados que "
+          "isole esse efeito; o Capítulo 4 descreve um padrão de 2023 a 2025 compatível com ele, sem testá-lo."),
+    titulo(3, "Medidas de desempenho e contexto"),
+    corpo("O Ideb combina a proficiência no Saeb com a taxa de aprovação. Soares e Xavier (2013) examinaram os pressupostos "
+          "educacionais e estatísticos do índice e a forma como ele define qualidade, e propuseram aperfeiçoamentos. Por "
+          "isso, este trabalho usa como medida principal a proficiência em pontos, por etapa e disciplina, e não o Ideb "
+          "(Capítulo 3)."),
+    corpo("Alves e Soares (2013) mostraram que o perfil socioeconômico dos alunos, a infraestrutura e a complexidade das "
+          "escolas se associam ao Ideb, de modo que comparar redes sem considerar o contexto penaliza as que atendem "
+          "populações mais vulneráveis. Esse argumento sustenta os controles de contexto do indicador e a comparação entre "
+          "redes de um mesmo grupo de contexto. Na literatura de eficiência, Faria et al. (2008) aplicaram a análise "
+          "envoltória de dados aos municípios do Rio de Janeiro, com o gasto per capita em saúde e educação como insumo; "
+          "como discutido em 2.1.4, esse tipo de método mede a distância até a fronteira de melhores práticas, e não até o "
+          "resultado esperado para redes comparáveis."),
+    titulo(3, "Incentivos a resultados: o caso do Ceará"),
+    corpo("Uma explicação documentada para as diferenças entre estados com gasto semelhante vem das políticas de "
+          "incentivo. O Ceará distribui parte da cota municipal do ICMS segundo resultados educacionais e oferece "
+          "assistência técnica às redes municipais; Lautharte et al. (2021) estimaram que essa política elevou as notas do "
+          "9º ano em cerca de 0,15 desvio-padrão, e que o efeito dobra com a assistência técnica."),
+    corpo("A Emenda Constitucional nº 108/2020 estendeu esse desenho ao país, ao determinar que parte da cota municipal do "
+          "ICMS seja distribuída com base em indicadores de melhoria nos resultados de aprendizagem e de aumento da equidade "
+          "(Brasil, 2020a). Incentivos ligados a indicadores podem, porém, produzir variações bruscas de resultado, o que "
+          "justifica tratá-las com cautela, como faz a marca de saltos atípicos do painel, sem supor irregularidade."),
+    titulo(3, "Síntese e lacuna"),
+    corpo("Em síntese, a literatura indica que o gasto, sozinho, explica pouco do desempenho entre redes; que o efeito "
+          "aparece quando se isola a variação do gasto, é maior para populações mais pobres e depende de como os recursos "
+          "são usados; e que comparações justas entre redes precisam considerar o contexto. Do lado da gestão, a "
+          "disponibilidade de dados públicos não garante o seu uso para decisão (Heald, 2006; Janssen et al., 2012), e "
+          "painéis de apoio à decisão precisam reunir as informações mais importantes de forma que possam ser lidas de "
+          "relance (Few, 2006)."),
+    corpo("A lacuna em que o trabalho se posiciona é a combinação dessas duas frentes: uma ferramenta pública, de "
+          "abrangência nacional, que estime a associação entre gasto e desempenho com dados recentes, de 2017 a 2025, e que "
+          "permita ao gestor comparar a própria rede com redes de contexto e gasto parecidos, identificando as que entregam "
+          "mais ou menos do que o esperado."),
+]
+REV_23 = [
+    corpo("As bases públicas usadas no trabalho estão resumidas no Quadro 1; o Quadro 2, no Capítulo 3, detalha o período "
+          "e o uso de cada uma."),
+    legenda("Quadro 1 – Bases oficiais utilizadas"),
+    tabela(["Base", "Órgão responsável", "O que é"], [
+        ["SIOPE", "FNDE/MEC", "Sistema em que estados e municípios declaram receitas e despesas em educação; base do "
+         "acompanhamento da MDE e do Fundeb"],
+        ["Siconfi", "Secretaria do Tesouro Nacional", "Sistema das declarações contábeis e fiscais dos entes federados, "
+         "como a Declaração de Contas Anuais"],
+        ["Saeb", "Inep/MEC", "Avaliação bienal da proficiência em Língua Portuguesa e Matemática, aplicada às escolas "
+         "públicas com número mínimo de estudantes nas etapas avaliadas"],
+        ["Ideb", "Inep/MEC", "Indicador que combina a proficiência no Saeb e a taxa de aprovação"],
+        ["Censo Escolar", "Inep/MEC", "Levantamento anual de matrículas, docentes e infraestrutura das escolas"],
+        ["Censo Demográfico, IPCA e malha municipal", "IBGE", "População e alfabetização (2022), índice de preços usado "
+         "na correção monetária e contornos dos municípios"],
+        ["IDHM", "PNUD, Ipea e Fundação João Pinheiro", "Índice de desenvolvimento humano nas dimensões renda, "
+         "longevidade e educação, usado por UF"],
+    ], [2000, 2275, 4800]),
+    fonte("Fonte: elaborado pelos autores, com base em FNDE (2026), Secretaria do Tesouro Nacional (2026), Inep (2026a, "
+          "2026b), IBGE (2023, 2024, 2026a, 2026b) e PNUD et al. (2026)."),
+    corpo("O Exame Nacional do Ensino Médio (ENEM) e o Programa Internacional de Avaliação de Estudantes (PISA) foram "
+          "descartados como medida de desempenho. O ENEM é de adesão voluntária e inclui alunos de escolas privadas; nos "
+          "microdados públicos analisados pelos autores, só de 15,6% a 27,4% dos inscritos têm escola e município "
+          "identificados. O PISA é amostral e não produz resultados por município. O Saeb, por sua vez, é aplicado às "
+          "escolas públicas e tem resultados por município e por rede."),
+]
+LEI_21 = [  # parágrafos de 2.1 com os dispositivos conferidos na lei (marcas [CONFERIR] resolvidas)
+    ("A vinculação constitucional de receitas à educação",
+     "A vinculação constitucional de receitas à educação determina que a União aplique anualmente, no mínimo, 18%, e que "
+     "estados, Distrito Federal e municípios apliquem, no mínimo, 25% da receita de impostos, compreendidas as "
+     "transferências, na manutenção e desenvolvimento do ensino (Brasil, 1988, art. 212). A Lei de Diretrizes e Bases da "
+     "Educação Nacional define o que se considera e o que não se considera despesa de MDE (Brasil, 1996, arts. 70 e 71), o "
+     "que condiciona a margem de discricionariedade do gestor."),
+    ("O Fundeb é um fundo de natureza contábil",
+     "O Fundeb é um fundo de natureza contábil, de âmbito estadual (um por estado e um no Distrito Federal), composto por "
+     "parcela das receitas de impostos e transferências de estados e municípios. Foi tornado permanente pela Emenda "
+     "Constitucional nº 108/2020, regulamentada pela Lei nº 14.113/2020 e alterada pela Lei nº 14.276/2021 (Brasil, "
+     "2020a, 2020b, 2021)."),
+    ("A União complementa o fundo com",
+     "A União complementa o fundo com, no mínimo, 23% do total de recursos, em implantação gradual de 2021 a 2026, de 12% "
+     "no primeiro ano a 23% no sexto, distribuídos em três modalidades (Brasil, 2020b, arts. 5º e 41):"),
+    ("o VAAT (Valor Anual Total por Aluno)",
+     "o VAAT (Valor Anual Total por Aluno) corresponde a, no mínimo, 10,5 pontos percentuais e é distribuído por rede de "
+     "ensino, com base na capacidade total de financiamento por aluno, considerando outras receitas vinculadas à educação, "
+     "o que aprofunda a equalização entre redes, inclusive dentro de um mesmo estado. Metade desses recursos vai à educação "
+     "infantil, e ao menos 15% devem ser aplicados em despesas de capital (Brasil, 2020b, arts. 27 e 28);"),
+    ("o VAAR (Valor Anual por Aluno por Resultado)",
+     "o VAAR (Valor Anual por Aluno por Resultado) corresponde a 2,5 pontos percentuais e é distribuído às redes que "
+     "cumprirem condicionalidades de gestão e apresentarem melhoria de indicadores de atendimento e de aprendizagem, com "
+     "redução das desigualdades. As condicionalidades incluem a escolha de diretores por critérios de mérito e desempenho "
+     "ou com participação da comunidade, a participação de ao menos 80% dos estudantes nas avaliações nacionais, a redução "
+     "das desigualdades educacionais socioeconômicas e raciais, o regime de colaboração entre estado e municípios e "
+     "referenciais curriculares alinhados à Base Nacional Comum Curricular (Brasil, 2020b, art. 14)."),
+    ("Quanto à aplicação, no mínimo 70%",
+     "Quanto à aplicação, no mínimo 70% dos recursos anuais totais do Fundeb, excluída a complementação-VAAR, devem ser "
+     "destinados à remuneração dos profissionais da educação básica em efetivo exercício (Brasil, 2020b, art. 26). O "
+     "restante pode ser aplicado em outras ações de MDE na educação básica pública, observadas as vinculações da "
+     "complementação-VAAT. É essa fração, por vezes chamada de “30% flexível”, que concentra a maior parte da margem de "
+     "decisão alocativa associada ao fundo, embora continue sujeita às regras de MDE."),
+    ("A Emenda Constitucional nº 108/2020 também inscreveu",
+     "A Emenda Constitucional nº 108/2020 também inscreveu na Constituição o Custo Aluno-Qualidade (CAQ) como referência "
+     "do padrão mínimo de qualidade, a ser pactuado em regime de colaboração na forma de lei complementar (Brasil, 2020a; "
+     "Brasil, 1988, art. 211, § 7º). O trabalho não usa o CAQ, porque compara o gasto observado das redes, e não um padrão "
+     "de custo."),
+]
+
+
+# ───────────────────────── antigo Capítulo 3 remanejado (D1, A23, 2026-11-17) ─────────────────────────
+def paragrafos(xml: str):
+    tbs = [(m.start(), m.end()) for m in re.finditer(r"<w:tbl>.*?</w:tbl>", xml, flags=re.S)]
+    return [m for m in re.finditer(r"<w:p[ >].*?</w:p>", xml, flags=re.S) if not any(a <= m.start() < b for a, b in tbs)]
+
+
+def achar_par(xml: str, inicio: str, h1: bool = False) -> re.Match:
+    pars = paragrafos(xml)
+    intro = [m.start() for m in pars if '"Heading1"' in m.group(0) and texto_de(m.group(0)).strip() == "INTRODUÇÃO"][-1]
+    achados = [m for m in pars if texto_de(m.group(0)).strip().startswith(inicio)
+               and (not h1 or '"Heading1"' in m.group(0)) and (h1 or m.start() > intro)]  # só no corpo do texto
+    achados = achados[-1:] if h1 else achados  # o sumário digitado repete os títulos; vale o último
+    assert len(achados) == 1, f"parágrafo não encontrado ou repetido: {inicio[:50]} ({len(achados)})"
+    return achados[0]
+
+
+def reescrever(xml: str, inicio: str, novo: str) -> str:
+    """Troca o texto de um parágrafo do rascunho, mantendo o formato dele; **trecho** sai em negrito."""
+    m = achar_par(xml, inicio)
+    par = m.group(0)
+    ppr = (re.search(r"<w:pPr>.*?</w:pPr>", par, flags=re.S) or [""])[0] if "<w:pPr>" in par else ""
+    rpr = re.search(r"<w:r[ >].*?(<w:rPr>.*?</w:rPr>)", par, flags=re.S)
+    rpr = re.sub(r"<w:highlight [^>]*/>|<w:b(?:Cs)? [^>]*/>|<w:b(?:Cs)?/>|<w:i(?:Cs)? [^>]*/>|<w:i(?:Cs)?/>", "",
+                 rpr.group(1)) if rpr else ""
+    runs = ""
+    for k, s in enumerate(novo.split("**")):
+        for pedaco in re.split(r"(\[[^\]]*\])", s):
+            if not pedaco:
+                continue
+            r = rpr.replace("<w:rPr>", "<w:rPr><w:b/><w:bCs/>", 1) if k % 2 and rpr else rpr
+            if pedaco.startswith("[") and r:
+                r = r.replace("</w:rPr>", '<w:highlight w:val="yellow"/></w:rPr>')
+            runs += f'<w:r>{r}<w:t xml:space="preserve">{escape(pedaco)}</w:t></w:r>'
+    return xml[:m.start()] + "<w:p>" + ppr + runs + "</w:p>" + xml[m.end():]
+
+
+def inserir_depois(xml: str, inicio: str, blocos: list[str]) -> str:
+    m = achar_par(xml, inicio)
+    return xml[:m.end()] + "".join(blocos) + xml[m.end():]
+
+
+def apagar_trecho(xml: str, ini_h: str, fim_h: str, nivel: str) -> str:
+    """Apaga do título ini_h (inclusive) até o título fim_h (exclusive)."""
+    a = [m for m in paragrafos(xml) if f'"{nivel}"' in m.group(0) and texto_de(m.group(0)).strip() == ini_h][-1]
+    b = [m for m in paragrafos(xml) if '"Heading' in m.group(0) and texto_de(m.group(0)).strip() == fim_h
+         and m.start() > a.start()][0]
+    assert "<w:sectPr" not in xml[a.start():b.start()], "quebra de seção dentro do trecho apagado"
+    return xml[:a.start()] + xml[b.start():]
+
+
+x = apagar_trecho(x, "DIAGNÓSTICO DA SITUAÇÃO ATUAL", "MÉTODO", "Heading1")
+x = apagar_trecho(x, "Instrumentos e estruturas de diagnóstico", "Trabalhos semelhantes e literatura correlata", "Heading2")
+
+
+def substituir_intervalo(xml: str, inicio: str, ultimo: str, blocos: list[str]) -> str:
+    """Troca, no corpo do texto, do parágrafo que começa com `inicio` até o que começa com `ultimo` (inclusive)."""
+    a, b = achar_par(xml, inicio), achar_par(xml, ultimo)
+    assert a.start() <= b.start()
+    return xml[:a.start()] + "".join(blocos) + xml[b.end():]
+
+
+x = substituir_intervalo(x, "[DEFINIR o conceito operacional", "[DEFINIR o conceito operacional", REV_214)
+x = substituir_intervalo(x, "AVISO – SEÇÃO PENDENTE DE PESQUISA", "[SÍNTESE E LACUNA", REV_22)
+x = substituir_intervalo(x, "O trabalho utiliza bases públicas de cinco origens", "[INSERIR parágrafo explicando por que o ENEM", REV_23)
+for inicio, novo in LEI_21:
+    x = reescrever(x, inicio, novo)
+# o sumário digitado (com o antigo Capítulo 3) será refeito no Word: ver docs/revisao_formatacao.md
+
+x = reescrever(x, "Os dados necessários para conectar essas duas agendas",
+    "Os dados necessários para conectar essas duas agendas estão publicados em sistemas distintos, mantidos por órgãos "
+    "diferentes e com lógicas próprias. Os dados orçamentários e contábeis estão no Sistema de Informações sobre "
+    "Orçamentos Públicos em Educação (SIOPE) e no Sistema de Informações Contábeis e Fiscais do Setor Público Brasileiro "
+    "(SICONFI), do Tesouro Nacional. Os dados de proficiência e fluxo estão no Sistema de Avaliação da Educação Básica "
+    "(Saeb) e no Índice de Desenvolvimento da Educação Básica (Ideb), e os de infraestrutura, matrículas e docentes, no "
+    "Censo Escolar, todos do Inep. A fragmentação entre dados financeiros e dados pedagógicos e estruturais dificulta a "
+    "visão sistêmica do gestor e a identificação de redes que precisam de apoio.")
+x = inserir_depois(x, "Os dados necessários para conectar essas duas agendas", [
+    corpo("O país dispõe de uma infraestrutura relevante de transparência e de dados abertos, amparada pela Lei de "
+          "Responsabilidade Fiscal (Brasil, 2000), pela Lei de Acesso à Informação (Brasil, 2011) e pela política de dados "
+          "abertos do Poder Executivo federal (Brasil, 2016). Divulgar os dados, porém, não equivale a torná-los úteis "
+          "para a decisão (Heald, 2006; Janssen et al., 2012). Na educação, os portais orçamentários, como o Tesouro "
+          "Transparente e a consulta pública do SIOPE, orientam-se à prestação de contas e ao cumprimento de limites "
+          "legais, enquanto os painéis do Inep apresentam resultados de aprendizagem, fluxo e infraestrutura. São escassos os "
+          "portais que permitem comparar, rede a rede, o gasto por aluno com o desempenho, e mais raros ainda os que levam "
+          "em conta o contexto em que cada rede atua."),
+    corpo("A integração feita neste trabalho ilustra as barreiras práticas a esse cruzamento. As bases vêm em formatos "
+          "diferentes, de interfaces de programação (SIOPE e SICONFI) a planilhas (resultados do Ideb) e microdados (Censo "
+          "Escolar); têm periodicidades distintas, com gasto anual e avaliação bienal; e são publicadas com defasagens "
+          "diferentes, como o IDHM, cuja série disponível termina em 2024. O Capítulo 3 descreve como essas diferenças "
+          "foram tratadas."),
+    corpo("Daí decorre a lacuna que motiva o trabalho: os dados para avaliar se o gasto se converte em aprendizagem "
+          "existem e são públicos, mas não estão integrados de forma que o gestor possa comparar a própria rede com redes "
+          "em condições parecidas, nem há consenso sobre o quanto o gasto, por si só, se associa ao desempenho."),
+])
+x = inserir_depois(x, "Quanto à aplicação, no mínimo 70% dos recursos", [
+    corpo("Essa margem é onde o gestor tem mais espaço para alocar recursos com foco na aprendizagem e na equidade entre "
+          "escolas e regiões da rede. Ao mesmo tempo, a complementação-VAAR liga parte dos repasses à melhoria de "
+          "indicadores de atendimento e de aprendizagem (Brasil, 2020b), o que torna relevante acompanhar, ao longo do "
+          "tempo, a posição da rede em relação a redes comparáveis. Este trabalho não monitora as condicionalidades do "
+          "VAAR, mas o indicador de desempenho em relação ao esperado, descrito no Capítulo 3, informa essa posição relativa."),
+])
+x = reescrever(x, "De que maneira a integração de dados orçamentários",
+    "O gasto público por aluno se associa ao desempenho das redes públicas de ensino no Saeb e, considerando o gasto e o "
+    "contexto de cada rede, quais redes entregam mais ou menos do que o esperado?")
+x = reescrever(x, "O Manual de TCC da FEA/USP estabelece que trabalhos de consultoria",
+    "No formato de método científico, os objetivos são de descoberta: buscam reduzir uma lacuna de conhecimento, e não "
+    "alterar uma realidade administrativa específica (Departamento de Administração FEA/USP, 2025). Assim, definem-se os "
+    "objetivos a seguir.")
+x = reescrever(x, "Objetivo geral: estruturar",
+    "**Objetivo geral:** analisar a associação entre o gasto público por aluno e o desempenho das redes públicas de ensino no "
+    "Saeb, de 2017 a 2025, e identificar as redes que entregam mais ou menos do que o esperado para o seu gasto e o seu "
+    "contexto.")
+for antigo, novo in [
+    ("diagnosticar a fragmentação informacional", "integrar, em painéis de dados municipal e estadual, bases públicas de "
+     "gasto (SIOPE e SICONFI), de desempenho (Saeb), de oferta (Censo Escolar) e de contexto (IBGE e IDHM);"),
+    ("integrar, em uma única camada analítica", "estimar a associação entre o gasto por aluno e a proficiência, entre "
+     "municípios e dentro do mesmo município, com o gasto do ano da prova e de anos anteriores;"),
+    ("projetar visualizações interativas", "construir um indicador de desempenho em relação ao esperado e um painel de "
+     "Business Intelligence que permita comparar redes de contexto e gasto parecidos;"),
+    ("demonstrar, por simulação de cenários", "aplicar o painel à comparação entre as redes municipais do Ceará e da "
+     "Bahia e a três estudos de caso.")]:
+    x = reescrever(x, antigo, novo)
+x = reescrever(x, "Contribuição prática.",
+    "**Contribuição prática.** O trabalho entrega um painel que reúne, numa só interface, o que hoje o gestor precisa "
+    "consultar em portais separados, e que compara cada rede com redes de contexto e gasto parecidos. Diferencia-se dos "
+    "portais existentes, que tendem a apresentar o cumprimento de limites fiscais ou os resultados de aprendizagem de "
+    "forma isolada (ver 1.2).")
+x = reescrever(x, "O trabalho organiza-se em seis capítulos.",
+    "O trabalho organiza-se em cinco capítulos. Este primeiro capítulo apresenta o contexto, o problema, a pergunta e os "
+    "objetivos. O Capítulo 2 reúne a revisão bibliográfica e a caracterização das bases oficiais. O Capítulo 3 descreve o "
+    "método: as fontes e a integração dos dados, as regras de tratamento, o painel e o uso de inteligência artificial. O "
+    "Capítulo 4 apresenta e discute os resultados: o agrupamento dos municípios por contexto, a associação entre gasto e "
+    "desempenho, a comparação entre Ceará e Bahia, os estudos de caso e a validação do painel. O Capítulo 5 traz as "
+    "conclusões, as limitações e as sugestões de pesquisa futura.")
+# remissões que mudam com a saída do antigo Capítulo 3 (e do item 2.2) em marcações do rascunho
+x = reescrever(x, "Contribuição teórica.",
+    "**Contribuição teórica.** O trabalho aproxima as literaturas de gestão pública baseada em evidências, de dados "
+    "abertos e de análise de dados para decisão (analytics) de um problema concreto de administração pública "
+    "educacional, descrevendo um modelo replicável de integração entre bases públicas. [REFINAR após a revisão "
+    "bibliográfica adicional do item 2.2: a contribuição teórica só deve ser afirmada com base em lacuna efetivamente "
+    "demonstrada.]")
+x = reescrever(x, "AVISO. Como o Capítulo 5 está em pausa",
+    "AVISO. As conclusões abaixo estão estruturadas como lacunas, a preencher com os resultados do Capítulo 4. Nenhum "
+    "resultado foi presumido.")
+x = reescrever(x, "O trabalho partiu da pergunta:",
+    "O trabalho partiu da pergunta: o gasto público por aluno se associa ao desempenho das redes públicas de ensino no "
+    "Saeb e, considerando o gasto e o contexto de cada rede, quais redes entregam mais ou menos do que o esperado? "
+    "[RESPONDER DIRETAMENTE, em um parágrafo, com base em: (i) a associação entre gasto e desempenho (seção 4.2); (ii) as "
+    "redes acima e abaixo do esperado, com Ceará e Bahia e os estudos de caso (seções 4.3 e 4.4); (iii) o que o painel "
+    "entrega e como foi validado (seções 3.3 e 4.5).]")
+x = reescrever(x, "[INSERIR 2 a 4 conclusões gerenciais principais",
+    "[INSERIR 2 a 4 conclusões principais, com base nos resultados do Capítulo 4.]")
+x = reescrever(x, "Teóricas. [DETALHAR",
+    "**Teóricas.** [DETALHAR: contribuição à literatura de administração pública e gestão baseada em evidências, "
+    "vinculada à lacuna demonstrada no item 2.2. Evitar contribuições não sustentadas pela revisão da literatura.]")
+x = reescrever(x, "Natureza declaratória dos dados orçamentários.",
+    "**Natureza declaratória dos dados orçamentários.** Os dados do SIOPE e de sistemas correlatos são informados pelos "
+    "próprios entes federados, o que sujeita as informações a inconsistências, atrasos, erros de classificação e eventuais "
+    "revisões posteriores [CONFERIR nas normas do FNDE o grau de validação e conferência aplicado aos dados]. [DESCREVER o "
+    "tratamento adotado, em coerência com o Capítulo 3.]")
 
 
 def depois_do_titulo(xml: str, titulo_h1: str, blocos: list[str]) -> str:
@@ -1148,17 +1511,12 @@ def depois_do_titulo(xml: str, titulo_h1: str, blocos: list[str]) -> str:
 
 
 x = depois_do_titulo(x, "INTRODUÇÃO", [nota(
-    "[FORMATO (decisão D1, 2026-11-17): o trabalho passa a seguir o formato de método científico, estudo quantitativo "
-    "(Manual de TCC, 4.2 e 4.4), porque não há uma organização-cliente para um plano de consultoria. Estrutura: 1 "
-    "Introdução; 2 Revisão bibliográfica; 3 Método (o atual Capítulo 4); 4 Resultados e discussão (o atual 5); 5 "
-    "Conclusões, limitações e sugestões de pesquisa futura (o atual 6). Nesta cópia, os títulos dos capítulos 2, 4, 5 e "
-    "6 já foram trocados; o Capítulo 3 continua aqui só até o seu conteúdo ser remanejado (ver a nota nele). Ajustar "
-    "também o título do trabalho, o resumo e os objetivos, que falam em consultoria e em simulação de cenários.]")])
-x = depois_do_titulo(x, "DIAGNÓSTICO DA SITUAÇÃO ATUAL", [nota(
-    "[FORMATO (D1): no método científico, este capítulo deixa de existir. Os itens 3.1 e 3.2 (fragmentação da informação "
-    "e dificuldades do gestor) podem ir para a Introdução, em 1.1 e 1.2, apoiados em literatura; o item 3.3 "
-    "(Oportunidade de consultoria) sai. Quando o capítulo sair, a numeração muda, e as remissões a \"Capítulo 4\" e "
-    "\"Capítulo 6\" no texto passam a \"Capítulo 3\" e \"Capítulo 5\".]")])
+    "[REORGANIZAÇÃO PARA O FORMATO CIENTÍFICO (2026-11-17, decisões D1 e A23), feita com o auxílio da IA. O antigo Capítulo "
+    "3 (Diagnóstico) foi remanejado: a fragmentação da informação e as barreiras ao cruzamento dos dados entraram em 1.2; "
+    "a margem de decisão do gestor e o VAAR, em 2.1.2; a justificativa do Business Intelligence e o público-alvo, em 3.3. "
+    "Saíram a oportunidade de consultoria, o Quadro 2 (portais, que estava vazio), o antigo item 2.2 (instrumentos de "
+    "diagnóstico) e o escopo que incluía a Educação Infantil. Foram reescritos a pergunta, os objetivos, a contribuição "
+    "prática e a estrutura do trabalho. Guilherme: revisar e ajustar à sua redação.]")])
 
 # ───────────────────────── formatação (ABNT NBR 14724; diretrizes da USP) ─────────────────────────
 # margens de 3 cm (superior e esquerda) e 2 cm (inferior e direita) em todas as seções; número da página a 2 cm da borda

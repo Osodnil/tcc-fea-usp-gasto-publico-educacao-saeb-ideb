@@ -666,6 +666,51 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A24. Revisão bibliográfica escrita na cópia ✅ texto · 🟡 leitura das obras pelos autores (Henrique, 2026-11-17)
+- **Pedido:** a parte do Guilherme na etapa 3 do plano final é resolvida aqui. A única pendência que fica aberta na etapa 3 é os autores reescreverem a parte técnica com as próprias palavras (também condição da seção 3.4).
+- **Escrito na cópia, com o auxílio da IA:**
+  - **2.1:** os dispositivos legais que estavam como [CONFERIR] foram conferidos no texto da Lei nº 14.113/2020 e da EC nº 108/2020:
+    - complementação de 23% em implantação de 2021 a 2026 (arts. 5º e 41);
+    - VAAT: 50% na educação infantil e 15% em despesas de capital (arts. 27 e 28);
+    - condicionalidades do VAAR (art. 14);
+    - regra dos 70% (art. 26);
+    - CAQ (CF, art. 211, § 7º);
+    - ementa da Lei nº 14.276/2021.
+  - **2.1.4, renomeado "Eficiência do gasto e desempenho em relação ao esperado":** define eficiência por fronteira e o indicador do trabalho.
+  - **2.2 (Trabalhos semelhantes), com cinco subseções:**
+    - gasto e desempenho (Hanushek 1997 e 2003; Jackson et al. 2016; Jackson e Mackevicius 2024; Menezes-Filho e Amaral 2009; Oliveira et al. 2022; Alves e Frio 2022);
+    - Fundef e Fundeb (Menezes-Filho e Pazello 2007; Cruz e Rocha 2018; Hirata et al. 2022; Silva Júnior et al. 2025);
+    - medidas de desempenho e contexto (Soares e Xavier 2013; Alves e Soares 2013; Faria et al. 2008);
+    - incentivos no Ceará (Lautharte et al. 2021; EC 108 e o ICMS educacional);
+    - síntese e lacuna.
+  - **2.3:** Quadro 1 refeito, sem o SINCOP, com o IDHM e sem a coluna de pendências, e o parágrafo sobre o descarte do ENEM e do PISA.
+- **Referências:** passam a 44, com 12 obras do levantamento que agora são citadas. A lista é ordenada automaticamente pela ordem alfabética da APA.
+- **Quadros renumerados:** com a saída do antigo Quadro 2 (portais), os quadros vão de 1 a 5, sem lacuna.
+- **Cuidado registrado no próprio texto:** os achados das obras foram resumidos a partir dos resumos e registros conferidos (docs/levantamento_bibliografico.md). Antes da entrega, os autores precisam ler os textos e confirmar cada paráfrase. Isso fica junto da pendência de reescrita.
+- **Não usadas, por falta de conferência:** Monteiro (2015), cuja conclusão é citada em sentidos opostos; Diaz (2012), sem resumo; Bridi e Waltenberg (2025); Gordon e Vegas (2005); o caso de Sobral, com a ordem dos autores divergente; e os estudos sobre o ICMS de Alagoas.
+
+### A23. Capítulo 3 remanejado e uso de IA declarado no texto ✅ (aprovado pelo Henrique em 2026-11-17) (2026-11-17)
+- **Antigo Capítulo 3 (Diagnóstico), remanejado na cópia** porque, no formato científico (D1), o diagnóstico de consultoria vira o problema que motiva a pesquisa:
+  - a fragmentação da informação e as barreiras ao cruzamento dos dados foram para a **Introdução (1.2)**. As barreiras são as que o próprio projeto enfrentou: formatos, periodicidades e defasagens diferentes;
+  - a margem de decisão do gestor (os 30% do Fundeb fora da remuneração) e o VAAR foram para a **Revisão (2.1.2)**, sem a promessa de monitorar o VAAR;
+  - a justificativa do Business Intelligence e o público-alvo, como premissa de projeto, foram para o **Método (3.3)**;
+  - **saíram:** a oportunidade de consultoria, o Quadro 2 (portais, vazio), o item 2.2 (instrumentos de diagnóstico, que só servia ao Capítulo 3) e o escopo que incluía a Educação Infantil.
+- **Reescritos para o formato científico:** a pergunta de pesquisa (de descoberta), o parágrafo e os objetivos (geral e quatro específicos), a contribuição prática, a estrutura do trabalho (cinco capítulos) e as remissões a capítulos e itens. Também as marcações das Conclusões que citavam o "diagnóstico do Capítulo 3" e os "cenários simulados".
+  - **Afirmação sobre os portais, conferida em 2026-11-17:** o texto dizia que nenhum portal compara gasto e desempenho rede a rede considerando o contexto. A pesquisa achou uma exceção parcial: o portal Meu Município, que relacionava a despesa em educação por aluno ao Ideb de cada município. Ele tem hoje a ferramenta "Otimiza", sobre a eficiência das despesas municipais em Saúde e Educação; a página por município dava erro (HTTP 500) na consulta. Também há o IEG-M do TCE-SP, com a dimensão de educação (i-Educ), que avalia a gestão, e não o gasto contra o resultado. Como "nenhum" não se sustenta, o texto passou a: "São escassos os portais que permitem comparar, rede a rede, o gasto por aluno com o desempenho, e mais raros ainda os que levam em conta o contexto em que cada rede atua."
+- **Uso de IA declarado no texto (proposta do Henrique):** sempre que o texto descreve uma etapa feita com IA, o próprio parágrafo diz isso ("com o auxílio da IA, desenvolvemos os scripts..."). As menções estão em:
+  - na integração dos dados (3.1);
+  - no painel (3.3);
+  - nos clusters (4.1);
+  - nos modelos (4.2);
+  - no Ceará × Bahia (4.3);
+  - na escolha dos casos (4.4);
+  - na conferência técnica (4.5).
+  - **Seção nova 3.4, "Uso de inteligência artificial":** a ferramenta (Claude, da Anthropic), as cinco etapas com IA e o que a IA não fez. A referência "Anthropic (2026)" entrou na lista, que passou a 32 obras.
+  - **Pergunta 2 da declaração (onde fica):** no Método e no próprio texto. A pergunta 4 (anexar interações) segue com a orientadora.
+- **Voz (decidido pelo Henrique, 2026-11-17):** impessoal, como no restante do trabalho ("com o auxílio da IA, foram desenvolvidos os scripts..."). Todas as menções foram convertidas.
+- **Para depois:** a seção 3.4 diz que os autores revisaram e reescreveram as versões iniciais e que a leitura das obras é deles. Isso precisa ser verdade na entrega e será conferido quando a estrutura estiver completa.
+- **Avaliação do Henrique (2026-11-17):** a descrição do uso de IA está coerente. A etapa 2 do plano será marcada como concluída depois que ele der o retorno sobre as pendências restantes.
+
 ### S11. Saltos atípicos de proficiência ✅ regra confirmada em 2026-11-17 (A21) (achado de 2026-10-30)
 - **Evidência†:** os municípios com os maiores resíduos em AI Matemática 2023 têm proficiências de 330 a 357 pontos, mais altas que as das redes de capitais ricas, em municípios pequenos. Alguns sobem mais de 130 pontos em 6 anos: Ibateguara-AL foi de 195 (2017) para 345 (2025), e Santana do Mundaú-AL de 200 para 357 (2023). Como referência, a escala do Saeb avança cerca de 25 pontos por ano de escolaridade.
 - **Concentração:** as redes de AI com mais de 300 pontos em Matemática estão quase todas no Ceará e em Alagoas (2025: 30 no CE e 10 em AL). A média de AL subiu de 200 (2017) para 238 (2025).
