@@ -1347,19 +1347,19 @@ def paragrafos(xml: str):
     return [m for m in re.finditer(r"<w:p[ >].*?</w:p>", xml, flags=re.S) if not any(a <= m.start() < b for a, b in tbs)]
 
 
-def achar_par(xml: str, inicio: str, h1: bool = False) -> re.Match:
+def achar_par(xml: str, inicio: str, h1: bool = False, pre: bool = False) -> re.Match:
     pars = paragrafos(xml)
     intro = [m.start() for m in pars if '"Heading1"' in m.group(0) and texto_de(m.group(0)).strip() == "INTRODUÇÃO"][-1]
     achados = [m for m in pars if texto_de(m.group(0)).strip().startswith(inicio)
-               and (not h1 or '"Heading1"' in m.group(0)) and (h1 or m.start() > intro)]  # só no corpo do texto
+               and (not h1 or '"Heading1"' in m.group(0)) and (h1 or (m.start() < intro if pre else m.start() > intro))]  # corpo do texto, ou pré-textuais
     achados = achados[-1:] if h1 else achados  # o sumário digitado repete os títulos; vale o último
     assert len(achados) == 1, f"parágrafo não encontrado ou repetido: {inicio[:50]} ({len(achados)})"
     return achados[0]
 
 
-def reescrever(xml: str, inicio: str, novo: str) -> str:
+def reescrever(xml: str, inicio: str, novo: str, pre: bool = False) -> str:
     """Troca o texto de um parágrafo do rascunho, mantendo o formato dele; **trecho** sai em negrito."""
-    m = achar_par(xml, inicio)
+    m = achar_par(xml, inicio, pre=pre)
     par = m.group(0)
     ppr = (re.search(r"<w:pPr>.*?</w:pPr>", par, flags=re.S) or [""])[0] if "<w:pPr>" in par else ""
     rpr = re.search(r"<w:r[ >].*?(<w:rPr>.*?</w:rPr>)", par, flags=re.S)
@@ -1517,6 +1517,168 @@ x = depois_do_titulo(x, "INTRODUÇÃO", [nota(
     "Saíram a oportunidade de consultoria, o Quadro 2 (portais, que estava vazio), o antigo item 2.2 (instrumentos de "
     "diagnóstico) e o escopo que incluía a Educação Infantil. Foram reescritos a pergunta, os objetivos, a contribuição "
     "prática e a estrutura do trabalho. Guilherme: revisar e ajustar à sua redação.]")])
+
+# ───────────────────────── conclusões, resumo e abstract (A25, 2026-11-18) ─────────────────────────
+def alinea(letra: str, texto: str) -> str:
+    """Alínea no padrão da ABNT: letra minúscula seguida de parêntese, recuo deslocado."""
+    return ('<w:p><w:pPr><w:spacing w:after="60" w:before="0" w:line="360" w:lineRule="auto"/>'
+            '<w:ind w:left="1134" w:right="0" w:hanging="425"/><w:jc w:val="both"/></w:pPr>'
+            + run(f"{letra}) " + texto) + "</w:p>")
+
+
+def alineas(textos: list[str]) -> list[str]:
+    return [alinea("abcdefghij"[k], s) for k, s in enumerate(textos)]
+
+
+CAP_CONCLUSOES = [
+    nota("[CONCLUSÕES escritas com o auxílio da IA em 2026-11-18 (registro A25), a partir dos resultados do Capítulo 4 e "
+         "das notas de base factual do rascunho. Os autores devem revisá-las e reescrevê-las com as próprias palavras.]"),
+    titulo(2, "Conclusões"),
+    corpo("O trabalho partiu da pergunta: o gasto público por aluno se associa ao desempenho das redes públicas de ensino "
+          "no Saeb e, considerando o gasto e o contexto de cada rede, quais redes entregam mais ou menos do que o "
+          "esperado? A resposta tem duas partes. Primeiro, a associação existe, mas é pequena: a correlação simples entre "
+          "gasto e proficiência caiu de 0,46 em 2017 para 0,16 em 2025 e se explica, em grande parte, pelo contexto dos "
+          "municípios; quando cada município é comparado com ele mesmo ao longo do tempo, 10% a mais de gasto por aluno "
+          "acompanham cerca de 0,2 ponto a mais no Saeb, e dobrar o gasto se associa a menos de 7% de um desvio-padrão da "
+          "proficiência entre as redes. Segundo, redes com gasto e contexto parecidos têm resultados muito diferentes, e "
+          "são essas diferenças, mais do que o volume de gasto, que distinguem as redes acima e abaixo do esperado."),
+    corpo("Quatro conclusões se destacam:"),
+    *alineas([
+        "o volume de gasto, sozinho, diz pouco sobre o resultado: a associação dentro do município é estável e "
+        "estatisticamente clara, mas pequena, e se concentra no gasto do próprio ciclo do Saeb, isto é, no ano da prova "
+        "e no anterior; o gasto de dois ou quatro anos antes não se associa à nota;",
+        "a associação não é igual em todo o país: concentra-se nos municípios de até 50 mil habitantes e no Nordeste e "
+        "no Norte, e não aparece nas cidades com mais de 100 mil habitantes nem no Sudeste e no Sul; na camada estadual, "
+        "com 27 unidades, não é possível detectá-la;",
+        "redes com o mesmo gasto podem ter resultados muito diferentes: as redes municipais do Ceará e da Bahia gastaram, "
+        "em mediana, praticamente o mesmo por aluno em 2023 (R$ 11.391 e R$ 11.231), mas a proficiência média em "
+        "Matemática nos Anos Iniciais foi de 242,4 pontos no Ceará e de 200,1 na Bahia, e 90% das redes cearenses "
+        "ficaram acima do esperado, contra 38% das baianas; a diferença se mantém entre municípios de contexto parecido e "
+        "é compatível com as políticas de incentivo e de assistência técnica do Ceará descritas na literatura, explicação "
+        "que este trabalho não testa;",
+        "o resultado em relação ao esperado só é útil acompanhado dos alertas: os estudos de caso mostram que uma rede "
+        "muito acima do esperado pode ter um salto atípico de nota (Coruripe, +69,6%) e que uma rede abaixo do esperado "
+        "pode atender menos da metade dos alunos da etapa (São Paulo, −9,3%, com 42% dos alunos públicos dos Anos "
+        "Iniciais na rede municipal); sem os alertas, a leitura levaria a conclusões apressadas.",
+    ]),
+    corpo("O objetivo geral foi atingido: o trabalho estimou a associação entre o gasto por aluno e o desempenho de 2017 "
+          "a 2025 e identificou, para cada rede, a distância até o resultado esperado. Os objetivos específicos foram "
+          "atendidos da seguinte forma: a integração das bases está descrita nas seções 3.1 e 3.2; a associação entre "
+          "municípios e dentro do mesmo município, na seção 4.2; o indicador e o painel, na seção 3.3; e a aplicação ao "
+          "Ceará e à Bahia e aos estudos de caso, nas seções 4.3 e 4.4."),
+    titulo(2, "Contribuições práticas e teóricas"),
+    corpo("Do ponto de vista prático, o painel reúne numa só interface o que hoje está em portais separados e responde a "
+          "três perguntas de quem gere uma rede de ensino: se gastar mais se associa a aprender mais, se a própria rede "
+          "entrega o esperado e com quem conversar, isto é, que redes de contexto e gasto parecidos obtêm resultados "
+          "melhores. Isso desloca a pergunta gerencial do volume de recursos para o uso dos recursos, o que é coerente com "
+          "a margem de decisão que o Fundeb deixa ao gestor. O código, os dados tratados e o registro de cada decisão "
+          "estão em repositório público, o que permite reproduzir e atualizar o painel."),
+    corpo("Do ponto de vista teórico, o trabalho acrescenta evidência recente, de 2017 a 2025 e já no período do Novo "
+          "Fundeb, à literatura brasileira sobre gasto e desempenho, com um desenho que separa a comparação entre "
+          "municípios da comparação de cada município com ele mesmo. O resultado reforça a leitura de que o gasto, "
+          "sozinho, explica pouco das diferenças entre redes (Hanushek, 2003; Menezes-Filho & Amaral, 2009), e mostra que "
+          "a associação existente é maior nos municípios pequenos e nas regiões mais pobres, em linha com os efeitos "
+          "maiores para populações mais pobres encontrados na literatura internacional (Jackson & Mackevicius, 2024). O "
+          "trabalho também propõe, para o uso gerencial, um indicador de desempenho em relação ao esperado que considera o "
+          "contexto, como defendem Alves e Soares (2013)."),
+    titulo(2, "Limitações"),
+    corpo("As principais limitações do trabalho são as seguintes:"),
+    *alineas([
+        "associação, e não causalidade: os modelos não isolam uma variação do gasto externa às decisões das redes, e o "
+        "desempenho em relação ao esperado é um resíduo de regressão, que capta também gestão, contexto familiar e "
+        "qualidade do registro;",
+        "controle socioeconômico por UF: o IDHM só existe por unidade da Federação, e a série disponível termina em 2024, "
+        "de modo que a edição de 2025 não tem a comparação nacional;",
+        "natureza declaratória dos dados de gasto: os dados do SIOPE são informados pelos próprios entes, e o nível do "
+        "gasto depende da fonte, com divergência maior entre o SIOPE e o Siconfi nas maiores cidades; os valores extremos "
+        "foram mantidos e marcados, e não excluídos;",
+        "cobertura do Saeb: só entram as redes com nota divulgada pelo Inep, o que sub-representa as redes pequenas, "
+        "sobretudo nos Anos Finais, e a edição de 2021 foi afetada pela pandemia;",
+        "gasto agregado: o gasto municipal da subfunção 361 cobre todo o Ensino Fundamental, sem separar Anos Iniciais e "
+        "Finais, deixa de fora a Educação Infantil e, por ser despesa paga, não inclui restos a pagar;",
+        "redes parciais e saltos atípicos: em parte dos municípios, a rede municipal atende menos da metade dos alunos "
+        "públicos da etapa, e algumas redes têm variações de nota fora do padrão; os dois casos foram marcados, e os "
+        "testes sem eles não mudam as conclusões;",
+        "camada estadual: com 27 unidades, a associação nas redes estaduais não pode ser detectada, e essa camada fica "
+        "descritiva;",
+        "validação sem usuários: o painel foi validado por cenários de uso e pela conferência técnica dos números, e não "
+        "por testes com gestores, que exigiriam termo de consentimento e, possivelmente, aprovação em comitê de ética.",
+    ]),
+    titulo(2, "Sugestões de pesquisa futura"),
+    corpo("Ficaram fora desta versão, por decisão dos autores, a simulação de cenários de gasto, porque a associação "
+          "encontrada é pequena e não causal, e um simulador sugeriria um efeito que o trabalho não mede, e o "
+          "monitoramento das condicionalidades do VAAR, que exige dados de habilitação das redes que não foram "
+          "integrados. Como continuidade, sugere-se:"),
+    *alineas([
+        "avaliar o painel com gestores e analistas de secretarias de educação, com os cuidados éticos exigidos;",
+        "identificar as redes que recebem a complementação-VAAT, para testar se ela explica o padrão observado de 2023 a "
+        "2025;",
+        "separar o gasto por etapa e incluir a Educação Infantil, quando as bases permitirem;",
+        "estender a comparação nacional a 2025, quando o IDHM desse ano for publicado, e usar na nota esperada o gasto "
+        "médio do biênio, que acompanha melhor o ciclo do Saeb;",
+        "comparar o indicador com medidas de fronteira, como a análise envoltória de dados e a fronteira estocástica;",
+        "estudar o efeito dos incentivos estaduais ligados a resultados, como o ICMS educacional, sobre as redes acima do "
+        "esperado e sobre os saltos atípicos;",
+        "automatizar a coleta das bases do Inep, por exemplo com o pacote educabR (Bissoli, 2026), e publicar o painel "
+        "com atualização programada;",
+        "derivar do trabalho um artigo científico.",
+    ]),
+]
+
+RESUMO = (
+    "O financiamento da educação básica pública brasileira mobiliza um volume expressivo de recursos, mas os dados que "
+    "permitem relacionar o gasto aos resultados educacionais estão publicados em sistemas distintos. Este trabalho, um "
+    "estudo quantitativo, investigou se o gasto público por aluno se associa ao desempenho das redes públicas de ensino "
+    "no Saeb e quais redes entregam mais ou menos do que o esperado para o seu gasto e o seu contexto. Foram integradas "
+    "bases públicas de gasto (SIOPE e Siconfi), de desempenho (Saeb), de oferta (Censo Escolar) e de contexto (IBGE e "
+    "IDHM), de 2017 a 2025, em painéis de dados municipal e estadual. A associação foi estimada por regressões entre "
+    "municípios e dentro do mesmo município, os municípios foram agrupados por contexto, e os resultados foram "
+    "organizados num painel de Business Intelligence, com um indicador de desempenho em relação ao esperado. A "
+    "correlação simples entre gasto e proficiência caiu de 0,46 em 2017 para 0,16 em 2025 e se explica, em grande parte, "
+    "pelo contexto. Dentro do mesmo município, 10% a mais de gasto por aluno acompanham cerca de 0,2 ponto a mais no "
+    "Saeb, associação concentrada no gasto do próprio ciclo de avaliação, nos municípios pequenos e no Nordeste e no "
+    "Norte. Redes com gasto semelhante têm resultados muito diferentes: as redes municipais do Ceará e da Bahia gastam "
+    "praticamente o mesmo por aluno, mas 90% das cearenses ficaram acima do esperado em 2023, contra 38% das baianas. "
+    "Conclui-se que o volume de gasto, sozinho, explica pouco das diferenças de desempenho, e que comparar cada rede com "
+    "redes de contexto e gasto parecidos ajuda o gestor a identificar referências e a orientar a investigação sobre o "
+    "uso dos recursos. Os resultados indicam associação, e não efeito causal.")
+ABSTRACT = (
+    "The financing of Brazilian public basic education involves a significant volume of resources, but the data needed "
+    "to relate spending to educational outcomes are published in separate systems. This quantitative study investigated "
+    "whether public spending per student is associated with the performance of public school networks in Saeb, the "
+    "national assessment of basic education, and which networks deliver more or less than expected given their spending "
+    "and context. Public data on spending (SIOPE and Siconfi), performance (Saeb), provision (School Census) and context "
+    "(IBGE and HDI) from 2017 to 2025 were integrated into municipal and state panels. The association was estimated "
+    "with regressions across municipalities and within each municipality, municipalities were grouped by context, and "
+    "the results were organized in a Business Intelligence dashboard with an indicator of performance relative to the "
+    "expected level. The simple correlation between spending and proficiency fell from 0.46 in 2017 to 0.16 in 2025 and "
+    "is largely explained by context. Within the same municipality, 10% more spending per student is associated with "
+    "about 0.2 additional Saeb points, an association concentrated in spending during the assessment cycle itself, in "
+    "small municipalities and in the Northeast and North regions. Networks with similar spending show very different "
+    "results: municipal networks in Ceará and Bahia spend almost the same per student, but 90% of those in Ceará were "
+    "above the expected level in 2023, against 38% in Bahia. The study concludes that the volume of spending alone "
+    "explains little of the differences in performance, and that comparing each network with networks of similar "
+    "context and spending helps managers identify benchmarks and guide the investigation of how resources are used. "
+    "The results indicate association, not causal effect.")
+
+
+def substituir_capitulo(xml: str, h1: str, proximo_h1: str, blocos: list[str]) -> str:
+    """Troca todo o conteúdo do capítulo h1 (depois do título e até o título seguinte) pelos blocos."""
+    a = achar_par(xml, h1, h1=True)
+    b = [m for m in paragrafos(xml) if '"Heading1"' in m.group(0) and texto_de(m.group(0)).strip() == proximo_h1
+         and m.start() > a.start()][0]
+    assert "<w:sectPr" not in xml[a.end():b.start()]
+    return xml[:a.end()] + "".join(blocos) + xml[b.start():]
+
+
+x = substituir_capitulo(x, "CONCLUSÕES, LIMITAÇÕES E SUGESTÕES DE PESQUISA FUTURA", "REFERÊNCIAS", CAP_CONCLUSOES)
+x = reescrever(x, "O financiamento da educação básica pública brasileira mobiliza", RESUMO, pre=True)
+x = reescrever(x, "Palavras-chave:", "**Palavras-chave:** Gasto público em educação. Desempenho educacional. Saeb. Fundeb. "
+               "Business Intelligence.", pre=True)
+x = reescrever(x, "The financing of Brazilian public basic education", ABSTRACT, pre=True)
+x = reescrever(x, "Keywords:", "**Keywords:** Public education spending. Educational performance. Saeb. Fundeb. Business "
+               "Intelligence.", pre=True)
+print(f"[INFO] Resumo: {len(RESUMO.split())} palavras; abstract: {len(ABSTRACT.split())} palavras")
 
 # ───────────────────────── formatação (ABNT NBR 14724; diretrizes da USP) ─────────────────────────
 # margens de 3 cm (superior e esquerda) e 2 cm (inferior e direita) em todas as seções; número da página a 2 cm da borda

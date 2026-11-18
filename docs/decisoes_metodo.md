@@ -666,6 +666,22 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A25. Conclusões, resumo e abstract escritos na cópia ✅ texto · 🟡 reescrita pelos autores (Henrique, 2026-11-18)
+- **Origem:** ao levantar as marcações amarelas, o capítulo de conclusões tinha só cerca de 44 palavras de texto, e o resumo e o abstract descreviam ainda o formato de consultoria. Os dois entraram na etapa 3 do plano final.
+- **Capítulo 5 (Conclusões, limitações e sugestões de pesquisa futura), reescrito por inteiro com o auxílio da IA:**
+  - **5.1 Conclusões:** a resposta à pergunta em duas partes e quatro conclusões:
+    - o gasto sozinho diz pouco, e a associação vem do ciclo do Saeb;
+    - a associação é heterogênea por porte e região, e não detectável nos estados;
+    - Ceará e Bahia;
+    - a necessidade dos alertas, com Coruripe e São Paulo.
+    - O objetivo geral e os quatro específicos foram retomados, com as seções em que foram atendidos.
+  - **5.2 Contribuições práticas e teóricas:** a mudança da pergunta gerencial do volume para o uso dos recursos; o repositório público; evidência de 2017 a 2025, com a comparação entre municípios e dentro de cada município; e o diálogo com Hanushek (2003), Menezes-Filho e Amaral (2009), Jackson e Mackevicius (2024) e Alves e Soares (2013).
+  - **5.3 Limitações (oito alíneas):** associação, e não causalidade; IDHM só por UF e até 2024; dados declaratórios; cobertura do Saeb e a edição de 2021; gasto agregado; redes parciais e saltos; camada estadual; e validação sem usuários. Saiu a limitação "não correção inflacionária", que não se aplicava.
+  - **5.4 Sugestões (oito alíneas),** precedidas do que ficou de fora por decisão: simulação de cenários e VAAR.
+  - **Seções:** passaram a 5.1 Conclusões, 5.2 Contribuições, 5.3 Limitações e 5.4 Sugestões, com alíneas no padrão da ABNT, "a)", "b)".
+- **Resumo (289 palavras) e abstract (277), no formato científico:** pergunta, dados, método, os três resultados principais (correlação de 0,46 para 0,16; +10% no gasto acompanha +0,2 ponto; Ceará × Bahia) e a conclusão. As palavras-chave passaram a "Gasto público em educação. Desempenho educacional. Saeb. Fundeb. Business Intelligence.", sem "eficiência".
+- **Pendência:** como no restante do texto escrito com IA, os autores devem revisar e reescrever com as próprias palavras (etapa 3, item a).
+
 ### A24. Revisão bibliográfica escrita na cópia ✅ texto · 🟡 leitura das obras pelos autores (Henrique, 2026-11-17)
 - **Pedido:** a parte do Guilherme na etapa 3 do plano final é resolvida aqui. A única pendência que fica aberta na etapa 3 é os autores reescreverem a parte técnica com as próprias palavras (também condição da seção 3.4).
 - **Escrito na cópia, com o auxílio da IA:**
