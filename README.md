@@ -1,6 +1,6 @@
 # Gasto público por aluno e desempenho no Saeb
 
-**Uma análise das redes públicas brasileiras com apoio de Business Intelligence.** Trabalho de Conclusão de Curso em Administração (FEA/USP, 2026), no formato de método científico (estudo quantitativo). Autores: Guilherme Menezes Araújo e Henrique Lindoso. Orientadora: Profa. Adriana Backx Noronha Viana.
+**Uma análise das redes públicas brasileiras com apoio de Business Intelligence.** Trabalho de Conclusão de Curso em Administração (FEA/USP, 2026), no formato de método científico (estudo quantitativo). Autores: Guilherme Menezes Araújo e Henrique Nogueira Pedro Lindoso. Orientadora: Profa. Adriana Backx Noronha Viana.
 
 ## Acesso rápido
 

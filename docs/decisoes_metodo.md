@@ -680,6 +680,10 @@ Falar sempre em associação e eficiência relativa.
   - atualizar a descrição do repositório no GitHub, que ainda fala do ENEM.
 - **Projeto renomeado (Henrique, 2026-11-18):** `powerbi/tcc_gasto_saeb.*` passou a `powerbi/Painel de Gasto e Desempenho Educacional.*`: o arquivo .pbip, as pastas .Report e .SemanticModel, os nomes de exibição (.platform), a referência ao modelo (definition.pbir), os scripts geradores e a documentação. O projeto abriu com o nome novo. No Power BI Service, publicar de novo cria um relatório com o nome novo, e o antigo (`tcc_gasto_saeb`) deve ser excluído lá, junto com o seu código de "Publicar na Web".
 - **Painel publicado (Henrique, 2026-11-18):** "Publicar na Web" funcionou com a conta da USP. O link público (https://app.powerbi.com/view?r=eyJrIjoiYTZlNDdkNjktYzMyYi00MGU1LWFhOWItN2VjNTA3NWE3NDY0IiwidCI6IjdlOTNlMjg2LWIyOWEtNDQ1NC1hNDFhLWU4NDE5ZWM5ZGViNSJ9) foi conferido sem login: as 10 páginas abrem com os dados (Desempenho: 5.240 redes, 46,3% acima do esperado, como no texto) e está no README, destino do QR Code.
+- **Ajustes finais antes do Drive (Henrique, 2026-11-18):**
+  - **Nota da Figura 5:** traz o endereço do repositório, para quem lê no computador, e o endereço virou link clicável em todo o texto. A ABNT permite nota abaixo da fonte da ilustração, e as notas de figuras e tabelas passaram a ficar em linha própria.
+  - **Nome completo do autor:** "Henrique Nogueira Pedro Lindoso" na capa, na folha de rosto e no README.
+  - **A partir daqui:** a versão final segue para o Google Drive, para edição com o Guilherme, e não deve mais ser gerada pelo montador.
 - **Turnitin: depois da etapa 3.** O relatório só vale para o texto final; por isso, ele fica para depois da reescrita e da revisão das paráfrases. Cuidado: o repositório público tem textos parecidos com os do TCC (registros e notas), e o Turnitin pode apontar semelhança com ele, que se explica por ser o próprio projeto.
 
 ### A26. Etapa 4: versão final única e acabamento ABNT ✅ (Henrique, 2026-11-18)

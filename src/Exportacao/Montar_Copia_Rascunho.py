@@ -67,8 +67,14 @@ def legenda(texto: str) -> str:
 
 
 def fonte(texto: str) -> str:
-    return ('<w:p><w:pPr><w:spacing w:after="240" w:before="60" w:line="240" w:lineRule="auto"/><w:jc w:val="both"/></w:pPr>'
-            + run(texto, tam=20) + "</w:p>")
+    """Fonte da ilustração ou tabela; a "Nota:", se houver, vai em linha própria (ABNT). Com endereço, alinha à esquerda,
+    para a linha não esticar."""
+    jc = "left" if "http" in texto else "both"
+    antes, sep, nota = texto.partition(" Nota: ")
+    # o espaço antes da quebra preserva " Nota: " quando o texto é relido (ilustracoes() relê o parágrafo pronto)
+    corpo_xml = run(antes + (" " if sep else ""), tam=20) + ('<w:r><w:br/></w:r>' + run("Nota: " + nota, tam=20) if sep else "")
+    return (f'<w:p><w:pPr><w:spacing w:after="240" w:before="60" w:line="240" w:lineRule="auto"/><w:jc w:val="{jc}"/></w:pPr>'
+            + corpo_xml + "</w:p>")
 
 
 def tabela(cab: list[str], linhas: list[list[str]], larguras: list[int]) -> str:
@@ -368,7 +374,8 @@ CAP4_3 = [
           f"público ({REPO}). A página traz o link do painel publicado na web, que abre sem login, além do código, dos "
           "dados tratados e do registro das decisões de método."),
     figura("rIdQR", 49, 4.0, 4.0, "QR Code de acesso"),
-    fonte(f"Figura {F_QR} – QR Code de acesso ao painel e ao repositório do projeto. Fonte: elaborado pelos autores."),
+    fonte(f"Figura {F_QR} – QR Code de acesso ao painel e ao repositório do projeto. Fonte: elaborado pelos autores. "
+          f"Nota: para acessar pelo computador, use o endereço {REPO}, que traz o link do painel publicado."),
     nota("[Decisões de 2026-11-17 (registro D1, D2 e A21): o indicador passou a se chamar desempenho em relação ao esperado, "
          "e o item 2.1.4 foi reescrito com essa definição. Simulação de cenários e monitoramento do "
          "VAAR passaram a trabalhos futuros (5.4). O QR Code (etapa 5) aponta para o README do repositório, que traz o "
@@ -1729,6 +1736,14 @@ x = reescrever(x, "Eficiência do Gasto Público e Qualidade Educacional: Propos
 x = apagar_pars(x, ["Opção 1 (Focada", "&quot;Eficiência do Gasto Público e Qualidade Educacional: Um Produto", "Opção 2 (Focada",
                     "&quot;: Proposição de um Modelo", "Opção 3 (Mais", "&quot;Integração de Dados Orçamentários"])
 x = reescrever(x, "[REVISAR] BUSINESS INTELLIGENCE PARA A GESTÃO", TITULO.upper(), pre=True)
+# nome completo do autor na capa e na folha de rosto (pedido do Henrique, 2026-11-18)
+i_intro = x.index("INTRODUÇÃO", x.index('"Heading1"'))
+nomes = [m for m in paragrafos(x[:i_intro]) if texto_de(m.group(0)).strip() == "Henrique Lindoso"]
+assert len(nomes) == 2, len(nomes)
+for m in reversed(nomes):
+    par = re.sub(r"(<w:t(?: [^>]*)?>)[^<]*(</w:t>)", lambda k: k.group(1) + k.group(2), m.group(0))
+    par = re.sub(r"(<w:t(?: [^>]*)?>)(</w:t>)", lambda k: k.group(1) + "Henrique Nogueira Pedro Lindoso" + k.group(2), par, count=1)
+    x = x[:m.start()] + par + x[m.end():]
 # autoridades: reitor conferido; a FEA tem novo diretor (site da FEA, 2026-11-18); a chefia do departamento fica a conferir
 x = tirar_realce(x, "Prof. Dr. Aluisio Augusto Cotrim Segurado")
 x = reescrever(x, "Profa. Dra. Maria Dolores Montoya Diaz", "Prof. Dr. João Maurício Gama Boaventura", pre=True)
@@ -1966,6 +1981,21 @@ estilos = PASTA / "word" / "styles.xml"
 st = estilos.read_text(encoding="utf-8")
 estilos.write_text(st.replace('<w:lang w:val="pt_PT"/>', '<w:lang w:val="pt-BR" w:eastAsia="pt-BR" w:bidi="ar-SA"/>'),
                    encoding="utf-8")
+# endereço do repositório como link clicável (para quem lê o PDF ou o .docx no computador; etapa 5, 2026-11-18)
+def com_link(m: re.Match) -> str:
+    r = m.group(0)
+    rpr = (re.search(r"<w:rPr>.*?</w:rPr>", r, flags=re.S) or [""])[0] if "<w:rPr>" in r else "<w:rPr></w:rPr>"
+    rpr_link = rpr.replace("</w:rPr>", '<w:color w:val="0563C1"/><w:u w:val="single"/></w:rPr>')
+    rpr_link = re.sub(r'<w:color w:val="000000"/>', "", rpr_link, count=1)
+    antes, _, depois = texto_de(r).partition(REPO)
+    pedaco = lambda s, pr: f'<w:r>{pr}<w:t xml:space="preserve">{escape(s)}</w:t></w:r>' if s else ""
+    return (pedaco(antes, rpr) + f'<w:hyperlink r:id="rIdRepo" w:history="1"><w:r>{rpr_link}<w:t>{REPO}</w:t></w:r>'
+            "</w:hyperlink>" + pedaco(depois, rpr))
+
+
+i_intro = x.index("INTRODUÇÃO", x.index('"Heading1"'))
+x = x[:i_intro] + re.sub(r"<w:r>(?:(?!</w:r>).)*?" + re.escape(REPO) + r"(?:(?!</w:r>).)*?</w:r>", com_link, x[i_intro:],
+                         flags=re.S)
 DOC.write_text(x, encoding="utf-8")
 
 rels = PASTA / "word" / "_rels" / "document.xml.rels"
@@ -1984,6 +2014,8 @@ for k, (arq, _) in enumerate(TELAS):
     shutil.copy(TELAS_DIR / f"{arq}.png", PASTA / "word" / "media" / f"tela_{arq}.png")
     novos += (f'<Relationship Id="rIdTela{k}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" '
               f'Target="media/tela_{arq}.png"/>')
+novos += (f'<Relationship Id="rIdRepo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" '
+          f'Target="{REPO}" TargetMode="External"/>')
 for rid, arq in figs.items():
     shutil.copy(MT.FIG / arq, PASTA / "word" / "media" / arq)
     novos += (f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" '
