@@ -255,7 +255,7 @@ CAP4_ABERTURA = [
 ]
 
 CAP4_1 = [
-    corpo("O trabalho parte de bases públicas de oito origens, reunidas no Quadro 2. Com o auxílio de inteligência "
+    corpo("O trabalho parte de bases públicas de oito origens, reunidas no Quadro 3. Com o auxílio de inteligência "
           "artificial generativa (seção 3.4), foram desenvolvidos em Python, com a biblioteca Polars, os scripts de extração, "
           "tratamento e integração dessas bases, versionados no repositório do projeto; as regras de tratamento foram "
           "definidas pelos autores, e as saídas de cada etapa foram conferidas. Um "
@@ -263,7 +263,7 @@ CAP4_1 = [
           "refazer todo o processo a partir das fontes. A Figura 1 resume esse fluxo."),
     figura("rIdFluxo", 50, 16.0, 7.64, "Figura fluxo"),
     fonte(f"Figura {F_FLUXO} – Fluxo de dados do projeto, das fontes públicas ao painel. Fonte: elaborado pelos autores."),
-    legenda("Quadro 2 – Fontes de dados, origem e uso no trabalho"),
+    legenda("Quadro 3 – Fontes de dados, origem e uso no trabalho"),
     tabela(["Base", "Origem", "Período", "Uso"], [
         ["SIOPE", "FNDE, API de dados abertos", "2017–2025", "Gasto municipal: despesa paga na subfunção 361 (Ensino Fundamental)"],
         ["SICONFI", "Tesouro Nacional, DCA Anexo I-E", "2014–2025", "Gasto estadual: função 12 (Educação) menos a subfunção 364 (Ensino Superior)"],
@@ -332,9 +332,9 @@ CAP4_3 = [
     corpo("Com o auxílio da IA, foram desenvolvidos os scripts que geram o modelo de dados, as medidas e as páginas do "
           "painel; o conteúdo, o público e o desenho de cada página foram definidos pelos autores. "
           "O protótipo foi construído no Power BI, como projeto versionável (formato .pbip), e tem dez páginas, descritas no "
-          "Quadro 3. Os filtros ficam numa faixa no topo, e cada página mostra só os filtros que alteram o seu conteúdo. A "
+          "Quadro 4. Os filtros ficam numa faixa no topo, e cada página mostra só os filtros que alteram o seu conteúdo. A "
           "escolha de UF, etapa, disciplina e edição vale para todas as páginas."),
-    legenda("Quadro 3 – Páginas do painel e pergunta que cada uma responde"),
+    legenda("Quadro 4 – Páginas do painel e pergunta que cada uma responde"),
     tabela(["Página", "O que mostra", "Pergunta do gestor"], [
         ["Boas-vindas", "Para que serve, como usar e três perguntas que levam às páginas", "Por onde começo?"],
         ["Visão geral", "Gasto, proficiência, cobertura do Saeb e redes que melhoraram desde a edição anterior", "Como está o conjunto das redes?"],
@@ -432,13 +432,13 @@ CAP5_CLUSTER = [
           "escolhido k = 7: a silhueta é praticamente igual à de seis grupos (0,233 contra 0,229), e o sétimo grupo separa "
           "os municípios grandes do Norte e do Nordeste (população mediana de 101,7 mil), que de outro modo ficariam com "
           "municípios muito menores."),
-    corpo(f"O Quadro 4 mostra o perfil de cada grupo; a Figura B.9, no Apêndice B, mostra o mesmo perfil em desvios-padrão e a composição por região. Os grupos 1 e 2 reúnem municípios com "
+    corpo(f"O Quadro 5 mostra o perfil de cada grupo; a Figura B.9, no Apêndice B, mostra o mesmo perfil em desvios-padrão e a composição por região. Os grupos 1 e 2 reúnem municípios com "
           "alfabetização e IDHM Renda abaixo da média, quase todos do Nordeste e do Norte; os grupos 6 e 7, os de "
           "alfabetização, IDHM e infraestrutura mais altos, quase todos do Sul e do Sudeste. O grupo 5 se distingue pelo "
           "porte: a média do logaritmo da população fica 1,9 desvio-padrão acima da dos municípios. O nome de cada grupo "
           "traz a região da maioria dos municípios, o porte e a faixa de alfabetização; nenhum grupo é formado por uma "
           "região só."),
-    legenda("Quadro 4 – Perfil dos sete clusters de contexto"),
+    legenda("Quadro 5 – Perfil dos sete clusters de contexto"),
     tabela(["Cluster", "Municí-\npios", "População\nmediana", "Alfabeti-\nzação", "IDHM\nRenda", "Infraes-\ntrutura",
             "Região\nprincipal"], t_clu, [2875, 900, 1100, 1050, 800, 1000, 1350]),
     fonte("Fonte: elaborado pelos autores. Infraestrutura: média das proporções de escolas com oito itens (biblioteca, "
@@ -780,8 +780,8 @@ CAP5_VALIDACAO = [
     nota(AVISO + " Cabe aos autores e à orientadora decidir se esta seção mantém o nome de validação conceitual."),
     corpo("A ferramenta não foi testada com usuários, o que fica registrado como limitação. A validação feita tem duas "
           "partes: cenários de uso, em que cada uma das três perguntas de entrada do painel é percorrida com os casos da "
-          "seção anterior, e a conferência técnica dos números. O Quadro 5 resume os cenários."),
-    legenda("Quadro 5 – Cenários de uso: as perguntas de entrada do painel percorridas com dados reais"),
+          "seção anterior, e a conferência técnica dos números. O Quadro 6 resume os cenários."),
+    legenda("Quadro 6 – Cenários de uso: as perguntas de entrada do painel percorridas com dados reais"),
     tabela(["Pergunta de entrada", "Página", "O que o painel responde (Anos Iniciais, Matemática, 2023)", "Coerência com a análise"], [
         ["Gastar mais se associa a aprender mais?", "Defasagens",
          "Correlação de 0,26 no Brasil com o gasto do mesmo ano, e mediana de 0,08 entre as UFs",
@@ -861,6 +861,33 @@ REFERENCIAS = [nota(
     "em relação ao rascunho: DOIs acrescentados; o Inep (2026) do rascunho passa a Inep (2026b), e as citações no texto "
     "devem ser ajustadas. CONFERIR as datas de acesso e os itens marcados antes da versão final.]"),
     *[ref(r) for r in sorted([
+        "Banco Mundial. (2017). *Um ajuste justo: Análise da eficiência e equidade do gasto público no Brasil*. Banco "
+        "Mundial.",
+        "Crozatti, J., Machado, G. S., Mahlmeister, R. S., Serpa, A. M., Ferreira, F. A., & Moraes, V. M. (2022). O gasto "
+        "orçamentário e o desempenho escolar dos municípios paulistas: Relações entre o elemento de despesa – objeto do "
+        "gasto orçamentário – e o Ideb do ensino fundamental de 2008 a 2017. *Planejamento e Políticas Públicas*, (61). "
+        "https://doi.org/10.38116/ppp61art5",
+        "Edunomics Lab. (s.d.). *NERD$: National Education Resource Database on Schools*. Georgetown University. "
+        "https://edunomicslab.org/nerds",
+        "Instituto de Pesquisa Econômica Aplicada. (2025). *Efeitos redistributivos da ponderação pelo nível "
+        "socioeconômico e pela disponibilidade de recursos vinculados à educação no âmbito do Novo Fundeb* (Policy brief, "
+        "versão preliminar). Ministério da Educação. "
+        "https://www.gov.br/mec/pt-br/financiamento-da-educacao-basica/imagens_pdf/PolicyBrief2.pdf",
+        "Interdisciplinaridade e Evidências no Debate Educacional. (s.d.). *Relatório de atividades 2021*. Iede. "
+        "https://portaliede.org.br/wp-content/uploads/2024/08/Relatorio-de-atividades-2021-FINAL.pdf",
+        "Lemes, T. C., Dias, M. O. S., & Oliveira, T. (2023). Análise do uso de dashboard como ferramenta de apoio à "
+        "tomada de decisão em instituições de ensino: Uma revisão sistemática da literatura. *RENOTE – Revista Novas "
+        "Tecnologias na Educação, 21*(1), 281–290. https://doi.org/10.22456/1679-1916.134356",
+        "Lourenço, R. L., Angotti, M., Nascimento, J. C. H. B., & Sauerbronn, F. F. (2017). Eficiência do gasto público "
+        "com ensino fundamental: Uma análise dos 250 maiores municípios brasileiros. *Contabilidade Vista & Revista, "
+        "28*(1), 89–116.",
+        "Santos, A. N., Callegari, C. O., & Callegari, A. C. R. (2022). Avaliação da equidade redistributiva da "
+        "Complementação da União no Novo FUNDEB. *Education Policy Analysis Archives, 30*(46). "
+        "https://doi.org/10.14507/epaa.30.6754",
+        "Sasso, M., Varela, P. S., & Righetto, P. (2021). Distribuição da cota-parte do ICMS: Como pode ser utilizada para "
+        "promover melhores resultados na educação? *Revista Brasileira de Educação, 26*, e260071.",
+        "Tribunal de Contas do Estado de São Paulo. (2025). *Manual do IEG-M 2025*. "
+        "https://tce.sp.gov.br/sites/default/files/legislacao/Manual%20do%20IEGM%202025.pdf",
         "Alves, M. T. G., & Soares, J. F. (2013). Contexto escolar e indicadores educacionais: Condições desiguais para a "
         "efetivação de uma política de avaliação educacional. *Educação e Pesquisa, 39*(1), 177–194. "
         "https://doi.org/10.1590/S1517-97022013000100012",
@@ -1243,6 +1270,16 @@ REV_22 = [
           "diferenças que o gasto não explica. Já Alves e Frio (2022), com um painel de municípios de 2011 a 2017 e um "
           "modelo de fronteira estocástica, encontraram associação positiva entre o Ideb e o gasto por aluno de quatro anos "
           "antes."),
+    corpo("Com dados dos municípios paulistas de 2008 a 2017, Crozatti et al. (2022) relacionaram o gasto com o ensino "
+          "fundamental, aberto por elemento de despesa, ao Ideb, com regressão robusta sobre dados do Finbra e do Inep: o "
+          "gasto com pessoal, serviços e materiais teve efeito positivo sobre o Ideb nos municípios com mais de 10 mil "
+          "habitantes e negativo nos menores. É o estudo mais próximo deste na lógica de cruzar dados contábeis públicos com "
+          "resultados educacionais, mas cobre um único estado e não constrói uma ferramenta de consulta."),
+    corpo("No debate de política pública, o relatório Um ajuste justo, do Banco Mundial (2017), sustentou que os "
+          "resultados educacionais brasileiros melhoraram menos do que o aumento do gasto e que haveria espaço para obter "
+          "mais resultado com os mesmos recursos. Esse enquadramento, centrado na eficiência e em ganhos fiscais, difere do "
+          "deste trabalho, que compara redes para identificar referências e orientar a investigação sobre o uso dos "
+          "recursos, e não para recomendar cortes."),
     corpo("Esses estudos ajudam a ler os resultados do Capítulo 4. A associação entre municípios é quase nula quando se "
           "controla o contexto, mas aparece, pequena, quando cada município é comparado com ele mesmo ao longo do tempo. A "
           "diferença em relação a Alves e Frio (2022) quanto ao gasto defasado decorre, ao menos em parte, do método: o "
@@ -1259,6 +1296,12 @@ REV_22 = [
           "aluno foi o fator positivo mais consistente. O Novo Fundeb, com a complementação-VAAT, passou a dirigir "
           "recursos às redes de menor capacidade de financiamento. Não foi localizada avaliação com dados observados que "
           "isole esse efeito; o Capítulo 4 descreve um padrão de 2023 a 2025 compatível com ele, sem testá-lo."),
+    corpo("Os estudos sobre o Novo Fundeb, até aqui, são simulações da distribuição dos recursos. Santos et al. (2022) "
+          "estimaram que a nova complementação da União aumenta a equidade do financiamento da educação básica em 2022, e "
+          "uma nota técnica preliminar (Instituto de Pesquisa Econômica Aplicada [Ipea], 2025) concluiu que ponderar as "
+          "matrículas pelo nível socioeconômico e pela disponibilidade de recursos vinculados tornaria a distribuição mais "
+          "progressiva. Os dois tratam de como os recursos são distribuídos, e não da relação entre o gasto e o desempenho, "
+          "que é o foco aqui."),
     titulo(3, "Medidas de desempenho e contexto"),
     corpo("O Ideb combina a proficiência no Saeb com a taxa de aprovação. Soares e Xavier (2013) examinaram os pressupostos "
           "educacionais e estatísticos do índice e a forma como ele define qualidade, e propuseram aperfeiçoamentos. Por "
@@ -1271,15 +1314,58 @@ REV_22 = [
           "envoltória de dados aos municípios do Rio de Janeiro, com o gasto per capita em saúde e educação como insumo; "
           "como discutido em 2.1.4, esse tipo de método mede a distância até a fronteira de melhores práticas, e não até o "
           "resultado esperado para redes comparáveis."),
+    corpo("Com a mesma técnica, Lourenço et al. (2017) analisaram os 250 maiores municípios brasileiros, com o Ideb como "
+          "produto e o gasto e o IDHM entre os insumos: só 13 municípios, cerca de 5% do total, ficaram na fronteira de "
+          "eficiência. Resultados desse tipo dependem da escolha dos insumos e da amostra, e por isso este trabalho prefere "
+          "comparar cada rede com o resultado esperado para redes de gasto e contexto parecidos."),
     titulo(3, "Incentivos a resultados: o caso do Ceará"),
     corpo("Uma explicação documentada para as diferenças entre estados com gasto semelhante vem das políticas de "
           "incentivo. O Ceará distribui parte da cota municipal do ICMS segundo resultados educacionais e oferece "
           "assistência técnica às redes municipais; Lautharte et al. (2021) estimaram que essa política elevou as notas do "
-          "9º ano em cerca de 0,15 desvio-padrão, e que o efeito dobra com a assistência técnica."),
+          "9º ano em cerca de 0,15 desvio-padrão, e que o efeito dobra com a assistência técnica. A partir da experiência "
+          "cearense, Sasso et al. (2021) discutiram como desenhar a repartição da cota-parte do ICMS para promover melhores "
+          "resultados na educação."),
     corpo("A Emenda Constitucional nº 108/2020 estendeu esse desenho ao país, ao determinar que parte da cota municipal do "
           "ICMS seja distribuída com base em indicadores de melhoria nos resultados de aprendizagem e de aumento da equidade "
           "(Brasil, 2020a). Incentivos ligados a indicadores podem, porém, produzir variações bruscas de resultado, o que "
           "justifica tratá-las com cautela, como faz a marca de saltos atípicos do painel, sem supor irregularidade."),
+    titulo(3, "Painéis e ferramentas de apoio à decisão"),
+    corpo("Do lado das ferramentas, uma revisão sistemática sobre o uso de dashboards como apoio à decisão em "
+          "instituições de ensino concluiu que eles podem tornar as decisões mais assertivas, mas encontrou poucos estudos, "
+          "a maioria sobre o ensino superior (Lemes et al., 2023)."),
+    corpo("No Brasil, a plataforma QEdu Gestão, criada em 2021 pelo Iede com apoio da B3 Social e da Fundação Lemann, "
+          "oferece gratuitamente às redes públicas dados de aprendizagem, de contexto e de infraestrutura, e permite que "
+          "cada rede insira os próprios dados (Interdisciplinaridade e Evidências no Debate Educacional [Iede], s.d.). O "
+          "Índice de Efetividade da Gestão Municipal (IEG-M), do Tribunal de Contas do Estado de São Paulo, avalia a gestão "
+          "dos municípios paulistas em várias dimensões, entre elas a educação (Tribunal de Contas do Estado de São Paulo "
+          "[TCE-SP], 2025). Nos Estados Unidos, a base NERD$, do Edunomics Lab da Universidade de Georgetown, reuniu pela "
+          "primeira vez o gasto de cada escola do país, a partir da exigência legal de divulgação desse dado, para analisar "
+          "a relação entre recursos e resultados (Edunomics Lab, s.d.). O Quadro 1 compara esses trabalhos e ferramentas "
+          "com o deste trabalho."),
+    legenda("Quadro 1 – Trabalhos e ferramentas semelhantes e o que este trabalho acrescenta"),
+    tabela(["Trabalho ou ferramenta", "Objeto e método", "Em comum com este trabalho", "O que este trabalho acrescenta"], [
+        ["Crozatti et al. (2022)", "Gasto por elemento de despesa e Ideb dos municípios paulistas, 2008–2017; regressão "
+         "robusta", "Cruza dados contábeis públicos e resultado educacional",
+         "Todo o país, 2017–2025, comparação entre redes parecidas e painel de consulta"],
+        ["Lourenço et al. (2017)", "Eficiência dos 250 maiores municípios pela análise envoltória de dados",
+         "Gasto e Ideb no mesmo modelo", "Resultado em relação ao esperado, e não à fronteira; todas as redes com nota"],
+        ["Oliveira et al. (2022)", "Qualidade da gestão municipal e notas da Prova Brasil, com efeito fixo de município",
+         "Comparação de cada município com ele mesmo", "Associação do gasto e ferramenta para o gestor"],
+        ["Banco Mundial (2017)", "Eficiência e equidade do gasto público, com capítulo sobre educação",
+         "Resultado obtido com o gasto", "Foco no uso dos recursos e em referências entre redes, e não em ajuste fiscal"],
+        ["Santos et al. (2022); Ipea (2025)", "Simulações da distribuição do Novo Fundeb",
+         "Novo Fundeb e equidade entre redes", "Relação entre o gasto observado e o desempenho"],
+        ["Lautharte et al. (2021); Sasso et al. (2021)", "Repartição do ICMS por resultados educacionais no Ceará",
+         "Incentivos e resultado educacional", "Comparação entre Ceará e Bahia com gasto semelhante"],
+        ["QEdu Gestão (Iede)", "Plataforma de dados educacionais para redes públicas",
+         "Mesmo público (gestores de redes) e bases pedagógicas",
+         "Comparação do resultado com o esperado para o gasto e o contexto"],
+        ["IEG-M (TCE-SP)", "Índice de efetividade da gestão dos municípios paulistas, com dimensão de educação",
+         "Avaliação da gestão municipal", "Cobertura nacional e cruzamento com o desempenho no Saeb"],
+        ["NERD$ (Edunomics Lab)", "Base de gasto por escola nos Estados Unidos",
+         "Gasto e resultado para quem decide", "Contexto brasileiro, por rede, com o Fundeb"],
+    ], [1750, 2600, 2150, 2575]),
+    fonte("Fonte: elaborado pelos autores."),
     titulo(3, "Síntese e lacuna"),
     corpo("Em síntese, a literatura indica que o gasto, sozinho, explica pouco do desempenho entre redes; que o efeito "
           "aparece quando se isola a variação do gasto, é maior para populações mais pobres e depende de como os recursos "
@@ -1287,15 +1373,17 @@ REV_22 = [
           "disponibilidade de dados públicos não garante o seu uso para decisão (Heald, 2006; Janssen et al., 2012), e "
           "painéis de apoio à decisão precisam reunir as informações mais importantes de forma que possam ser lidas de "
           "relance (Few, 2006)."),
-    corpo("A lacuna em que o trabalho se posiciona é a combinação dessas duas frentes: uma ferramenta pública, de "
-          "abrangência nacional, que estime a associação entre gasto e desempenho com dados recentes, de 2017 a 2025, e que "
-          "permita ao gestor comparar a própria rede com redes de contexto e gasto parecidos, identificando as que entregam "
-          "mais ou menos do que o esperado."),
+    corpo("A lacuna em que o trabalho se posiciona é a combinação dessas frentes. Os estudos acadêmicos medem a relação "
+          "entre gasto e desempenho, mas não a levam ao gestor; as simulações do Novo Fundeb tratam da distribuição, e não "
+          "do resultado; e as ferramentas localizadas reúnem dados educacionais ou avaliam a gestão, sem comparar o "
+          "desempenho de cada rede com o esperado para o seu gasto e o seu contexto. O trabalho propõe uma ferramenta "
+          "pública, de abrangência nacional, que estima essa associação com dados de 2017 a 2025 e permite ao gestor "
+          "comparar a própria rede com redes parecidas, identificando as que entregam mais ou menos do que o esperado."),
 ]
 REV_23 = [
-    corpo("As bases públicas usadas no trabalho estão resumidas no Quadro 1; o Quadro 2, no Capítulo 3, detalha o período "
+    corpo("As bases públicas usadas no trabalho estão resumidas no Quadro 2; o Quadro 3, no Capítulo 3, detalha o período "
           "e o uso de cada uma."),
-    legenda("Quadro 1 – Bases oficiais utilizadas"),
+    legenda("Quadro 2 – Bases oficiais utilizadas"),
     tabela(["Base", "Órgão responsável", "O que é"], [
         ["SIOPE", "FNDE/MEC", "Sistema em que estados e municípios declaram receitas e despesas em educação; base do "
          "acompanhamento da MDE e do Fundeb"],
@@ -1533,7 +1621,7 @@ x = depois_do_titulo(x, "INTRODUÇÃO", [nota(
     "[REORGANIZAÇÃO PARA O FORMATO CIENTÍFICO (2026-11-17, decisões D1 e A23), feita com o auxílio da IA. O antigo Capítulo "
     "3 (Diagnóstico) foi remanejado: a fragmentação da informação e as barreiras ao cruzamento dos dados entraram em 1.2; "
     "a margem de decisão do gestor e o VAAR, em 2.1.2; a justificativa do Business Intelligence e o público-alvo, em 3.3. "
-    "Saíram a oportunidade de consultoria, o Quadro 2 (portais, que estava vazio), o antigo item 2.2 (instrumentos de "
+    "Saíram a oportunidade de consultoria, o antigo Quadro 2 (portais, que estava vazio), o antigo item 2.2 (instrumentos de "
     "diagnóstico) e o escopo que incluía a Educação Infantil. Foram reescritos a pergunta, os objetivos, a contribuição "
     "prática e a estrutura do trabalho. Guilherme: revisar e ajustar à sua redação.]")])
 
@@ -1833,14 +1921,17 @@ SIGLAS = [("AF", "Anos Finais do Ensino Fundamental"), ("AI", "Anos Iniciais do 
           ("BI", "Business Intelligence"), ("BNCC", "Base Nacional Comum Curricular"), ("CAQ", "Custo Aluno-Qualidade"),
           ("DEA", "Análise envoltória de dados (Data Envelopment Analysis)"), ("EF", "Efeito fixo"),
           ("EM", "Ensino Médio"), ("ENEM", "Exame Nacional do Ensino Médio"),
-          ("FEA", "Faculdade de Economia, Administração, Contabilidade e Atuária"), ("FJP", "Fundação João Pinheiro"),
+          ("FEA", "Faculdade de Economia, Administração, Contabilidade e Atuária"),
+          ("Finbra", "Finanças do Brasil (dados contábeis dos municípios)"), ("FJP", "Fundação João Pinheiro"),
           ("FNDE", "Fundo Nacional de Desenvolvimento da Educação"),
           ("Fundeb", "Fundo de Manutenção e Desenvolvimento da Educação Básica e de Valorização dos Profissionais da Educação"),
           ("Fundef", "Fundo de Manutenção e Desenvolvimento do Ensino Fundamental e de Valorização do Magistério"),
           ("IA", "Inteligência artificial"), ("IBGE", "Instituto Brasileiro de Geografia e Estatística"),
           ("ICMS", "Imposto sobre Operações Relativas à Circulação de Mercadorias e sobre Prestações de Serviços de "
                    "Transporte Interestadual e Intermunicipal e de Comunicação"),
-          ("Ideb", "Índice de Desenvolvimento da Educação Básica"), ("IDHM", "Índice de Desenvolvimento Humano Municipal"),
+          ("Ideb", "Índice de Desenvolvimento da Educação Básica"),
+          ("Iede", "Interdisciplinaridade e Evidências no Debate Educacional"),
+          ("IEG-M", "Índice de Efetividade da Gestão Municipal"), ("IDHM", "Índice de Desenvolvimento Humano Municipal"),
           ("Inep", "Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira"),
           ("IPCA", "Índice Nacional de Preços ao Consumidor Amplo"), ("Ipea", "Instituto de Pesquisa Econômica Aplicada"),
           ("LDB", "Lei de Diretrizes e Bases da Educação Nacional"), ("LP", "Língua Portuguesa"),
@@ -1851,7 +1942,8 @@ SIGLAS = [("AF", "Anos Finais do Ensino Fundamental"), ("AI", "Anos Iniciais do 
           ("Saeb", "Sistema de Avaliação da Educação Básica"),
           ("Siconfi", "Sistema de Informações Contábeis e Fiscais do Setor Público Brasileiro"),
           ("SIOPE", "Sistema de Informações sobre Orçamentos Públicos em Educação"),
-          ("TCC", "Trabalho de Conclusão de Curso"), ("UF", "Unidade da Federação"), ("USP", "Universidade de São Paulo"),
+          ("TCC", "Trabalho de Conclusão de Curso"),
+          ("TCE-SP", "Tribunal de Contas do Estado de São Paulo"), ("UF", "Unidade da Federação"), ("USP", "Universidade de São Paulo"),
           ("VAAF", "Valor Anual por Aluno do Fundeb"), ("VAAR", "Valor Anual por Aluno por Resultado"),
           ("VAAT", "Valor Anual Total por Aluno")]
 

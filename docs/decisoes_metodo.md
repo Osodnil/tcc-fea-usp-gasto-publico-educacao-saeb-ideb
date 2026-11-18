@@ -666,6 +666,30 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A28. Trabalhos semelhantes ampliados com a pesquisa do Guilherme ✅ (Henrique e Guilherme, 2026-11-18)
+- **Pedido:** trazer explicitamente os trabalhos semelhantes e correlatos, a partir da pesquisa inicial do Guilherme (dez itens) e das referências já usadas.
+- **Seção 2.2:**
+  - **2.2.1:** entram Crozatti et al. (2022), o cruzamento mais próximo entre dados contábeis e Ideb, e o relatório Um ajuste justo, do Banco Mundial (2017), apresentado como o enquadramento da eficiência e com a diferença de propósito marcada.
+  - **2.2.2:** Santos et al. (2022) e a nota técnica preliminar do Ipea (2025), simulações do Novo Fundeb.
+  - **2.2.3:** Lourenço et al. (2017), análise envoltória de dados dos 250 maiores municípios.
+  - **2.2.4:** Sasso et al. (2021), ICMS e Ceará.
+  - **2.2.5 (nova), "Painéis e ferramentas de apoio à decisão":** Lemes et al. (2023), QEdu Gestão (Iede), IEG-M (TCE-SP) e NERD$ (Edunomics Lab).
+  - **Quadro 1 (novo):** compara nove trabalhos e ferramentas com este trabalho: objeto e método, o que há em comum e o que este trabalho acrescenta.
+  - **2.2.6:** a lacuna foi reescrita a partir do quadro.
+- **Renumeração:** os quadros foram renumerados (o antigo Quadro 1 passou a 2, e assim por diante). As referências passaram a 53, e a lista de siglas ganhou Finbra, Iede, IEG-M e TCE-SP.
+- **Conferido na fonte e corrigido em relação à pesquisa inicial:**
+  - **Crozatti et al. (2022):** tem seis autores. Pelo resumo, os efeitos do gasto foram positivos nos municípios com mais de 10 mil habitantes e negativos nos menores. A observação da pesquisa de que "nós optamos por não corrigir pela inflação" não se aplica: o trabalho corrigiu tudo pelo IPCA.
+  - **Lourenço et al. (2017):** 13 municípios eficientes, e não 12.
+  - **Nota técnica do Ipea (2025):** o título real é "Efeitos redistributivos da ponderação pelo nível socioeconômico e pela disponibilidade de recursos vinculados à educação no âmbito do Novo Fundeb". É uma versão preliminar, de agosto de 2025.
+  - **Banco Mundial (2017):** a cifra de "40% no fundamental" não foi confirmada e ficou de fora; o texto só descreve o argumento do relatório.
+  - **Santos et al. (2022):** a "dispersão 14% menor" não foi confirmada, e um resumo indica o contrário; ficou só a conclusão de maior equidade.
+  - **QEdu Gestão:** não se confirmou se tem dado financeiro. O quadro só afirma o que ela oferece, sem dizer que lhe falta o gasto.
+- **Deixados de fora:**
+  - Monteiro (2015): a conclusão é citada em sentidos opostos na literatura e não foi possível ler o original;
+  - Meu Município: a página de eficiência estava fora do ar;
+  - as críticas acadêmicas ao relatório do Banco Mundial: a autoria não foi confirmada.
+- **Pendência:** como no restante da revisão, os autores devem ler as obras e confirmar as paráfrases (etapa 3b).
+
 ### A27. Etapa 5: QR Code e publicação do painel ✅ painel publicado · 🟡 Turnitin depois da etapa 3 (2026-11-18)
 - **Decisão do Henrique:** o QR Code aponta para a **página do repositório no GitHub** (README), e não direto para o painel. O README traz no topo a seção "Acesso rápido", com o link do painel publicado ("Publicar na Web" no Power BI Service, que abre sem login), o código e o registro das decisões.
   - **Por que pelo README:** se o link do Power BI mudar ou a publicação for refeita, só o README muda, e o QR impresso continua valendo.
