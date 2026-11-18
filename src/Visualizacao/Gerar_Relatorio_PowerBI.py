@@ -1,7 +1,7 @@
 """Escreve as páginas do dashboard oficial no projeto Power BI (formato PBIR, um JSON por página e por visual).
 
 Cada página é descrita de forma declarativa em PAGINAS (posição, tipo de visual e campos); o script grava
-powerbi/tcc_gasto_saeb.Report/definition/pages/<pagina>/page.json e visuals/<visual>/visual.json, e põe as
+powerbi/Painel de Gasto e Desempenho Educacional.Report/definition/pages/<pagina>/page.json e visuals/<visual>/visual.json, e põe as
 páginas na ordem de PAGINAS em pages.json.
 
 Regras:
@@ -31,7 +31,7 @@ def encontrar_raiz_projeto(marcador: str = ".git") -> Path:
 
 
 BASE_DIR = encontrar_raiz_projeto()
-RELATORIO = BASE_DIR / "powerbi" / "tcc_gasto_saeb.Report"
+RELATORIO = BASE_DIR / "powerbi" / "Painel de Gasto e Desempenho Educacional.Report"
 ESQ = "https://developer.microsoft.com/json-schemas/fabric/item/report/definition"
 ESQ_VISUAL = f"{ESQ}/visualContainer/2.13.0/schema.json"
 ESQ_PAGINA = f"{ESQ}/page/2.1.0/schema.json"

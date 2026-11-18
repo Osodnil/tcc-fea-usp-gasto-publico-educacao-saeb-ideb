@@ -24,7 +24,7 @@
 | `data/processed/malha_municipios.topojson` | Malha para o visual "Mapa de formas" (id de cada área = "Nome (UF)"; `CD_MUN` nas propriedades) |
 | `src/Visualizacao/Gerar_Modelo_PowerBI.py` | Escreve o modelo semântico (TMDL) no projeto, uma vez |
 | `src/Visualizacao/Gerar_Relatorio_PowerBI.py` | Grava e valida as 10 páginas (formato PBIR) |
-| `powerbi/tcc_gasto_saeb.pbip` | O dashboard, como projeto do Power BI |
+| `powerbi/Painel de Gasto e Desempenho Educacional.pbip` | O dashboard, como projeto do Power BI |
 
 ## 3. Modelo de dados (estrela)
 

@@ -14,7 +14,7 @@
 
 ## Fase 1. Criar o projeto e gerar o modelo (10 min)
 
-1. No Power BI, **Arquivo > Novo** (relatório em branco) e **Arquivo > Salvar como**. No campo **Tipo** da janela de salvar, troque "Arquivos do Power BI (\*.pbix)" por **Arquivos de projeto do Power BI (\*.pbip)**. Escolha a pasta `powerbi\` do repositório e o nome `tcc_gasto_saeb`. O Power BI cria `tcc_gasto_saeb.pbip`, `tcc_gasto_saeb.Report\` e `tcc_gasto_saeb.SemanticModel\`. Se o tipo `.pbip` não aparecer, ative "Salvar como projeto do Power BI (.pbip)" em Recursos em versão prévia (Fase 0) e reinicie o Power BI.
+1. No Power BI, **Arquivo > Novo** (relatório em branco) e **Arquivo > Salvar como**. No campo **Tipo** da janela de salvar, troque "Arquivos do Power BI (\*.pbix)" por **Arquivos de projeto do Power BI (\*.pbip)**. Escolha a pasta `powerbi\` do repositório e o nome `Painel de Gasto e Desempenho Educacional`. O Power BI cria `Painel de Gasto e Desempenho Educacional.pbip`, `Painel de Gasto e Desempenho Educacional.Report\` e `Painel de Gasto e Desempenho Educacional.SemanticModel\`. Se o tipo `.pbip` não aparecer, ative "Salvar como projeto do Power BI (.pbip)" em Recursos em versão prévia (Fase 0) e reinicie o Power BI.
 2. **Feche o Power BI.**
 3. No PowerShell, na raiz do repositório, rode o gerador com o Python do Anaconda (o `&` é obrigatório no PowerShell quando o caminho do programa vem entre aspas):
 
@@ -23,7 +23,7 @@
    ```
 
    Ele confere as fórmulas antes de gravar, e a saída esperada é: *14 tabelas (12 importadas e 2 calculadas), 14 relações, 35 medidas, 7 ordenações*. O parâmetro `PastaDados` já sai apontando para `data\processed\powerbi` desta máquina.
-4. Abra `powerbi\tcc_gasto_saeb.pbip`. Se aparecer uma faixa sobre alterações externas, aceite. Depois, **Página Inicial > Atualizar**: o modelo chega sem dados e é aí que o Power BI lê os Parquet.
+4. Abra `powerbi\Painel de Gasto e Desempenho Educacional.pbip`. Se aparecer uma faixa sobre alterações externas, aceite. Depois, **Página Inicial > Atualizar**: o modelo chega sem dados e é aí que o Power BI lê os Parquet.
 5. **Se der erro ao abrir:** a mensagem diz o arquivo e a linha (por exemplo, `tables/_Medidas.tmdl`, linha 120). Me mande o texto exato do erro: eu corrijo o gerador, você roda de novo com `--forcar` e reabre.
 
 **Conferência 1:** na exibição de Dados, o número de linhas no rodapé de cada tabela:

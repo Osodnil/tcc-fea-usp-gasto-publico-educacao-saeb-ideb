@@ -666,6 +666,22 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A27. Etapa 5: QR Code e publicação do painel ✅ painel publicado · 🟡 Turnitin depois da etapa 3 (2026-11-18)
+- **Decisão do Henrique:** o QR Code aponta para a **página do repositório no GitHub** (README), e não direto para o painel. O README traz no topo a seção "Acesso rápido", com o link do painel publicado ("Publicar na Web" no Power BI Service, que abre sem login), o código e o registro das decisões.
+  - **Por que pelo README:** se o link do Power BI mudar ou a publicação for refeita, só o README muda, e o QR impresso continua valendo.
+  - **Alternativas não escolhidas:** o QR direto para o Power BI, que fica quebrado se o link mudar; e só o repositório, que obriga a ter o Power BI Desktop instalado. O HTML de conferência de outubro está desatualizado e não serve.
+- **Feito:**
+  - `src/Exportacao/Gerar_QRCode.py`, com a biblioteca `segno` (instalada com autorização do Henrique e incluída em `requirements.txt`), gera `docs/resultados/figuras/qrcode_acesso.png`;
+  - a Figura 5, na seção 3.3, traz o QR Code e um parágrafo de acesso; as figuras seguintes foram renumeradas;
+  - o README ganhou o título novo, os autores e a seção "Acesso rápido", com o link do painel ainda como "[link em publicação]".
+- **Falta:**
+  - o Henrique publicar o painel com a própria conta, testando se a USP libera "Publicar na Web";
+  - colocar o link no README;
+  - atualizar a descrição do repositório no GitHub, que ainda fala do ENEM.
+- **Projeto renomeado (Henrique, 2026-11-18):** `powerbi/tcc_gasto_saeb.*` passou a `powerbi/Painel de Gasto e Desempenho Educacional.*`: o arquivo .pbip, as pastas .Report e .SemanticModel, os nomes de exibição (.platform), a referência ao modelo (definition.pbir), os scripts geradores e a documentação. O projeto abriu com o nome novo. No Power BI Service, publicar de novo cria um relatório com o nome novo, e o antigo (`tcc_gasto_saeb`) deve ser excluído lá, junto com o seu código de "Publicar na Web".
+- **Painel publicado (Henrique, 2026-11-18):** "Publicar na Web" funcionou com a conta da USP. O link público (https://app.powerbi.com/view?r=eyJrIjoiYTZlNDdkNjktYzMyYi00MGU1LWFhOWItN2VjNTA3NWE3NDY0IiwidCI6IjdlOTNlMjg2LWIyOWEtNDQ1NC1hNDFhLWU4NDE5ZWM5ZGViNSJ9) foi conferido sem login: as 10 páginas abrem com os dados (Desempenho: 5.240 redes, 46,3% acima do esperado, como no texto) e está no README, destino do QR Code.
+- **Turnitin: depois da etapa 3.** O relatório só vale para o texto final; por isso, ele fica para depois da reescrita e da revisão das paráfrases. Cuidado: o repositório público tem textos parecidos com os do TCC (registros e notas), e o Turnitin pode apontar semelhança com ele, que se explica por ser o próprio projeto.
+
 ### A26. Etapa 4: versão final única e acabamento ABNT ✅ (Henrique, 2026-11-18)
 - **Duas saídas do montador:**
   - **cópia de revisão:** `exportacao/TCC_II_FEA_USP_Rascunho_com_conteudo.docx`, com as notas amarelas;
@@ -772,7 +788,7 @@ Falar sempre em associação e eficiência relativa.
 - **Resultado†:** 633 linhas marcadas (0,8% das 82.260), 434 altas e 199 quedas; com a extensão de 2026-11-16, **647** (mais 14: 11 altas e 3 quedas). Efeito nos resultados: no teste sem saltos, os coeficientes mudam no máximo 0,01 (AI MT 2,11 → 2,12); Ceará × Bahia e estudos de caso não mudam. As quedas também entram, porque costumam ser o "outro lado" de uma alta isolada.
 - **Alternativas consideradas:** limite fixo em pontos (por exemplo, 50 pontos em dois anos), mais fácil de explicar, mas que não se ajusta às diferenças de dispersão entre etapas e disciplinas; e regra pela distância à tendência da própria rede, que exige mais edições do que a série tem.
 
-### A7. Forma simples de acessar o projeto 🟡 (pedido da orientadora, 2026-10-23)
+### A7. Forma simples de acessar o projeto ✅ QR Code e painel publicado (A27) (pedido da orientadora, 2026-10-23)
 - **Decisão da orientadora:** ao final, oferecer um acesso simples ao projeto, como um QR Code.
 - **Requisito:** o QR Code precisa apontar para um endereço que a pessoa consiga abrir sem login.
 - **Repositório público (Henrique, 2026-11-11):** o repositório no GitHub está público, para que a dupla o acesse. Os registros anteriores o tratavam como privado. Consequências:

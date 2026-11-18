@@ -1,6 +1,16 @@
-# Gasto público em educação e desempenho no Saeb
+# Gasto público por aluno e desempenho no Saeb
 
-Trabalho de Conclusão de Curso em Administração (FEA/USP, EAD 600/601). O formato ainda será confirmado com a orientadora; pelo Manual, o enquadramento mais natural é método científico, estudo quantitativo (D1 no registro). Autores: Henrique Lindoso e Guilherme.
+**Uma análise das redes públicas brasileiras com apoio de Business Intelligence.** Trabalho de Conclusão de Curso em Administração (FEA/USP, 2026), no formato de método científico (estudo quantitativo). Autores: Guilherme Menezes Araújo e Henrique Lindoso. Orientadora: Profa. Adriana Backx Noronha Viana.
+
+## Acesso rápido
+
+| O quê | Onde |
+|---|---|
+| **Painel interativo (Power BI, sem login)** | [Abrir o painel](https://app.powerbi.com/view?r=eyJrIjoiYTZlNDdkNjktYzMyYi00MGU1LWFhOWItN2VjNTA3NWE3NDY0IiwidCI6IjdlOTNlMjg2LWIyOWEtNDQ1NC1hNDFhLWU4NDE5ZWM5ZGViNSJ9) |
+| Código, dados tratados e registro das decisões | este repositório |
+| Como abrir o painel no Power BI Desktop | [`powerbi/roteiro_construcao.md`](powerbi/roteiro_construcao.md) |
+
+> Este endereço é o destino do QR Code impresso no trabalho. O painel mostra, para cada rede municipal, a proficiência no Saeb, o gasto por aluno e o **desempenho em relação ao esperado** para redes de gasto e contexto parecidos. Os resultados são de associação, e não de efeito causal.
 
 **Pergunta central:** o gasto público por aluno em educação, deflacionado, se associa ao desempenho no Saeb/IDEB? Com que defasagem? Quais municípios e estados entregam mais ou menos do que o esperado, dado o gasto e o contexto?
 
@@ -154,7 +164,7 @@ Para rodar um script isolado, chame-o diretamente, por exemplo `python src/Trans
 | `Analise/Sensibilidade_Modelo.py` | testes de sensibilidade (A4) |
 | `Analise/Material_Texto.py` | tabelas e figuras (A14) |
 
-O modelo do dashboard em Power BI é criado uma única vez por `src/Visualizacao/Gerar_Modelo_PowerBI.py`, dentro do projeto `powerbi/tcc_gasto_saeb.pbip`. As 10 páginas são gravadas por `src/Visualizacao/Gerar_Relatorio_PowerBI.py`, que as valida contra os esquemas oficiais do formato PBIR. Feche o Power BI antes de rodar qualquer um dos dois. O passo a passo está em `powerbi/roteiro_construcao.md`.
+O modelo do dashboard em Power BI é criado uma única vez por `src/Visualizacao/Gerar_Modelo_PowerBI.py`, dentro do projeto `powerbi/Painel de Gasto e Desempenho Educacional.pbip`. As 10 páginas são gravadas por `src/Visualizacao/Gerar_Relatorio_PowerBI.py`, que as valida contra os esquemas oficiais do formato PBIR. Feche o Power BI antes de rodar qualquer um dos dois. O passo a passo está em `powerbi/roteiro_construcao.md`.
 
 Use o Python do Anaconda (`%USERPROFILE%\anaconda3\python.exe`); na máquina de desenvolvimento, o `python` do terminal aponta para outra instalação (ver T6 no registro).
 

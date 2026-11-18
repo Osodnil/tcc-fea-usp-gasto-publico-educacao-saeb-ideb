@@ -232,7 +232,8 @@ TELAS_TEXTO = ["03_eficiencia", "04_ficha", "05_pares"]
 LEG_TELA = dict(TELAS)
 IDX_TELA = {a: k for k, (a, _) in enumerate(TELAS)}
 F_FLUXO, F_TELA0 = 1, 2
-F_HET = F_TELA0 + len(TELAS_TEXTO)
+F_QR = F_TELA0 + len(TELAS_TEXTO)   # QR Code de acesso (etapa 5, 2026-11-18)
+F_HET = F_QR + 1
 REPO = "https://github.com/Osodnil/tcc-fea-usp-gasto-publico-educacao-saeb-ideb"
 
 CAP4_ABERTURA = [
@@ -363,10 +364,15 @@ CAP4_3 = [
     *[b for k, arq in enumerate(TELAS_TEXTO) for b in (
         figura(f"rIdTela{IDX_TELA[arq]}", 60 + IDX_TELA[arq], 16.0, 9.0, f"Tela {IDX_TELA[arq] + 1}"),
         fonte(f"Figura {F_TELA0 + k} – {LEG_TELA[arq]}. Fonte: painel elaborado pelos autores."))],
+    corpo(f"O painel pode ser acessado pelo QR Code da Figura {F_QR}, que leva à página do projeto no repositório "
+          f"público ({REPO}). A página traz o link do painel publicado na web, que abre sem login, além do código, dos "
+          "dados tratados e do registro das decisões de método."),
+    figura("rIdQR", 49, 4.0, 4.0, "QR Code de acesso"),
+    fonte(f"Figura {F_QR} – QR Code de acesso ao painel e ao repositório do projeto. Fonte: elaborado pelos autores."),
     nota("[Decisões de 2026-11-17 (registro D1, D2 e A21): o indicador passou a se chamar desempenho em relação ao esperado, "
          "e o item 2.1.4 foi reescrito com essa definição. Simulação de cenários e monitoramento do "
-         "VAAR passaram a trabalhos futuros (5.4); falta tirá-los do resumo. O endereço público do painel e o QR Code ficam "
-         "para a etapa final.]"),
+         "VAAR passaram a trabalhos futuros (5.4). O QR Code (etapa 5) aponta para o README do repositório, que traz o "
+         "link do painel publicado.]"),
     titulo(2, "Uso de inteligência artificial"),
     corpo("O trabalho usou inteligência artificial (IA) generativa com autorização da orientadora, como prevê o Manual de "
           "TCC (Departamento de Administração FEA/USP, 2025). A ferramenta foi o Claude, modelo de linguagem da Anthropic "
@@ -1968,6 +1974,7 @@ figs = {"rIdFig3": "fig3_heterogeneidade.png"}  # as Figuras 1, 2 e 4 da anális
 figs["rIdFluxo"] = "fig0_fluxo_dados.png"
 figs["rIdClu1"], figs["rIdClu2"] = "fig5_escolha_k.png", "fig6_perfil_clusters.png"
 figs["rIdCeba"] = "fig7_ce_ba.png"
+figs["rIdQR"] = "qrcode_acesso.png"  # src/Exportacao/Gerar_QRCode.py
 novos = ""
 for k, (arq, _) in enumerate(TELAS_CASO):
     shutil.copy(TELAS_DIR / f"{arq}.png", PASTA / "word" / "media" / f"tela_{arq}.png")

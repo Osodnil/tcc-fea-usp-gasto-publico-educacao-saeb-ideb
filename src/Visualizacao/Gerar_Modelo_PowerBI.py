@@ -1,10 +1,10 @@
 """Escreve o modelo semântico do dashboard oficial em TMDL, dentro do projeto Power BI (.pbip).
 
 Fluxo (powerbi/roteiro_construcao.md, Fase 1):
-1. No Power BI Desktop, criar um relatório em branco e salvar como projeto em powerbi/tcc_gasto_saeb.pbip.
-   O Desktop escreve a pasta do relatório (formato PBIR) e um modelo vazio em tcc_gasto_saeb.SemanticModel.
+1. No Power BI Desktop, criar um relatório em branco e salvar como projeto em powerbi/Painel de Gasto e Desempenho Educacional.pbip.
+   O Desktop escreve a pasta do relatório (formato PBIR) e um modelo vazio em Painel de Gasto e Desempenho Educacional.SemanticModel.
 2. Fechar o Power BI e rodar este script: ele grava as 12 tabelas, o parâmetro PastaDados, as relações,
-   as ordenações e as medidas de powerbi/medidas.dax em tcc_gasto_saeb.SemanticModel/definition/.
+   as ordenações e as medidas de powerbi/medidas.dax em Painel de Gasto e Desempenho Educacional.SemanticModel/definition/.
 3. Reabrir o .pbip e clicar em Atualizar.
 
 O script é de partida: depois que o modelo existe, o Desktop passa a ser a fonte (os arquivos TMDL vão
@@ -35,7 +35,7 @@ def encontrar_raiz_projeto(marcador: str = ".git") -> Path:
 BASE_DIR = encontrar_raiz_projeto()
 DADOS = BASE_DIR / "data" / "processed" / "powerbi"
 PASTA_PBI = BASE_DIR / "powerbi"
-MODELO = PASTA_PBI / "tcc_gasto_saeb.SemanticModel"
+MODELO = PASTA_PBI / "Painel de Gasto e Desempenho Educacional.SemanticModel"
 MEDIDAS = PASTA_PBI / "medidas.dax"
 NS = uuid.UUID("6f1c2a52-7d0e-4d43-9a57-3c1f2b8e9a10")  # lineageTags estáveis entre execuções
 
@@ -480,13 +480,13 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if not (MODELO / "definition.pbism").exists():
-        if not args.pasta and (PASTA_PBI / "tcc_gasto_saeb.pbix").exists():
+        if not args.pasta and (PASTA_PBI / "Painel de Gasto e Desempenho Educacional.pbix").exists():
             sys.exit("[ERRO] O relatório em branco foi salvo como .pbix (arquivo único), e o gerador precisa do projeto "
                      ".pbip (pastas). Abra o .pbix no Power BI e use Arquivo > Salvar como, com o Tipo 'Arquivos de "
-                     "projeto do Power BI (*.pbip)', na mesma pasta powerbi\\, com o nome tcc_gasto_saeb. Feche o Power "
+                     "projeto do Power BI (*.pbip)', na mesma pasta powerbi\\, com o nome Painel de Gasto e Desempenho Educacional. Feche o Power "
                      "BI e rode o gerador de novo.")
         sys.exit(f"[ERRO] Não achei {MODELO / 'definition.pbism'}. Salve antes um relatório em branco como "
-                 "powerbi/tcc_gasto_saeb.pbip no Power BI Desktop (roteiro, Fase 1) e feche o Power BI.")
+                 "powerbi/Painel de Gasto e Desempenho Educacional.pbip no Power BI Desktop (roteiro, Fase 1) e feche o Power BI.")
     definicao = MODELO / "definition"
     if (definicao / "tables").exists() and any((definicao / "tables").iterdir()) and not args.forcar:
         sys.exit("[ERRO] O modelo já tem tabelas: depois da criação, o Desktop é a fonte. Use --forcar para recriar "
@@ -526,4 +526,4 @@ if __name__ == "__main__":
     print(f"     {len(TABELAS)} tabelas importadas + {len(CALCULADAS)} calculadas, {len(RELACOES)} relações, "
           f"{len(medidas)} medidas, {len(ORDENAR)} ordenações")
     print(f"     PastaDados = {caminho}")
-    print("[PRÓXIMO] Abra powerbi/tcc_gasto_saeb.pbip no Power BI Desktop e clique em Página Inicial > Atualizar.")
+    print("[PRÓXIMO] Abra powerbi/Painel de Gasto e Desempenho Educacional.pbip no Power BI Desktop e clique em Página Inicial > Atualizar.")

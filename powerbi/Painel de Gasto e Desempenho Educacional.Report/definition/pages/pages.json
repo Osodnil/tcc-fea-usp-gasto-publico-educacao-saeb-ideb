@@ -1,0 +1,16 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
+  "pageOrder": [
+    "tcc_boas_vindas",
+    "tcc_inicio",
+    "tcc_eficiencia",
+    "tcc_ficha",
+    "tcc_pares",
+    "tcc_mapa",
+    "tcc_defasagens",
+    "tcc_contexto",
+    "tcc_estados",
+    "tcc_sobre"
+  ],
+  "activePageName": "tcc_boas_vindas"
+}
