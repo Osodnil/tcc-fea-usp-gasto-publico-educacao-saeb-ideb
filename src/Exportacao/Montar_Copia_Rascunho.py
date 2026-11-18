@@ -1,6 +1,9 @@
 """Monta uma CÓPIA do rascunho do TCC II com o conteúdo técnico produzido no projeto.
 
-Uso (na raiz do repositório):  python Montar_Copia_Rascunho.py <pasta_descompactada> <saida.docx> <pasta_das_telas>
+Uso (na raiz do repositório):  python Montar_Copia_Rascunho.py <pasta_descompactada> <saida.docx> <pasta_das_telas> [--final]
+
+Com --final, gera a versão de entrega: sem as notas amarelas, com a lista das marcações que ainda restam. Depois, rodar
+src/Exportacao/Atualizar_Campos.ps1 na saída, para o Word preencher o sumário e as listas com as páginas.
 
 Não toca no original. Insere, depois das lacunas do rascunho: notas de rascunho (caixa amarela, como as do documento),
 texto técnico dos capítulos 4 e 5, quadros, tabelas e figuras, e notas de ATENÇÃO onde o rascunho diverge do que foi
@@ -20,6 +23,7 @@ import Material_Texto as MT  # noqa: E402  (formatação brasileira e leitura da
 import Modelo_Principal as M  # noqa: E402
 
 PASTA, SAIDA = Path(sys.argv[1]), Path(sys.argv[2])
+FINAL = "--final" in sys.argv[4:]
 DOC = PASTA / "word" / "document.xml"
 FONTE = ('<w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="Times New Roman" '
          'w:hAnsi="Times New Roman"/>')
@@ -889,7 +893,8 @@ REFERENCIAS = [nota(
         "Brasil. (2020b). *Lei nº 14.113, de 25 de dezembro de 2020*. Regulamenta o Fundo de Manutenção e Desenvolvimento "
         "da Educação Básica e de Valorização dos Profissionais da Educação (Fundeb). Diário Oficial da União.",
         "Brasil. (2021). *Lei nº 14.276, de 27 de dezembro de 2021*. Altera a Lei nº 14.113, de 25 de dezembro de 2020, "
-        "que regulamenta o Fundeb. Diário Oficial da União. [CONFERIR a ementa]",
+        "que regulamenta o Fundeb. Diário Oficial da União.",
+        "Brasil. (2025). *Portaria Interministerial MEC/MF nº 4, de 30 de abril de 2025*. Diário Oficial da União.",
         "Cairney, P. (2016). *The politics of evidence-based policy making*. Palgrave Macmillan. "
         "https://doi.org/10.1057/978-1-137-51781-4",
         "Davenport, T. H., & Harris, J. G. (2007). *Competing on analytics: The new science of winning*. Harvard Business "
@@ -1292,8 +1297,9 @@ REV_23 = [
         ["IDHM", "PNUD, Ipea e Fundação João Pinheiro", "Índice de desenvolvimento humano nas dimensões renda, "
          "longevidade e educação, usado por UF"],
     ], [2000, 2275, 4800]),
-    fonte("Fonte: elaborado pelos autores, com base em FNDE (2026), Secretaria do Tesouro Nacional (2026), Inep (2026a, "
-          "2026b), IBGE (2023, 2024, 2026a, 2026b) e PNUD et al. (2026)."),
+    fonte("Fonte: elaborado pelos autores, com base em Fundo Nacional de Desenvolvimento da Educação [FNDE] (2026), "
+          "Secretaria do Tesouro Nacional (2026), Inep (2026a, 2026b), Instituto Brasileiro de Geografia e Estatística "
+          "[IBGE] (2023, 2024, 2026a, 2026b) e Programa das Nações Unidas para o Desenvolvimento [PNUD] et al. (2026)."),
     corpo("O Exame Nacional do Ensino Médio (ENEM) e o Programa Internacional de Avaliação de Estudantes (PISA) foram "
           "descartados como medida de desempenho. O ENEM é de adesão voluntária e inclui alunos de escolas privadas; nos "
           "microdados públicos analisados pelos autores, só de 15,6% a 27,4% dos inscritos têm escola e município "
@@ -1371,7 +1377,7 @@ def reescrever(xml: str, inicio: str, novo: str, pre: bool = False) -> str:
             if not pedaco:
                 continue
             r = rpr.replace("<w:rPr>", "<w:rPr><w:b/><w:bCs/>", 1) if k % 2 and rpr else rpr
-            if pedaco.startswith("[") and r:
+            if re.match(r"\[[A-ZÇÃÉÍ]{5,}", pedaco) and r:  # marcação ([CONFERIR...]); siglas como [Inep] não
                 r = r.replace("</w:rPr>", '<w:highlight w:val="yellow"/></w:rPr>')
             runs += f'<w:r>{r}<w:t xml:space="preserve">{escape(pedaco)}</w:t></w:r>'
     return xml[:m.start()] + "<w:p>" + ppr + runs + "</w:p>" + xml[m.end():]
@@ -1679,6 +1685,186 @@ x = reescrever(x, "The financing of Brazilian public basic education", ABSTRACT,
 x = reescrever(x, "Keywords:", "**Keywords:** Public education spending. Educational performance. Saeb. Fundeb. Business "
                "Intelligence.", pre=True)
 print(f"[INFO] Resumo: {len(RESUMO.split())} palavras; abstract: {len(ABSTRACT.split())} palavras")
+
+# ───────────────────────── acabamento da etapa 4 (A26, 2026-11-18) ─────────────────────────
+TITULO = ("Gasto público por aluno e desempenho no Saeb: uma análise das redes públicas brasileiras com apoio de "
+          "Business Intelligence")
+
+
+def apagar_pars(xml: str, inicios: list[str], pre: bool = True) -> str:
+    for inicio in inicios:
+        m = achar_par(xml, inicio, pre=pre)
+        assert "<w:sectPr" not in m.group(0), inicio
+        xml = xml[:m.start()] + xml[m.end():]
+    return xml
+
+
+def tirar_realce(xml: str, inicio: str, pre: bool = True) -> str:
+    m = achar_par(xml, inicio, pre=pre)
+    novo = re.sub(r"<w:highlight [^>]*/>", "", m.group(0))
+    return xml[:m.start()] + novo + xml[m.end():]
+
+
+def tirar_marca(xml: str, inicio: str, marca: str) -> str:
+    """Tira de um parágrafo do corpo o trecho realçado que começa com `marca` (e o espaço antes dele)."""
+    m = achar_par(xml, inicio)
+    par = m.group(0)
+    runs = re.findall(r"<w:r[ >](?:(?!</w:r>).)*?</w:r>", par, flags=re.S)
+    alvo = [r for r in runs if texto_de(r).strip().startswith(marca)]
+    assert alvo, (inicio[:40], marca)
+    for r in alvo:
+        par = par.replace(r, "", 1)
+    par = re.sub(r"(<w:t(?: [^>]*)?>[^<]*?) +(</w:t>)(?=(?:(?!<w:t).)*</w:p>$)", r"\1\2", par, flags=re.S)
+    return xml[:m.start()] + par + xml[m.end():]
+
+
+# capa, página das opções de título e folha de rosto
+x = reescrever(x, "Eficiência do Gasto Público e Qualidade Educacional: Proposição", TITULO, pre=True)
+x = apagar_pars(x, ["Opção 1 (Focada", "&quot;Eficiência do Gasto Público e Qualidade Educacional: Um Produto", "Opção 2 (Focada",
+                    "&quot;: Proposição de um Modelo", "Opção 3 (Mais", "&quot;Integração de Dados Orçamentários"])
+x = reescrever(x, "[REVISAR] BUSINESS INTELLIGENCE PARA A GESTÃO", TITULO.upper(), pre=True)
+# autoridades: reitor conferido; a FEA tem novo diretor (site da FEA, 2026-11-18); a chefia do departamento fica a conferir
+x = tirar_realce(x, "Prof. Dr. Aluisio Augusto Cotrim Segurado")
+x = reescrever(x, "Profa. Dra. Maria Dolores Montoya Diaz", "Prof. Dr. João Maurício Gama Boaventura", pre=True)
+x = reescrever(x, "Diretora da Faculdade de Economia", "Diretor da Faculdade de Economia, Administração, Contabilidade e "
+               "Atuária", pre=True)
+# dedicatória (opcional) sai: a página inteira, até a quebra de seção da folha de rosto
+pars_pre = [m for m in paragrafos(x) if m.start() < x.index("INTRODUÇÃO", x.index('"Heading1"'))]
+k = next(i for i, m in enumerate(pars_pre) if texto_de(m.group(0)).strip().startswith("[Dedicatória"))
+j = k
+while j > 0 and not texto_de(pars_pre[j - 1].group(0)).strip() and "<w:sectPr" not in pars_pre[j - 1].group(0):
+    j -= 1
+assert "<w:sectPr" in pars_pre[j - 1].group(0) and texto_de(pars_pre[j - 1].group(0)).strip() == "São Paulo 2026"
+x = x[:pars_pre[j].start()] + x[pars_pre[k].end():]
+# agradecimentos: base para os autores personalizarem
+x = reescrever(x, "[Escrever os agradecimentos", "Agradecemos à Profa. Adriana Backx Noronha Viana, pela orientação, pela "
+               "confiança e pelo incentivo ao longo do trabalho; ao Departamento de Administração e à Faculdade de Economia, "
+               "Administração, Contabilidade e Atuária da Universidade de São Paulo, pela formação; e às nossas famílias e "
+               "aos colegas, pelo apoio durante a graduação. [PERSONALIZAR: acrescentar os agradecimentos de cada autor.]",
+               pre=True)
+
+# Introdução: marcações resolvidas com dados oficiais
+x = reescrever(x, "A educação básica pública brasileira é financiada por um arranjo federativo complexo.",
+    "A educação básica pública brasileira é financiada por um arranjo federativo complexo. A Constituição Federal obriga "
+    "estados, Distrito Federal e municípios a aplicarem, no mínimo, 25% da receita resultante de impostos e "
+    "transferências na manutenção e desenvolvimento do ensino (MDE) (Brasil, 1988, art. 212). Desde a Emenda "
+    "Constitucional nº 108/2020, o Fundo de Manutenção e Desenvolvimento da Educação Básica e de Valorização dos "
+    "Profissionais da Educação (Fundeb) tornou-se instrumento permanente de financiamento, com complementação da União de, "
+    "no mínimo, 23% do total de recursos do fundo, distribuída nas modalidades VAAF, VAAT e VAAR (Brasil, 2020a, 2020b). "
+    "Trata-se de um volume expressivo de recursos públicos: para 2025, a receita do Fundeb foi estimada em R$ 339 "
+    "bilhões, dos quais R$ 58,8 bilhões de complementação da União (Brasil, 2025).")
+x = reescrever(x, "Em paralelo, os resultados de aprendizagem seguem como desafio central.",
+    "Em paralelo, os resultados de aprendizagem seguem como desafio central. Segundo a divulgação do Ideb 2025, a rede "
+    "pública alcançou 6,1 nos anos iniciais do ensino fundamental, 5,0 nos anos finais e 4,3 no ensino médio (Instituto "
+    "Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira [Inep], 2026b). Os resultados também são desiguais entre "
+    "redes com recursos parecidos: em 2023, as redes municipais do Ceará e da Bahia gastaram praticamente o mesmo por "
+    "aluno, mas a proficiência média em Matemática nos Anos Iniciais foi de 242,4 pontos no Ceará e de 200,1 na Bahia "
+    "(Capítulo 4).")
+x = tirar_marca(x, "Esse cenário revela uma questão de gestão", "[CONFERIR")
+x = tirar_marca(x, "Esse cenário revela uma questão de gestão", "[DESENVOLVER")
+x = reescrever(x, "Contribuição teórica.",
+    "**Contribuição teórica.** O trabalho acrescenta evidência recente, de 2017 a 2025, à literatura brasileira sobre "
+    "gasto e desempenho, separando a comparação entre municípios da comparação de cada município com ele mesmo, e "
+    "aproxima essa literatura da de gestão pública baseada em evidências, ao propor um indicador de desempenho em relação "
+    "ao esperado para uso gerencial (seção 2.2).")
+x = tirar_marca(x, "A ideia de decisão baseada em evidências", "[CONFERIR")
+x = tirar_marca(x, "No campo da transparência, a literatura distingue", "[CONFERIR")
+
+# listas de figuras, tabelas e quadros: os campos do modelo buscavam títulos; passam a buscar as entradas TC das legendas
+CAMPO_MODELO = "TOC \\h \\u \\z \\t &quot;Heading 1,1,Heading 2,2,Heading 3,3,Heading 4,4,Heading 5,5,Heading 6,6,&quot;"
+assert x.count(CAMPO_MODELO) == 3, x.count(CAMPO_MODELO)
+for letra in "FTQ":
+    x = x.replace(CAMPO_MODELO, f"TOC \\h \\z \\f {letra}", 1)
+
+
+def com_tc(m: re.Match) -> str:
+    par = m.group(0)
+    if "Heading" in par or "ffc000" in par:
+        return par
+    txt = texto_de(par).strip()
+    tipo = re.match(r"(Figura|Tabela|Quadro) [A-Z]?\.?\d+ – ", txt)
+    if not tipo or m.start() < x.index("INTRODUÇÃO", x.index('"Heading1"')):
+        return par
+    letra = {"Figura": "F", "Tabela": "T", "Quadro": "Q"}[tipo.group(1)]
+    tc = ('<w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> TC "'
+          + escape(txt.replace('"', "”")) + f'" \\f {letra} \\l 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r>')
+    if "<w:r><w:br/></w:r>" in par:
+        return par.replace("<w:r><w:br/></w:r>", tc + "<w:r><w:br/></w:r>", 1)
+    return par[:-len("</w:p>")] + tc + "</w:p>"
+
+
+x = re.sub(r"<w:p[ >].*?</w:p>", com_tc, x, flags=re.S)
+
+
+def titulo_pre(texto: str, quebra: bool = False) -> str:
+    return ('<w:p><w:pPr>' + ('<w:pageBreakBefore/>' if quebra else '') + '<w:spacing w:after="360" w:before="0" '
+            'w:line="360" w:lineRule="auto"/><w:jc w:val="center"/></w:pPr>' + run(texto, negrito=True) + "</w:p>")
+
+
+def antes_do_campo(xml: str, campo: str, blocos: list[str]) -> str:
+    i = xml.index(campo)
+    b = xml.rfind('w:fldCharType="begin"', 0, i)
+    a = max(xml.rfind("<w:p>", 0, b), xml.rfind("<w:p ", 0, b))
+    return xml[:a] + "".join(blocos) + xml[a:]
+
+
+SIGLAS = [("AF", "Anos Finais do Ensino Fundamental"), ("AI", "Anos Iniciais do Ensino Fundamental"),
+          ("BI", "Business Intelligence"), ("BNCC", "Base Nacional Comum Curricular"), ("CAQ", "Custo Aluno-Qualidade"),
+          ("DEA", "Análise envoltória de dados (Data Envelopment Analysis)"), ("EF", "Efeito fixo"),
+          ("EM", "Ensino Médio"), ("ENEM", "Exame Nacional do Ensino Médio"),
+          ("FEA", "Faculdade de Economia, Administração, Contabilidade e Atuária"), ("FJP", "Fundação João Pinheiro"),
+          ("FNDE", "Fundo Nacional de Desenvolvimento da Educação"),
+          ("Fundeb", "Fundo de Manutenção e Desenvolvimento da Educação Básica e de Valorização dos Profissionais da Educação"),
+          ("Fundef", "Fundo de Manutenção e Desenvolvimento do Ensino Fundamental e de Valorização do Magistério"),
+          ("IA", "Inteligência artificial"), ("IBGE", "Instituto Brasileiro de Geografia e Estatística"),
+          ("ICMS", "Imposto sobre Operações Relativas à Circulação de Mercadorias e sobre Prestações de Serviços de "
+                   "Transporte Interestadual e Intermunicipal e de Comunicação"),
+          ("Ideb", "Índice de Desenvolvimento da Educação Básica"), ("IDHM", "Índice de Desenvolvimento Humano Municipal"),
+          ("Inep", "Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira"),
+          ("IPCA", "Índice Nacional de Preços ao Consumidor Amplo"), ("Ipea", "Instituto de Pesquisa Econômica Aplicada"),
+          ("LDB", "Lei de Diretrizes e Bases da Educação Nacional"), ("LP", "Língua Portuguesa"),
+          ("MDE", "Manutenção e desenvolvimento do ensino"), ("MEC", "Ministério da Educação"),
+          ("MQO", "Mínimos quadrados ordinários"), ("MT", "Matemática"),
+          ("PISA", "Programa Internacional de Avaliação de Estudantes"),
+          ("PNUD", "Programa das Nações Unidas para o Desenvolvimento"),
+          ("Saeb", "Sistema de Avaliação da Educação Básica"),
+          ("Siconfi", "Sistema de Informações Contábeis e Fiscais do Setor Público Brasileiro"),
+          ("SIOPE", "Sistema de Informações sobre Orçamentos Públicos em Educação"),
+          ("TCC", "Trabalho de Conclusão de Curso"), ("UF", "Unidade da Federação"), ("USP", "Universidade de São Paulo"),
+          ("VAAF", "Valor Anual por Aluno do Fundeb"), ("VAAR", "Valor Anual por Aluno por Resultado"),
+          ("VAAT", "Valor Anual Total por Aluno")]
+
+
+def sigla(s: str, sig: str) -> str:
+    return ('<w:p><w:pPr><w:tabs><w:tab w:val="left" w:pos="1418"/></w:tabs><w:spacing w:after="0" w:before="0" '
+            'w:line="360" w:lineRule="auto"/><w:ind w:left="1418" w:hanging="1418"/><w:jc w:val="left"/></w:pPr>'
+            + run(s) + "<w:r><w:tab/></w:r>" + run(sig) + "</w:p>")
+
+
+x = antes_do_campo(x, "TOC \\h \\z \\f F", [titulo_pre("LISTA DE FIGURAS")])
+x = antes_do_campo(x, "TOC \\h \\z \\f T", [titulo_pre("LISTA DE TABELAS")])
+x = antes_do_campo(x, "TOC \\h \\z \\f Q", [titulo_pre("LISTA DE QUADROS")])
+x = antes_do_campo(x, "TOC \\h \\u \\z \\t &quot;Heading 1,1,Heading 2,2,Heading 3,3,&quot;",
+                   [titulo_pre("LISTA DE ABREVIATURAS E SIGLAS"), *[sigla(a, b) for a, b in SIGLAS],
+                    titulo_pre("SUMÁRIO", quebra=True)])
+# o campo do sumário buscava os estilos pelo nome em inglês ("Heading 1"), que o Word em português não reconhece:
+# passa a usar os níveis de estrutura de tópicos, que valem em qualquer idioma
+x = x.replace(r"TOC \h \u \z \t &quot;Heading 1,1,Heading 2,2,Heading 3,3,&quot;", r"TOC \o &quot;1-3&quot; \h \z \u", 1)
+# os títulos das listas e do sumário estavam no cabeçalho da página (resto da conversão do modelo): saem de lá
+for cab in (PASTA / "word").glob("header*.xml"):
+    c = cab.read_text(encoding="utf-8")
+    if texto_de(c).strip() in ("LISTA DE FIGURAS", "LISTA DE TABELAS", "LISTA DE QUADROS", "SUMÁRIO"):
+        cab.write_text(re.sub(r"(<w:t(?: [^>]*)?>)[^<]*(</w:t>)", r"\1\2", c), encoding="utf-8")
+
+# versão final: sem as notas amarelas; as marcações que restarem são listadas
+if FINAL:
+    x = re.sub(r"<w:p[ >](?:(?!</w:p>).)*?ffc000(?:(?!</w:p>).)*?</w:p>", "", x, flags=re.S)
+    restam = [texto_de(r).strip() for r in re.findall(r"<w:r[ >](?:(?!</w:r>).)*?<w:highlight [^>]*/>(?:(?!</w:r>).)*?</w:r>", x,
+                                                         flags=re.S) if texto_de(r).strip()]
+    restam += re.findall(r"\[(?:CONFERIR|INSERIR|REVISAR|PERSONALIZAR|DEFINIR|DETALHAR)[^\]]*\]", texto_de(x))
+    print(f"[INFO] Versão final: {len(set(restam))} marcações restantes")
+    for r in dict.fromkeys(restam):
+        print("   -", r[:110])
 
 # ───────────────────────── formatação (ABNT NBR 14724; diretrizes da USP) ─────────────────────────
 # margens de 3 cm (superior e esquerda) e 2 cm (inferior e direita) em todas as seções; número da página a 2 cm da borda

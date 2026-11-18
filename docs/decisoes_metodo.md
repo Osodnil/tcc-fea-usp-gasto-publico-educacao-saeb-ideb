@@ -666,6 +666,39 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A26. Etapa 4: versão final única e acabamento ABNT ✅ (Henrique, 2026-11-18)
+- **Duas saídas do montador:**
+  - **cópia de revisão:** `exportacao/TCC_II_FEA_USP_Rascunho_com_conteudo.docx`, com as notas amarelas;
+  - **versão final:** `exportacao/TCC_II_FEA_USP_Versao_Final.docx`, gerada com `--final`, sem as notas e com a lista das marcações que restam.
+  - **Depois do montador:** `src/Exportacao/Atualizar_Campos.ps1` faz o Word preencher o sumário e as listas com as páginas.
+- **Decisões do Henrique:**
+  - **Título:** "Gasto público por aluno e desempenho no Saeb: uma análise das redes públicas brasileiras com apoio de Business Intelligence", sem o período. É o mesmo na capa e na folha de rosto, e a página com as três opções saiu.
+  - **Dedicatória:** removida.
+  - **Agradecimentos:** um rascunho curto, com a marca [PERSONALIZAR].
+- **Pré-textuais:**
+  - **reitor conferido:** Aluísio Segurado, empossado em 23/01/2026;
+  - **diretor da FEA atualizado:** Prof. Dr. João Maurício Gama Boaventura, conforme o site da FEA em 2026-11-18. Era a Profa. Maria Dolores, cujo mandato foi de 2022 a 2026;
+  - **chefe do Departamento de Administração:** não encontrado no site, segue a conferir;
+  - **resumo e abstract:** feitos em A25.
+- **Listas e sumário automáticos:**
+  - **listas:** os três campos do modelo buscavam títulos de capítulo. Passaram a montar a lista de figuras, a de tabelas e a de quadros a partir de entradas TC ocultas em cada legenda, incluindo as do apêndice;
+  - **sumário:** o campo buscava os estilos pelo nome em inglês, que o Word em português não reconhece. Passou a usar os níveis de estrutura de tópicos (\o "1-3");
+  - **títulos das listas e do sumário:** saíram do cabeçalho da página, um resto da conversão do modelo, e foram para o corpo.
+- **Lista de abreviaturas e siglas (nova):** 40 siglas, antes do sumário.
+- **Introdução, marcações resolvidas com dados oficiais:**
+  - Fundeb de 2025 estimado em R$ 339 bilhões, com R$ 58,8 bilhões de complementação da União (Portaria Interministerial MEC/MF nº 4/2025; referência Brasil, 2025);
+  - Ideb 2025 da rede pública: 6,1, 5,0 e 4,3, conferidos na divulgação de 05/08/2026;
+  - a desigualdade entre redes passou a ser ilustrada com Ceará e Bahia;
+  - saíram as marcas de storytelling e de [CONFERIR], que ficam na pendência de revisar as paráfrases;
+  - a contribuição teórica foi reescrita.
+- **Citações institucionais (APA):** a primeira citação traz o nome por extenso e a sigla entre colchetes (Inep, FNDE, IBGE, PNUD), e "(Inep, 2026)" passou a "(Inep, 2026b)". A ementa da Lei nº 14.276/2021 deixou de estar marcada como a conferir.
+- **Marcações que restam na versão final:**
+  - o chefe do Departamento de Administração;
+  - os agradecimentos [PERSONALIZAR];
+  - o número do texto de Menezes-Filho e Amaral (2009);
+  - a autoria da edição usada do Radar IDHM.
+- **A partir daqui (fluxo de trabalho):** quando os autores começarem a editar a versão final no Word (etapa 3: reescrita e paráfrases), ela vira o documento principal. Rodar o montador de novo sobrescreveria essas edições: qualquer mudança posterior de conteúdo técnico deve ser feita à mão no documento final.
+
 ### A25. Conclusões, resumo e abstract escritos na cópia ✅ texto · 🟡 reescrita pelos autores (Henrique, 2026-11-18)
 - **Origem:** ao levantar as marcações amarelas, o capítulo de conclusões tinha só cerca de 44 palavras de texto, e o resumo e o abstract descreviam ainda o formato de consultoria. Os dois entraram na etapa 3 do plano final.
 - **Capítulo 5 (Conclusões, limitações e sugestões de pesquisa futura), reescrito por inteiro com o auxílio da IA:**
