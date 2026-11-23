@@ -666,6 +666,29 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A31. Texto do Guilherme sobre MDE, Fundeb e ICMS Educacional incorporado ao 2.1 ✅ (Henrique e Guilherme, 2026-11-23)
+- **Origem:** o arquivo "Fundeb e como são feitos os repasses para a educação" é o texto de repasses que o Guilherme citou na revisão (A29, tópicos 2 e 3) e que não tinha chegado.
+- **O que já estava no documento:** quase todo o conteúdo dele. O 2.1.2 (Fundeb, complementação da União, 70%, VAAR e CAQ) era praticamente igual, e o 2.1.3 já trazia a regra da cota do ICMS.
+- **O que entrou**, por `src/Exportacao/Aplicar_Texto_Fundeb_Guilherme.py`, gerando `exportacao/TCC_II_FEA_USP_Versao_Final-Revisado4.docx`, o novo **documento principal**:
+  - **2.1.1, as duas camadas da MDE:**
+    - a camada compartilhada, com 20% retidos no Fundeb;
+    - a camada de aplicação direta, com os 5% restantes e 25% dos impostos fora da cesta (IPTU, ISS, ITBI e IRRF);
+    - os programas federais fora do mínimo de MDE: salário-educação, PNAE, PNATE e PDDE;
+    - uma frase ligando isso ao trabalho: a despesa por subfunção é classificada pela finalidade, então o gasto por aluno reúne todas as fontes classificadas no Ensino Fundamental.
+  - **2.1.2:** a redistribuição dentro do estado, com municípios que contribuem mais do que recebem e municípios que recebem mais do que contribuem.
+  - **2.1.3:**
+    - a regra não vale para o DF, que não tem municípios;
+    - 25% do valor recebido seguem vinculados à educação e 75% são receita livre;
+    - Minas Gerais foi o pioneiro na década de 1990;
+    - a Lei cearense nº 14.023/2007 distribui 18% da cota (4,5% do ICMS do estado) pelo IQE;
+    - o 2.1.3 agora remete à comparação Ceará × Bahia (4.3).
+  - **Referências novas:** Ceará (2007) e Minas Gerais (1995).
+- **Ajustes ao texto dele:**
+  - "referência nacional de eficiência alocativa" e "maior escala e impacto" saíram, porque são juízos sem fonte. O efeito da política fica com Lautharte et al. (2021), no 2.2.4.
+  - O texto foi encaixado nos parágrafos que já existiam, para não repetir o 2.1.2.
+- **A conferir pelos autores:** a ementa das duas leis estaduais e o ano da lei mineira (Lei nº 12.040/1995, a "Lei Robin Hood"). O texto do Guilherme não trazia referência para Minas Gerais.
+- **Conferência:** o validador passou, o Word refez o sumário (69 páginas) e as páginas 19 a 22 foram conferidas no PDF.
+
 ### A30. Ajuste ao Modelo de TCC Científico EAD FEA 2025 ✅ (Henrique, 2026-11-23)
 - **Origem:** o modelo oficial ("Modelo TCC Cientifico EAD FEA_2025_2.pdf"), recebido em 2026-11-23, foi comparado com o documento. Já estavam conformes:
   - os elementos pré-textuais e o resumo (parágrafo único, sem recuo, 289 palavras, 5 palavras-chave);
