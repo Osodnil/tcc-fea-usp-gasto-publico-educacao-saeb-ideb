@@ -666,6 +666,43 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A29. Respostas aos comentários do Guilherme (revisão de 2026-11-19) ✅ (Henrique, 2026-11-23)
+- **Documento principal a partir daqui:** `exportacao/TCC_II_FEA_USP_Versao_Final-Revisado2.docx`, gerado a partir do arquivo editado pelo Guilherme (`Revisado1`) por `src/Exportacao/Aplicar_Revisao_Guilherme.py`. **O montador não é mais usado.**
+- **Feito pelo Guilherme:**
+  - confirmou o chefe do departamento (Prof. Dr. Andres Rodriguez Veloso);
+  - escreveu os agradecimentos dele;
+  - deixou "De Henrique:" em branco, agora marcado com [PERSONALIZAR].
+- **Atendidos, com mudança no texto:**
+  - **Repasses do Fundeb além da União (comentários 4 e 21):**
+    - a Introdução e o item 2.1.2 passaram a dizer como o fundo é formado: 20% de uma cesta de impostos e transferências de estados e municípios (Lei nº 14.113/2020, art. 3º);
+    - e como é repartido: pelas matrículas ponderadas (arts. 7º, 8º e 11);
+    - com o peso de cada parte: cerca de 83% dos R$ 339 bilhões de 2025 vêm de estados e municípios.
+  - **Cota municipal do ICMS por resultados (comentário 31 e item 3):** ganhou o novo item **2.1.3**, ao lado do Fundeb:
+    - 25% do ICMS vão para os municípios, com mínimo de 65% pelo valor adicionado, até 35% por lei estadual e pelo menos 10 pontos percentuais por indicadores de aprendizagem e equidade (CF, art. 158; EC nº 108/2020, com prazo até agosto de 2022);
+    - a lógica de premiar quem entrega mais, diferente da dos fundos redistributivos;
+    - o uso livre do valor recebido;
+    - a ligação com a condicionalidade do VAAR (art. 14) e a origem no Ceará.
+    - O item 2.2.4 remete ao 2.1.3 e registra que as edições do Saeb usadas ainda captam pouco do efeito das leis de 2022.
+  - **Ideb e pontos do Saeb (comentários 5 e 6):** a Introdução explica o Ideb (escala de 0 a 10, nota padronizada × aprovação) e os pontos (média dos alunos na escala do Saeb, comum às edições; média das redes municipais de 220,2, com oito em cada dez redes entre 188 e 251).
+  - **Periodicidade no resumo e no abstract (comentário 1):** gasto anual, Saeb bienal.
+  - **Pergunta de pesquisa (comentários 9 e 88):** dividida em duas frases, na Introdução e nas Conclusões.
+  - **Objetivo específico b (comentário 11):** passou a dizer "cada município com ele mesmo ao longo do tempo". Sim, foi feito: é o modelo com efeito fixo de município da seção 4.2.
+  - **Objetivo específico d e retomada nas Conclusões (comentários 12 e 89):** passou a "comparação entre redes municipais de estados diferentes, o que levou à análise do Ceará e da Bahia, e três estudos de caso". Ceará × Bahia não é um dos três casos (Timon, São Paulo e Coruripe): é a análise da seção 4.3.
+  - **Contribuição teórica (comentário 14):** reescrita em termos simples.
+  - **Eficiência (comentário 24):** a definição estava certa; passou a dizer "tecnicamente eficiente".
+  - **Fundef (comentário 28):** o texto explica que o efeito do salário dos professores vem da reforma do financiamento usada como variação externa. O piso do Ceará não entrou, por falta de fonte.
+  - **educabR (comentário 33):** é a ferramenta que a orientadora mandou. Entrou no 2.2.5 e como linha do Quadro 1.
+  - **Uso de IA (comentários 50 e 51):** "Em acordo com a orientadora", no lugar de "com autorização da orientadora". O Gemini foi declarado, usado sobretudo pelo Guilherme em pesquisas, levantamento bibliográfico, algumas análises e redação, e a referência Google (2026) entrou na lista.
+  - **Spearman (comentário 58):** 0,46 é uma correlação moderada, e 0,16, fraca.
+  - **"Respectivamente" (comentário 75):** acrescentado.
+  - **Leitura de 4.1 e 4.2 (item 6):** cada seção ganhou um parágrafo "Em termos práticos".
+- **Mantidos, com o motivo:**
+  - **Comentário 72:** a menção à IA no Ceará × Bahia continua, pela decisão do Henrique de declarar a IA em cada etapa (A23).
+  - **Comentários 70 e 71:** estavam vazios, marcados por engano.
+  - **Capítulo 3 e Limitações (itens 5 e 8):** revistos; não pedem mudança além da seção 3.4.
+- **Arquivo dos repasses que o Guilherme ia mandar:** não chegou. Os itens 2 e 3 foram escritos a partir da Lei nº 14.113/2020, da Constituição (art. 158) e da EC nº 108/2020, conferidas no Planalto. Se o arquivo dele trouxer outros pontos, eles entram depois.
+- **Comentários:** todos foram respondidos e retirados do documento.
+
 ### A28. Trabalhos semelhantes ampliados com a pesquisa do Guilherme ✅ (Henrique e Guilherme, 2026-11-18)
 - **Pedido:** trazer explicitamente os trabalhos semelhantes e correlatos, a partir da pesquisa inicial do Guilherme (dez itens) e das referências já usadas.
 - **Seção 2.2:**
