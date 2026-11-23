@@ -666,6 +666,35 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A30. Ajuste ao Modelo de TCC Científico EAD FEA 2025 ✅ (Henrique, 2026-11-23)
+- **Origem:** o modelo oficial ("Modelo TCC Cientifico EAD FEA_2025_2.pdf"), recebido em 2026-11-23, foi comparado com o documento. Já estavam conformes:
+  - os elementos pré-textuais e o resumo (parágrafo único, sem recuo, 289 palavras, 5 palavras-chave);
+  - a formatação do corpo do texto e as listas automáticas;
+  - as referências em APA e o apêndice.
+- **Cinco diferenças, todas aplicadas** ("Aplicar os cinco"), por `src/Exportacao/Aplicar_Modelo_Cientifico.py` (funções comuns em `edicao_docx.py`). O resultado é `exportacao/TCC_II_FEA_USP_Versao_Final-Revisado3.docx`, que passa a ser o **documento principal**.
+  1. **Títulos dos capítulos com os nomes do modelo:**
+     - "Revisão da literatura" no lugar de "Revisão bibliográfica";
+     - "Procedimentos metodológicos" no lugar de "Método";
+     - "Análises e resultados" no lugar de "Resultados e discussão";
+     - "Considerações finais" no lugar de "Conclusões, limitações e sugestões de pesquisa futura".
+     - O item "Estrutura do trabalho" foi reescrito com os nomes novos.
+  2. **Item 1.5, "Delimitação do estudo":** traz o tipo de estudo, as bases, o período, as redes cobertas e as técnicas. Repete que os resultados indicam associação, e não efeito causal.
+  3. **Item 3.5, "Técnicas de análise e matriz de amarração metodológica":**
+     - descreve as técnicas: Spearman; MQO com erros agrupados por município, em três especificações; k-médias; e o resíduo como indicador;
+     - traz o novo **Quadro 5**, que liga cada objetivo específico aos dados, à técnica e à seção dos resultados (Mazzon, 2018). A referência foi acrescentada.
+     - Os quadros seguintes passaram a ser o 6 (clusters) e o 7 (cenários de uso).
+  4. **Item 4.6, "Discussão dos resultados e implicações":** compara os resultados com a literatura em três pontos:
+     - Hanushek e Menezes-Filho e Amaral;
+     - Jackson et al. e Jackson e Mackevicius, observando que o efeito encontrado aqui é menor e que o desenho não isola variação externa;
+     - Oliveira et al., Lautharte et al. e Alves e Soares.
+     - Também traz as implicações teóricas, práticas e de política pública (fundos redistributivos × incentivos, com a cota do ICMS do 2.1.3).
+  5. **Abstract com a mesma formatação do resumo:** justificado e com espaçamento 1,5.
+- **Conferência:**
+  - o validador do .docx passou;
+  - o Word refez o sumário e as listas (68 páginas);
+  - as páginas novas foram conferidas no PDF.
+- **Atenção:** os textos novos dos itens 1.5, 3.5 e 4.6 foram redigidos com o auxílio da IA e entram na pendência (a) da etapa 3: os autores devem reescrevê-los com as próprias palavras, e conferir as citações do 4.6 lendo as obras.
+
 ### A29. Respostas aos comentários do Guilherme (revisão de 2026-11-19) ✅ (Henrique, 2026-11-23)
 - **Documento principal a partir daqui:** `exportacao/TCC_II_FEA_USP_Versao_Final-Revisado2.docx`, gerado a partir do arquivo editado pelo Guilherme (`Revisado1`) por `src/Exportacao/Aplicar_Revisao_Guilherme.py`. **O montador não é mais usado.**
 - **Feito pelo Guilherme:**
