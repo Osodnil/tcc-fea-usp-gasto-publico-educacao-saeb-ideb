@@ -666,6 +666,19 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A32. Seção 4.2 enxuta: detalhe estatístico no Apêndice B, e folha de defesa ✅ (Henrique, 2026-11-24)
+- **Motivo:** o Henrique avaliou que, num TCC de Administração, o 4.2 estava escrito como um artigo de economia. Ele temia que os autores não dominassem todos os conceitos e que a banca perguntasse em cascata.
+- **Por que não tirar a seção:** o resumo, as conclusões e o objetivo (b) se apoiam nesses resultados. Os testes de sensibilidade também são a resposta a perguntas do tipo "e se fosse a pandemia?".
+- **O que mudou**, por `src/Exportacao/Enxugar_Secao_4_2.py`, gerando `exportacao/TCC_II_FEA_USP_Versao_Final-Revisado5.docx`, o novo **documento principal**:
+  - **4.2.2:** dois parágrafos em linguagem simples, a investigação de 2025 resumida em uma frase e a Tabela 3 só com "entre municípios" e "dentro do mesmo município";
+  - **4.2.3:** duas frases;
+  - **4.2.5:** um parágrafo curto, e a **tabela dos testes de sensibilidade continua no corpo**, como Tabela 4. O Henrique pediu, antes do commit, que essa tabela não fosse para o apêndice, por ser a mais relevante e a que ele domina melhor;
+  - **Apêndice B:** recebeu a tabela completa das três especificações, com o parágrafo da investigação de 2025 (Tabela B.3), e as defasagens (Tabela B.4);
+  - **numeração:** as Tabelas 6, 7 e 8 passaram a 5, 6 e 7, e a chamada da seção 4.5 aponta para a Tabela 4.
+- **Números:** nenhum mudou. O documento continua com 69 páginas.
+- **Folha de defesa:** `docs/folha_defesa.md` reúne cerca de 30 perguntas prováveis da banca, com respostas de uma ou duas frases, em seis blocos (ideia, dados, resultados, indicador e grupos, Ceará × Bahia e casos, método, IA e limites).
+- **A fazer:** avisar o Guilherme e a orientadora da mudança no capítulo de resultados. A reescrita com as próprias palavras (pendência a da etapa 3) vale também para os novos parágrafos do 4.2.
+
 ### A31. Texto do Guilherme sobre MDE, Fundeb e ICMS Educacional incorporado ao 2.1 ✅ (Henrique e Guilherme, 2026-11-23)
 - **Origem:** o arquivo "Fundeb e como são feitos os repasses para a educação" é o texto de repasses que o Guilherme citou na revisão (A29, tópicos 2 e 3) e que não tinha chegado.
 - **O que já estava no documento:** quase todo o conteúdo dele. O 2.1.2 (Fundeb, complementação da União, 70%, VAAR e CAQ) era praticamente igual, e o 2.1.3 já trazia a regra da cota do ICMS.
