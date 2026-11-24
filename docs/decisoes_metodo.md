@@ -666,6 +666,19 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A33. Referências conferidas no Crossref e corrigidas ✅ (Henrique, 2026-11-24)
+- **Conferência:** as 59 referências foram comparadas com o Crossref (e o DataCite). O relatório está em `docs/conferencia_referencias.md`.
+  - Todas existem, e a lista e as citações batem nos dois sentidos.
+  - 21 conferem, 6 precisavam de correção e 5 são livros sem registro no Crossref, com dados coerentes.
+  - As outras 27 são leis, bases de dados, modelos de IA e documentos institucionais, que o Crossref não indexa.
+- **Correções aplicadas** no Revisado5 por `src/Exportacao/Corrigir_Referencias.py`. As trocas foram feitas dentro do texto de cada referência, para preservar o itálico.
+  - **Crozatti et al. (2022):** o quinto autor passou a "Rinaldi, A. M. S.", no lugar de "Serpa, A. M.", e entraram as páginas 143–171.
+  - **Alves e Frio (2022):** entraram as páginas 285–312.
+  - **Mazzon (2018) e Sasso et al. (2021):** entraram os DOIs.
+  - **Soares e Xavier (2013):** o link do PDF foi trocado pelo DOI.
+  - **Menezes-Filho e Amaral (2009):** a referência passou a "Insper Working Paper No. WPE 164", com o link do repositório do Insper, e a marca [CONFERIR] saiu. O nome do arquivo oficial é `2009_wpe164.pdf`, mas os catálogos divergem (156 e 064), então vale conferir na capa do PDF.
+- **Ainda pendente:** as ementas das leis estaduais (A31) e a autoria do Radar IDHM. Também fica para a etapa 3 (b) a verificação de que o texto descreve bem cada obra.
+
 ### A32. Seção 4.2 enxuta: detalhe estatístico no Apêndice B, e folha de defesa ✅ (Henrique, 2026-11-24)
 - **Motivo:** o Henrique avaliou que, num TCC de Administração, o 4.2 estava escrito como um artigo de economia. Ele temia que os autores não dominassem todos os conceitos e que a banca perguntasse em cascata.
 - **Por que não tirar a seção:** o resumo, as conclusões e o objetivo (b) se apoiam nesses resultados. Os testes de sensibilidade também são a resposta a perguntas do tipo "e se fosse a pandemia?".
