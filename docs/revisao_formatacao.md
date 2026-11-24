@@ -1,8 +1,8 @@
 # Revisão de formatação e referências
 
 > **Situação em 2026-11-18 (A26):** a versão final está em `exportacao/TCC_II_FEA_USP_Versao_Final.docx`, sem as notas amarelas.
-> - **Já resolvidos:** título único; página de opções e dedicatória removidas; sumário e listas automáticos; títulos das listas no corpo; lista de siglas; resumo e abstract; marcações da Introdução; citações institucionais na forma da APA; "(Inep, 2026b)".
-> - **Restam:** o chefe do Departamento de Administração, os agradecimentos [PERSONALIZAR], o número do texto de Menezes-Filho e Amaral (2009), a autoria do Radar IDHM, a revisão ortográfica, o Turnitin e, da etapa 3, a reescrita com as próprias palavras e a revisão das paráfrases.
+> - **Já resolvidos:** chefe do departamento (A29) e agradecimentos do Henrique (2026-11-24); título único; página de opções e dedicatória removidas; sumário e listas automáticos; títulos das listas no corpo; lista de siglas; resumo e abstract; marcações da Introdução; citações institucionais na forma da APA; "(Inep, 2026b)".
+> - **Restam:** o número do texto de Menezes-Filho e Amaral (2009), a autoria do Radar IDHM, a revisão ortográfica, o Turnitin e, da etapa 3, a reescrita com as próprias palavras e a revisão das paráfrases.
 > - **Cuidado:** depois que vocês começarem a editar a versão final no Word, não gerar de novo pelo montador, para não sobrescrever as edições. Para refazer o sumário e as listas, usar no Word o botão direito > Atualizar campo, ou rodar `src/Exportacao/Atualizar_Campos.ps1`.
 
 *2026-11-17 (registro A21). Revisão inicial do rascunho do TCC II (`TCC_II_FEA_USP_Rascunho.docx`) e da cópia com o conteúdo técnico (`exportacao/TCC_II_FEA_USP_Rascunho_com_conteudo.docx`).*
