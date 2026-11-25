@@ -43,21 +43,21 @@ resultados, painel e conclusões. Etapa 6 do plano final. Os números conferem c
 
 ## Slide 3 · Como a educação é financiada (0:50–1:35)
 
-**Na tela:** quatro números em sequência (25% para a MDE → 20% da cesta formam o Fundeb → 23% de complementação da União → 70% para os profissionais) e uma faixa com a cota do ICMS por resultados (no mínimo 10 pontos; no Ceará, 18%).
+**Na tela:** uma rosca dupla sobre cada R$ 100 dos impostos da cesta. O anel interno mostra R$ 75 livres e R$ 25 para a educação. O anel externo abre os 25 em R$ 5 aplicados direto e R$ 20 do Fundeb: pelo menos R$ 14 para os profissionais (70%) e R$ 6 para outras despesas. Ao lado ficam a legenda, nessa mesma ordem, a nota "+23%: a União acrescenta ao Fundeb" e a faixa da cota do ICMS por resultados (no mínimo 10 pontos; no Ceará, 18%).
 
 **Fala:**
-> Primeiro, como a educação é financiada. A Constituição obriga estados e municípios a aplicar pelo menos 25% da receita de impostos na educação. Boa parte disso passa pelo Fundeb: em cada estado, 20% de uma cesta de impostos formam um fundo, que é repartido entre o estado e os municípios pelo número de matrículas, e a União complementa com pelo menos 23%. Pelo menos 70% do fundo paga os profissionais da educação. Além disso, desde a Emenda 108, de 2020, cada estado distribui parte do ICMS dos municípios segundo resultados educacionais, um modelo inspirado no Ceará.
+> Primeiro, como a educação é financiada. A Constituição obriga estados e municípios a aplicar pelo menos 25% da receita de impostos na educação. Desses 25 pontos, 20 passam pelo Fundeb: em cada estado, 20% de uma cesta de impostos formam um fundo, que é repartido entre o estado e os municípios pelo número de matrículas, e a União complementa com pelo menos 23%. Pelo menos 70% do fundo paga os profissionais da educação. Além disso, desde a Emenda 108, de 2020, cada estado distribui parte do ICMS dos municípios segundo resultados educacionais, um modelo inspirado no Ceará.
 
 ## Slide 4 · O que a literatura diz (1:35–2:10)
 
-**Na tela:** três ideias com os autores ("gasto sozinho explica pouco", "efeito maior para os mais pobres", "o contexto pesa") e uma faixa com a lacuna.
+**Na tela:** três ideias com os autores ("gasto sozinho explica pouco", "efeito maior para os mais pobres", "sem o contexto, redes vulneráveis parecem piores") e uma faixa com a lacuna.
 
 **Fala:**
-> Na literatura, os estudos clássicos, como os de Hanushek, e os brasileiros, como o de Menezes-Filho e Amaral, encontram uma associação pequena entre gasto e desempenho. Estudos recentes, como o de Jackson e coautores, mostram efeitos maiores sobretudo para os alunos de baixa renda. E Alves e Soares mostram que o contexto pesa muito nos indicadores educacionais. A lacuna é que são raras as ferramentas que permitem comparar, rede a rede, o gasto com o desempenho, levando em conta o contexto.
+> Na literatura, os estudos clássicos, como os de Hanushek, e os brasileiros, como o de Menezes-Filho e Amaral, encontram uma associação pequena entre gasto e desempenho. Estudos recentes, como o de Jackson e coautores, mostram efeitos maiores sobretudo para os alunos de baixa renda. E Alves e Soares mostram que, sem considerar o contexto, as redes que atendem alunos mais vulneráveis parecem piores do que são. A lacuna é que são raras as ferramentas que permitem comparar, rede a rede, o gasto com o desempenho, levando em conta o contexto.
 
 ## Slide 5 · Dados, método e indicador (2:10–3:00)
 
-**Na tela:** quatro etapas com palavras-chave (8 bases públicas → 2 comparações → indicador → painel em Power BI) e três números: "2017–2025", "~5.500 redes municipais", "27 redes estaduais".
+**Na tela:** quatro etapas com palavras-chave (8 bases públicas, listadas em letra pequena: SIOPE, Siconfi, Saeb, Censo Escolar, Censo Demográfico, IDHM, IPCA e malha municipal → 2 comparações → indicador → painel em Power BI) e três números: "2017–2025", "~5.500 redes municipais", "27 redes estaduais".
 
 **Fala:**
 > Juntamos oito bases públicas: o SIOPE e o Siconfi, para o gasto; o Saeb, para a nota; e o Censo Escolar, o IBGE e o IDHM, para o contexto, de 2017 a 2025, com os valores corrigidos pela inflação. Comparamos os municípios entre si e cada município com ele mesmo ao longo do tempo. E criamos um indicador, o desempenho em relação ao esperado: a nota de cada rede comparada com a nota esperada para redes com o mesmo gasto e o mesmo contexto. Assim, uma cidade pequena do interior não é medida pela régua de uma capital. Os scripts foram desenvolvidos com o auxílio de IA, em acordo com a orientadora.

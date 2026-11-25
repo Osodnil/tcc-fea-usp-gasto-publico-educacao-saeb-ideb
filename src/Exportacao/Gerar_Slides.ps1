@@ -91,33 +91,76 @@ try {
     $null = Texto $s "E, considerando o gasto e o contexto de cada rede, quais entregam mais ou menos do que o esperado?" 488 290 400 90 18 $BRANCO
     Rodape $s 2
 
-    # 3 · como a educação é financiada (legislação em quatro números e a cota do ICMS)
+    # 3 · como a educação é financiada: rosca dupla sobre um só todo, cada R$ 100 dos impostos da cesta
+    # anel interno: 75 livres × 25 para a educação (MDE); anel externo: os 25 abertos em 5 direto, 14 profissionais e 6 outras
+    # (a complementação da União soma-se ao fundo e fica fora da rosca, como nota)
     $s = $pres.Slides.Add(3, 12); Fundo $s $BRANCO; Titulo $s "Como a educação é financiada"
-    $fin = @(@("25%", "da receita de impostos vai para a educação (MDE)"), @("20%", "de uma cesta de impostos forma o Fundeb, repartido pelas matrículas"),
-             @("23%", "no mínimo, de complementação da União (VAAF, VAAT e VAAR)"), @("70%", "do Fundeb, no mínimo, paga os profissionais da educação"))
-    for ($i = 0; $i -lt 4; $i++) {
-        $l = 48 + $i * 222
-        $c = Caixa $s $l 108 196 200 $CLARO
-        $null = Texto $s $fin[$i][0] ($l + 20) 126 160 50 40 $NAVY $true $TIT
-        $null = Texto $s $fin[$i][1] ($l + 20) 186 160 110 15 $TINTA
-        if ($i -lt 3) { $a = $s.Shapes.AddShape(33, $l + 200, 196, 18, 22); $a.Fill.ForeColor.RGB = (Cor $GELO); $a.Line.Visible = 0 }
+    $cxR = 232; $cyR = 300; $LARANJA2 = "F4B183"; $CINZA2 = "E5EBF3"
+    function Arco($s, $cxA, $cyA, $dA, $espA, $iniA, $fimA, [string]$corA) {  # fatia de anel: ângulos em graus, 0 = topo, sentido horário
+        $a = $s.Shapes.AddShape(20, $cxA - $dA / 2, $cyA - $dA / 2, $dA, $dA)
+        $a.Adjustments.Item(1) = (($iniA - 90) % 360 + 360) % 360
+        $a.Adjustments.Item(2) = (($fimA - 90) % 360 + 360) % 360
+        $a.Adjustments.Item(3) = $espA / $dA
+        $a.Fill.ForeColor.RGB = (Cor $corA); $a.Fill.Solid(); $a.Line.ForeColor.RGB = (Cor $BRANCO); $a.Line.Weight = 1.5
+        $a.Shadow.Visible = 0
     }
-    $c = Caixa $s 48 330 864 110 $NAVY
-    $null = Texto $s "COTA DO ICMS POR RESULTADOS (EC nº 108/2020)" 76 350 600 18 12 $GELO $true
-    $null = Texto $s "No mínimo 10 pontos da cota dos municípios por resultados educacionais" 76 376 820 28 20 $BRANCO $true $TIT
-    $null = Texto $s "No Ceará, desde 2007: 18% da cota, segundo o Índice Municipal de Qualidade Educacional" 76 410 820 20 14 $GELO
+    # anel interno (diâmetro 236): 25 educação no quadrante de cima à direita, 75 livres no resto
+    Arco $s $cxR $cyR 236 50 0 90 $BA
+    Arco $s $cxR $cyR 236 50 90 360 $CINZA2
+    # anel externo (diâmetro 340), só sobre os 25 da educação: 5 direto, 14 profissionais, 6 outras despesas do Fundeb
+    Arco $s $cxR $cyR 340 50 0 18 $LARANJA2
+    Arco $s $cxR $cyR 340 50 18 68.4 $NAVY
+    Arco $s $cxR $cyR 340 50 68.4 90 $CE
+    $null = Texto $s "R$ 100" ($cxR - 60) ($cyR - 26) 120 32 26 $NAVY $true $TIT 2
+    $null = Texto $s "dos impostos da cesta" ($cxR - 62) ($cyR + 8) 124 16 11 $CINZA $false $CORPO 2
+    $null = Texto $s "ICMS, FPM, FPE, IPVA e outros" ($cxR - 62) ($cyR + 24) 124 28 9 $CINZA $false $CORPO 2 $true
+    # chave do Fundeb: arco fino por fora dos R$ 14 e R$ 6, com rótulo
+    $ch = $s.Shapes.AddShape(20, $cxR - 184, $cyR - 184, 368, 368)
+    $ch.Adjustments.Item(1) = 18 - 90 + 1; $ch.Adjustments.Item(2) = 0 - 1; $ch.Adjustments.Item(3) = 4 / 368
+    $ch.Fill.ForeColor.RGB = (Cor $NAVY); $ch.Fill.Solid(); $ch.Line.Visible = 0; $ch.Shadow.Visible = 0
+    $null = Texto $s "Fundeb: R$ 20" 352 128 110 18 13 $NAVY $true
+    # legenda em árvore, na ordem em que um valor deriva do outro (linhas de ligação entre os níveis)
+    $null = Texto $s "DE CADA R$ 100 DA CESTA DE IMPOSTOS" 470 112 442 18 12 $NAVY $true
+    $leg = @(@(0, $CINZA2, "R$ 75", "ficam livres para o estado ou o município"),
+             @(0, $BA, "R$ 25", "vão para a educação (MDE):"),
+             @(1, $LARANJA2, "R$ 5", "aplicados direto pelo estado ou município"),
+             @(1, "grupo", "R$ 20", "vão para o Fundeb, repartido pelas matrículas:"),
+             @(2, $NAVY, "R$ 14", "no mínimo (70%), pagam os profissionais"),
+             @(2, $CE, "R$ 6", "vão para outras despesas da educação"))
+    $passoL = 30; $topoL = 142
+    function Ligar($s, $xA, $y1, $y2, [double[]]$ramos) {  # tronco vertical e um ramo horizontal até cada filho
+        $v = $s.Shapes.AddLine($xA, $y1, $xA, $y2); $v.Line.ForeColor.RGB = (Cor "A9B7C9"); $v.Line.Weight = 1
+        foreach ($yR in $ramos) { $h = $s.Shapes.AddLine($xA, $yR, $xA + 14, $yR); $h.Line.ForeColor.RGB = (Cor "A9B7C9"); $h.Line.Weight = 1 }
+    }
+    Ligar $s 477 ($topoL + 1 * $passoL + 18) ($topoL + 3 * $passoL + 10) @(($topoL + 2 * $passoL + 10), ($topoL + 3 * $passoL + 10))
+    Ligar $s 501 ($topoL + 3 * $passoL + 18) ($topoL + 5 * $passoL + 10) @(($topoL + 4 * $passoL + 10), ($topoL + 5 * $passoL + 10))
+    for ($i = 0; $i -lt $leg.Count; $i++) {
+        $tp = $topoL + $i * $passoL; $lx = 470 + $leg[$i][0] * 24
+        $q = Caixa $s $lx ($tp + 3) 14 14 $(if ($leg[$i][1] -eq "grupo") { $BRANCO } else { $leg[$i][1] }) $false
+        if ($leg[$i][1] -eq "grupo") { $q.Line.Visible = -1; $q.Line.ForeColor.RGB = (Cor $NAVY); $q.Line.Weight = 1.5 }
+        $tx = $lx + 22
+        $null = Texto $s $leg[$i][2] $tx $tp 60 20 15 $NAVY $true $TIT
+        $null = Texto $s $leg[$i][3] ($tx + 56) ($tp + 1) (912 - $tx - 56) 20 13 $TINTA
+    }
+    $c = Caixa $s 470 330 442 44 $CLARO
+    $null = Texto $s "+23%" 486 340 70 26 18 $BA $true $TIT
+    $null = Texto $s "a União acrescenta, no mínimo, 23% ao Fundeb (VAAF, VAAT e VAAR)" 552 344 350 20 12 $TINTA
+    $c = Caixa $s 470 386 442 96 $NAVY
+    $null = Texto $s "COTA DO ICMS POR RESULTADOS (EC nº 108/2020)" 486 398 420 16 11 $GELO $true
+    $null = Texto $s "No mínimo 10 pontos da cota dos municípios por resultados educacionais" 486 416 414 40 15 $BRANCO $true $TIT
+    $null = Texto $s "No Ceará, desde 2007: 18% da cota" 486 460 414 14 12 $GELO
     Rodape $s 3
 
     # 4 · o que a literatura diz
     $s = $pres.Slides.Add(4, 12); Fundo $s $BRANCO; Titulo $s "O que a literatura diz"
     $lit = @(@("Gasto sozinho explica pouco", "Hanushek (1997, 2003); Menezes-Filho e Amaral (2009)"),
-             @("Efeito maior para os mais pobres", "Jackson et al. (2016)"), @("O contexto pesa", "Alves e Soares (2013)"))
+             @("Efeito maior para os mais pobres", "Jackson et al. (2016)"), @("Sem o contexto, redes vulneráveis parecem piores", "Alves e Soares (2013)"))
     for ($i = 0; $i -lt 3; $i++) {
         $l = 48 + $i * 296
         $c = Caixa $s $l 108 272 200 $CLARO
         $null = Texto $s "$($i + 1)" ($l + 22) 124 40 30 26 $BA $true $TIT
         $null = Texto $s $lit[$i][0] ($l + 22) 164 230 70 22 $NAVY $true $TIT
-        $null = Texto $s $lit[$i][1] ($l + 22) 244 230 50 14 $CINZA $false $CORPO 1 $true
+        $null = Texto $s $lit[$i][1] ($l + 22) 262 230 40 14 $CINZA $false $CORPO 1 $true
     }
     $c = Caixa $s 48 330 864 110 $NAVY
     $null = Texto $s "LACUNA" 76 350 600 18 12 $GELO $true
@@ -137,6 +180,7 @@ try {
         $null = Texto $s $passos[$i][1] ($l + 20) 204 160 80 16 $corS
         if ($i -lt 3) { $a = $s.Shapes.AddShape(33, $l + 200, 192, 18, 22); $a.Fill.ForeColor.RGB = (Cor $GELO); $a.Line.Visible = 0 }
     }
+    $null = Texto $s "SIOPE, Siconfi, Saeb, Censo Escolar, Censo Demográfico, IDHM, IPCA e malha municipal" 68 236 160 50 11 $CINZA $false $CORPO 1 $true
     # números do estudo numa faixa da largura dos blocos, cada um centrado na sua coluna
     $c = Caixa $s 48 316 864 96 $CLARO
     $fatos = @(@("2017–2025", "5 edições do Saeb"), @("~5.500", "redes municipais"), @("27", "redes estaduais"))
