@@ -21,8 +21,9 @@ conferem com o texto e com o painel publicado.*
 - o título;
 - os autores: Guilherme Menezes Araújo e Henrique Nogueira Pedro Lindoso;
 - a orientadora: Profa. Adriana Backx Noronha Viana;
-- FEA/USP, 2026;
-- o **link do YouTube**.
+- FEA/USP, 2026.
+
+A gravação é feita sem o link do YouTube, que ainda não existe. O link entra no slide 1 só na versão postada no Moodle (veja "Como gravar no formato pedido").
 
 **Fala:**
 > Olá, eu sou o Henrique Lindoso e vou apresentar o TCC que fiz com o Guilherme Menezes, sob orientação da professora Adriana Backx: "Gasto público por aluno e desempenho no Saeb: uma análise das redes públicas brasileiras com apoio de Business Intelligence".
@@ -100,14 +101,14 @@ conferem com o texto e com o painel publicado.*
 
 ## Como gravar no formato pedido
 
-> **Slides prontos:** `exportacao/Guilherme_Menezes_Araujo_Henrique_Nogueira_Pedro_Lindoso.pptx`, com 8 slides. As falas deste roteiro estão nas **notas do apresentador** de cada slide, visíveis no modo de gravação. Gerador: `src/Exportacao/Gerar_Slides.ps1`, que exige o PowerPoint fechado. Antes de gravar, troque no slide 1 o texto "[colar aqui o link do YouTube]" pelo link.
+> **Slides prontos:** `exportacao/Guilherme_Menezes_Araujo_Henrique_Nogueira_Pedro_Lindoso.pptx`, com 8 slides. As falas deste roteiro estão nas **notas do apresentador** de cada slide, visíveis no modo de gravação; o gerador as lê direto deste arquivo, então basta editar a fala aqui e gerar de novo. Gerador: `src/Exportacao/Gerar_Slides.ps1`, que exige o PowerPoint fechado. O slide 1 vem sem o link do YouTube, para a gravação. Depois de publicar o vídeo, gere a versão para o Moodle com `-Link "<endereço do vídeo>"`, que acrescenta a linha "▶ Vídeo: …" ao slide 1.
 
 1. **PowerPoint > Gravar > Gravar do início.** O próprio PowerPoint grava os slides com a sua câmera numa janela no canto, que é exatamente o formato pedido. Ensaie uma vez sem gravar.
 2. **Demonstração do painel (slide 6):**
    - **opção mais simples:** use capturas de tela nos slides; as telas de `docs/resultados/telas/` já estão prontas;
    - **ao vivo:** grave com o Teams, o Zoom ou o OBS, compartilhando a tela e com a câmera ligada.
 3. **Exportar:** Arquivo > Exportar > Criar um vídeo, em Full HD.
-4. **YouTube:** envie o vídeo como **Não listado**, que só abre com o link. Cole o link no slide 1 e salve o PowerPoint de novo.
+4. **YouTube:** envie o vídeo como **Não listado**, que só abre com o link. Depois, gere o PowerPoint com o link no slide 1: rode `src/Exportacao/Gerar_Slides.ps1 -Link "<endereço do vídeo>"`, ou cole o link à mão no slide 1.
 5. **Moodle:** poste o PowerPoint com o nome completo dos autores, por exemplo `Guilherme_Menezes_Araujo_Henrique_Nogueira_Pedro_Lindoso.pptx`. Confirme o padrão exato no Moodle.
 
 ## Antes de gravar

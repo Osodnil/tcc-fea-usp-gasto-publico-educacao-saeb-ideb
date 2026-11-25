@@ -1,9 +1,11 @@
 ﻿param([string]$Saida = "exportacao\Guilherme_Menezes_Araujo_Henrique_Nogueira_Pedro_Lindoso.pptx",
       [string]$Notas = "",
-      [string]$Previa = "")
+      [string]$Previa = "",
+      [string]$Link = "")
 # Monta pelo próprio PowerPoint (automação COM) os 8 slides do vídeo de apresentação (etapa 6; roteiro em
 # docs/roteiro_video.md). As falas do roteiro entram como notas do apresentador. Com -Previa <pasta>, exporta um PNG
-# por slide para conferência. Feche o PowerPoint antes de rodar.
+# por slide para conferência. Com -Link <url>, põe o link do YouTube no slide 1 (versão para o Moodle; a gravação
+# é feita sem ele). Feche o PowerPoint antes de rodar.
 $ErrorActionPreference = "Stop"
 $R = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $Saida = Join-Path $R $Saida
@@ -41,6 +43,10 @@ function Rodape($s, [int]$n) {
 
 $notasTxt = @()
 if ($Notas) { $notasTxt = Get-Content $Notas -Raw -Encoding UTF8 | ConvertFrom-Json }
+else {  # sem -Notas, as falas vêm direto do roteiro (linha "> " logo depois de cada "**Fala:**")
+    $rot = Get-Content (Join-Path $R "docs\roteiro_video.md") -Raw -Encoding UTF8
+    $notasTxt = @([regex]::Matches($rot, '\*\*Fala:\*\*\r?\n> (.+)') | ForEach-Object { $_.Groups[1].Value.TrimEnd() })
+}
 
 $pp = New-Object -ComObject PowerPoint.Application
 try {
@@ -48,14 +54,17 @@ try {
     $pres.PageSetup.SlideWidth = 960; $pres.PageSetup.SlideHeight = 540
     $T = "Gasto público por aluno e desempenho no Saeb: uma análise das redes públicas brasileiras com apoio de Business Intelligence"
 
-    # 1 · abertura
+    # 1 · abertura: bloco centrado na altura do slide (a gravação é feita antes de existir o link do YouTube)
     $s = $pres.Slides.Add(1, 12); Fundo $s $NAVY
-    $null = Texto $s "TRABALHO DE CONCLUSÃO DE CURSO  ·  ADMINISTRAÇÃO  ·  FEA/USP" 48 64 864 18 12 $GELO $true
-    $null = Texto $s $T 48 100 820 150 34 $BRANCO $true $TIT
-    $null = Texto $s "Guilherme Menezes Araújo  ·  Henrique Nogueira Pedro Lindoso" 48 290 864 26 20 $BRANCO
-    $null = Texto $s "Orientadora: Profa. Adriana Backx Noronha Viana  ·  São Paulo, 2026" 48 322 864 22 15 $GELO
-    $b = Caixa $s 48 420 560 52 $NAVY2
-    $null = Texto $s "▶  Vídeo: [colar aqui o link do YouTube]" 68 436 520 22 16 $BRANCO $true
+    $null = Texto $s "TRABALHO DE CONCLUSÃO DE CURSO  ·  ADMINISTRAÇÃO" 48 108 864 18 12 $GELO $true
+    $null = Texto $s $T 48 140 820 140 34 $BRANCO $true $TIT
+    $f = Caixa $s 48 300 72 4 $BA $false
+    $null = Texto $s "Guilherme Menezes Araújo  ·  Henrique Nogueira Pedro Lindoso" 48 322 864 26 20 $BRANCO
+    $null = Texto $s "Orientadora: Profa. Adriana Backx Noronha Viana  ·  São Paulo, 2026" 48 356 864 22 15 $GELO
+    if ($Link) {  # versão para o Moodle: o Manual pede o link do YouTube no 1º slide
+        $null = Texto $s "▶  Vídeo: $Link" 48 410 864 22 15 $BRANCO $true
+    }
+    $null = Texto $s "Faculdade de Economia, Administração, Contabilidade e Atuária  ·  Universidade de São Paulo" 48 488 864 18 12 $GELO
 
     # 2 · problema e pergunta
     $s = $pres.Slides.Add(2, 12); Fundo $s $BRANCO; Titulo $s "O que queremos saber"
