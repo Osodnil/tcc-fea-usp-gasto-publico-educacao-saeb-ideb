@@ -137,13 +137,16 @@ try {
         $null = Texto $s $passos[$i][1] ($l + 20) 204 160 80 16 $corS
         if ($i -lt 3) { $a = $s.Shapes.AddShape(33, $l + 200, 192, 18, 22); $a.Fill.ForeColor.RGB = (Cor $GELO); $a.Line.Visible = 0 }
     }
+    # números do estudo numa faixa da largura dos blocos, cada um centrado na sua coluna
+    $c = Caixa $s 48 316 864 96 $CLARO
     $fatos = @(@("2017–2025", "5 edições do Saeb"), @("~5.500", "redes municipais"), @("27", "redes estaduais"))
     for ($i = 0; $i -lt 3; $i++) {
-        $l = 48 + $i * 296
-        $null = Texto $s $fatos[$i][0] $l 334 168 34 28 $NAVY $true $TIT
-        $null = Texto $s $fatos[$i][1] $l 372 260 22 15 $CINZA
+        $l = 48 + $i * 288
+        $null = Texto $s $fatos[$i][0] $l 332 288 34 28 $NAVY $true $TIT 2
+        $null = Texto $s $fatos[$i][1] $l 372 288 22 15 $CINZA $false $CORPO 2
+        if ($i -gt 0) { $d = $s.Shapes.AddLine($l, 334, $l, 394); $d.Line.ForeColor.RGB = (Cor "C9D7EA"); $d.Line.Weight = 1 }
     }
-    $null = Texto $s "Scripts feitos com o auxílio de IA, em acordo com a orientadora." 48 446 864 20 13 $CINZA $false $CORPO 1 $true
+    $null = Texto $s "Scripts feitos com o auxílio de IA, em acordo com a orientadora." 48 440 864 20 13 $CINZA $false $CORPO 1 $true
     Rodape $s 5
 
     # 6 · resultado 1 (gráfico desenhado com formas)
@@ -191,8 +194,18 @@ try {
 
     # 8 · o painel e as três perguntas
     $s = $pres.Slides.Add(8, 12); Fundo $s $BRANCO; Titulo $s "O painel: três perguntas para o gestor"
-    Tela $s "03_eficiencia.png" @(@("3 perguntas", "gastar mais se associa a aprender mais? · minha rede entrega o esperado? · com quem conversar?"),
-                                  @("46%", "das redes acima do esperado em 2023")) "Página Desempenho do painel (Anos Iniciais, Matemática, 2023)"
+    Tela $s "03_eficiencia.png" @() "Página Desempenho do painel (Anos Iniciais, Matemática, 2023)"
+    # à direita: as três perguntas numeradas, uma por linha, e o destaque de 46% abaixo
+    $null = Texto $s "TRÊS PERGUNTAS" 676 110 236 18 12 $NAVY $true
+    $perg = @("Gastar mais se associa a aprender mais?", "Minha rede entrega o esperado?", "Com quem conversar?")
+    for ($i = 0; $i -lt 3; $i++) {
+        $tp = 138 + $i * 58
+        $null = Texto $s "$($i + 1)" 676 $tp 24 30 24 $BA $true $TIT
+        $null = Texto $s $perg[$i] 706 ($tp + 3) 206 46 16 $NAVY $true
+    }
+    $f = Caixa $s 676 322 40 4 $BA $false
+    $null = Texto $s "46%" 676 338 236 50 40 $NAVY $true $TIT
+    $null = Texto $s "das redes acima do esperado em 2023" 676 394 236 40 15 $TINTA
     Rodape $s 8
 
     # 9 · minha rede e meus pares (duas capturas lado a lado)
@@ -214,17 +227,26 @@ try {
     Tela $s "caso_c_ficha.png" @(@("+70%", "acima do esperado em 2023"), @("salto atípico", "a nota mudou demais desde a edição anterior")) "Ficha do município: Coruripe (AL), com alerta de salto atípico"
     Rodape $s 10
 
-    # 11 · conclusões, contribuições e limitações (palavras-chave)
+    # 11 · conclusões, contribuições e limitações: três cartões iguais, como os de Ceará × Bahia
     $s = $pres.Slides.Add(11, 12); Fundo $s $BRANCO; Titulo $s "Conclusões, contribuições e limitações"
-    $cols = @(@("CONCLUSÕES", $NAVY, $GELO, $BRANCO, @("Gasto sozinho explica pouco", "Mesmo gasto, resultados diferentes")),
-              @("CONTRIBUIÇÕES", $NAVY2, $GELO, $BRANCO, @("Prática: o painel, com pares e alertas", "Teórica: evidência de 2017 a 2025, já sob o Novo Fundeb")),
-              @("LIMITAÇÕES", $CLARO, $NAVY, $TINTA, @("Associação, não causa", "Contexto só por UF, até 2024", "Sem teste com gestores")))
+    # cada item: @(rótulo opcional, texto)
+    $cols = @(@("Conclusões", $NAVY, @(@("", "Gasto sozinho explica pouco"), @("", "Mesmo gasto, resultados diferentes"))),
+              @("Contribuições", $CE, @(@("PRÁTICA", "O painel, com pares e alertas"), @("TEÓRICA", "Evidência de 2017 a 2025, já sob o Novo Fundeb"))),
+              @("Limitações", $BA, @(@("", "Associação, não causa"), @("", "Contexto só por UF, até 2024"), @("", "Sem teste com gestores"))))
     for ($i = 0; $i -lt 3; $i++) {
-        $l = 48 + $i * 296; $k = $cols[$i]
-        $c = Caixa $s $l 104 272 352 $k[1]
-        $null = Texto $s $k[0] ($l + 22) 124 230 18 13 $k[2] $true
-        for ($j = 0; $j -lt $k[4].Count; $j++) {
-            $null = Texto $s "– $($k[4][$j])" ($l + 22) (162 + $j * 90) 232 80 $(if ($i -lt 2) { 20 } else { 18 }) $k[3] ($i -lt 2) $(if ($i -lt 2) { $TIT } else { $CORPO })
+        $l = 48 + $i * 296; $k = $cols[$i]; $itens = $k[2]
+        $c = Caixa $s $l 104 272 340 $CLARO
+        $h = Caixa $s $l 104 272 52 $k[1] $false
+        $null = Texto $s $k[0] ($l + 22) 117 230 28 20 $BRANCO $true $TIT
+        $passo = 264 / $itens.Count
+        for ($j = 0; $j -lt $itens.Count; $j++) {
+            $tp = 178 + $j * $passo
+            if ($j -gt 0) { $d = $s.Shapes.AddLine($l + 22, $tp - 16, $l + 250, $tp - 16); $d.Line.ForeColor.RGB = (Cor "C9D7EA"); $d.Line.Weight = 1 }
+            if ($itens[$j][0]) {
+                $null = Texto $s $itens[$j][0] ($l + 22) $tp 230 16 11 $k[1] $true
+                $tp += 20
+            }
+            $null = Texto $s $itens[$j][1] ($l + 22) $tp 230 70 19 $NAVY $true $TIT
         }
     }
     Rodape $s 11
