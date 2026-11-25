@@ -91,7 +91,7 @@ try {
         $null = Texto $s $fatos[$i][0] $l 350 168 34 28 $NAVY $true $TIT
         $null = Texto $s $fatos[$i][1] $l 388 260 22 15 $CINZA
     }
-    $null = Texto $s "Scripts desenvolvidos com o auxílio de IA, com autorização da orientadora; todas as decisões estão registradas no repositório público." 48 440 864 36 13 $CINZA $false $CORPO 1 $true
+    $null = Texto $s "Scripts desenvolvidos com o auxílio de IA, em acordo com a orientadora; todas as decisões estão registradas no repositório público." 48 440 864 36 13 $CINZA $false $CORPO 1 $true
     Rodape $s 3
 
     # 4 · resultado 1 (gráfico nativo)

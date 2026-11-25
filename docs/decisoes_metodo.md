@@ -666,6 +666,19 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A34. Dados bibliográficos conferidos nas fontes oficiais; roteiro e slides alinhados ao Revisado5 ✅ (Henrique, 2026-11-25)
+- **Conferido nas fontes oficiais e aplicado no Revisado5** por `src/Exportacao/Corrigir_Referencias.py`, rodado de novo a partir da versão anterior à A33:
+  - **Crozatti et al. (2022):** "Aryane Manfron Serpa Rinaldi" está confirmado no PDF do artigo.
+  - **Menezes-Filho e Amaral (2009):** o repositório do Insper registra "BEWP 065/2009", e a referência passou a esse número, no lugar de WPE 164.
+  - **Leis do Ceará (14.023/2007) e de Minas Gerais (12.040/1995):** as ementas foram completadas conforme o Diário Oficial do Ceará e a ALMG. Os 18% do IQE e o critério de educação mineiro estão confirmados.
+  - **Radar IDHM:** a autoria passou a PNUD, FJP e IBGE, no lugar de PNUD, FJP e Ipea, e o título passou a ser o da edição de 2026.
+  - Com isso, **não resta nenhuma marca amarela no documento.**
+- **Roteiro e slides do vídeo**, conferidos contra o Revisado5. Os números, as figuras (6 e 7), os casos (Timon, Pacajus, Coruripe) e o título estavam certos. Mudou:
+  - "com autorização da orientadora" passou a "em acordo com a orientadora", no roteiro e no slide 3, como na seção 3.4 (A29);
+  - a fala do slide 4 passou a dizer "se explica, em grande parte, pelo contexto", como no texto;
+  - a nota de estudo agora aponta para o Capítulo 3 (3.1 a 3.5, Quadro 5) e para a folha de defesa;
+  - os slides foram gerados de novo por `src/Exportacao/Gerar_Slides.ps1`, com as falas nas notas.
+
 ### A33. Referências conferidas no Crossref e corrigidas ✅ (Henrique, 2026-11-24)
 - **Conferência:** as 59 referências foram comparadas com o Crossref (e o DataCite). O relatório está em `docs/conferencia_referencias.md`.
   - Todas existem, e a lista e as citações batem nos dois sentidos.

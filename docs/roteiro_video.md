@@ -1,6 +1,7 @@
 # Roteiro do vídeo de apresentação do TCC (Henrique)
 
-*2026-11-18. Etapa 6 do plano final. Os números conferem com a versão final do texto e com o painel publicado.*
+*2026-11-18; revisado em 2026-11-25 contra o documento principal (Revisado5). Etapa 6 do plano final. Os números
+conferem com o texto e com o painel publicado.*
 
 ## Regras do Manual (vídeo vale 20% da nota do TCC II)
 
@@ -42,7 +43,7 @@
 - "2017–2025", "cerca de 5.500 municípios", "27 UFs".
 
 **Fala:**
-> Juntamos oito bases públicas, entre elas o SIOPE e o Siconfi, para o gasto, o Saeb, para a nota, e o Censo Escolar, o IBGE e o IDHM, para o contexto. Cobrimos de 2017 a 2025, com os valores corrigidos pela inflação. O trabalho tem duas camadas: as redes municipais e as redes estaduais. Para medir a associação, usamos regressões que comparam municípios entre si e cada município com ele mesmo ao longo do tempo. E criamos um indicador, o desempenho em relação ao esperado: quanto a nota de uma rede fica acima ou abaixo da de redes com gasto e contexto parecidos. Os scripts foram desenvolvidos com o auxílio de IA, com autorização da orientadora, e todas as decisões estão registradas no repositório público.
+> Juntamos oito bases públicas, entre elas o SIOPE e o Siconfi, para o gasto, o Saeb, para a nota, e o Censo Escolar, o IBGE e o IDHM, para o contexto. Cobrimos de 2017 a 2025, com os valores corrigidos pela inflação. O trabalho tem duas camadas: as redes municipais e as redes estaduais. Para medir a associação, usamos regressões que comparam municípios entre si e cada município com ele mesmo ao longo do tempo. E criamos um indicador, o desempenho em relação ao esperado: quanto a nota de uma rede fica acima ou abaixo da de redes com gasto e contexto parecidos. Os scripts foram desenvolvidos com o auxílio de IA, em acordo com a orientadora, e todas as decisões estão registradas no repositório público.
 
 ## Slide 4 · Resultado 1: o gasto, sozinho, explica pouco (1:50–2:40)
 
@@ -52,7 +53,7 @@
 - gráfico de apoio: a Figura 6 do texto (associação por porte, região, cluster e faixa de gasto).
 
 **Fala:**
-> O primeiro resultado é que o gasto, sozinho, diz pouco. A correlação simples entre gasto e nota caiu de 0,46 em 2017 para 0,16 em 2025, e quase toda ela se explica pelo contexto dos municípios. Quando comparamos cada município com ele mesmo, 10% a mais de gasto por aluno acompanham só 0,2 ponto a mais no Saeb. A associação existe, mas é pequena, e se concentra nos municípios menores e no Nordeste e no Norte. Nas redes estaduais, com só 27 unidades, não dá para detectá-la. E é importante dizer: são associações, não efeitos causais.
+> O primeiro resultado é que o gasto, sozinho, diz pouco. A correlação simples entre gasto e nota caiu de 0,46 em 2017 para 0,16 em 2025, e se explica, em grande parte, pelo contexto dos municípios. Quando comparamos cada município com ele mesmo, 10% a mais de gasto por aluno acompanham só 0,2 ponto a mais no Saeb. A associação existe, mas é pequena, e se concentra nos municípios menores e no Nordeste e no Norte. Nas redes estaduais, com só 27 unidades, não dá para detectá-la. E é importante dizer: são associações, não efeitos causais.
 
 ## Slide 5 · Resultado 2: mesmo gasto, resultados diferentes (2:40–3:20)
 
@@ -113,4 +114,4 @@
 
 - **Painel:** abra o link do painel e deixe na página certa, se for mostrar ao vivo.
 - **Duração:** cronometre um ensaio; o alvo é de 5 a 6 minutos.
-- **Perguntas da banca:** se perguntarem sobre o método, os detalhes estão nas seções 3.1 a 3.4 do texto e em `docs/decisoes_metodo.md`.
+- **Perguntas da banca:** se perguntarem sobre o método, os detalhes estão no Capítulo 3, Procedimentos metodológicos (seções 3.1 a 3.5, com a matriz de amarração no Quadro 5), e em `docs/decisoes_metodo.md`. Para estudar, use `docs/folha_defesa.md`.
