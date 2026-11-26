@@ -666,6 +666,21 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A36. Teste no Turnitin e citações diretas dos trechos legais ✅ (Henrique, 2026-11-26)
+- **Teste no Turnitin** (Revisado5, envio "Teste"):
+  - **16% de semelhança, espalhados por 106 fontes, nenhuma acima de 1%.** A maior é o próprio repositório no GitHub.
+  - O relatório foi gerado com os filtros de citação e de bibliografia **desligados**.
+  - Medindo a área marcada por página: as referências ficam entre 7% e 15%; a introdução e o 2.1, entre 3% e 5% (nomes oficiais e de leis); métodos, resultados e conclusões, entre 0% e 1,5%.
+  - **Leitura:** não há cópia. A semelhança vem de referências, textos-padrão (capa e folha de rosto) e nomes oficiais.
+- **O único ponto corrigido:** três trechos repetiam o texto da lei quase literalmente, sem aspas. Viraram **citação direta**, com o texto conferido palavra por palavra no site do Planalto, por `src/Exportacao/Aplicar_Citacoes_Diretas.py` no Revisado5:
+  - **70% do Fundeb:** Lei nº 14.113/2020, art. 26, nas seções 1.2 e 2.1.2;
+  - **VAAR e condicionalidades:** art. 14 e § 1º, no 2.1.2. As cinco condicionalidades ficaram resumidas, com aspas só nos trechos literais;
+  - **cota do ICMS por resultados:** Constituição, **art. 158, § 1º, II**, no 2.1.3. A EC nº 132/2023 renumerou o antigo parágrafo único como § 1º, e a citação traz "(Brasil, 1988, art. 158, § 1º, II; Brasil, 2020a)".
+- **Conferência:** o validador passou, o Word refez o sumário (69 páginas) e as páginas 16, 20 e 21 foram conferidas no PDF. A versão anônima (A35) foi gerada de novo.
+- **A fazer:**
+  - confirmar com a Biblioteca ou a orientadora se o envio de teste ficou no banco do Turnitin;
+  - depois da reescrita da etapa 3, passar a versão final de novo, com o filtro "Excluir bibliografia" ligado, e olhar o indicador de escrita por IA, se houver.
+
 ### A35. Versão anônima para o Moodle ✅ (Henrique, 2026-11-26)
 - **Regra da Coordenação** (04/11/2026): o PDF postado no Moodle é uma versão anônima, sem autores nem orientadora, e o nome do arquivo é o título do trabalho.
 - **Gerada** por `src/Exportacao/Gerar_Versao_Anonima.py`, a partir do Revisado5, mais `Atualizar_Campos.ps1` para o sumário, as listas e o PDF. Os arquivos estão em `exportacao/anonima/`, com o título como nome.
