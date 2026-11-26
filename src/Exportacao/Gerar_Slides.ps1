@@ -1,9 +1,11 @@
 ﻿param([string]$Saida = "exportacao\Guilherme_Menezes_Araujo_Henrique_Nogueira_Pedro_Lindoso.pptx",
       [string]$Notas = "",
       [string]$Previa = "",
-      [string]$Link = "")
+      [string]$Link = "",
+      [switch]$NotasFalas)
 # Monta pelo próprio PowerPoint (automação COM) os 9 slides do vídeo de apresentação (etapa 6; roteiro em
-# docs/roteiro_video.md). As falas do roteiro entram como notas do apresentador. Com -Previa <pasta>, exporta um PNG
+# docs/roteiro_video.md). A cola de palavras-chave do roteiro entra como notas do apresentador (com -NotasFalas, as
+# falas completas). Com -Previa <pasta>, exporta um PNG
 # por slide para conferência. Com -Link <url>, põe o link do YouTube no slide 1 (versão para o Moodle; a gravação
 # é feita sem ele). Feche o PowerPoint antes de rodar.
 $ErrorActionPreference = "Stop"
@@ -54,9 +56,17 @@ function Tela($s, [string]$img, $chaves, [string]$legenda) {  # captura do paine
 
 $notasTxt = @()
 if ($Notas) { $notasTxt = Get-Content $Notas -Raw -Encoding UTF8 | ConvertFrom-Json }
-else {  # sem -Notas, as falas vêm direto do roteiro (linha "> " logo depois de cada "**Fala:**")
+else {  # sem -Notas, as notas vêm do roteiro: a cola de palavras-chave de cada slide (ou as falas, com -NotasFalas)
     $rot = Get-Content (Join-Path $R "docs\roteiro_video.md") -Raw -Encoding UTF8
-    $notasTxt = @([regex]::Matches($rot, '\*\*Fala:\*\*\r?\n> (.+)') | ForEach-Object { $_.Groups[1].Value.TrimEnd() })
+    if ($NotasFalas) {
+        $notasTxt = @([regex]::Matches($rot, '\*\*Fala:\*\*\r?\n> (.+)') | ForEach-Object { $_.Groups[1].Value.TrimEnd() })
+    } else {
+        $cola = $rot.Substring($rot.IndexOf("## Cola de palavras-chave"))
+        $notasTxt = @([regex]::Matches($cola, '\*\*(\d+ · [^*]+)\*\*([^\r\n]*)\r?\n((?:- [^\r\n]*\r?\n?)+)') | ForEach-Object {
+            $linhas = @("$($_.Groups[1].Value)$($_.Groups[2].Value)") + @($_.Groups[3].Value.Trim() -split '\r?\n' | ForEach-Object { "• " + $_.Substring(2).Trim() })
+            ($linhas -join "`r") -replace '\*\*', ''
+        })
+    }
 }
 
 $pp = New-Object -ComObject PowerPoint.Application

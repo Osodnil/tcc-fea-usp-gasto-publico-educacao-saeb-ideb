@@ -101,9 +101,70 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 
 ---
 
+## Cola de palavras-chave (para consultar durante a gravação)
+
+*O mesmo roteiro, só com o que não pode faltar em cada slide. As setas (→) marcam a passagem para o próximo slide.*
+
+**1 · Abertura** (0:15)
+- Nome · TCC com o Guilherme (ou Henrique) · orientadora Adriana Backx
+- Título
+
+**2 · Problema e pergunta** (0:45)
+- Gancho: CE e BA, mesmo gasto → **90% × 38%** acima do esperado. Por quê?
+- Fundeb: **R$ 339 bi** (2025)
+- Gestor presta contas, mas não sabe se o dinheiro virou aprendizagem
+- Pergunta: gasto × Saeb? Quem entrega mais ou menos do que o esperado?
+- → "Primeiro, como a educação é financiada"
+
+**3 · Financiamento** (0:35)
+- De R$ 100 da cesta: **25** para a educação
+- **20** passam pelo Fundeb · repartido por matrículas · União **+23%**
+- **70%** do fundo para os profissionais
+- **ICMS** por resultados (EC 108/2020) · modelo do **Ceará**
+- → literatura
+
+**4 · Literatura e lacuna** (0:30)
+- Hanushek e brasileiros: associação **pequena**
+- Jackson: efeito maior para **baixa renda**
+- Alves e Soares: sem contexto, vulneráveis **parecem piores**
+- Lacuna: raras ferramentas que cruzam **gasto, desempenho e contexto**
+- → "Juntamos…"
+
+**5 · Dados e método** (0:40)
+- **8 bases**: SIOPE e Siconfi (gasto) · Saeb (nota) · Censo Escolar, IBGE e IDHM (contexto) · **2017–2025**
+- **2 comparações**: entre municípios e no mesmo município
+- Indicador: nota **real × esperada** (mesmo gasto e contexto)
+- IA nos scripts, **em acordo com a orientadora**
+- → resultados
+
+**6 · O que encontramos** (0:45)
+- Correlação **0,46 → 0,16** (2017 a 2025)
+- No mesmo município: **+10% de gasto → +0,2 ponto** · pequena · **não causal**
+- Volta ao gancho: CE e BA, **~R$ 11 mil** · **242 × 200 pontos**
+- Literatura: ICMS por resultados e assistência técnica · **não testamos**
+- → "Para levar isso ao gestor…"
+
+**7 · O painel** (0:40)
+- Power BI · **3 perguntas**: gastar mais → aprender mais? · entrego o esperado? · com quem conversar?
+- Ficha: **Timon (MA)** · **+24%** · melhor que **98%**
+- Pares: **161** redes parecidas · só **1** entrega mais
+- **Alertas**: salto atípico, conferir antes de copiar
+- → conclusões
+
+**8 · Conclusões** (0:45)
+- Gasto sozinho **explica pouco** · mesmo gasto, **resultados diferentes**
+- Contribuição prática: o **painel** · teórica: evidência **2017–2025**, Novo Fundeb
+- Limitações: **associação** · contexto só por **UF, até 2024** · **sem teste com gestores**
+
+**9 · Fechamento** (0:15)
+- Mensagem: **menos quanto se gasta, mais como se usa**
+- QR Code · código aberto · obrigado
+
+---
+
 ## Como gravar no formato pedido
 
-> **Slides prontos:** `exportacao/Guilherme_Menezes_Araujo_Henrique_Nogueira_Pedro_Lindoso.pptx`, com 9 slides. As falas deste roteiro estão nas **notas do apresentador** de cada slide, visíveis no modo de gravação; o gerador as lê direto deste arquivo, então basta editar a fala aqui e gerar de novo. Gerador: `src/Exportacao/Gerar_Slides.ps1`, que exige o PowerPoint fechado. O slide 1 vem sem o link do YouTube, para a gravação. Depois de publicar o vídeo, gere a versão para o Moodle com `-Link "<endereço do vídeo>"`, que acrescenta a linha "▶ Vídeo: …" ao slide 1.
+> **Slides prontos:** `exportacao/Guilherme_Menezes_Araujo_Henrique_Nogueira_Pedro_Lindoso.pptx`, com 9 slides. A **cola de palavras-chave** deste roteiro está nas **notas do apresentador** de cada slide, visíveis no modo de gravação e fora do vídeo. O gerador a lê direto deste arquivo, então basta editar a cola aqui e gerar de novo. Para ter as falas completas nas notas, gere com `-NotasFalas`. Gerador: `src/Exportacao/Gerar_Slides.ps1`, que exige o PowerPoint fechado. O slide 1 vem sem o link do YouTube, para a gravação. Depois de publicar o vídeo, gere a versão para o Moodle com `-Link "<endereço do vídeo>"`, que acrescenta a linha "▶ Vídeo: …" ao slide 1.
 
 1. **Gravação:** PowerPoint > Gravar > Gravar do início (ou Zoom, ou Active Presenter, como sugere a Coordenação). Posicione a janela da câmera no **canto inferior direito**, que fica livre em todos os slides. Ensaie uma vez sem gravar.
 2. **Painel:** não há demonstração ao vivo. O slide 7 mostra capturas das páginas do painel (de `docs/resultados/telas/`), e basta falar sobre elas.
