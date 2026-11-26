@@ -666,6 +666,23 @@ Falar sempre em associação e eficiência relativa.
   - **Conferido e correto:** todo o corpo do texto está no padrão; toda ilustração é chamada no texto, com título acima e fonte abaixo; nenhum título termina com ponto.
   - **O que falta fazer à mão:** `docs/revisao_formatacao.md`.
 
+### A35. Versão anônima para o Moodle ✅ (Henrique, 2026-11-26)
+- **Regra da Coordenação** (04/11/2026): o PDF postado no Moodle é uma versão anônima, sem autores nem orientadora, e o nome do arquivo é o título do trabalho.
+- **Gerada** por `src/Exportacao/Gerar_Versao_Anonima.py`, a partir do Revisado5, mais `Atualizar_Campos.ps1` para o sumário, as listas e o PDF. Os arquivos estão em `exportacao/anonima/`, com o título como nome.
+- **O que sai:**
+  - os nomes dos autores na capa e na folha de rosto e a linha da orientadora. Os parágrafos ficam, para não mudar o leiaute;
+  - a seção de agradecimentos inteira, porque cita autores, orientadora e famílias;
+  - o endereço do repositório no GitHub (o usuário "Osodnil" identifica um dos autores), no texto e nos hyperlinks;
+  - o QR Code da Figura 5, que leva ao repositório, trocado por um aviso;
+  - o quadro "Autoria e atualização" da tela Sobre os dados (Figura B.7), coberto por um aviso;
+  - o autor nos metadados do arquivo.
+- **Fica:** os nomes do reitor, do diretor e do chefe do departamento, que são institucionais e não identificam o trabalho.
+- **Conferência:**
+  - o script confere que nenhum nome dos autores ou da orientadora sobrou em nenhuma parte do .docx;
+  - o validador passou;
+  - capa, folha de rosto, resumo, Figura 5 e Figura B.7 foram conferidos no PDF, que tem 68 páginas, uma a menos sem os agradecimentos.
+- **Atenção:** a versão anônima segue o Revisado5. Depois da reescrita da etapa 3, é preciso **rodar o script de novo** sobre a versão final.
+
 ### A34. Dados bibliográficos conferidos nas fontes oficiais; roteiro e slides alinhados ao Revisado5 ✅ (Henrique, 2026-11-25)
 - **Conferido nas fontes oficiais e aplicado no Revisado5** por `src/Exportacao/Corrigir_Referencias.py`, rodado de novo a partir da versão anterior à A33:
   - **Crozatti et al. (2022):** "Aryane Manfron Serpa Rinaldi" está confirmado no PDF do artigo.
