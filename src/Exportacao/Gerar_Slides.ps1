@@ -156,9 +156,9 @@ try {
     $null = Texto $s "+23%" 446 313 70 26 18 $BA $true $TIT
     $null = Texto $s "a União acrescenta, no mínimo, 23% ao Fundeb (VAAF, VAAT e VAAR)" 512 317 390 20 12 $TINTA
     $c = Caixa $s 48 416 612 76 $NAVY
-    $null = Texto $s "COTA DO ICMS POR RESULTADOS (EC nº 108/2020)" 68 426 580 16 11 $GELO $true
-    $null = Texto $s "No mínimo 10 pontos da cota dos municípios por resultados educacionais" 68 444 580 22 15 $BRANCO $true $TIT
-    $null = Texto $s "No Ceará, desde 2007: 18% da cota" 68 470 580 14 12 $GELO
+    $null = Texto $s "COTA DO ICMS POR RESULTADOS (EC nº 108/2020)" 68 424 580 14 11 $GELO $true
+    $null = Texto $s "Pelo menos 10% do ICMS repassado aos municípios segue a melhoria da aprendizagem" 68 440 580 20 14 $BRANCO $true $TIT
+    $null = Texto $s "Os estados repassam 25% do ICMS aos municípios · no Ceará, desde 2007, 18% dessa cota segue a qualidade da educação" 68 466 584 16 11 $GELO
     Rodape $s 3
 
     # 4 · o que já se sabe e a lacuna
@@ -174,12 +174,12 @@ try {
     }
     $c = Caixa $s 48 326 612 112 $NAVY
     $null = Texto $s "LACUNA" 72 344 560 18 12 $GELO $true
-    $null = Texto $s "São raras as ferramentas que comparam, rede a rede, gasto, desempenho e contexto" 72 370 564 56 20 $BRANCO $true $TIT
+    $null = Texto $s "Os dados de gasto, desempenho e contexto já são públicos, mas estão em bases separadas: são raras as ferramentas que os cruzam, rede a rede. É aí que entra este trabalho." 72 364 566 70 16 $BRANCO $true $TIT
     Rodape $s 4
 
     # 5 · dados, método e indicador
     $s = $pres.Slides.Add(5, 12); Fundo $s $BRANCO; Titulo $s "Dados, método e indicador"
-    $passos = @(@("8 bases públicas", "gasto · nota · contexto"), @("2 comparações", "entre municípios e no mesmo município"),
+    $passos = @(@("8 bases públicas", "gasto · nota · contexto"), @("2 comparações", "entre municípios e no mesmo município ao longo do tempo"),
                 @("Indicador", "nota real × esperada, com o mesmo gasto e contexto"), @("Painel em Power BI", "pares e alertas"))
     for ($i = 0; $i -lt 4; $i++) {
         $l = 48 + $i * 222
@@ -229,6 +229,7 @@ try {
         $col = Caixa $s $l ($base - $h) 50 $h $(if ($i -eq 4) { $BA } else { $NAVY }) $false
         $null = Texto $s ("{0:0.00}" -f $rho[$i][1]).Replace(".", ",") ($l - 10) ($base - $h - 22) 70 20 14 $(if ($i -eq 4) { $BA } else { $NAVY }) $true $CORPO 2
         $null = Texto $s $rho[$i][0] ($l - 10) ($base + 6) 70 18 12 $CINZA $false $CORPO 2
+        if ($i -eq 0 -or $i -eq 4) { $null = Texto $s $(if ($i -eq 0) { "moderada" } else { "fraca" }) ($l - 20) ($base + 21) 90 14 11 $(if ($i -eq 4) { $BA } else { $NAVY }) $true $CORPO 2 $true }
     }
     $c = Caixa $s 48 362 392 80 $NAVY
     $null = Texto $s "+0,2 ponto" 64 380 150 40 26 $BRANCO $true $TIT
@@ -262,10 +263,12 @@ try {
     $null = Texto $s "Ficha do município e página Pares: Timon (MA), Anos Iniciais, Matemática, 2023" 48 358 600 16 11 $CINZA $false $CORPO 1 $true
     $null = Texto $s "TRÊS PERGUNTAS PARA O GESTOR" 48 386 600 16 12 $BA $true
     $perg = @("Gastar mais se associa a aprender mais?", "Minha rede entrega o esperado?", "Com quem conversar?")
+    $expl = @("o gasto acompanha a nota?", "a nota fica acima ou abaixo da de redes parecidas?", "redes parecidas que entregam mais: referências")
     for ($i = 0; $i -lt 3; $i++) {
         $tp = 408 + $i * 26
         $null = Texto $s "$($i + 1)" 48 $tp 20 22 16 $BA $true $TIT
-        $null = Texto $s $perg[$i] 72 ($tp + 1) 560 22 15 $NAVY $true
+        $null = Texto $s $perg[$i] 72 ($tp + 1) 290 22 15 $NAVY $true
+        $null = Texto $s $expl[$i] 366 ($tp + 3) 300 20 12 $CINZA $false $CORPO 1 $true
     }
     Rodape $s 7
 
