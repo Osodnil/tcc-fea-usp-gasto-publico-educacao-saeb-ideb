@@ -56,7 +56,7 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 **Na tela:** à esquerda, a rosca dupla sobre cada R$ 100 dos impostos da cesta; à direita, a legenda em árvore (R$ 75 livres; R$ 25 para a educação, dos quais R$ 5 aplicados direto e R$ 20 do Fundeb, que se dividem em pelo menos R$ 14 para os profissionais e R$ 6 para outras despesas) e a nota "+23% da União"; embaixo, a faixa da cota do ICMS por resultados.
 
 **Fala:**
-> Primeiro, como a educação é financiada. De cada 100 reais da cesta de impostos, 25 vão para a manutenção e o desenvolvimento do ensino: 5 são aplicados direto pelo estado ou pelo município, e 20 passam pelo Fundeb, o Fundo de Manutenção e Desenvolvimento da Educação Básica, que é repartido pelas matrículas. Do fundo, pelo menos 70% pagam os profissionais da educação, e a União acrescenta pelo menos 23%. Por fim, desde a Emenda 108, de 2020, pelo menos 10% do ICMS que os estados repassam aos municípios é distribuído conforme a melhoria da aprendizagem, um modelo inspirado no Ceará.
+> Primeiro, como a educação é financiada. De cada 100 reais da cesta de impostos, 25 vão para a manutenção e o desenvolvimento do ensino: 5 são aplicados direto pelo estado ou pelo município, e 20 passam pelo Fundeb, o Fundo de Manutenção e Desenvolvimento da Educação Básica, que é repartido pelas matrículas. Do fundo, pelo menos 70% pagam os profissionais da educação, e a União acrescenta pelo menos 23%. Por fim, existe o ICMS educacional: desde a Emenda 108, de 2020, quanto mais a aprendizagem melhora, mais ICMS o município recebe, porque pelo menos 10% do que os estados repassam aos municípios são divididos conforme a melhoria da aprendizagem. É um modelo inspirado no Ceará, onde essa parcela é de 18% desde 2007.
 
 ## Slide 4 · O que já se sabe e a lacuna (1:35–2:05)
 
@@ -120,7 +120,7 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 - Dos 25: **5** direto · **20** pelo **Fundeb** = Fundo de Manutenção e Desenvolvimento da Educação Básica (repartido por matrículas)
 - Do Fundeb: **70%** para os profissionais
 - Nota: União **+23%**
-- Faixa: EC 108/2020 · pelo menos **10% do ICMS** repassado aos municípios segue a **melhoria da aprendizagem** · modelo do **Ceará**
+- Faixa: **ICMS educacional** (EC 108/2020) · **quanto mais a aprendizagem melhora, mais ICMS** o município recebe · pelo menos **10%** do repasse · **Ceará: 18%** desde 2007
 - → literatura
 
 **4 · Literatura e lacuna** (0:30)

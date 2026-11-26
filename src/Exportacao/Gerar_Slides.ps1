@@ -155,10 +155,10 @@ try {
     $c = Caixa $s 430 306 482 38 $CLARO
     $null = Texto $s "+23%" 446 313 70 26 18 $BA $true $TIT
     $null = Texto $s "a União acrescenta, no mínimo, 23% ao Fundeb (VAAF, VAAT e VAAR)" 512 317 390 20 12 $TINTA
-    $c = Caixa $s 48 416 612 76 $NAVY
-    $null = Texto $s "COTA DO ICMS POR RESULTADOS (EC nº 108/2020)" 68 424 580 14 11 $GELO $true
-    $null = Texto $s "Pelo menos 10% do ICMS repassado aos municípios segue a melhoria da aprendizagem" 68 440 580 20 14 $BRANCO $true $TIT
-    $null = Texto $s "Os estados repassam 25% do ICMS aos municípios · no Ceará, desde 2007, 18% dessa cota segue a qualidade da educação" 68 466 584 16 11 $GELO
+    $c = Caixa $s 48 412 612 86 $NAVY
+    $null = Texto $s "ICMS EDUCACIONAL (EC nº 108/2020)" 68 420 580 14 11 $GELO $true
+    $null = Texto $s "Quanto mais a aprendizagem melhora, mais ICMS o município recebe" 68 436 580 20 15 $BRANCO $true $TIT
+    $null = Texto $s "Cada estado repassa 25% do seu ICMS aos municípios. Pelo menos 10% desse repasse são divididos conforme a melhoria da aprendizagem; no Ceará, desde 2007, são 18%." 68 462 584 30 11 $GELO
     Rodape $s 3
 
     # 4 · o que já se sabe e a lacuna
