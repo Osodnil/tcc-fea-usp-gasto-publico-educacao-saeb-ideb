@@ -49,7 +49,7 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 **Na tela:** à esquerda, "R$ 339 bi" (com a explicação do Fundeb) e "gasto e aprendizagem em sistemas separados"; à direita, a pergunta de pesquisa e, em letra pequena, o que é o Saeb. O caso de Ceará e Bahia fica para o slide 6, com os resultados.
 
 **Fala:**
-> O Brasil gasta muito com educação básica: só o Fundeb teve receita estimada em 339 bilhões de reais em 2025. Mas os dados de gasto e os de aprendizagem estão em sistemas separados, e o gestor não tem um jeito simples de saber se o dinheiro virou aprendizagem. Daí a nossa pergunta: o gasto por aluno se associa ao desempenho das redes no Saeb, a avaliação nacional de Matemática e Português do Inep? E quais redes entregam mais ou menos do que o esperado?
+> O Brasil gasta muito com educação básica: só o Fundeb, o fundo que financia a educação básica pública, teve receita estimada em 339 bilhões de reais em 2025. Mas os dados de gasto e os de aprendizagem estão em sistemas separados, e o gestor não tem um jeito simples de saber se o dinheiro virou aprendizagem. Daí a nossa pergunta: o gasto por aluno se associa ao desempenho das redes no Saeb, a avaliação nacional de Matemática e Português do Inep? E quais redes entregam mais ou menos do que o esperado?
 
 ## Slide 3 · Como a educação é financiada (1:00–1:35)
 
@@ -111,7 +111,7 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 - Título
 
 **2 · Problema e pergunta** (0:35)
-- Esquerda: Fundeb **R$ 339 bi** (2025) · gasto e aprendizagem em **sistemas separados**
+- Esquerda: **Fundeb** (o fundo que financia a educação básica pública) **R$ 339 bi** (2025) · gasto e aprendizagem em **sistemas separados**
 - Direita: pergunta · gasto × **Saeb** (prova nacional do Inep)? · quem entrega mais ou menos do que o esperado?
 - → "Primeiro, como a educação é financiada"
 
