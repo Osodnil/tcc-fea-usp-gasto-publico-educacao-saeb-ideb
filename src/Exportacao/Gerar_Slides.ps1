@@ -94,13 +94,14 @@ try {
     $s = $pres.Slides.Add(2, 12); Fundo $s $BRANCO; Titulo $s "O que queremos saber"
     $c = Caixa $s 48 110 380 330 $CLARO
     $null = Texto $s "R$ 339 bi" 76 150 330 70 54 $NAVY $true $TIT
-    $null = Texto $s "receita estimada do Fundeb em 2025" 76 226 330 22 16 $TINTA
+    $null = Texto $s "receita estimada do Fundeb em 2025, o fundo que financia a educação básica pública" 76 226 330 44 14 $TINTA
     $f = Caixa $s 76 292 56 4 $BA $false
     $null = Texto $s "Gasto e aprendizagem em sistemas separados" 76 312 320 70 22 $NAVY $true $TIT
     $c = Caixa $s 460 110 452 230 $NAVY
     $null = Texto $s "PERGUNTA DE PESQUISA" 488 130 400 18 12 $GELO $true
     $null = Texto $s "O gasto público por aluno se associa ao desempenho das redes públicas no Saeb?" 488 156 400 90 22 $BRANCO $true $TIT
-    $null = Texto $s "E, considerando o gasto e o contexto de cada rede, quais entregam mais ou menos do que o esperado?" 488 256 400 70 16 $BRANCO
+    $null = Texto $s "E, considerando o gasto e o contexto de cada rede, quais entregam mais ou menos do que o esperado?" 488 256 400 50 16 $BRANCO
+    $null = Texto $s "Saeb: avaliação nacional do Inep, com provas de Matemática e Português" 488 312 400 16 11 $GELO $false $CORPO 1 $true
     Rodape $s 2
 
     # 3 · como a educação é financiada: rosca dupla sobre um só todo, cada R$ 100 dos impostos da cesta
@@ -182,23 +183,38 @@ try {
                 @("Indicador", "nota real × esperada, com o mesmo gasto e contexto"), @("Painel em Power BI", "pares e alertas"))
     for ($i = 0; $i -lt 4; $i++) {
         $l = 48 + $i * 222
-        $c = Caixa $s $l 112 196 180 $(if ($i -eq 3) { $NAVY } else { $CLARO })
+        $c = Caixa $s $l 100 196 136 $(if ($i -eq 3) { $NAVY } else { $CLARO })
         $corT = $(if ($i -eq 3) { $BRANCO } else { $NAVY }); $corS = $(if ($i -eq 3) { $GELO } else { $TINTA })
-        $null = Texto $s "$($i + 1)" ($l + 20) 128 40 30 26 $(if ($i -eq 3) { $GELO } else { $BA }) $true $TIT
-        $null = Texto $s $passos[$i][0] ($l + 20) 168 160 26 18 $corT $true
-        $null = Texto $s $passos[$i][1] ($l + 20) 204 160 80 16 $corS
-        if ($i -lt 3) { $a = $s.Shapes.AddShape(33, $l + 200, 192, 18, 22); $a.Fill.ForeColor.RGB = (Cor $GELO); $a.Line.Visible = 0 }
+        $null = Texto $s "$($i + 1)" ($l + 18) 110 40 26 22 $(if ($i -eq 3) { $GELO } else { $BA }) $true $TIT
+        $null = Texto $s $passos[$i][0] ($l + 18) 142 164 24 17 $corT $true
+        $null = Texto $s $passos[$i][1] ($l + 18) 170 164 60 14 $corS
+        if ($i -lt 3) { $a = $s.Shapes.AddShape(33, $l + 200, 158, 18, 22); $a.Fill.ForeColor.RGB = (Cor $GELO); $a.Line.Visible = 0 }
     }
-    $null = Texto $s "SIOPE, Siconfi, Saeb, Censo Escolar, Censo Demográfico, IDHM, IPCA e malha municipal" 68 236 160 50 11 $CINZA $false $CORPO 1 $true
-    $c = Caixa $s 48 316 612 96 $CLARO   # números do estudo, cada um centrado na sua coluna
+    # números do estudo numa faixa fina, cada um centrado na sua coluna
+    $c = Caixa $s 48 248 864 52 $CLARO
     $fatos = @(@("2017–2025", "5 edições do Saeb"), @("~5.500", "redes municipais"), @("27", "redes estaduais"))
     for ($i = 0; $i -lt 3; $i++) {
-        $l = 48 + $i * 204
-        $null = Texto $s $fatos[$i][0] $l 332 204 34 26 $NAVY $true $TIT 2
-        $null = Texto $s $fatos[$i][1] $l 372 204 22 14 $CINZA $false $CORPO 2
-        if ($i -gt 0) { $d = $s.Shapes.AddLine($l, 334, $l, 394); $d.Line.ForeColor.RGB = (Cor "C9D7EA"); $d.Line.Weight = 1 }
+        $l = 48 + $i * 288
+        $null = Texto $s $fatos[$i][0] $l 252 288 26 20 $NAVY $true $TIT 2
+        $null = Texto $s $fatos[$i][1] $l 278 288 16 12 $CINZA $false $CORPO 2
+        if ($i -gt 0) { $d = $s.Shapes.AddLine($l, 256, $l, 292); $d.Line.ForeColor.RGB = (Cor "C9D7EA"); $d.Line.Weight = 1 }
     }
-    $null = Texto $s "Scripts feitos com o auxílio de IA, em acordo com a orientadora." 48 432 612 20 13 $CINZA $false $CORPO 1 $true
+    # glossário das 8 bases, em duas colunas (fora do canto inferior direito, reservado ao vídeo)
+    $null = Texto $s "AS 8 BASES PÚBLICAS" 48 312 612 16 12 $BA $true
+    $bases = @(@("SIOPE (FNDE)", "gastos com educação declarados pelos municípios"),
+               @("Siconfi (Tesouro)", "contas dos estados, para o gasto estadual"),
+               @("Saeb (Inep)", "prova nacional de Matemática e Português"),
+               @("Censo Escolar (Inep)", "matrículas, escolas e infraestrutura"),
+               @("Censo Demográfico (IBGE)", "população e alfabetização"),
+               @("IDHM (PNUD, FJP e IBGE)", "renda e longevidade de cada estado"),
+               @("IPCA (IBGE)", "inflação, para levar os valores a reais de 2025"),
+               @("Malha municipal (IBGE)", "contornos dos municípios, para o mapa"))
+    for ($i = 0; $i -lt 8; $i++) {
+        $l = 48 + ($i % 2) * 316; $tp = 334 + [math]::Floor($i / 2) * 36
+        $null = Texto $s $bases[$i][0] $l $tp 300 14 11 $NAVY $true
+        $null = Texto $s $bases[$i][1] $l ($tp + 14) 300 16 11 $TINTA
+    }
+    $null = Texto $s "Scripts feitos com o auxílio de IA, em acordo com a orientadora." 48 482 612 16 11 $CINZA $false $CORPO 1 $true
     Rodape $s 5
 
     # 6 · o que encontramos: gráfico da correlação (formas) e Ceará × Bahia, num só slide

@@ -16,7 +16,7 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 
 - **7 slides de conteúdo**, mais a abertura e o fechamento (9 no total). É um pouco acima da média sugerida, porque o painel precisa de espaço; o restante foi reunido (resultados num só slide; o painel num só slide).
 - **Canto inferior direito livre em todos os slides**, para posicionar o vídeo do apresentador.
-- **Cerca de 760 palavras faladas**, o que dá cerca de 5min25s em ritmo natural (140 palavras por minuto) e 5min45s com as pausas.
+- **Cerca de 800 palavras faladas**, o que dá cerca de 5min45s em ritmo natural (140 palavras por minuto) e 6min com as pausas. Se o ensaio passar de 6min30s, encurte primeiro a fala do slide 5 (o glossário pode ser só mostrado) e depois o alerta do slide 7.
 - **Introdução com uma pergunta** (Ceará × Bahia), retomada nos resultados; **mensagem principal** dita no slide 8, onde ela aparece na tela.
 - **Falas e cola na ordem da tela:** cada fala percorre o slide de cima para baixo e da esquerda para a direita, para que o que você diz acompanhe o que aparece.
 - **Uma apresentação para os dois:** as falas estão na primeira pessoa do plural. Só a primeira frase do slide 1 muda: cada um diz o próprio nome.
@@ -46,17 +46,17 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 
 ## Slide 2 · Problema e pergunta (0:15–1:00)
 
-**Na tela:** à esquerda, "R$ 339 bi" e "gasto e aprendizagem em sistemas separados"; à direita, a pergunta de pesquisa. O gancho de Ceará × Bahia é só falado: ele volta na tela no slide 6.
+**Na tela:** à esquerda, "R$ 339 bi" (com a explicação do Fundeb) e "gasto e aprendizagem em sistemas separados"; à direita, a pergunta de pesquisa e, em letra pequena, o que é o Saeb. O gancho de Ceará × Bahia é só falado: ele volta na tela no slide 6.
 
 **Fala:**
-> Em 2023, as redes municipais do Ceará e da Bahia gastaram praticamente o mesmo por aluno. Mas 90% das redes cearenses entregaram mais do que o esperado, contra 38% das baianas. Por que o mesmo dinheiro gera resultados tão diferentes? O Brasil gasta muito com educação básica: só o Fundeb teve receita estimada em 339 bilhões de reais em 2025. Mas os dados de gasto e os de aprendizagem estão em sistemas separados, e o gestor não tem um jeito simples de saber se o dinheiro virou aprendizagem. Daí a nossa pergunta: o gasto por aluno se associa ao desempenho das redes no Saeb? E quais redes entregam mais ou menos do que o esperado?
+> Em 2023, as redes municipais do Ceará e da Bahia gastaram praticamente o mesmo por aluno. Mas 90% das redes cearenses entregaram mais do que o esperado, contra 38% das baianas. Por que o mesmo dinheiro gera resultados tão diferentes? O Brasil gasta muito com educação básica: só o Fundeb, o fundo que financia a educação básica pública, teve receita estimada em 339 bilhões de reais em 2025. Mas os dados de gasto e os de aprendizagem estão em sistemas separados, e o gestor não tem um jeito simples de saber se o dinheiro virou aprendizagem. Daí a nossa pergunta: o gasto por aluno se associa ao desempenho das redes no Saeb, a avaliação nacional de Matemática e Português do Inep? E quais redes entregam mais ou menos do que o esperado?
 
 ## Slide 3 · Como a educação é financiada (1:00–1:35)
 
 **Na tela:** à esquerda, a rosca dupla sobre cada R$ 100 dos impostos da cesta; à direita, a legenda em árvore (R$ 75 livres; R$ 25 para a educação, dos quais R$ 5 aplicados direto e R$ 20 do Fundeb, que se dividem em pelo menos R$ 14 para os profissionais e R$ 6 para outras despesas) e a nota "+23% da União"; embaixo, a faixa da cota do ICMS por resultados.
 
 **Fala:**
-> Primeiro, como a educação é financiada. De cada 100 reais da cesta de impostos, 25 vão para a educação: 5 são aplicados direto pelo estado ou pelo município, e 20 passam pelo Fundeb, que é repartido pelas matrículas. Do fundo, pelo menos 70% pagam os profissionais da educação, e a União acrescenta pelo menos 23%. Por fim, desde a Emenda 108, de 2020, parte do ICMS dos municípios é distribuída segundo resultados educacionais, um modelo inspirado no Ceará.
+> Primeiro, como a educação é financiada. De cada 100 reais da cesta de impostos, 25 vão para a manutenção e o desenvolvimento do ensino: 5 são aplicados direto pelo estado ou pelo município, e 20 passam pelo Fundeb, que é repartido pelas matrículas. Do fundo, pelo menos 70% pagam os profissionais da educação, e a União acrescenta pelo menos 23%. Por fim, desde a Emenda 108, de 2020, parte do ICMS dos municípios é distribuída segundo resultados educacionais, um modelo inspirado no Ceará.
 
 ## Slide 4 · O que já se sabe e a lacuna (1:35–2:05)
 
@@ -67,10 +67,10 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 
 ## Slide 5 · Dados, método e indicador (2:05–2:45)
 
-**Na tela:** quatro etapas da esquerda para a direita (8 bases públicas, listadas em letra pequena → 2 comparações → indicador → painel em Power BI) e, embaixo, a faixa com "2017–2025", "~5.500 redes municipais" e "27 redes estaduais".
+**Na tela:** quatro etapas da esquerda para a direita (8 bases públicas → 2 comparações → indicador → painel em Power BI); uma faixa com "2017–2025", "~5.500 redes municipais" e "27 redes estaduais"; e, embaixo, o glossário das 8 bases, com o que cada uma traz.
 
 **Fala:**
-> Juntamos oito bases públicas, como o SIOPE e o Siconfi, para o gasto, o Saeb, para a nota, e o Censo Escolar, o IBGE e o IDHM, para o contexto. Comparamos os municípios entre si e cada município com ele mesmo ao longo do tempo. E criamos um indicador, o desempenho em relação ao esperado: a nota de cada rede comparada com a esperada para redes com o mesmo gasto e o mesmo contexto. Tudo isso vai para um painel em Power BI. A análise cobre de 2017 a 2025, cerca de 5.500 redes municipais e as 27 estaduais, e os scripts foram desenvolvidos com o auxílio de IA, em acordo com a orientadora.
+> Juntamos oito bases públicas: os gastos com educação declarados pelos municípios, no SIOPE, e pelos estados, no Siconfi; as notas do Saeb; as matrículas e escolas do Censo Escolar; e o contexto, com a população e a alfabetização do IBGE e o IDHM, que mede a renda e a longevidade de cada estado. Comparamos os municípios entre si e cada município com ele mesmo ao longo do tempo. E criamos um indicador, o desempenho em relação ao esperado: a nota de cada rede comparada com a esperada para redes com o mesmo gasto e o mesmo contexto. Tudo isso vai para um painel em Power BI. A análise cobre de 2017 a 2025, cerca de 5.500 redes municipais e as 27 estaduais, e os scripts foram desenvolvidos com o auxílio de IA, em acordo com a orientadora.
 
 ## Slide 6 · O que encontramos (2:45–3:30)
 
@@ -112,12 +112,12 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 
 **2 · Problema e pergunta** (0:45)
 - Abrir com o gancho (só falado): CE e BA, mesmo gasto → **90% × 38%** acima do esperado. Por quê?
-- Esquerda: Fundeb **R$ 339 bi** (2025) · gasto e aprendizagem em **sistemas separados**
-- Direita: pergunta · gasto × Saeb? · quem entrega mais ou menos do que o esperado?
+- Esquerda: **Fundeb** (fundo da educação básica) **R$ 339 bi** (2025) · gasto e aprendizagem em **sistemas separados**
+- Direita: pergunta · gasto × **Saeb** (prova nacional do Inep)? · quem entrega mais ou menos do que o esperado?
 - → "Primeiro, como a educação é financiada"
 
 **3 · Financiamento** (0:35)
-- De **R$ 100** da cesta: **25** para a educação
+- De **R$ 100** da cesta: **25** para a educação (MDE: manutenção e desenvolvimento do ensino)
 - Dos 25: **5** direto · **20** pelo Fundeb (repartido por matrículas)
 - Do Fundeb: **70%** para os profissionais
 - Nota: União **+23%**
@@ -132,11 +132,13 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 - → "Juntamos…"
 
 **5 · Dados e método** (0:40)
-- 1: **8 bases** · SIOPE e Siconfi (gasto) · Saeb (nota) · Censo Escolar, IBGE e IDHM (contexto)
+- 1: **8 bases** · gasto · nota · contexto (detalhe no glossário, embaixo)
 - 2: **2 comparações** · entre municípios e no mesmo município
 - 3: indicador · nota **real × esperada** (mesmo gasto e contexto)
 - 4: **painel** em Power BI
-- Faixa: **2017–2025** · **~5.500** municipais · **27** estaduais · IA nos scripts, **em acordo com a orientadora**
+- Faixa: **2017–2025** · **~5.500** municipais · **27** estaduais
+- Glossário: **SIOPE** e **Siconfi** (gasto dos municípios e dos estados) · **Saeb** (notas) · **Censo Escolar** (matrículas e escolas) · **IBGE** e **IDHM** (população, alfabetização, renda e longevidade)
+- IA nos scripts, **em acordo com a orientadora**
 - → resultados
 
 **6 · O que encontramos** (0:45)
@@ -178,5 +180,5 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 
 ## Antes de gravar
 
-- **Duração:** cronometre um ensaio; o alvo é de 5min30s a 6min, perto dos 5 minutos sugeridos e longe do limite de 7.
+- **Duração:** cronometre um ensaio; o alvo é de 5min45s a 6min15s, perto dos 5 minutos sugeridos e longe do limite de 7.
 - **Perguntas da banca:** se perguntarem sobre o método, os detalhes estão no Capítulo 3, Procedimentos metodológicos (seções 3.1 a 3.5, com a matriz de amarração no Quadro 5), e em `docs/decisoes_metodo.md`. Para estudar, use `docs/folha_defesa.md`.
