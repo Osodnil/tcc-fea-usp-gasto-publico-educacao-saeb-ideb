@@ -63,7 +63,7 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 **Na tela:** três cartões com os autores ("gasto sozinho explica pouco", "efeito maior para os mais pobres", "sem o contexto, redes vulneráveis parecem piores") e, embaixo, a faixa da lacuna.
 
 **Fala:**
-> Na literatura, os estudos clássicos, como os de Hanushek, e os brasileiros encontram uma associação pequena entre gasto e desempenho. Estudos recentes, como o de Jackson e coautores, mostram efeitos maiores para os alunos de baixa renda. E Alves e Soares mostram que, sem considerar o contexto, as redes mais vulneráveis parecem piores do que são. Os dados de gasto, desempenho e contexto já são públicos, mas estão em bases separadas, e são raras as ferramentas que os cruzam, rede a rede. É aí que entra este trabalho.
+> Na literatura, os estudos clássicos, como os de Hanushek, e os brasileiros encontram uma associação fraca entre gasto e desempenho quando se comparam redes diferentes. Estudos recentes, como o de Jackson e coautores, mostram efeitos maiores para os alunos de baixa renda. E Alves e Soares mostram que, sem considerar o contexto, as redes mais vulneráveis parecem piores do que são. Os dados de gasto, desempenho e contexto já são públicos, mas estão em bases separadas, e são raras as ferramentas que os cruzam, rede a rede. É aí que entra este trabalho.
 
 ## Slide 5 · Dados, método e indicador (2:05–2:45)
 
@@ -74,7 +74,7 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 
 ## Slide 6 · O que encontramos (2:45–3:30)
 
-**Na tela:** à esquerda, o resultado 1 (o gráfico da correlação, de 0,46 em 2017 a 0,16 em 2025, e o destaque "+0,2 ponto"); à direita, o resultado 2 (Ceará × Bahia: 90% × 38% acima do esperado, gasto e nota) e "gestão e incentivos pesam mais que o volume".
+**Na tela:** à esquerda, o resultado 1 (o gráfico da correlação, de 0,46 em 2017 a 0,16 em 2025, e o destaque "+0,2 ponto"); à direita, o resultado 2 (Ceará × Bahia: 90% × 38% acima do esperado, gasto e nota) e, embaixo, a explicação dada pela literatura, que o trabalho não testa.
 
 **Fala:**
 > O primeiro resultado confirma a literatura: a correlação simples entre gasto e nota caiu de 0,46 em 2017, uma correlação moderada, para 0,16 em 2025, uma correlação fraca. Comparando cada município com ele mesmo, 10% a mais de gasto acompanham só 0,2 ponto a mais no Saeb, sobretudo nos municípios pequenos, no Nordeste e no Norte. É uma associação pequena, e não um efeito causal. O segundo resultado aparece quando comparamos redes com o mesmo gasto. Em 2023, as redes municipais do Ceará e da Bahia gastaram cerca de 11 mil reais por aluno, mas 90% das cearenses ficaram acima do esperado, contra 38% das baianas, e a nota média foi de 242 pontos no Ceará e de 200 na Bahia. A literatura liga essa diferença à cota do ICMS por resultados e à assistência técnica, uma explicação que não testamos aqui.
@@ -88,10 +88,10 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 
 ## Slide 8 · Conclusões, contribuições e limitações (4:10–4:55)
 
-**Na tela:** três cartões da esquerda para a direita (conclusões, contribuições e limitações) e, embaixo, a faixa com a mensagem principal.
+**Na tela:** três cartões da esquerda para a direita (conclusões, que respondem às duas partes da pergunta de pesquisa; contribuições; e limitações) e, embaixo, a faixa com a mensagem principal.
 
 **Fala:**
-> Concluímos que o volume de gasto, sozinho, explica pouco das diferenças de desempenho, e que redes com o mesmo gasto podem ter resultados muito diferentes. A contribuição prática é o painel, que ajuda o gestor a achar redes parecidas que entregam mais. A contribuição teórica é evidência recente, de 2017 a 2025, já sob o Novo Fundeb. As limitações são que os resultados são de associação, que o contexto só existe por estado e até 2024, e que o painel ainda não foi testado com gestores. Por isso, a mensagem principal é esta: importa menos quanto se gasta e mais como o recurso é usado.
+> Respondendo à pergunta de pesquisa: sim, o gasto por aluno se associa ao desempenho, mas pouco, e o volume de gasto, sozinho, não basta. E, entre redes de gasto e contexto parecidos, os resultados são muito distintos, e o painel mostra quais redes entregam mais. A contribuição prática é o painel, que ajuda o gestor a achar redes parecidas que entregam mais. A contribuição teórica é evidência recente, de 2017 a 2025, já sob o Novo Fundeb. As limitações são que os resultados são de associação, que o contexto só existe por estado e até 2024, e que o painel ainda não foi testado com gestores. Por isso, a mensagem principal é esta: importa menos quanto se gasta e mais como o recurso é usado.
 
 ## Slide 9 · Fechamento (4:55–5:05)
 
@@ -124,7 +124,7 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 - → literatura
 
 **4 · Literatura e lacuna** (0:30)
-- Cartão 1: Hanushek e brasileiros · associação **pequena**
+- Cartão 1: Hanushek e brasileiros · associação **fraca** entre redes diferentes
 - Cartão 2: Jackson · efeito maior para **baixa renda**
 - Cartão 3: Alves e Soares · sem contexto, vulneráveis **parecem piores**
 - Faixa: dados **já públicos**, mas **separados** · raras ferramentas que os cruzam, rede a rede · **é aí que entramos**
@@ -144,7 +144,7 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 - Esquerda (1): correlação **0,46 (moderada) → 0,16 (fraca)** (2017 a 2025)
 - Esquerda (1): no mesmo município, **+10% de gasto → +0,2 ponto** · maior em pequenos, NE e N · **não causal**
 - Direita (2): mesmo gasto · CE e BA, **~R$ 11 mil** · **90% × 38%** acima do esperado · **242 × 200 pontos**
-- Direita (2): gestão e incentivos · ICMS por resultados e assistência técnica · **não testamos**
+- Direita (2), embaixo: literatura · ICMS por resultados e assistência técnica · **não testamos**
 - → "Para levar isso ao gestor…"
 
 **7 · O painel** (0:40)
@@ -156,7 +156,7 @@ Etapa 6 do plano final. Os números conferem com o texto e com o painel publicad
 - → conclusões
 
 **8 · Conclusões** (0:45)
-- Conclusões: gasto sozinho **explica pouco** · mesmo gasto, **resultados diferentes**
+- Conclusões = resposta à pergunta · 1: há associação, **mas pequena** (o volume não basta) · 2: redes parecidas, **resultados muito distintos**
 - Contribuições: prática, o **painel** · teórica, evidência **2017–2025**, Novo Fundeb
 - Limitações: **associação** · contexto só por **UF, até 2024** · **sem teste com gestores**
 - Faixa: mensagem · **menos quanto se gasta, mais como se usa**

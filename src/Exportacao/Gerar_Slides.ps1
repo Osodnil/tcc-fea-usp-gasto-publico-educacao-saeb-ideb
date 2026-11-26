@@ -163,7 +163,7 @@ try {
 
     # 4 · o que já se sabe e a lacuna
     $s = $pres.Slides.Add(4, 12); Fundo $s $BRANCO; Titulo $s "O que já se sabe e a lacuna"
-    $lit = @(@("Gasto sozinho explica pouco", "Hanushek (1997, 2003); Menezes-Filho e Amaral (2009)"),
+    $lit = @(@("Entre redes diferentes, associação fraca", "Hanushek (1997, 2003); Menezes-Filho e Amaral (2009)"),
              @("Efeito maior para os mais pobres", "Jackson et al. (2016)"), @("Sem o contexto, redes vulneráveis parecem piores", "Alves e Soares (2013)"))
     for ($i = 0; $i -lt 3; $i++) {
         $l = 48 + $i * 296
@@ -219,7 +219,7 @@ try {
 
     # 6 · o que encontramos: gráfico da correlação (formas) e Ceará × Bahia, num só slide
     $s = $pres.Slides.Add(6, 12); Fundo $s $BRANCO; Titulo $s "O que encontramos"
-    $null = Texto $s "1 · O GASTO, SOZINHO, EXPLICA POUCO" 48 98 400 16 12 $BA $true
+    $null = Texto $s "1 · GASTO E NOTA: ASSOCIAÇÃO PEQUENA" 48 98 400 16 12 $BA $true
     $null = Texto $s "Correlação entre gasto por aluno e nota (Anos Iniciais, Matemática)" 48 118 400 18 12 $TINTA $true
     $rho = @(@("2017", 0.46), @("2019", 0.41), @("2021", 0.33), @("2023", 0.26), @("2025", 0.16))
     $base = 326; $alt = 160  # 0,50 = 160 pontos de altura
@@ -235,7 +235,7 @@ try {
     $null = Texto $s "+0,2 ponto" 64 380 150 40 26 $BRANCO $true $TIT
     $null = Texto $s "a cada 10% a mais de gasto, no mesmo município; maior em municípios pequenos, no Nordeste e no Norte" 214 374 214 60 12 $GELO
     $null = Texto $s "Associação, e não efeito causal." 48 450 392 18 12 $CINZA $false $CORPO 1 $true
-    $null = Texto $s "2 · MESMO GASTO, RESULTADOS DIFERENTES" 480 98 432 16 12 $BA $true
+    $null = Texto $s "2 · CEARÁ E BAHIA: GASTO PARECIDO" 480 98 432 16 12 $BA $true
     $null = Texto $s "Redes municipais, 2023 (Anos Iniciais, Matemática)" 480 118 432 18 12 $TINTA $true
     $lados = @(@("Ceará", $CE, "R$ 11.391", "242,4", "90%"), @("Bahia", $BA, "R$ 11.231", "200,1", "38%"))
     for ($i = 0; $i -lt 2; $i++) {
@@ -248,7 +248,7 @@ try {
         $null = Texto $s "$($v[2]) por aluno" ($l + 16) 252 180 18 13 $TINTA $true
         $null = Texto $s "$($v[3]) pontos" ($l + 16) 272 180 18 13 $TINTA $true
     }
-    $null = Texto $s "Gestão e incentivos pesam mais que o volume de recursos" 480 310 432 40 16 $NAVY $true $TIT
+    $null = Texto $s "Na literatura: cota do ICMS por resultados e assistência técnica no Ceará (não testado aqui)" 480 310 432 40 13 $CINZA $false $CORPO 1 $true
     Rodape $s 6
 
     # 7 · o painel: Ficha e Pares de Timon lado a lado, com as três perguntas abaixo
@@ -274,7 +274,7 @@ try {
 
     # 8 · conclusões, contribuições e limitações, e a mensagem principal
     $s = $pres.Slides.Add(8, 12); Fundo $s $BRANCO; Titulo $s "Conclusões, contribuições e limitações"
-    $cols = @(@("Conclusões", $NAVY, @(@("", "Gasto sozinho explica pouco"), @("", "Mesmo gasto, resultados diferentes"))),
+    $cols = @(@("Conclusões", $NAVY, @(@("PERGUNTA 1", "Há associação, mas pequena: o volume de gasto não basta"), @("PERGUNTA 2", "Redes parecidas entregam resultados muito distintos"))),
               @("Contribuições", $CE, @(@("PRÁTICA", "O painel, com pares e alertas"), @("TEÓRICA", "Evidência de 2017 a 2025, já sob o Novo Fundeb"))),
               @("Limitações", $BA, @(@("", "Associação, não causa"), @("", "Contexto só por UF, até 2024"), @("", "Sem teste com gestores"))))
     for ($i = 0; $i -lt 3; $i++) {
