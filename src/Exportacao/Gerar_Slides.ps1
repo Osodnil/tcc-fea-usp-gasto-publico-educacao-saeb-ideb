@@ -2,10 +2,11 @@
       [string]$Notas = "",
       [string]$Previa = "",
       [string]$Link = "",
-      [switch]$NotasFalas)
+      [switch]$NotasFalas,
+      [switch]$NotasCola)
 # Monta pelo próprio PowerPoint (automação COM) os 9 slides do vídeo de apresentação (etapa 6; roteiro em
-# docs/roteiro_video.md). A cola de palavras-chave do roteiro entra como notas do apresentador (com -NotasFalas, as
-# falas completas). Com -Previa <pasta>, exporta um PNG
+# docs/roteiro_video.md). As notas do apresentador trazem o texto completo da fala e, abaixo, a cola de palavras-chave
+# (com -NotasFalas, só a fala; com -NotasCola, só a cola). Com -Previa <pasta>, exporta um PNG
 # por slide para conferência. Com -Link <url>, põe o link do YouTube no slide 1 (versão para o Moodle; a gravação
 # é feita sem ele). Feche o PowerPoint antes de rodar.
 $ErrorActionPreference = "Stop"
@@ -56,16 +57,18 @@ function Tela($s, [string]$img, $chaves, [string]$legenda) {  # captura do paine
 
 $notasTxt = @()
 if ($Notas) { $notasTxt = Get-Content $Notas -Raw -Encoding UTF8 | ConvertFrom-Json }
-else {  # sem -Notas, as notas vêm do roteiro: a cola de palavras-chave de cada slide (ou as falas, com -NotasFalas)
+else {  # sem -Notas, as notas vêm do roteiro: por padrão, o texto completo da fala e, abaixo, a cola de palavras-chave
     $rot = Get-Content (Join-Path $R "docs\roteiro_video.md") -Raw -Encoding UTF8
-    if ($NotasFalas) {
-        $notasTxt = @([regex]::Matches($rot, '\*\*Fala:\*\*\r?\n> (.+)') | ForEach-Object { $_.Groups[1].Value.TrimEnd() })
-    } else {
-        $cola = $rot.Substring($rot.IndexOf("## Cola de palavras-chave"))
-        $notasTxt = @([regex]::Matches($cola, '\*\*(\d+ · [^*]+)\*\*([^\r\n]*)\r?\n((?:- [^\r\n]*\r?\n?)+)') | ForEach-Object {
-            $linhas = @("$($_.Groups[1].Value)$($_.Groups[2].Value)") + @($_.Groups[3].Value.Trim() -split '\r?\n' | ForEach-Object { "• " + $_.Substring(2).Trim() })
-            ($linhas -join "`r") -replace '\*\*', ''
-        })
+    $falas = @([regex]::Matches($rot, '\*\*Fala:\*\*\r?\n> (.+)') | ForEach-Object { $_.Groups[1].Value.TrimEnd() })
+    $trecho = $rot.Substring($rot.IndexOf("## Cola de palavras-chave"))
+    $colas = @([regex]::Matches($trecho, '\*\*(\d+ · [^*]+)\*\*([^\r\n]*)\r?\n((?:- [^\r\n]*\r?\n?)+)') | ForEach-Object {
+        $linhas = @("$($_.Groups[1].Value)$($_.Groups[2].Value)") + @($_.Groups[3].Value.Trim() -split '\r?\n' | ForEach-Object { "• " + $_.Substring(2).Trim() })
+        ($linhas -join "`r") -replace '\*\*', ''
+    })
+    if ($NotasFalas) { $notasTxt = $falas }
+    elseif ($NotasCola) { $notasTxt = $colas }
+    else {
+        $notasTxt = @(for ($i = 0; $i -lt $falas.Count; $i++) { "$($falas[$i])`r`r— PALAVRAS-CHAVE —`r$($colas[$i])" })
     }
 }
 
@@ -310,7 +313,10 @@ try {
 
     # notas do apresentador = falas do roteiro
     for ($i = 1; $i -le $pres.Slides.Count; $i++) {
-        if ($notasTxt.Count -ge $i) { $pres.Slides.Item($i).NotesPage.Shapes.Placeholders.Item(2).TextFrame.TextRange.Text = $notasTxt[$i - 1] }
+        if ($notasTxt.Count -ge $i) {
+            $tr = $pres.Slides.Item($i).NotesPage.Shapes.Placeholders.Item(2).TextFrame.TextRange
+            $tr.Text = $notasTxt[$i - 1]; $tr.Font.Size = 16  # letra maior, para ler no Modo de Apresentador ou no teleprompter
+        }
     }
     if (Test-Path $Saida) { Remove-Item $Saida }
     $pres.SaveAs($Saida, 24)
