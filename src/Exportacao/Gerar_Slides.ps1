@@ -238,7 +238,7 @@ try {
     $null = Texto $s "+0,2 ponto" 64 380 150 40 26 $BRANCO $true $TIT
     $null = Texto $s "a cada 10% a mais de gasto, no mesmo município; maior em municípios pequenos, no Nordeste e no Norte" 214 374 214 60 12 $GELO
     $null = Texto $s "Associação, e não efeito causal." 48 450 392 18 12 $CINZA $false $CORPO 1 $true
-    $null = Texto $s "2 · CEARÁ E BAHIA: GASTO PARECIDO" 480 98 432 16 12 $BA $true
+    $null = Texto $s "2 · UM EXEMPLO: CEARÁ E BAHIA" 480 98 432 16 12 $BA $true
     $null = Texto $s "Redes municipais, 2023 (Anos Iniciais, Matemática)" 480 118 432 18 12 $TINTA $true
     $lados = @(@("Ceará", $CE, "R$ 11.391", "242,4", "90%"), @("Bahia", $BA, "R$ 11.231", "200,1", "38%"))
     for ($i = 0; $i -lt 2; $i++) {
@@ -256,14 +256,14 @@ try {
 
     # 7 · o painel: Ficha e Pares de Timon lado a lado, com as três perguntas abaixo
     $s = $pres.Slides.Add(7, 12); Fundo $s $BRANCO; Titulo $s "O painel: minha rede e com quem conversar"
-    $duas = @(@("caso_a_ficha.png", "+24%  ·  melhor que 98% das redes"), @("caso_a_pares.png", "161 pares  ·  só 1 entrega mais"))
+    $duas = @(@("caso_a_ficha.png", "Timon: +24%  ·  melhor que 98% das redes"), @("caso_a_pares.png", "161 pares  ·  só 1 entrega mais"))
     for ($i = 0; $i -lt 2; $i++) {
         $l = 48 + $i * 472
         $null = Texto $s $duas[$i][1] $l 98 392 26 18 $NAVY $true $TIT
         $p = $s.Shapes.AddPicture((Join-Path $R (Join-Path "docs/resultados/telas" $duas[$i][0])), 0, -1, $l, 130, 392, 220.5)
         $p.Line.Visible = -1; $p.Line.ForeColor.RGB = (Cor "D1D5DB"); $p.Line.Weight = 0.75
     }
-    $null = Texto $s "Ficha do município e página Pares: Timon (MA), Anos Iniciais, Matemática, 2023" 48 358 600 16 11 $CINZA $false $CORPO 1 $true
+    $null = Texto $s "Exemplo: a rede de Timon (MA) na Ficha do município e na página Pares (Anos Iniciais, Matemática, 2023)" 48 358 600 16 11 $CINZA $false $CORPO 1 $true
     $null = Texto $s "TRÊS PERGUNTAS PARA O GESTOR" 48 386 600 16 12 $BA $true
     $perg = @("Gastar mais se associa a aprender mais?", "Minha rede entrega o esperado?", "Com quem conversar?")
     $expl = @("o gasto acompanha a nota?", "a nota fica acima ou abaixo da de redes parecidas?", "redes parecidas que entregam mais: referências")
